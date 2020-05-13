@@ -1,0 +1,48 @@
+/*  */
+.nav-bar {
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nb-left {
+  margin-left: 15%;
+}
+.nb-right {
+  margin-right: 15%;
+}
+.nb-right_list {
+  margin-left: 20px;
+}
+.main-page {
+  position: relative;
+  width: 70%;
+  margin: 0 auto;
+  padding-bottom: 40%;
+}
+.review-page {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding-bottom: 30%;
+}
+.mp_btn {
+  border: 1px solid black;
+  border-radius: 2px;
+  position: absolute;
+  width: 10%;
+  height: 9%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 0;
+  bottom: 10%;
+  letter-spacing: 1.2px;
+}
+.mp_btn:hover {
+  cursor: pointer;
+}

@@ -1,0 +1,26 @@
+@import "index.css";
+@import "reset.css";
+@import "auth.css";
+@import "brand.css";
+@import "previous.css";
+@import "account.css";
+html,
+body,
+input {
+  font-family: "Spoqa Han Sans", "Spoqa Han Sans JP", "Sans-serif";
+}
+* {
+  box-sizing: border-box;
+}
+a:link {
+  color: black;
+  text-decoration: none;
+}
+a:visited {
+  color: black;
+  text-decoration: none;
+}
+a:hover {
+  color: black;
+  text-decoration: none;
+}
