@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="nav-bar">
+        <div class="nb-left">
+          <span class="nb-left-name">name</span>
+        </div>
+        <div class="nb-right">
+          <span class="nb-right_customer nb-right_list"
+            ><a href="customer">고객센터</a></span
+          >
+          <span class="nb-right_usage nb-right_list"
+            ><a href="howtouse">이용안내</a></span
+          >
+          <span class="nb-right_register nb-right_list"
+            ><a href="/register_previous">회원가입</a></span
+          >
+          <span class="nb-right_login nb-right_list"
+            ><a href="/login">로그인</a></span
+          >
+        </div>
+      </div>
+      <div class="register-box">
+        <div class="rb-slo">회원가입</div>
+        <div class="rb-detail">회원가입 하시고</br>다양한 혜택을 누려보세요.</div>
+        <div class="rb-oauthbox">
+          <div class="google register_oauth"><span><a href="/auth/google">구글</a></span></div>
+          <div class="naver register_oauth"><span><a href="/auth/naver">네이버</a></span></div>
+          <div class="kakao register_oauth"><span><a href="/auth/kakao">카카오</a></span></div>
+        </div>
+        <div class="rb-email">
+          <div class="rb-emailslo">
+            <span>또는</span> 
+          </div>
+          <div class="register-email" data-click="none"> 
+            <span>이메일로 가입하기</span>
+            <span class="arrow">&#8744</span>
+          </div>
+          <div class="register-common">
+            <span><a href="/auth/register/common">일반회원</a></span>
+          </div>
+          <div class="register-provide">
+            <span><a href="/auth/register/provide">00</a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="bundle.js"></script>
+  </body>
+</html>

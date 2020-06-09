@@ -4,5 +4,6 @@
   "port": 3306,
   "user": "root",
   "password": "wowwjd123",
-  "database": "COSCUZ"
+  "database": "COSCUZ",
+  "name": "sessionID"
 }

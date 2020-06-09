@@ -1,12 +1,12 @@
 {
-  "web": {
-    "client_id": "506650680755-gjmqes5840uv9drb0l3l7m7mrjnl2eoc.apps.googleusercontent.com",
-    "project_id": "euphoric-glass-272405",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_secret": "GesQEJ6lbuc4lHgltRCqJBYf",
-    "redirect_uris": ["http://localhost:3000/auth/google/callback"],
-    "javascript_origins": ["http://localhost:3000"]
-  }
+    "web": {
+        "client_id": "506650680755-gjmqes5840uv9drb0l3l7m7mrjnl2eoc.apps.googleusercontent.com",
+        "project_id": "euphoric-glass-272405",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "GesQEJ6lbuc4lHgltRCqJBYf",
+        "redirect_uris": ["http://localhost:3000/auth/google/callback"],
+        "javascript_origins": ["http://localhost:3000"]
+    }
 }

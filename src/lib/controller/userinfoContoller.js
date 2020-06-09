@@ -39,4 +39,4 @@ userController.save = (req, res) => {
     });
 };
 
-module.exports = userController;
+export default userController;

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="nav-bar">
+        <div class="nb-left">
+          <span class="nb-left-name common-name">name</span>
+        </div>
+      </div>
+      <div class="common-box">
+        <div class="cb-slo">
+          일반회원가입
+        </div>
+        <form
+          method="POST"
+          action="/auth/register_common_process"
+          class="common_form"
+        >
+          <div class="cb-registerbox cb-email">
+            <input
+              id="common_email"
+              type="text"
+              placeholder="이메일을 입력하세요."
+              name="common_email"
+              autocomplete="off"
+            />
+          </div>
+          <div class="condition-register">
+            위의 이메일로 인증번호를 발송합니다.
+          </div>
+          <div class="state-email state-register">sdsds</div>
+          <div class="cb-registerbox cb-name">
+            <input
+              id="common_name"
+              type="text"
+              placeholder="사용자 이름을 입력해주세요."
+              name="common_name"
+              autocomplete="off"
+            />
+          </div>
+          <div class="cb-registerbox cb-pwd">
+            <input
+              id="common_pwd"
+              type="password"
+              placeholder="비밀번호 입력해주세요."
+              autocomplete="off"
+            />
+          </div>
+          <div class="cb-registerbox cb-checkpwd">
+            <input
+              id="common_checkpwd"
+              name="common_pwd"
+              type="password"
+              placeholder="비밀번호 확인해주세요."
+              autocomplete="off"
+            />
+          </div>
+          <div class="condition-register">
+            위의 이메일로 인증번호를 발송합니다.
+          </div>
+          <!-- <div class="state-email state-register">sdsds</div>s -->
+          <button type="submit" class="register-btn">
+            확인
+          </button>
+        </form>
+      </div>
+    </div>
+    <script src="/bundle.js"></script>
+  </body>
+</html>

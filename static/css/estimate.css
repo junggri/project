@@ -1,0 +1,61 @@
+.estimate-page {
+  height: 900px;
+  width: 1170px;
+  position: relative;
+  margin: 0 auto;
+}
+.ep-slobox {
+  /* border: 1px solid black; */
+  margin-top: 60px;
+}
+.ep-slo {
+  font-size: 30px;
+}
+.problem-box {
+  width: 700px;
+  margin-top: 80px;
+  display: grid;
+  grid-template-columns: repeat(2, 300px);
+  justify-content: space-between;
+  border-radius: 2px;
+}
+.problem-item {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+}
+.problem-item input {
+  margin-left: 20px;
+}
+.problem-item span {
+  margin-left: 10px;
+}
+.estimate-con {
+  position: absolute;
+  right: 0;
+  top: 12%;
+  height: 500px;
+  width: 380px;
+}
+.ec-selectBox {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+}
+.ec-select_item {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  height: 50px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.ec-result {
+  margin-top: 20px;
+  font-size: 20px;
+  text-align: right;
+}

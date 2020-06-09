@@ -1,0 +1,26 @@
+@import "index.css";
+@import "reset.css";
+@import "estimate.css";
+@import "register.css";
+@import "login.css";
+
+html,
+body,
+input {
+  font-family: "NanumSquare", sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+a:link {
+  color: black;
+  text-decoration: none;
+}
+a:visited {
+  color: black;
+  text-decoration: none;
+}
+a:hover {
+  color: black;
+  text-decoration: none;
+}
