@@ -21,6 +21,8 @@ dotenv_1.default.config();
 var RedisStore = connect_redis_1.default(express_session_1.default);
 var _client = redis_1.default.createClient();
 var app = express_1.default();
+server_1.default();
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
 // app.set("env", "production");
 console.log(app.get("env")); //개발 단계확인
 var sess = {
@@ -47,7 +49,6 @@ if (app.get("env") === "production") {
 }
 app.use(cookie_parser_1.default(session_json_1.default.secret));
 app.use(express_session_1.default(sess));
-server_1.default();
 // app.use(logger("prod", { stream })); //prod combined
 app.use(morgan_1.default("dev"));
 app.get("env") === "development"
@@ -68,8 +69,10 @@ app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 var index_1 = __importDefault(require("./router/index"));
 var auth_1 = __importDefault(require("./router/auth"));
+var api_1 = __importDefault(require("./router/api"));
 app.use("/", index_1.default);
 app.use("/auth", auth_1.default);
+app.use("/api", api_1.default);
 app.set("port", process.env.PORT || 3000);
 app.use(logError);
 app.use(function (req, res, next) {

@@ -9,10 +9,32 @@ var users = new mongoose_1.default.Schema({
     },
     password: {
         type: String,
+        salt: { type: String },
     },
     name: {
         type: String,
     },
+    social: {
+        naver: {
+            name: String,
+            id: Number,
+        },
+        goolge: {
+            name: String,
+            id: Number,
+        },
+        kakao: {
+            name: String,
+            id: Number,
+        },
+    },
+    salt: {
+        type: String,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
 });
-module.exports = mongoose_1.default.model("users", users);
+module.exports = mongoose_1.default.model("testuser", users);
 //# sourceMappingURL=userinfo.js.map

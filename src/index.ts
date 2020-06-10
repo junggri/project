@@ -19,6 +19,10 @@ const RedisStore = connectRedis(session);
 const _client = redis.createClient();
 const app = express();
 
+mongoServer();
+
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+
 // app.set("env", "production");
 console.log(app.get("env")); //개발 단계확인
 
@@ -49,8 +53,6 @@ if (app.get("env") === "production") {
 app.use(cookieParser(configSession.secret));
 app.use(session(sess));
 
-mongoServer();
-
 // app.use(logger("prod", { stream })); //prod combined
 app.use(logger("dev"));
 
@@ -77,9 +79,11 @@ app.engine("html", require("ejs").renderFile);
 
 import indexRouter from "./router/index";
 import authRouter from "./router/auth";
+import apiRouter from "./router/api";
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
+app.use("/api", apiRouter);
 
 app.set("port", process.env.PORT || 3000);
 

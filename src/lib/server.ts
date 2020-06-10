@@ -1,31 +1,37 @@
 import mongoose, { mongo } from "mongoose";
-import monDB from "../config/mongo.json";
+import dotenv from "dotenv";
+dotenv.config();
 
-mongoose.Promise = global.Promise;
+const { MONGO_ID, MONGO_PWD } = process.env;
+const MONGO_URL = `mongodb://${MONGO_ID}:${MONGO_PWD}@localhost:27017/coscuz`;
+
+// mongoose.Promise = global.Promise;
 export default function server() {
   if (process.env.NODE_ENV !== "production") {
     mongoose.set("debug", true);
   }
-  function connect() {
+  const connect = () => {
     mongoose
-      .connect(monDB.db, {
-        dbName: "nodejs", //이게 맞나
+      .connect(MONGO_URL, {
+        // dbName: "nodejs", //
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
       })
-      .then((result): void => {
-        console.log("sucsses connect mongodb");
+      .then(() => {
+        console.log("connect success:mongo");
       })
       .catch((err): void => {
         console.log(err);
       });
-  }
+  };
   connect();
 
   mongoose.connection.on("error", (error) => {
     console.error("'몽고디비에러", error);
-    require("../lib/model/userinfo");
   });
-  mongoose.connection.on("disconnected", connect);
+  mongoose.connection.on("disconnected", () => {
+    console.error("연결을 재시도 합니다");
+    connect();
+  });
 }

@@ -4,33 +4,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importDefault(require("mongoose"));
-var mongo_json_1 = __importDefault(require("../config/mongo.json"));
-mongoose_1.default.Promise = global.Promise;
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+var _a = process.env, MONGO_ID = _a.MONGO_ID, MONGO_PWD = _a.MONGO_PWD;
+var MONGO_URL = "mongodb://" + MONGO_ID + ":" + MONGO_PWD + "@localhost:27017/coscuz";
+// mongoose.Promise = global.Promise;
 function server() {
     if (process.env.NODE_ENV !== "production") {
         mongoose_1.default.set("debug", true);
     }
-    function connect() {
+    var connect = function () {
         mongoose_1.default
-            .connect(mongo_json_1.default.db, {
-            dbName: "nodejs",
+            .connect(MONGO_URL, {
+            // dbName: "nodejs", //
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
         })
-            .then(function (result) {
-            console.log("sucsses connect mongodb");
+            .then(function () {
+            console.log("connect success:mongo");
         })
             .catch(function (err) {
             console.log(err);
         });
-    }
+    };
     connect();
     mongoose_1.default.connection.on("error", function (error) {
         console.error("'몽고디비에러", error);
-        require("../lib/model/userinfo");
     });
-    mongoose_1.default.connection.on("disconnected", connect);
+    mongoose_1.default.connection.on("disconnected", function () {
+        console.error("연결을 재시도 합니다");
+        connect();
+    });
 }
 exports.default = server;
 //# sourceMappingURL=server.js.map
