@@ -3,14 +3,24 @@ declare global {
     verify: any;
   }
 }
-const pwd_reg = "/^.*(?=^.{8,15}$)(?=.*d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/";
-
+const pwd_reg = /^.*(?=^.{8,20}$)(?=.*d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+const email_reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 let registerEmail = document.querySelector(".register-email") as HTMLDivElement;
-window.onload = () => {
-  $("#common_email").focus();
-};
+let pwd = document.querySelector("#common_pwd") as HTMLInputElement;
+let pwd2 = document.querySelector("#common_checkpwd") as HTMLInputElement;
+let email = document.querySelector("#common_email") as HTMLInputElement;
+let validation_emailBox = document.querySelector(
+  ".cb-email-validation"
+) as HTMLInputElement;
+let validation_btn = document.querySelector(
+  ".email-validationBtn"
+) as HTMLInputElement;
+let validation_num = null;
+let emailFlag = false;
+let email_can_exist = false;
 
 export default function register() {
+  $("#common_email").focus();
   $(".register-email").on("click", () => {
     if (registerEmail.dataset.click === "none") {
       registerEmail.dataset.click = "click";
@@ -28,54 +38,122 @@ export default function register() {
         .animate({ bottom: "0px" }, 500);
     }
   });
-
+  ///animation of reigster_preivious page///
   async function checkEmail(url, data) {
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    let token = document
+      .querySelector('meta[name="csrf-token"]')
+      .getAttribute("content");
     try {
-      let fetchRes = await fetch(url, {
+      let fetchResult = await fetch(url, {
         method: "POST",
         credentials: "same-origin",
-        headers: myHeaders,
+        headers: {
+          "Content-Type": "application/json",
+          "CSRF-Token": token,
+        },
         body: JSON.stringify({ email: data }),
       });
-      let result = await fetchRes.json();
+      let result = await fetchResult.json();
+      validation_num = result.validation_num;
       $(".state-email").html(result.msg);
+      if (result.state === "true") {
+        email_can_exist = true;
+        validation_emailBox.style.display = "block";
+      }
+      console.log(result);
     } catch (error) {
       console.error(error);
     }
   }
+  ///check email that to check user is already//
+  $(".cb-email").on("propertychange change keyup paste input blur", () => {
+    if (email_reg.test(email.value)) {
+      validation_btn.style.pointerEvents = "all";
+      validation_btn.style.backgroundColor = "rgba(0,0,0,0.3)";
+      $(".email-validationBtn span").css("color", "rgba(0,0,0,0.7)");
+      $(".state-email").html(" ");
+    } else {
+      validation_btn.style.pointerEvents = "none";
+      validation_btn.style.backgroundColor = "rgba(0,0,0,0.1)";
+      $(".email-validationBtn span").css("color", "rgba(0,0,0,0.3)");
+      $(".state-email").html("이메일 형식이 올바르지 않습니다.");
+    }
+  });
 
-  $("#common_email").on("blur", (e) => {
+  ///animation for chekc the email
+  $(".email-validationBtn").on("click", (e) => {
+    if (email_can_exist) {
+      alert("새로운 인증번호를 발송하였습니다.");
+    }
     let inputdata = $("#common_email").val();
     checkEmail("http://localhost:3000/api/check_email", inputdata);
   });
+  //send send ajax request
 
+  $(".email-checkBtn").on("click", () => {
+    if ($("#validation_email").val() === validation_num) {
+      validation_emailBox.style.display = "none";
+      $(".email-validationBtn").css("display", "none");
+      $(".changeEmail-Btn").css("display", "block");
+      $("#common_email").css("pointerEvents", "none");
+      $(".cb-email").css("backgroundColor", "rgba(0,0,0,0.05)");
+      $(".state-email").html("인증되었습니다.");
+      setTimeout(() => {
+        $(".state-email").html(" ");
+      }, 1000);
+      $("#validation_email").val("");
+      emailFlag = true;
+    } else {
+      $(".state-email").html("인증번호가 일치하지 않습니다.");
+      emailFlag = false;
+    }
+  });
+  ////iput the vaildation number and process of change email
+
+  $(".changeEmail-Btn").on("click", () => {
+    let pre_changeEmail_alert = confirm("정말로 이메일을 변경하시겠어요?");
+    if (pre_changeEmail_alert) {
+      $("#common_email").val("");
+      $(".email-validationBtn").css("display", "block");
+      $(".changeEmail-Btn").css("display", "none");
+      $(".cb-email").css("backgroundColor", "rgba(0,0,0,0)");
+      $("#common_email").css("pointerEvents", "all");
+      email_can_exist = false;
+      emailFlag = false;
+    }
+  });
+
+  ///change_email process
+  $("#common_pwd").on("blur", (e) => {
+    if (pwd_reg.test(pwd.value)) {
+      $(".state-pwd").html("비밀번호가 유효합니다.");
+    } else {
+      $(".state-pwd").html("비밀번호가 유효하지 않습니다.");
+    }
+  });
+
+  $("#common_checkpwd").on("blur", (e) => {
+    if (pwd_reg.test(pwd.value) && pwd.value === pwd2.value) {
+      $(".state-pwd").html("비밀번호가 일치합니다.");
+      setTimeout(() => {
+        $(".state-pwd").html(" ");
+      }, 1000);
+    } else if (!pwd_reg.test(pwd.value) && pwd.value === pwd2.value) {
+      $(".state-pwd").html("비밀번호가 유효하지 않습니다.");
+    } else if (pwd_reg.test(pwd.value) && pwd.value !== pwd2.value) {
+      $(".state-pwd").html("비밀번호가 일치하지 않습니다.");
+    } else {
+      $(".state-pwd").html("비밀번호가 유효하지 않습니다.");
+    }
+  });
+  /////////////////
   window.verify = () => {
-    return true;
+    console.log(pwd_reg.test(pwd.value), pwd.value === pwd2.value, emailFlag);
+    if (pwd_reg.test(pwd.value) && pwd.value === pwd2.value && emailFlag) {
+      return true;
+    } else {
+      alert("입력정보를 다시한번 확인해보세요.");
+    }
+    return false;
   };
 }
-
-// let a = 1;
-// document.querySelector(".common_form").addEventListener("submit", (e) => {
-//   if (a === 2) {
-//     console.log(2);
-//     e.preventDefault();
-//   }
-// });
-// let b = 1;
-// const a = new Promise((resolve, reject) => {
-//   if (b === 1) {
-//     resolve("완ㅇ");
-//   } else {
-//     reject("시실패");
-//   }
-// });
-
-// a.then((resut) => {
-//   console.log(resut);
-// });
-// async function save() {
-//   let user = await console.log(2);
-// }
-// save();

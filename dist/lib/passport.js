@@ -2,6 +2,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 // let userinfoController = require("../lib/controller/userinfoContoller");
 var kakao_json_1 = __importDefault(require("../config/kakao.json"));
 var google_json_1 = __importDefault(require("../config/google.json"));
@@ -38,5 +39,5 @@ passport.use(new KakaoStrategy({
 }, function (accessToken, refreshToken, profile, done) {
     return done(null, profile);
 }));
-module.exports = passport;
+exports.default = passport;
 //# sourceMappingURL=passport.js.map

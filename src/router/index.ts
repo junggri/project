@@ -1,5 +1,4 @@
 import express, { Request, Response, NextFunction } from "express";
-import url from "url";
 const router = express.Router();
 
 // var isAuthenticated = function (
@@ -10,19 +9,12 @@ const router = express.Router();
 //   if (req.isAuthenticated()) return next();
 //   res.send("로그인성공");
 // };
-router.get("/", (req: Request, res: Response, next: NextFunction) => {
+router.get("/", (req, res, next) => {
   res.render("index", { one: "wor" });
 });
 
-router.get("/estimate", (req: Request, res: Response, next: NextFunction) => {
+router.get("/estimate", (req, res, next) => {
   res.render("estimate");
 });
 
-router.get("/register_previous", (req: Request, res: Response) => {
-  res.render("registerprevious");
-});
-
-router.get("/login", (req: Request, res: Response) => {
-  res.render("login");
-});
-export = router;
+export default router;

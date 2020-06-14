@@ -11,7 +11,7 @@
 }
 .lb-registerbox {
   border: 1px solid rgba(0, 0, 0, 0.2);
-  margin-top: 35px;
+  margin-top: 27px;
 }
 .lb-registerbox input {
   width: 90%;
@@ -31,19 +31,74 @@
   font-weight: 300;
 }
 .condition-login {
-  /* display: none; */
   position: relative;
-  top: 8px;
+  margin-top: 14px;
   font-size: 13px;
+  font-weight: 100;
   text-align: right;
+  display: block;
+}
+.login-for-user {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.login-for-user-left span {
+  vertical-align: 2px;
+  font-size: 13px;
+  font-weight: 100;
+}
+.login-for-user-right span {
+  vertical-align: text-bottom;
+  font-size: 13px;
   font-weight: 100;
 }
 .login-btn {
   width: 100%;
   height: 55px;
-  margin-top: 40px;
-  border: 1px solid black;
+  margin-top: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.lb-oauthbox {
+  width: 400px;
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+.login_oauth {
+  border: 1px solid black;
+  width: 120px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login_oauth span {
+  vertical-align: middle;
+}
+.lb-line {
+  text-align: center;
+  position: relative;
+  margin-top: 30px;
+}
+.lb-line:after {
+  position: absolute;
+  display: block;
+  content: "";
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  width: 100%;
+  top: 49%;
+}
+.lb-line span {
+  position: relative;
+  margin: 0 auto;
+  width: 70px;
+  display: block;
+  background-color: white;
+  font-size: 15px;
+  font-weight: 100;
+  z-index: 999;
 }

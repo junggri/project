@@ -2,6 +2,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var router = express_1.default.Router();
 // var isAuthenticated = function (
@@ -18,11 +19,5 @@ router.get("/", function (req, res, next) {
 router.get("/estimate", function (req, res, next) {
     res.render("estimate");
 });
-router.get("/register_previous", function (req, res) {
-    res.render("registerprevious");
-});
-router.get("/login", function (req, res) {
-    res.render("login");
-});
-module.exports = router;
+exports.default = router;
 //# sourceMappingURL=index.js.map

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export default function refreshToken(req: any, res: any) {
+export default function refreshToken(req, res) {
   let token = jwt.sign(
     {
       email: "Asdasd",

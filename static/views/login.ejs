@@ -23,7 +23,13 @@
         <div class="login-slo">
           로그인
         </div>
-        <form method="POST" action="/api/login_process" class="login_form">
+        <form
+          method="POST"
+          action="/api/login_process"
+          class="login_form"
+          onsubmit="return login_verify()"
+        >
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="lb-registerbox lb-email">
             <input
               id="login_email"
@@ -42,14 +48,32 @@
               autocomplete="off"
             />
           </div>
-          <div class="condition-login">
-            위의 이메일로 인증번호를 발송합니다.
+          <span class="condition-login"></span>
+          <div class="login-for-user">
+            <section class="login-for-user-left">
+              <input type="checkbox" />
+              <span>아이디 저장</span>
+            </section>
+            <section class="login-for-user-right">
+              <span>아이디 / 비밀번호 찾기</span>
+            </section>
           </div>
-          <!-- <div class="state-email state-register">sdsds</div>s -->
-          <button type="submit" class="login-btn">
-            확인
-          </button>
+          <input type="submit" class="login-btn" value="로그인" />
         </form>
+        <div class="lb-line">
+          <span>또는</span>
+        </div>
+        <div class="lb-oauthbox">
+          <div class="google login_oauth">
+            <span><a href="/auth/google">구글</a></span>
+          </div>
+          <div class="naver login_oauth">
+            <span><a href="/auth/naver">네이버</a></span>
+          </div>
+          <div class="kakao login_oauth">
+            <span><a href="/auth/kakao">카카오</a></span>
+          </div>
+        </div>
       </div>
     </div>
     <script src="/bundle.js"></script>

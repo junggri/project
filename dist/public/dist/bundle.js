@@ -100,11 +100,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var register_1 = __importDefault(__webpack_require__(/*! ./register */ "./dist/public/register.js"));
+var login_1 = __importDefault(__webpack_require__(/*! ./login */ "./dist/public/login.js"));
+login_1.default();
 register_1.default();
 $(".mp-btn_estimate").on("click", function () {
     location.href = "/estimate";
 });
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./dist/public/login.js":
+/*!******************************!*\
+  !*** ./dist/public/login.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var loginEmail = document.querySelector("#login_email");
+var loginPwd = document.querySelector("#login_pwd");
+var loginBtn = document.querySelector(".login-btn");
+function login() {
+    // async function login_previous(url, data) {
+    //   let token = document
+    //     .querySelector('meta[name="csrf-token"]')
+    //     .getAttribute("content");
+    //   try {
+    //     let fetchResult = await fetch(url, {
+    //       method: "post",
+    //       credentials: "same-origin",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "CSRF-Token": token,
+    //       },
+    //       body: JSON.stringify(data),
+    //     });
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }
+    loginBtn.addEventListener("click", function (e) {
+        // let inputdata = { email: loginEmail.value, password: loginPwd.value };
+        // login_previous("http://localhost:3000/api/login_process", inputdata);
+    });
+    window.login_verify = function () {
+        return true;
+    };
+}
+exports.default = login;
+//# sourceMappingURL=login.js.map
 
 /***/ }),
 
@@ -154,12 +201,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var pwd_reg = "/^.*(?=^.{8,15}$)(?=.*d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/";
+var pwd_reg = /^.*(?=^.{8,20}$)(?=.*d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+var email_reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 var registerEmail = document.querySelector(".register-email");
-window.onload = function () {
-    $("#common_email").focus();
-};
+var pwd = document.querySelector("#common_pwd");
+var pwd2 = document.querySelector("#common_checkpwd");
+var email = document.querySelector("#common_email");
+var validation_emailBox = document.querySelector(".cb-email-validation");
+var validation_btn = document.querySelector(".email-validationBtn");
+var validation_num = null;
+var emailFlag = false;
+var email_can_exist = false;
 function register() {
+    $("#common_email").focus();
     $(".register-email").on("click", function () {
         if (registerEmail.dataset.click === "none") {
             registerEmail.dataset.click = "click";
@@ -178,29 +232,40 @@ function register() {
                 .animate({ bottom: "0px" }, 500);
         }
     });
+    ///animation of reigster_preivious page///
     function checkEmail(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var myHeaders, fetchRes, result, error_1;
+            var token, fetchResult, result, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
+                        token = document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute("content");
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
                         return [4 /*yield*/, fetch(url, {
                                 method: "POST",
                                 credentials: "same-origin",
-                                headers: myHeaders,
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "CSRF-Token": token,
+                                },
                                 body: JSON.stringify({ email: data }),
                             })];
                     case 2:
-                        fetchRes = _a.sent();
-                        return [4 /*yield*/, fetchRes.json()];
+                        fetchResult = _a.sent();
+                        return [4 /*yield*/, fetchResult.json()];
                     case 3:
                         result = _a.sent();
+                        validation_num = result.validation_num;
                         $(".state-email").html(result.msg);
+                        if (result.state === "true") {
+                            email_can_exist = true;
+                            validation_emailBox.style.display = "block";
+                        }
+                        console.log(result);
                         return [3 /*break*/, 5];
                     case 4:
                         error_1 = _a.sent();
@@ -211,37 +276,101 @@ function register() {
             });
         });
     }
-    $("#common_email").on("blur", function (e) {
+    ///check email that to check user is already//
+    $(".cb-email").on("propertychange change keyup paste input blur", function () {
+        if (email_reg.test(email.value)) {
+            validation_btn.style.pointerEvents = "all";
+            validation_btn.style.backgroundColor = "rgba(0,0,0,0.3)";
+            $(".email-validationBtn span").css("color", "rgba(0,0,0,0.7)");
+            $(".state-email").html(" ");
+        }
+        else {
+            validation_btn.style.pointerEvents = "none";
+            validation_btn.style.backgroundColor = "rgba(0,0,0,0.1)";
+            $(".email-validationBtn span").css("color", "rgba(0,0,0,0.3)");
+            $(".state-email").html("이메일 형식이 올바르지 않습니다.");
+        }
+    });
+    ///animation for chekc the email
+    $(".email-validationBtn").on("click", function (e) {
+        if (email_can_exist) {
+            alert("새로운 인증번호를 발송하였습니다.");
+        }
         var inputdata = $("#common_email").val();
         checkEmail("http://localhost:3000/api/check_email", inputdata);
     });
+    //send send ajax request
+    $(".email-checkBtn").on("click", function () {
+        if ($("#validation_email").val() === validation_num) {
+            validation_emailBox.style.display = "none";
+            $(".email-validationBtn").css("display", "none");
+            $(".changeEmail-Btn").css("display", "block");
+            $("#common_email").css("pointerEvents", "none");
+            $(".cb-email").css("backgroundColor", "rgba(0,0,0,0.05)");
+            $(".state-email").html("인증되었습니다.");
+            setTimeout(function () {
+                $(".state-email").html(" ");
+            }, 1000);
+            $("#validation_email").val("");
+            emailFlag = true;
+        }
+        else {
+            $(".state-email").html("인증번호가 일치하지 않습니다.");
+            emailFlag = false;
+        }
+    });
+    ////iput the vaildation number and process of change email
+    $(".changeEmail-Btn").on("click", function () {
+        var pre_changeEmail_alert = confirm("정말로 이메일을 변경하시겠어요?");
+        if (pre_changeEmail_alert) {
+            $("#common_email").val("");
+            $(".email-validationBtn").css("display", "block");
+            $(".changeEmail-Btn").css("display", "none");
+            $(".cb-email").css("backgroundColor", "rgba(0,0,0,0)");
+            $("#common_email").css("pointerEvents", "all");
+            email_can_exist = false;
+            emailFlag = false;
+        }
+    });
+    ///change_email process
+    $("#common_pwd").on("blur", function (e) {
+        if (pwd_reg.test(pwd.value)) {
+            $(".state-pwd").html("비밀번호가 유효합니다.");
+        }
+        else {
+            $(".state-pwd").html("비밀번호가 유효하지 않습니다.");
+        }
+    });
+    $("#common_checkpwd").on("blur", function (e) {
+        if (pwd_reg.test(pwd.value) && pwd.value === pwd2.value) {
+            $(".state-pwd").html("비밀번호가 일치합니다.");
+            setTimeout(function () {
+                $(".state-pwd").html(" ");
+            }, 1000);
+        }
+        else if (!pwd_reg.test(pwd.value) && pwd.value === pwd2.value) {
+            $(".state-pwd").html("비밀번호가 유효하지 않습니다.");
+        }
+        else if (pwd_reg.test(pwd.value) && pwd.value !== pwd2.value) {
+            $(".state-pwd").html("비밀번호가 일치하지 않습니다.");
+        }
+        else {
+            $(".state-pwd").html("비밀번호가 유효하지 않습니다.");
+        }
+    });
+    /////////////////
     window.verify = function () {
-        return true;
+        console.log(pwd_reg.test(pwd.value), pwd.value === pwd2.value, emailFlag);
+        if (pwd_reg.test(pwd.value) && pwd.value === pwd2.value && emailFlag) {
+            return true;
+        }
+        else {
+            alert("입력정보를 다시한번 확인해보세요.");
+        }
+        return false;
     };
 }
 exports.default = register;
-// let a = 1;
-// document.querySelector(".common_form").addEventListener("submit", (e) => {
-//   if (a === 2) {
-//     console.log(2);
-//     e.preventDefault();
-//   }
-// });
-// let b = 1;
-// const a = new Promise((resolve, reject) => {
-//   if (b === 1) {
-//     resolve("완ㅇ");
-//   } else {
-//     reject("시실패");
-//   }
-// });
-// a.then((resut) => {
-//   console.log(resut);
-// });
-// async function save() {
-//   let user = await console.log(2);
-// }
-// save();
 //# sourceMappingURL=register.js.map
 
 /***/ })

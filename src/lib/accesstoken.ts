@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export function createToken(req: any, res: any) {
+export function createToken(req, res) {
   let token = jwt.sign(
     {
       email: "Asdasd",
@@ -16,7 +16,7 @@ export function createToken(req: any, res: any) {
 
   res.cookie("jwttoken", token, { httpOnly: true });
 }
-export function createToken2(req: any, res: any) {
+export function createToken2(req, res) {
   let token = jwt.sign(
     {
       email: "Asdasd",

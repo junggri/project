@@ -9,7 +9,6 @@ var users = new mongoose_1.default.Schema({
     },
     password: {
         type: String,
-        salt: { type: String },
     },
     name: {
         type: String,

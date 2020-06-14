@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verify = void 0;
+exports.isAuthenticated = exports.verify = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var refreshtoken_1 = __importDefault(require("../lib/refreshtoken"));
-var accesstoken_1 = require("../lib/accesstoken");
+var refreshtoken_1 = __importDefault(require("./refreshtoken"));
+var accesstoken_1 = require("./accesstoken");
 function verify(req, res, next) {
     var token = req.cookies.jwttoken || req.cookies.jwttoken2;
     var refresh_token = req.cookies.refreshtoken;
@@ -49,4 +49,13 @@ function verify(req, res, next) {
     }
 }
 exports.verify = verify;
+function isAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    else {
+        res.redirect("/login");
+    }
+}
+exports.isAuthenticated = isAuthenticated;
 //# sourceMappingURL=jwtverify.js.map

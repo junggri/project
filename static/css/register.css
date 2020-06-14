@@ -48,6 +48,7 @@
   display: block;
   background-color: white;
   z-index: 999;
+  font-weight: 100;
 }
 .rb-emailslo:after {
   display: block;
@@ -55,7 +56,7 @@
   width: 100%;
   border-bottom: 1px solid rgba(0, 0, 0, 0.15);
   position: absolute;
-  top: 50%;
+  top: 49%;
 }
 .arrow {
   margin-left: 5px;
@@ -118,9 +119,14 @@
 }
 .cb-registerbox {
   border: 1px solid rgba(0, 0, 0, 0.2);
+  position: relative;
   margin-top: 35px;
   height: 52px;
   box-sizing: border-box;
+  transition: all 0.2s;
+}
+.cb-registerbox:hover {
+  border: 1px solid rgba(0, 0, 0, 0.5);
 }
 .cb-registerbox input {
   width: 90%;
@@ -130,6 +136,7 @@
   margin-left: 25px;
   font-size: 17px;
   margin-top: 2px;
+  background-color: transparent;
 }
 .cb-pwd input,
 .cb-checkpwd input {
@@ -162,8 +169,90 @@
   width: 100%;
   height: 55px;
   margin-top: 40px;
-  border: 1px solid black;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.register-btn:hover {
+  cursor: pointer;
+}
+.email-validationBtn {
+  position: absolute;
+  top: 50%;
+  right: 4%;
+  transform: translate(0%, -50%);
+  width: 60px;
+  height: 35px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.email-validationBtn span {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  transform: translate(0%, -50%);
+  top: 49%;
+  margin-top: 2px;
+  vertical-align: bottom;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.email-validationBtn:hover {
+  cursor: pointer;
+}
+.cb-email-validation {
+  display: none;
+}
+.email-checkBtn {
+  position: absolute;
+  top: 50%;
+  right: 4%;
+  transform: translate(0%, -50%);
+  width: 60px;
+  height: 35px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.email-checkBtn span {
+  margin-top: 2px;
+  vertical-align: bottom;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.email-checkBtn:hover {
+  cursor: pointer;
+}
+.changeEmail-Btn {
+  position: absolute;
+  top: 50%;
+  right: 4%;
+  transform: translate(0%, -50%);
+  width: 60px;
+  height: 35px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  display: none;
+}
+.changeEmail-Btn span {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  transform: translate(0%, -50%);
+  top: 49%;
+  margin-top: 2px;
+  vertical-align: bottom;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 0.7);
+}
+.changeEmail-Btn:hover {
+  cursor: pointer;
 }

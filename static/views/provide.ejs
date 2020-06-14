@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <meta name="csrf-token" content="<%= csrfToken %>" />
     <link rel="stylesheet" href="/style.css" />
     <link
       rel="stylesheet"
@@ -28,6 +29,7 @@
           action="/api/register_common_process"
           class="common_form"
         >
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="cb-registerbox cb-email">
             <input
               id="common_email"

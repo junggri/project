@@ -21,7 +21,7 @@ export default function server() {
       .then(() => {
         console.log("connect success:mongo");
       })
-      .catch((err): void => {
+      .catch((err) => {
         console.log(err);
       });
   };

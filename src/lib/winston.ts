@@ -1,7 +1,6 @@
 import fs from "fs";
 import winston from "winston";
 import moment from "moment";
-import { RedisClient } from "redis";
 const { combine, label, printf } = winston.format;
 
 const logDir = __dirname + "/../logs";
@@ -51,7 +50,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const stream = {
-  write: (message: any) => {
+  write: (message) => {
     logger.info(message);
   },
 };

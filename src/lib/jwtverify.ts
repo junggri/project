@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import refreshToken from "../lib/refreshtoken";
-import { createToken2 } from "../lib/accesstoken";
+import refreshToken from "./refreshtoken";
+import { createToken2 } from "./accesstoken";
 
-export function verify(req: any, res: any, next: any) {
+export function verify(req, res, next) {
   const token = req.cookies.jwttoken || req.cookies.jwttoken2;
   const refresh_token = req.cookies.refreshtoken;
   console.log(refreshToken);
@@ -39,5 +39,13 @@ export function verify(req: any, res: any, next: any) {
       code: 401,
       message: "유효하지 않은 토큰입니다",
     });
+  }
+}
+
+export function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    res.redirect("/login");
   }
 }

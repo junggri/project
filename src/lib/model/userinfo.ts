@@ -5,7 +5,6 @@ const users = new mongoose.Schema({
   },
   password: {
     type: String,
-    salt: { type: String },
   },
   name: {
     type: String,

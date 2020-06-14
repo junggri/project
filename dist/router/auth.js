@@ -2,6 +2,7 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var passport_1 = __importDefault(require("../lib/passport"));
 var express_1 = __importDefault(require("express"));
 var router = express_1.default.Router();
@@ -33,5 +34,5 @@ router.get("/kakao/callback", passport_1.default.authenticate("kakao", {
 }), function (req, res) {
     // userinfoController.find(req, res);
 });
-module.exports = router;
+exports.default = router;
 //# sourceMappingURL=auth.js.map
