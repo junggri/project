@@ -3,59 +3,75 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAuthenticated = exports.verify = void 0;
+exports.isLogined = exports.verify = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-var refreshtoken_1 = __importDefault(require("./refreshtoken"));
 var accesstoken_1 = require("./accesstoken");
+var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
+var email = null;
 function verify(req, res, next) {
-    var token = req.cookies.jwttoken || req.cookies.jwttoken2;
-    var refresh_token = req.cookies.refreshtoken;
-    console.log(refreshtoken_1.default);
+    var token = req.cookies.jwttoken;
+    var decoded = null;
     try {
-        req.docoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        email = decoded.email;
+        req.session.logined = true;
+        req.session.name = decoded.username;
+        req.session.email = decoded.email;
+        console.log("로그인 되어있음");
         return next();
+        ///로그인되었으면 next()해서 다음함수 호출
     }
     catch (error) {
-        console.log(error);
+        // console.log(error);
         if (!token) {
-            return res.status(403).json({
-                code: 403,
-                message: "로그인되지 않았습니다.",
-            });
+            req.session.logined = false;
+            next();
         }
         if (error.name === "TokenExpiredError") {
-            if (refresh_token) {
-                res.clearCookie("jwttoken");
-                accesstoken_1.createToken2(req, res);
-                if (refresh_token) {
-                    res.redirect("/auth/check");
-                }
-                else {
-                    refreshtoken_1.default(req, res);
-                    res.redirect("/auth/check");
-                }
-                //여기서 다시 토큰을 발급하고 다시하기
-            }
-            //refreshtoken 있다면 access token 재발급 없다면 다시 로그인하게
-            // return res.status(419).json({
-            //   code: 419,
-            //   message: "토큰이 만료되었습니다.",
-            // });
+            //토큰이 만료됬네? 오케이 리프레쉬 토큰확인해볼게
+            usermodel_1.default
+                .findOne({ email: { $in: [email] } })
+                .then(function (result) {
+                var validation_promise = new Promise(function (resolve, reject) {
+                    try {
+                        var validation_token = jsonwebtoken_1.default.verify(result.refresh_token, process.env.JWT_SECRET);
+                        resolve(validation_token);
+                    }
+                    catch (error) {
+                        reject(error);
+                    }
+                });
+                validation_promise
+                    .then(function (result) {
+                    //어 리프레쉬 토큰 있고 유효하네
+                    console.log("리프레쉬 토큰이 있고 유효해요.", result);
+                    accesstoken_1.createToken(req, res, email, result.username);
+                    res.redirect(req.originalUrl);
+                })
+                    .catch(function (err) {
+                    //야 리프레쉬 토큰은 있는데 유효기간이 끝났어
+                    console.log("로그인이 필요합니다.");
+                    req.session.logined = false;
+                    req.session.name = null;
+                    req.session.email = null;
+                    next();
+                });
+            })
+                .catch(function (err) {
+                //리프레쉬토큰 찾다가 에러나면 알려줄게
+                console.error(err);
+            });
         }
-        return res.status(401).json({
-            code: 401,
-            message: "유효하지 않은 토큰입니다",
-        });
     }
 }
 exports.verify = verify;
-function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
+function isLogined(req, res, next) {
+    if (req.session.logined) {
+        res.redirect("/");
     }
     else {
-        res.redirect("/login");
+        return next();
     }
 }
-exports.isAuthenticated = isAuthenticated;
+exports.isLogined = isLogined;
 //# sourceMappingURL=jwtverify.js.map

@@ -1,8 +1,8 @@
 .estimate-page {
-  height: 900px;
   width: 1170px;
   position: relative;
   margin: 0 auto;
+  border: 1px solid red;
 }
 .ep-slobox {
   /* border: 1px solid black; */
@@ -11,9 +11,14 @@
 .ep-slo {
   font-size: 30px;
 }
-.problem-box {
-  width: 700px;
+.problem-container {
   margin-top: 80px;
+  border: 1px solid black;
+  position: relative;
+}
+.problem-box {
+  border: 1px solid black;
+  width: 700px;
   display: grid;
   grid-template-columns: repeat(2, 300px);
   justify-content: space-between;
@@ -33,29 +38,30 @@
 .problem-item span {
   margin-left: 10px;
 }
-.estimate-con {
+.estimate-pre-result {
+  border: 1px solid black;
   position: absolute;
+  top: 0;
   right: 0;
-  top: 12%;
-  height: 500px;
-  width: 380px;
+  width: 350px;
+  height: 100%;
 }
-.ec-selectBox {
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
+.estimate-pre-result-slo {
+  font-size: 20px;
 }
-.ec-select_item {
+.estimate-pre-result-itembox {
+  margin-top: 40px;
+}
+.estimate-item {
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 2px;
   height: 50px;
-  width: 300px;
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
 }
-.ec-result {
-  margin-top: 20px;
-  font-size: 20px;
+.estimate-pre-result-box {
   text-align: right;
+}
+.estimate-pre-price {
+  display: inline-block;
 }

@@ -17,7 +17,7 @@ let validation_btn = document.querySelector(
 ) as HTMLInputElement;
 let validation_num = null;
 let emailFlag = false;
-let email_can_exist = false;
+let email_is_exist = false;
 
 export default function register() {
   $("#common_email").focus();
@@ -57,7 +57,7 @@ export default function register() {
       validation_num = result.validation_num;
       $(".state-email").html(result.msg);
       if (result.state === "true") {
-        email_can_exist = true;
+        email_is_exist = true;
         validation_emailBox.style.display = "block";
       }
       console.log(result);
@@ -82,7 +82,7 @@ export default function register() {
 
   ///animation for chekc the email
   $(".email-validationBtn").on("click", (e) => {
-    if (email_can_exist) {
+    if (email_is_exist) {
       alert("새로운 인증번호를 발송하였습니다.");
     }
     let inputdata = $("#common_email").val();
@@ -97,11 +97,7 @@ export default function register() {
       $(".changeEmail-Btn").css("display", "block");
       $("#common_email").css("pointerEvents", "none");
       $(".cb-email").css("backgroundColor", "rgba(0,0,0,0.05)");
-      $(".state-email").html("인증되었습니다.");
-      setTimeout(() => {
-        $(".state-email").html(" ");
-      }, 1000);
-      $("#validation_email").val("");
+      $(".condition-register").html("위의 이메일로 로그인하세요.");
       emailFlag = true;
     } else {
       $(".state-email").html("인증번호가 일치하지 않습니다.");
@@ -118,7 +114,7 @@ export default function register() {
       $(".changeEmail-Btn").css("display", "none");
       $(".cb-email").css("backgroundColor", "rgba(0,0,0,0)");
       $("#common_email").css("pointerEvents", "all");
-      email_can_exist = false;
+      email_is_exist = false;
       emailFlag = false;
     }
   });

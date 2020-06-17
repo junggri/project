@@ -76,6 +76,9 @@
   background-color: white;
   z-index: 999;
 }
+.register-email :hover {
+  cursor: pointer;
+}
 .register-common {
   border: 1px solid black;
   position: absolute;

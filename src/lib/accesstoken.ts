@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 
-export function createToken(req, res) {
+export function createToken(req, res, email, name) {
   let token = jwt.sign(
     {
-      email: "Asdasd",
-      pwd: "Asdasdas",
+      email: email,
+      username: name,
     },
     process.env.JWT_SECRET,
     {
@@ -15,20 +15,4 @@ export function createToken(req, res) {
   );
 
   res.cookie("jwttoken", token, { httpOnly: true });
-}
-export function createToken2(req, res) {
-  let token = jwt.sign(
-    {
-      email: "Asdasd",
-      pwd: "Asdasdas",
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "2s",
-      issuer: "localhost",
-      subject: "userinfo",
-    }
-  );
-
-  res.cookie("jwttoken2", token, { httpOnly: true });
 }

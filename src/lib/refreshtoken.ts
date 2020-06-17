@@ -1,17 +1,17 @@
 import jwt from "jsonwebtoken";
 
-export default function refreshToken(req, res) {
-  let token = jwt.sign(
+export default function refreshToken(req, res, email, name) {
+  let refresh_token = jwt.sign(
     {
-      email: "Asdasd",
-      pwd: "Asdasdas",
+      email: email,
+      username: name,
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: "5m",
+      expiresIn: "30s",
       issuer: "localhost",
       subject: "userinfo",
     }
   );
-  res.cookie("refreshtoken", token, { httpOnly: true });
+  return refresh_token;
 }

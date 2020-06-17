@@ -41,27 +41,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var jwtverify_1 = require("../lib/jwtverify");
+var accesstoken_1 = require("../lib/accesstoken");
+var refreshtoken_1 = __importDefault(require("../lib/refreshtoken"));
 var crypto_1 = __importDefault(require("crypto"));
-var userinfo_1 = __importDefault(require("../lib/model/userinfo"));
+var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var mongo_sanitize_1 = __importDefault(require("mongo-sanitize"));
 var crypto_json_1 = __importDefault(require("../config/crypto.json"));
 var csurf_1 = __importDefault(require("csurf"));
 var nodeMailer_1 = __importDefault(require("../lib/nodeMailer"));
 var mailer_json_1 = __importDefault(require("../config/mailer.json"));
 var body_parser_1 = __importDefault(require("body-parser"));
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
 var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
 // router.use("/", verify);
-router.get("/check", jwtverify_1.verify, function (req, res) {
-    res.json(req.docoded);
-});
 //토큰값은 쿠키ㅔㅇ 저장한다
-router.get("/login", csrfProtection, function (req, res) {
-    res.render("login", { csrfToken: req.csrfToken() });
+router.get("/login", jwtverify_1.verify, csrfProtection, jwtverify_1.isLogined, function (req, res) {
+    res.render("login", { csrfToken: req.csrfToken(), msg: "" });
 });
-router.post("/login_process", parseForm, csrfProtection, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _email, _pwd, result, error_1;
+router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _email, _pwd, result_1, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -70,10 +71,71 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, userinfo_1.default.findOne({ email: { $in: [_email] } })];
+                return [4 /*yield*/, usermodel_1.default.findOne({ email: { $in: [_email] } })];
             case 2:
-                result = _a.sent();
-                if (result === null) {
+                result_1 = _a.sent();
+                if (result_1 === null) {
+                    return [2 /*return*/, res.render("login", {
+                            csrfToken: req.csrfToken(),
+                            msg: "등록되지 않은 이메일이거나 잘못된 이메일입니다.",
+                        })];
+                }
+                else {
+                    crypto_1.default.pbkdf2(_pwd, result_1.salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) {
+                        if (key.toString("base64") === result_1.password) {
+                            //오케이 로그인 성공했어
+                            accesstoken_1.createToken(req, res, _email, result_1.name);
+                            var _refresh_token_1 = refreshtoken_1.default(req, res, _email, result_1.name);
+                            var save_token_1 = result_1.refresh_token;
+                            //로그인했으니까 리프레쉬 토큰 있나 확인해볼게
+                            if (save_token_1 === undefined) {
+                                //없네 오키 발급해줄게
+                                userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token_1);
+                            }
+                            else {
+                                //있깄있는데 너가 유효한지 확인해볼게
+                                var validation_promise = new Promise(function (resolve, reject) {
+                                    try {
+                                        var validation_token = jsonwebtoken_1.default.verify(save_token_1, process.env.JWT_SECRET);
+                                        resolve(validation_token);
+                                    }
+                                    catch (error) {
+                                        reject(error);
+                                    }
+                                });
+                                validation_promise
+                                    //야 유효하니까 새로발급안하고 로그인해도 되겠다
+                                    .then(function () {
+                                    console.log("토큰이유효해요");
+                                    res.redirect("/");
+                                })
+                                    .catch(function (err) {
+                                    if (err.name === "TokenExpiredError") {
+                                        console.log(3, "리프래쉬토큰 이ㅏㄱㅇ");
+                                        //있긴있는데 유효하지가 않아서 재발금을 해야겠네ㄴ
+                                        console.log("토큰이 유요한지 하지 않아서 재발급할겡");
+                                        usermodel_1.default
+                                            .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token_1 } })
+                                            .then(function (result) {
+                                            //오케이 재발급했어 너 몇일동안 로그아웃 안해도도겠네
+                                            console.log("토큰 재발급했어요");
+                                            res.redirect("/");
+                                        })
+                                            .catch(function (err) {
+                                            //찾다가 이상있으면 알려줄게
+                                            console.error(err);
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                        else {
+                            return res.render("login", {
+                                csrfToken: req.csrfToken(),
+                                msg: "비밀번호가 일치하지 않습니다.",
+                            });
+                        }
+                    });
                 }
                 return [3 /*break*/, 4];
             case 3:
@@ -84,20 +146,20 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
         }
     });
 }); });
-router.get("/register_previous", function (req, res) {
+router.get("/register_previous", jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
     res.render("registerprevious");
 });
-router.get("/register/:way", csrfProtection, function (req, res) {
+router.get("/register/:way", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
     req.params.way === "common"
         ? res.render("common", { csrfToken: req.csrfToken() })
         : res.render("provide", { csrfToken: req.csrfToken() });
 });
-router.post("/register_common_process", parseForm, csrfProtection, function (req, res, next) {
+router.post("/register_common_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res, next) {
     var _a = req.body, common_email = _a.common_email, common_name = _a.common_name, common_pwd = _a.common_pwd;
     var inputdata;
     crypto_1.default.randomBytes(crypto_json_1.default.len, function (err, buf) {
         var salt = buf.toString("base64");
-        crypto_1.default.pbkdf2(common_email, salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(void 0, void 0, void 0, function () {
+        crypto_1.default.pbkdf2(common_pwd, salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(void 0, void 0, void 0, function () {
             var Users, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -108,7 +170,7 @@ router.post("/register_common_process", parseForm, csrfProtection, function (req
                             name: common_name,
                             salt: salt,
                         };
-                        Users = new userinfo_1.default(inputdata);
+                        Users = new usermodel_1.default(inputdata);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -129,7 +191,7 @@ router.post("/register_common_process", parseForm, csrfProtection, function (req
         }); });
     });
 });
-router.post("/check_email", parseForm, csrfProtection, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/check_email", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var responseData, user, randomArray, i, randomNum, mailOption, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -138,7 +200,7 @@ router.post("/check_email", parseForm, csrfProtection, function (req, res) { ret
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, userinfo_1.default.find({ email: req.body.email })];
+                return [4 /*yield*/, usermodel_1.default.find({ email: req.body.email })];
             case 2:
                 user = _a.sent();
                 if (user.length === 0) {

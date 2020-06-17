@@ -31,6 +31,7 @@
   font-weight: 300;
 }
 .condition-login {
+  color: red;
   position: relative;
   margin-top: 14px;
   font-size: 13px;
@@ -39,7 +40,7 @@
   display: block;
 }
 .login-for-user {
-  margin-top: 10px;
+  margin-top: 6px;
   display: flex;
   justify-content: space-between;
 }

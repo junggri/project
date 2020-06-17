@@ -39,4 +39,4 @@ var users = new mongoose_1.default.Schema({
     },
 });
 module.exports = mongoose_1.default.model("testuser", users);
-//# sourceMappingURL=userinfo.js.map
+//# sourceMappingURL=usermodel copy.js.map

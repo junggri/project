@@ -22,10 +22,10 @@ function login() {
     //     console.error(error);
     //   }
     // }
-    loginBtn.addEventListener("click", function (e) {
-        // let inputdata = { email: loginEmail.value, password: loginPwd.value };
-        // login_previous("http://localhost:3000/api/login_process", inputdata);
-    });
+    // loginBtn.addEventListener("click", (e) => {
+    //   let inputdata = { email: loginEmail.value, password: loginPwd.value };
+    //   // login_previous("http://localhost:3000/api/login_process", inputdata);
+    // });
     window.login_verify = function () {
         return true;
     };

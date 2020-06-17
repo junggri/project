@@ -13,7 +13,6 @@ export default function server() {
   const connect = () => {
     mongoose
       .connect(MONGO_URL, {
-        // dbName: "nodejs", //
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,

@@ -46,7 +46,7 @@ var validation_emailBox = document.querySelector(".cb-email-validation");
 var validation_btn = document.querySelector(".email-validationBtn");
 var validation_num = null;
 var emailFlag = false;
-var email_can_exist = false;
+var email_is_exist = false;
 function register() {
     $("#common_email").focus();
     $(".register-email").on("click", function () {
@@ -97,7 +97,7 @@ function register() {
                         validation_num = result.validation_num;
                         $(".state-email").html(result.msg);
                         if (result.state === "true") {
-                            email_can_exist = true;
+                            email_is_exist = true;
                             validation_emailBox.style.display = "block";
                         }
                         console.log(result);
@@ -128,7 +128,7 @@ function register() {
     });
     ///animation for chekc the email
     $(".email-validationBtn").on("click", function (e) {
-        if (email_can_exist) {
+        if (email_is_exist) {
             alert("새로운 인증번호를 발송하였습니다.");
         }
         var inputdata = $("#common_email").val();
@@ -142,11 +142,7 @@ function register() {
             $(".changeEmail-Btn").css("display", "block");
             $("#common_email").css("pointerEvents", "none");
             $(".cb-email").css("backgroundColor", "rgba(0,0,0,0.05)");
-            $(".state-email").html("인증되었습니다.");
-            setTimeout(function () {
-                $(".state-email").html(" ");
-            }, 1000);
-            $("#validation_email").val("");
+            $(".condition-register").html("위의 이메일로 로그인하세요.");
             emailFlag = true;
         }
         else {
@@ -163,7 +159,7 @@ function register() {
             $(".changeEmail-Btn").css("display", "none");
             $(".cb-email").css("backgroundColor", "rgba(0,0,0,0)");
             $("#common_email").css("pointerEvents", "all");
-            email_can_exist = false;
+            email_is_exist = false;
             emailFlag = false;
         }
     });

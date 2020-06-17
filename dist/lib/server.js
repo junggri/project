@@ -16,7 +16,6 @@ function server() {
     var connect = function () {
         mongoose_1.default
             .connect(MONGO_URL, {
-            // dbName: "nodejs", //
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,

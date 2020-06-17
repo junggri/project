@@ -16,6 +16,8 @@
   margin-right: 17.5%;
 }
 .nb-right_list {
+  display: inline-block;
+
   margin-left: 20px;
 }
 .main-page {

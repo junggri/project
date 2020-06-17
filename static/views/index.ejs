@@ -14,24 +14,23 @@
   </head>
   <body>
     <div id="app">
-      <div class="nav-bar">
+      <nav class="nav-bar">
         <div class="nb-left">
           <span class="nb-left-name">name</span>
         </div>
-        <div class="nb-right">
-          <span class="nb-right_customer nb-right_list"><a href="/customer">고객센터</a></span>
-          <span class="nb-right_usage nb-right_list"><a href="/howtouse">이용안내</a></span>
-          <span class="nb-right_register nb-right_list"><a href="/api/register_previous">회원가입</a></span>
-          <span class="nb-right_login nb-right_list"><a href="/api/login">로그인</a></span>
-        </div>
-      </div>
-      <div class="main-page">
+        <ul class="nb-right">
+          <li class="nb-right_customer nb-right_list"><a href="/customer">고객센터</a></li>
+          <li class="nb-right_usage nb-right_list"><a href="/howtouse">이용안내</a></li>
+          <%- authUI %>
+        </ul>
+      </nav>
+      <section class="main-page">
         <div class="mp-slo">this is for slogan</div>
         <div class="mp-detail">this is for detail</div>
         <div class="mp-btn_estimate">
           <span>간편견적 확인하기</span>
         </div>
-      </div>
+      </section>
       <div class="concept-page">
         <div class="cp-slo">00에서는 다음과같은 고민을 하지마세요.</div>
         <div class="concept-box">

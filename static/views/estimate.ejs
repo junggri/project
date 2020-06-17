@@ -14,83 +14,82 @@
   </head>
   <body>
     <div id="app">
-      <div class="nav-bar">
+      <nav class="nav-bar">
         <div class="nb-left">
           <span class="nb-left-name">name</span>
         </div>
-        <div class="nb-right">
-          <span class="nb-right_customer nb-right_list"
-            ><a href="/customer">고객센터</a></span
-          >
-          <span class="nb-right_usage nb-right_list"
-            ><a href="/howtouse">이용안내</a></span
-          >
-          <span class="nb-right_register nb-right_list"
-            ><a href="/api/register">회원가입</a></span
-          >
-          <span class="nb-right_login nb-right_list"
-            ><a href="/api/login">로그인</a></span
-          >
-        </div>
-      </div>
-      <div class="estimate-page">
+        <ul class="nb-right">
+          <li class="nb-right_customer nb-right_list">
+            <a href="/customer">고객센터</a>
+          </li>
+          <li class="nb-right_usage nb-right_list">
+            <a href="/howtouse">이용안내</a>
+          </li>
+          <%- authUI %>
+        </ul>
+      </nav>
+      <section class="estimate-page">
         <div class="ep-slobox">
-          <div class="ep-slo">간편견적 조회</div>
+          <span class="ep-slo">간편견적 조회</span>
         </div>
-        <div class="problem-box">
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
-          <div class="problem-item">
-            <input type="checkbox" />
-            <span>증상1</span>
-          </div>
+        <div class="problem-container">
+          <ul class="problem-box">
+            <li class="problem-item" data-price="7000">
+              <input type="checkbox" />
+              <span>증상1</span>
+            </li>
+            <li class="problem-item" data-price="7000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                onClick="add_List(this)"
+              />
+              <span>증상1</span>
+            </li>
+            <li class="problem-item" data-price="7000">
+              <input type="checkbox" class="estimate_btn" />
+              <span>증상1</span>
+            </li>
+            <li class="problem-item" data-price="7000">
+              <input type="checkbox" class="estimate_btn" />
+              <span>증상1</span>
+            </li>
+            <li class="problem-item" data-price="7000">
+              <input type="checkbox" class="estimate_btn" />
+              <span>증상1</span>
+            </li>
+            <li class="problem-item" data-price="7000">
+              <input type="checkbox" class="estimate_btn" />
+              <span>증상1</span>
+            </li>
+            <li class="problem-item" data-price="7000">
+              <input type="checkbox" class="estimate_btn" />
+              <span>증상1</span>
+            </li>
+            <li class="problem-item" data-price="7000">
+              <input type="checkbox" class="estimate_btn" />
+              <span>증상1</span>
+            </li>
+            <li class="problem-item" data-price="7000">
+              <input type="checkbox" class="estimate_btn" />
+              <span>증상1</span>
+            </li>
+            <li class="problem-item" data-price="7000">
+              <input type="checkbox" class="estimate_btn" />
+              <span>증상1</span>
+            </li>
+          </ul>
+          <section class="estimate-pre-result">
+            <span class="estimate-pre-result-slo">선택하신 증상</span>
+            <div class="estimate-pre-result-itembox">
+              <ul class="estimate-pre-result-item"></ul>
+            </div>
+            <div class="estimate-pre-result-box">
+              <span class="estimate-pre-price"></span>
+            </div>
+          </section>
         </div>
-        <div class="estimate-con">
-          <div class="ec-selectBox">
-            <div class="ec-select_item"></div>
-            <div class="ec-select_item"></div>
-            <div class="ec-select_item"></div>
-            <div class="ec-select_item"></div>
-            <div class="ec-select_item"></div>
-            <div class="ec-select_item"></div>
-          </div>
-          <div class="ec-result">원</div>
-        </div>
-      </div>
+      </section>
     </div>
     <script src="bundle.js"></script>
   </body>

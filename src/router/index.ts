@@ -1,20 +1,17 @@
 import express, { Request, Response, NextFunction } from "express";
 const router = express.Router();
+import { verify, isLogined } from "../lib/jwtverify";
+import auth from "../lib/authStatus";
 
-// var isAuthenticated = function (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) {
-//   if (req.isAuthenticated()) return next();
-//   res.send("로그인성공");
-// };
-router.get("/", (req, res, next) => {
-  res.render("index", { one: "wor" });
+router.get("/", verify, (req, res, next) => {
+  console.log(req.session);
+  let authUI = auth.status(req, res);
+  res.render("index", { authUI: authUI });
 });
 
-router.get("/estimate", (req, res, next) => {
-  res.render("estimate");
+router.get("/estimate", verify, (req, res, next) => {
+  let authUI = auth.status(req, res);
+  res.render("estimate", { authUI: authUI });
 });
 
 export default router;

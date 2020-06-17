@@ -30,5 +30,8 @@ const users = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  refresh_token: {
+    type: String,
+  },
 });
 export = mongoose.model("testuser", users);

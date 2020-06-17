@@ -5,19 +5,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var router = express_1.default.Router();
-// var isAuthenticated = function (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) {
-//   if (req.isAuthenticated()) return next();
-//   res.send("로그인성공");
-// };
-router.get("/", function (req, res, next) {
-    res.render("index", { one: "wor" });
+var jwtverify_1 = require("../lib/jwtverify");
+var authStatus_1 = __importDefault(require("../lib/authStatus"));
+router.get("/", jwtverify_1.verify, function (req, res, next) {
+    console.log(req.session);
+    var authUI = authStatus_1.default.status(req, res);
+    res.render("index", { authUI: authUI });
 });
-router.get("/estimate", function (req, res, next) {
-    res.render("estimate");
+router.get("/estimate", jwtverify_1.verify, function (req, res, next) {
+    var authUI = authStatus_1.default.status(req, res);
+    res.render("estimate", { authUI: authUI });
 });
 exports.default = router;
 //# sourceMappingURL=index.js.map
