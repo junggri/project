@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="style.css" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
     <link
       rel="stylesheet"
       type="text/css"
@@ -32,61 +33,118 @@
         <div class="ep-slobox">
           <span class="ep-slo">간편견적 조회</span>
         </div>
+        <form action="/api/get_estimate" method="get" onsubmit="return get_estimate()">
         <div class="problem-container">
           <ul class="problem-box">
-            <li class="problem-item" data-price="7000">
-              <input type="checkbox" />
-              <span>증상1</span>
+            <li class="problem-item" data-price="1000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                id="sypmtom-0"
+                onclick="add_List(this)"
+                name="!23"
+                value="123s"
+              />
+              <label for="sypmtom-0">증상1</label>
+            </li>
+            <li class="problem-item" data-price="2000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                id="sypmtom-1"
+                onclick="add_List(this)"
+              />
+              <label for="sypmtom-1">증상2</label>
+            </li>
+            <li class="problem-item" data-price="3000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                id="sypmtom-2"
+                onclick="add_List(this)"
+              />
+              <label for="sypmtom-2">증상3</label>
+            </li>
+            <li class="problem-item" data-price="4000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                id="sypmtom-3"
+                onclick="add_List(this)"
+              />
+              <label for="sypmtom-3">증상4</label>
+            </li>
+            <li class="problem-item" data-price="5000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                id="sypmtom-4"
+                onclick="add_List(this)"
+              />
+              <label for="sypmtom-4">증상5</label>
+            </li>
+            <li class="problem-item" data-price="6000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                id="sypmtom-5"
+                onclick="add_List(this)"
+              />
+              <label for="sypmtom-5">증상6</label>
             </li>
             <li class="problem-item" data-price="7000">
               <input
                 type="checkbox"
                 class="estimate_btn"
-                onClick="add_List(this)"
+                id="sypmtom-6"
+                onclick="add_List(this)"
               />
-              <span>증상1</span>
+              <label for="sypmtom-6">증상7</label>
             </li>
-            <li class="problem-item" data-price="7000">
-              <input type="checkbox" class="estimate_btn" />
-              <span>증상1</span>
+            <li class="problem-item" data-price="8000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                id="sypmtom-7"
+                onclick="add_List(this)"
+              />
+              <label for="sypmtom-7">증상8</label>
             </li>
-            <li class="problem-item" data-price="7000">
-              <input type="checkbox" class="estimate_btn" />
-              <span>증상1</span>
+            <li class="problem-item" data-price="9000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                id="sypmtom-8"
+                onclick="add_List(this)"
+              />
+              <label for="sypmtom-8">증상9</label>
             </li>
-            <li class="problem-item" data-price="7000">
-              <input type="checkbox" class="estimate_btn" />
-              <span>증상1</span>
-            </li>
-            <li class="problem-item" data-price="7000">
-              <input type="checkbox" class="estimate_btn" />
-              <span>증상1</span>
-            </li>
-            <li class="problem-item" data-price="7000">
-              <input type="checkbox" class="estimate_btn" />
-              <span>증상1</span>
-            </li>
-            <li class="problem-item" data-price="7000">
-              <input type="checkbox" class="estimate_btn" />
-              <span>증상1</span>
-            </li>
-            <li class="problem-item" data-price="7000">
-              <input type="checkbox" class="estimate_btn" />
-              <span>증상1</span>
-            </li>
-            <li class="problem-item" data-price="7000">
-              <input type="checkbox" class="estimate_btn" />
-              <span>증상1</span>
+            <li class="problem-item" data-price="10000">
+              <input
+                type="checkbox"
+                class="estimate_btn"
+                id="sypmtom-9"
+                onclick="add_List(this)"
+              />
+              <label for="sypmtom-9">증상10</label>
             </li>
           </ul>
           <section class="estimate-pre-result">
-            <span class="estimate-pre-result-slo">선택하신 증상</span>
+            <div class="estimate-pre-result-slo">
+              <span>선택하신 증상</span>
+            </div>
             <div class="estimate-pre-result-itembox">
               <ul class="estimate-pre-result-item"></ul>
             </div>
             <div class="estimate-pre-result-box">
-              <span class="estimate-pre-price"></span>
+              <span class="estimate-pre-slo">총 예상 금액</span>
+              <div class="estimate-pre-result-box-right">
+                <span class="estimate-pre-num">0개 선택</span>
+                <span class="estimate-pre-price">0원</span>
+              </div>
             </div>
+            <input type="submit" class="estimate-btn" value="간편견적 받아보기"></input>
+          </form>
           </section>
         </div>
       </section>

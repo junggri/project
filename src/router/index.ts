@@ -1,17 +1,21 @@
 import express, { Request, Response, NextFunction } from "express";
-const router = express.Router();
 import { verify, isLogined } from "../lib/jwtverify";
+import csrf from "csurf";
 import auth from "../lib/authStatus";
+import bodyParser from "body-parser";
+const csrfProtection = csrf({ cookie: true });
+const parseForm = bodyParser.urlencoded({ extended: false });
+const router = express.Router();
 
 router.get("/", verify, (req, res, next) => {
-  console.log(req.session);
   let authUI = auth.status(req, res);
   res.render("index", { authUI: authUI });
 });
 
-router.get("/estimate", verify, (req, res, next) => {
+router.get("/estimate", verify, csrfProtection, (req, res, next) => {
+  console.log(req.session);
   let authUI = auth.status(req, res);
-  res.render("estimate", { authUI: authUI });
+  res.render("estimate", { authUI: authUI, csrfToken: req.csrfToken() });
 });
 
 export default router;

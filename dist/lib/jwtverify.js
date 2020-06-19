@@ -14,9 +14,6 @@ function verify(req, res, next) {
     try {
         decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         email = decoded.email;
-        req.session.logined = true;
-        req.session.name = decoded.username;
-        req.session.email = decoded.email;
         console.log("로그인 되어있음");
         return next();
         ///로그인되었으면 next()해서 다음함수 호출
@@ -24,7 +21,6 @@ function verify(req, res, next) {
     catch (error) {
         // console.log(error);
         if (!token) {
-            req.session.logined = false;
             next();
         }
         if (error.name === "TokenExpiredError") {
@@ -51,9 +47,6 @@ function verify(req, res, next) {
                     .catch(function (err) {
                     //야 리프레쉬 토큰은 있는데 유효기간이 끝났어
                     console.log("로그인이 필요합니다.");
-                    req.session.logined = false;
-                    req.session.name = null;
-                    req.session.email = null;
                     next();
                 });
             })
@@ -66,10 +59,13 @@ function verify(req, res, next) {
 }
 exports.verify = verify;
 function isLogined(req, res, next) {
-    if (req.session.logined) {
+    var token = req.cookies.jwttoken;
+    try {
+        jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         res.redirect("/");
     }
-    else {
+    catch (error) {
+        // console.error(error);
         return next();
     }
 }

@@ -13,6 +13,7 @@ import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
+import auth from "../lib/authStatus";
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
@@ -206,4 +207,25 @@ router.post(
     }
   }
 );
+
+router.post(
+  "/pre_estimate",
+  parseForm,
+  csrfProtection,
+  verify,
+  isLogined,
+  (req, res) => {
+    let token = req.cookies.jwttoken;
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+      res.json({ state: true });
+    } catch (error) {
+      res.json({ state: false });
+    }
+  }
+);
+
+router.get("/get_estimate", verify, (req, res) => {
+  let authUI = auth.status(req, res);
+});
 export default router;

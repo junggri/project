@@ -2,7 +2,6 @@
   width: 1170px;
   position: relative;
   margin: 0 auto;
-  border: 1px solid red;
 }
 .ep-slobox {
   /* border: 1px solid black; */
@@ -12,17 +11,21 @@
   font-size: 30px;
 }
 .problem-container {
-  margin-top: 80px;
-  border: 1px solid black;
+  margin-top: 60px;
   position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 30px;
+  height: 550px;
 }
 .problem-box {
-  border: 1px solid black;
-  width: 700px;
+  width: 680px;
   display: grid;
   grid-template-columns: repeat(2, 300px);
   justify-content: space-between;
   border-radius: 2px;
+  align-items: center;
 }
 .problem-item {
   border: 1px solid rgba(0, 0, 0, 0.15);
@@ -30,38 +33,88 @@
   height: 50px;
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
-.problem-item input {
-  margin-left: 20px;
-}
-.problem-item span {
-  margin-left: 10px;
+.problem-item label:hover {
+  cursor: pointer;
 }
 .estimate-pre-result {
-  border: 1px solid black;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 350px;
+  width: 340px;
   height: 100%;
+}
+.estimate-pre-result::before {
+  position: absolute;
+  height: 100%;
+  display: block;
+  content: "";
+  border-left: 1px solid rgba(0, 0, 0, 0.15);
+  top: 0;
+  left: 64.5%;
 }
 .estimate-pre-result-slo {
   font-size: 20px;
 }
 .estimate-pre-result-itembox {
-  margin-top: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 20px 20px;
+  height: 300px;
+  overflow-y: scroll;
+  margin-top: 30px;
 }
 .estimate-item {
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 2px;
-  height: 50px;
+  height: 40px;
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
+}
+.estimate-item span {
+  margin-left: 20px;
+  font-size: 14px;
 }
 .estimate-pre-result-box {
-  text-align: right;
+  position: relative;
+  width: 100%;
+  margin-top: 20px;
+  vertical-align: bottom;
+  display: flex;
+  justify-content: space-between;
+}
+.estimate-pre-result-box::after {
+  content: "";
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  position: absolute;
+  bottom: -20px;
+}
+.estimate-pre-result-box span {
+  font-size: 14px;
+  margin-left: 2px;
+}
+.estimate-pre-num {
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+  padding-right: 10px;
 }
 .estimate-pre-price {
-  display: inline-block;
+  color: blue;
+  position: relative;
+
+  padding-left: 5px;
+}
+.estimate-btn {
+  width: 100%;
+  height: 50px;
+  margin-top: 50px;
+  background-color: transparent;
+  border: 1px solid black;
+  border-radius: 10px;
+  outline-style: none;
+  font-size: 18px;
+}
+.estimate-btn:hover {
+  cursor: pointer;
 }

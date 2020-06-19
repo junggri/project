@@ -55,6 +55,7 @@ app.get("env") === "development"
     ? app.use(express_1.default.static(path_1.default.join(__dirname + "/../dist/public", "dist")))
     : app.use(express_1.default.static(path_1.default.join(__dirname + "/public", "dist")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/css")));
+app.use(express_1.default.static(path_1.default.join(__dirname, "../static/image")));
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(helmet_1.default.frameguard({ action: "deny" }));

@@ -53,6 +53,7 @@ var mailer_json_1 = __importDefault(require("../config/mailer.json"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
+var authStatus_1 = __importDefault(require("../lib/authStatus"));
 var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
@@ -235,5 +236,18 @@ router.post("/check_email", parseForm, csrfProtection, jwtverify_1.verify, jwtve
         }
     });
 }); });
+router.post("/pre_estimate", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
+    var token = req.cookies.jwttoken;
+    try {
+        jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        res.json({ state: true });
+    }
+    catch (error) {
+        res.json({ state: false });
+    }
+});
+router.get("/get_estimate", jwtverify_1.verify, function (req, res) {
+    var authUI = authStatus_1.default.status(req, res);
+});
 exports.default = router;
 //# sourceMappingURL=api.js.map
