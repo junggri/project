@@ -62,9 +62,7 @@ function register() {
         else if (registerEmail.dataset.click === "click") {
             registerEmail.dataset.click = "none";
             $(".arrow").html("&#8744");
-            $(".register-common, .register-provide")
-                .stop()
-                .animate({ bottom: "0px" }, 500);
+            $(".register-common, .register-provide").stop().animate({ bottom: "0px" }, 500);
         }
     });
     ///animation of reigster_preivious page///
@@ -74,12 +72,10 @@ function register() {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document
-                            .querySelector('meta[name="csrf-token"]')
-                            .getAttribute("content");
+                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
+                        _a.trys.push([1, 6, , 7]);
                         return [4 /*yield*/, fetch(url, {
                                 method: "POST",
                                 credentials: "same-origin",
@@ -91,22 +87,25 @@ function register() {
                             })];
                     case 2:
                         fetchResult = _a.sent();
+                        if (!(fetchResult.status === 200 || 201)) return [3 /*break*/, 4];
                         return [4 /*yield*/, fetchResult.json()];
                     case 3:
                         result = _a.sent();
+                        console.log(result);
                         validation_num = result.validation_num;
                         $(".state-email").html(result.msg);
                         if (result.state === "true") {
                             email_is_exist = true;
                             validation_emailBox.style.display = "block";
                         }
-                        console.log(result);
                         return [3 /*break*/, 5];
-                    case 4:
+                    case 4: throw new Error("이메일 페치 오류");
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         error_1 = _a.sent();
                         console.error(error_1);
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         });

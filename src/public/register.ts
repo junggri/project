@@ -9,12 +9,8 @@ let registerEmail = document.querySelector(".register-email") as HTMLDivElement;
 let pwd = document.querySelector("#common_pwd") as HTMLInputElement;
 let pwd2 = document.querySelector("#common_checkpwd") as HTMLInputElement;
 let email = document.querySelector("#common_email") as HTMLInputElement;
-let validation_emailBox = document.querySelector(
-  ".cb-email-validation"
-) as HTMLInputElement;
-let validation_btn = document.querySelector(
-  ".email-validationBtn"
-) as HTMLInputElement;
+let validation_emailBox = document.querySelector(".cb-email-validation") as HTMLInputElement;
+let validation_btn = document.querySelector(".email-validationBtn") as HTMLInputElement;
 let validation_num = null;
 let emailFlag = false;
 let email_is_exist = false;
@@ -33,16 +29,12 @@ export default function register() {
     } else if (registerEmail.dataset.click === "click") {
       registerEmail.dataset.click = "none";
       $(".arrow").html("&#8744");
-      $(".register-common, .register-provide")
-        .stop()
-        .animate({ bottom: "0px" }, 500);
+      $(".register-common, .register-provide").stop().animate({ bottom: "0px" }, 500);
     }
   });
   ///animation of reigster_preivious page///
   async function checkEmail(url, data) {
-    let token = document
-      .querySelector('meta[name="csrf-token"]')
-      .getAttribute("content");
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     try {
       let fetchResult = await fetch(url, {
         method: "POST",
@@ -53,14 +45,18 @@ export default function register() {
         },
         body: JSON.stringify({ email: data }),
       });
-      let result = await fetchResult.json();
-      validation_num = result.validation_num;
-      $(".state-email").html(result.msg);
-      if (result.state === "true") {
-        email_is_exist = true;
-        validation_emailBox.style.display = "block";
+      if (fetchResult.status === 200 || 201) {
+        let result = await fetchResult.json();
+        console.log(result);
+        validation_num = result.validation_num;
+        $(".state-email").html(result.msg);
+        if (result.state === "true") {
+          email_is_exist = true;
+          validation_emailBox.style.display = "block";
+        }
+      } else {
+        throw new Error("이메일 페치 오류");
       }
-      console.log(result);
     } catch (error) {
       console.error(error);
     }

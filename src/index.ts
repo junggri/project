@@ -14,6 +14,7 @@ import { stream } from "./lib/winston";
 import createError from "http-errors";
 import dotenv from "dotenv";
 import passport from "passport";
+import csrf from "csurf";
 dotenv.config();
 const RedisStore = connectRedis(session);
 const _client = redis.createClient();
@@ -56,15 +57,14 @@ app.use(session(sess));
 // app.use(logger("prod", { stream })); //prod combined
 app.use(logger("dev"));
 
-app.get("env") === "development"
-  ? app.use(express.static(path.join(__dirname + "/../dist/public", "dist")))
-  : app.use(express.static(path.join(__dirname + "/public", "dist")));
+app.get("env") === "development" ? app.use(express.static(path.join(__dirname + "/../dist/public", "dist"))) : app.use(express.static(path.join(__dirname + "/public", "dist")));
 
 app.use(express.static(path.join(__dirname, "../static/css")));
 app.use(express.static(path.join(__dirname, "../static/image")));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(helmet.frameguard({ action: "deny" }));
 app.use(helmet.xssFilter());
 app.use(helmet.noSniff());

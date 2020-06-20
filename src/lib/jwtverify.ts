@@ -25,10 +25,7 @@ export function verify(req, res, next) {
         .then((result: any) => {
           let validation_promise = new Promise((resolve, reject) => {
             try {
-              let validation_token = jwt.verify(
-                result.refresh_token,
-                process.env.JWT_SECRET
-              );
+              let validation_token = jwt.verify(result.refresh_token, process.env.JWT_SECRET);
               resolve(validation_token);
             } catch (error) {
               reject(error);
@@ -39,7 +36,7 @@ export function verify(req, res, next) {
               //어 리프레쉬 토큰 있고 유효하네
               console.log("리프레쉬 토큰이 있고 유효해요.", result);
               createToken(req, res, email, result.username);
-              res.redirect(req.originalUrl);
+              return res.redirect(req.originalUrl);
             })
             .catch((err) => {
               //야 리프레쉬 토큰은 있는데 유효기간이 끝났어
@@ -59,9 +56,20 @@ export function isLogined(req, res, next) {
   const token = req.cookies.jwttoken;
   try {
     jwt.verify(token, process.env.JWT_SECRET);
-    res.redirect("/");
+    return res.redirect("/");
   } catch (error) {
     // console.error(error);
     return next();
+  }
+}
+
+export function isNotLogined(req, res, next) {
+  const token = req.cookies.jwttoken;
+  try {
+    jwt.verify(token, process.env.JWT_SECRET);
+    return next();
+  } catch (error) {
+    // console.error(error);
+    return res.redirect("/api/login");
   }
 }

@@ -59,7 +59,8 @@ var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
 // router.use("/", verify);
 //토큰값은 쿠키ㅔㅇ 저장한다
-router.get("/login", jwtverify_1.verify, csrfProtection, jwtverify_1.isLogined, function (req, res) {
+router.get("/login", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
+    console.log(req.session);
     res.render("login", { csrfToken: req.csrfToken(), msg: "" });
 });
 router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -95,7 +96,7 @@ router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwt
                             }
                             else {
                                 //있깄있는데 너가 유효한지 확인해볼게
-                                var validation_promise = new Promise(function (resolve, reject) {
+                                var validation_refreshToken = new Promise(function (resolve, reject) {
                                     try {
                                         var validation_token = jsonwebtoken_1.default.verify(save_token_1, process.env.JWT_SECRET);
                                         resolve(validation_token);
@@ -104,28 +105,17 @@ router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwt
                                         reject(error);
                                     }
                                 });
-                                validation_promise
+                                validation_refreshToken
                                     //야 유효하니까 새로발급안하고 로그인해도 되겠다
                                     .then(function () {
-                                    console.log("토큰이유효해요");
+                                    console.log("토큰이 유효해요");
                                     res.redirect("/");
                                 })
                                     .catch(function (err) {
                                     if (err.name === "TokenExpiredError") {
-                                        console.log(3, "리프래쉬토큰 이ㅏㄱㅇ");
                                         //있긴있는데 유효하지가 않아서 재발금을 해야겠네ㄴ
-                                        console.log("토큰이 유요한지 하지 않아서 재발급할겡");
-                                        usermodel_1.default
-                                            .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token_1 } })
-                                            .then(function (result) {
-                                            //오케이 재발급했어 너 몇일동안 로그아웃 안해도도겠네
-                                            console.log("토큰 재발급했어요");
-                                            res.redirect("/");
-                                        })
-                                            .catch(function (err) {
-                                            //찾다가 이상있으면 알려줄게
-                                            console.error(err);
-                                        });
+                                        console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
+                                        userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token_1);
                                     }
                                 });
                             }
@@ -151,9 +141,7 @@ router.get("/register_previous", jwtverify_1.verify, jwtverify_1.isLogined, func
     res.render("registerprevious");
 });
 router.get("/register/:way", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
-    req.params.way === "common"
-        ? res.render("common", { csrfToken: req.csrfToken() })
-        : res.render("provide", { csrfToken: req.csrfToken() });
+    req.params.way === "common" ? res.render("common", { csrfToken: req.csrfToken() }) : res.render("provide", { csrfToken: req.csrfToken() });
 });
 router.post("/register_common_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res, next) {
     var _a = req.body, common_email = _a.common_email, common_name = _a.common_name, common_pwd = _a.common_pwd;
@@ -236,17 +224,20 @@ router.post("/check_email", parseForm, csrfProtection, jwtverify_1.verify, jwtve
         }
     });
 }); });
-router.post("/pre_estimate", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
+router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
     var token = req.cookies.jwttoken;
     try {
         jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         res.json({ state: true });
     }
     catch (error) {
+        // req.session.selected_estimate = req.body.join("&");
         res.json({ state: false });
     }
+    // let authUI = auth.status(req, res);
+    // res.send(req.body);
 });
-router.get("/get_estimate", jwtverify_1.verify, function (req, res) {
+router.get("/get_estimate", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var authUI = authStatus_1.default.status(req, res);
 });
 exports.default = router;

@@ -6,6 +6,7 @@ userController.tokenUpdate = function (req, res, _email, _refresh_token) {
     user
         .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token } })
         .then(function (result) {
+        console.log("토큰 재발급했어요");
         res.redirect("/");
     })
         .catch(function (err) {

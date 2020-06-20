@@ -7,8 +7,9 @@ const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
 
-router.get("/", verify, (req, res, next) => {
+router.get("/", csrfProtection, verify, (req, res, next) => {
   let authUI = auth.status(req, res);
+  console.log(req.session);
   res.render("index", { authUI: authUI });
 });
 

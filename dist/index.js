@@ -51,9 +51,7 @@ app.use(cookie_parser_1.default(session_json_1.default.secret));
 app.use(express_session_1.default(sess));
 // app.use(logger("prod", { stream })); //prod combined
 app.use(morgan_1.default("dev"));
-app.get("env") === "development"
-    ? app.use(express_1.default.static(path_1.default.join(__dirname + "/../dist/public", "dist")))
-    : app.use(express_1.default.static(path_1.default.join(__dirname + "/public", "dist")));
+app.get("env") === "development" ? app.use(express_1.default.static(path_1.default.join(__dirname + "/../dist/public", "dist"))) : app.use(express_1.default.static(path_1.default.join(__dirname + "/public", "dist")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/image")));
 app.use(body_parser_1.default.json());

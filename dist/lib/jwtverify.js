@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLogined = exports.verify = void 0;
+exports.isNotLogined = exports.isLogined = exports.verify = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var accesstoken_1 = require("./accesstoken");
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
@@ -42,7 +42,7 @@ function verify(req, res, next) {
                     //어 리프레쉬 토큰 있고 유효하네
                     console.log("리프레쉬 토큰이 있고 유효해요.", result);
                     accesstoken_1.createToken(req, res, email, result.username);
-                    res.redirect(req.originalUrl);
+                    return res.redirect(req.originalUrl);
                 })
                     .catch(function (err) {
                     //야 리프레쉬 토큰은 있는데 유효기간이 끝났어
@@ -62,7 +62,7 @@ function isLogined(req, res, next) {
     var token = req.cookies.jwttoken;
     try {
         jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        res.redirect("/");
+        return res.redirect("/");
     }
     catch (error) {
         // console.error(error);
@@ -70,4 +70,16 @@ function isLogined(req, res, next) {
     }
 }
 exports.isLogined = isLogined;
+function isNotLogined(req, res, next) {
+    var token = req.cookies.jwttoken;
+    try {
+        jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        return next();
+    }
+    catch (error) {
+        // console.error(error);
+        return res.redirect("/api/login");
+    }
+}
+exports.isNotLogined = isNotLogined;
 //# sourceMappingURL=jwtverify.js.map
