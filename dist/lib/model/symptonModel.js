@@ -5,15 +5,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var mongoose_1 = __importDefault(require("mongoose"));
 var Sympton = new mongoose_1.default.Schema({
     content: {
-        tpye: String,
+        type: String,
+        required: true,
+    },
+    code: {
+        type: Number,
+        required: true,
+    },
+    avg_price: {
+        type: Number,
+        required: true,
     },
     createdAt: {
         type: Date,
         default: Date.now,
     },
-    refresh_token: {
-        type: String,
-    },
 });
-module.exports = mongoose_1.default.model("Sypmtopn", Sympton);
+module.exports = mongoose_1.default.model("Sypmton", Sympton);
 //# sourceMappingURL=symptonModel.js.map

@@ -14,7 +14,7 @@ import { stream } from "./lib/winston";
 import createError from "http-errors";
 import dotenv from "dotenv";
 import passport from "passport";
-import csrf from "csurf";
+
 dotenv.config();
 const RedisStore = connectRedis(session);
 const _client = redis.createClient();
@@ -36,7 +36,7 @@ let sess = {
     host: process.env.HOST,
     port: Number(process.env.port),
     client: _client,
-    ttl: 5, //second
+    ttl: 60 * 60 * 24, //second
   }),
   cookie: {
     httpOnly: true,

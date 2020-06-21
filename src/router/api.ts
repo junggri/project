@@ -14,12 +14,13 @@ import jwt from "jsonwebtoken";
 import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
 import auth from "../lib/authStatus";
+import authStatus from "../lib/authStatus";
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
 
 // router.use("/", verify);
-
+//모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
 
 router.get("/login", csrfProtection, verify, isLogined, (req: any, res) => {
@@ -85,7 +86,7 @@ router.post("/login_process", parseForm, csrfProtection, verify, isLogined, asyn
   }
 });
 
-router.get("/register_previous", verify, isLogined, (req, res) => {
+router.get("/register_previous", csrfProtection, verify, isLogined, (req, res) => {
   res.render("registerprevious");
 });
 
@@ -155,15 +156,18 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
     jwt.verify(token, process.env.JWT_SECRET);
     res.json({ state: true });
   } catch (error) {
-    // req.session.selected_estimate = req.body.join("&");
+    let sympton_code = req.body.sort((a, b) => {
+      return a - b;
+    });
+    req.session.code = sympton_code;
     res.json({ state: false });
   }
-  // let authUI = auth.status(req, res);
-  // res.send(req.body);
 });
 
-router.get("/get_estimate", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
+//isnotlogined
+router.get("/get_estimate", csrfProtection, verify, (req, res) => {
   let authUI = auth.status(req, res);
+  res.render("get_estimate", { authUI: authUI });
 });
 
 export default router;

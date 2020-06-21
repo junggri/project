@@ -1,0 +1,92 @@
+.get-estimate-page {
+  width: 65%;
+  position: relative;
+  margin: 0 auto;
+  margin-top: 60px;
+  /* border: 1px solid black; */
+  padding: 40px 40px;
+}
+.ge-slo {
+  display: block;
+  line-height: 1.5;
+  font-size: 17px;
+  font-weight: 600;
+}
+.ge-detail1 {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+}
+.selected-sympton-box {
+  margin-top: 40px;
+}
+.selected-sympton-box section {
+  padding-top: 15px;
+}
+.sympton-box::after {
+  content: "";
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+}
+.sympton-box-slo {
+  display: inline-block;
+  /* border: 1px solid black; */
+  width: 130px;
+  font-size: 17px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.sympton-box button {
+  font-size: 10px;
+  border: 1px solid black;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+.sympton-detail-img {
+  margin-top: 40px;
+}
+.sympton-detail-img::after {
+  content: "";
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+}
+.sympton-detail-img-slo {
+  display: inline-block;
+  width: 130px;
+  font-size: 17px;
+  font-weight: 600;
+  vertical-align: top;
+}
+.sympton-detail-img-box {
+  display: inline-block;
+  width: 600px;
+}
+.img-item {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  display: inline-block;
+  width: 300px;
+  height: 300px;
+  vertical-align: middle;
+}
+.select-time {
+  margin-top: 40px;
+}
+.select-time-slo {
+  display: inline-block;
+  width: 130px;
+  font-size: 17px;
+  font-weight: 600;
+  vertical-align: top;
+}
+.select-time-option {
+  display: inline-block;
+}
+.time-option-clock,
+.time-option-minute {
+  display: inline-block;
+}

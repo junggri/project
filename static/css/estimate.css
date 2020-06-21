@@ -35,6 +35,12 @@
   align-items: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
+.problem-item input {
+  margin-left: 12px;
+}
+.problem-item label {
+  margin-left: 6px;
+}
 .problem-item label:hover {
   cursor: pointer;
 }

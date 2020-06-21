@@ -9,6 +9,7 @@ var estimate_1 = __importDefault(require("./estimate"));
 estimate_1.default();
 login_1.default();
 register_1.default();
+var path = window.location.pathname;
 $(".mp-btn_estimate").on("click", function () {
     location.href = "/estimate";
 });

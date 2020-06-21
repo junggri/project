@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="nav-bar">
+        <div class="nb-left">
+          <span class="nb-left-name">name</span>
+        </div>
+        <ul class="nb-right">
+          <li class="nb-right_customer nb-right_list">
+            <a href="/customer">고객센터</a>
+          </li>
+          <li class="nb-right_usage nb-right_list">
+            <a href="/howtouse">이용안내</a>
+          </li>
+          <%- authUI %>
+        </ul>
+      </nav>
+      <section class="get-estimate-page">
+        <span class="ge-slo">선택하신 증상 외 추가적인 </br>세부사항을 입력해주세요.</span>
+        <div class="selected-sympton-box">
+          <section class="sympton-box">
+            <span class="sympton-box-slo">증상</span>
+            <span class="sympton-box-detail">증상 1 외 3개선택</span>
+            <button>수정하기</button>
+          </section>
+          <!-- <section class="detail-box">
+            <span class="detail-box-slo">상세설명</span>
+            <span class="detail-box-detail">
+              <input type="text" />
+            </span>
+          </section> -->
+        </div>
+        <div class="sympton-detail-box">
+          <section class="sympton-detail-img">
+            <div class="sympton-detail-img-slo">상세 사진</div>
+            <div class="sympton-detail-img-box">
+              <div class="img-item"></div>
+            </div>
+          </section>
+          <section class="select-time">
+            <div class="select-time-slo">시간</div>
+            <div class="select-time-option">
+              <div class="time-option-clock">
+                <select name="clock" id="">
+                  <option value="12시">12시</option>
+                </select>
+              </div>
+              <div class="time-option-minute">
+                <select name="minute" id="">
+                  <option value="00분">00분</option>
+                </select>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>
+    <script src="/bundle.js"></script>
+  </body>
+</html>

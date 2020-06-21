@@ -34,7 +34,7 @@ var sess = {
         host: process.env.HOST,
         port: Number(process.env.port),
         client: _client,
-        ttl: 5,
+        ttl: 60 * 60 * 24,
     }),
     cookie: {
         httpOnly: true,

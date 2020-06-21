@@ -58,6 +58,7 @@ var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
 // router.use("/", verify);
+//모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
 router.get("/login", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
     console.log(req.session);
@@ -137,7 +138,7 @@ router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwt
         }
     });
 }); });
-router.get("/register_previous", jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
+router.get("/register_previous", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
     res.render("registerprevious");
 });
 router.get("/register/:way", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
@@ -231,14 +232,17 @@ router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
         res.json({ state: true });
     }
     catch (error) {
-        // req.session.selected_estimate = req.body.join("&");
+        var sympton_code = req.body.sort(function (a, b) {
+            return a - b;
+        });
+        req.session.code = sympton_code;
         res.json({ state: false });
     }
-    // let authUI = auth.status(req, res);
-    // res.send(req.body);
 });
-router.get("/get_estimate", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
+//isnotlogined
+router.get("/get_estimate", csrfProtection, jwtverify_1.verify, function (req, res) {
     var authUI = authStatus_1.default.status(req, res);
+    res.render("get_estimate", { authUI: authUI });
 });
 exports.default = router;
 //# sourceMappingURL=api.js.map
