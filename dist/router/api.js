@@ -54,6 +54,7 @@ var body_parser_1 = __importDefault(require("body-parser"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
+var symptonList_1 = require("../lib/symptonList");
 var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
@@ -242,7 +243,22 @@ router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
 //isnotlogined
 router.get("/get_estimate", csrfProtection, jwtverify_1.verify, function (req, res) {
     var authUI = authStatus_1.default.status(req, res);
-    res.render("get_estimate", { authUI: authUI });
+    var code = req.session.code;
+    var list = symptonList_1.selcted_sympton(code);
+    res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
 });
+router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
+    console.log(req.body);
+});
+// router.post("/get_saveEstimateData", parseForm, csrfProtection, (req, res) => {
+//   let responseData: object = {};
+//   if (req.session.code) {
+//     responseData = {
+//       code: req.session.code,
+//     };
+//     res.json(responseData);
+//   }
+// });
+router.get("/mypage", jwtverify_1.verify, function (req, res) { });
 exports.default = router;
 //# sourceMappingURL=api.js.map

@@ -1,6 +1,6 @@
 import symptonModel from "./model/symptonModel";
 
-let symptonList = async () => {
+export let symptonList = async () => {
   //인덱서블로 바꿔보기
   let symptons: any = await symptonModel.find().sort({ price: 1 }).limit(10);
   let container = "";
@@ -13,4 +13,11 @@ let symptonList = async () => {
   }
   return container;
 };
-export default symptonList;
+
+export let selcted_sympton = (code) => {
+  let list = "";
+  for (let i = 0; i < code.length; i++) {
+    list += ` <div class="show-user-selected-item">${code[i]}</div>`;
+  }
+  return list;
+};

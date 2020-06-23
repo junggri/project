@@ -30,7 +30,8 @@
         </ul>
       </nav>
       <form action="/api/get_estimate" method="get" class="estimateForm" >
-      <section class="estimate-page">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <section class="estimate-page up-on-scroll">
         <div class="ep-slobox">
           <span class="ep-slo">간편견적 조회</span>
         </div>

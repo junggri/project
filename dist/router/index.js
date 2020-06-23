@@ -8,7 +8,7 @@ var jwtverify_1 = require("../lib/jwtverify");
 var csurf_1 = __importDefault(require("csurf"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
 var body_parser_1 = __importDefault(require("body-parser"));
-var symptonList_1 = __importDefault(require("../lib/symptonList"));
+var symptonList_1 = require("../lib/symptonList");
 var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
@@ -20,7 +20,7 @@ router.get("/", csrfProtection, jwtverify_1.verify, function (req, res, next) {
 router.get("/estimate", jwtverify_1.verify, csrfProtection, function (req, res, next) {
     console.log(req.session);
     var authUI = authStatus_1.default.status(req, res);
-    symptonList_1.default().then(function (result) {
+    symptonList_1.symptonList().then(function (result) {
         res.render("estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result });
     });
 });

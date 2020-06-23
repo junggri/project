@@ -136,7 +136,6 @@ function default_1() {
     var estimate_container = document.querySelector(".estimate-pre-result-itembox");
     var estimate_list = document.querySelector(".estimate-pre-result-item");
     var estimate_price = document.querySelector(".estimate-pre-price");
-    var problem_item = document.querySelectorAll(".problem-item");
     var estimate_num = document.querySelector(".estimate-pre-num");
     var estimateForm = document.querySelector(".estimateForm");
     var estimate_item;
@@ -233,6 +232,99 @@ exports.default = default_1;
 
 /***/ }),
 
+/***/ "./dist/public/get_esimate.js":
+/*!************************************!*\
+  !*** ./dist/public/get_esimate.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function get_estimate() {
+    var width = 500;
+    var height = 500;
+    var daum = window["daum"];
+    var postcode = document.getElementById("postcode");
+    var roadAddress = document.getElementById("roadAddress");
+    var nextBtn = document.querySelector(".estimate-btn-box-next");
+    var previousBtn = document.querySelector(".estimate-btn-box-previous");
+    var submitBtn = document.querySelector(".estimate-btn-box-submit");
+    var page_1 = document.querySelector(".page-1");
+    var page_2 = document.querySelector(".page-2");
+    var bodyPage = document.querySelector(".get-estimate-page");
+    // (async function get_saveEstimateData() {
+    //   let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    //   try {
+    //     let result = await fetch("http://localhost:3000/api/get_saveEstimateData", {
+    //       method: "POST",
+    //       credentials: "same-origin",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "CSRF-Token": token,
+    //       },
+    //       // body: JSON.stringify({ email: data }),
+    //     });
+    //     if (result.status === 200 || 201) {
+    //       let response = await result.json();
+    //     }
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // })();
+    function clickNextBtn() {
+        page_1.style.display = "none";
+        page_2.style.display = "block";
+        previousBtn.style.display = "block";
+        nextBtn.style.display = "none";
+        submitBtn.style.display = "block";
+    }
+    function clickPreviousBtn() {
+        page_1.style.display = "block";
+        page_2.style.display = "none";
+        previousBtn.style.display = "none";
+        nextBtn.style.display = "block";
+        submitBtn.style.display = "none";
+    }
+    function moveTop() {
+        $("html,body").animate({ scrollTop: 0 }, 300);
+    }
+    nextBtn.addEventListener("click", function () {
+        clickNextBtn();
+        moveTop();
+    });
+    previousBtn.addEventListener("click", function () {
+        clickPreviousBtn();
+        moveTop();
+    });
+    window.openAddresss = function () {
+        new daum.Postcode({
+            width: width,
+            height: height,
+            oncomplete: function (data) {
+                var roadAddr = data.roadAddress;
+                var extraRoadAddr = "";
+                if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+                    extraRoadAddr += data.bname;
+                }
+                if (data.buildingName !== "" && data.apartment === "Y") {
+                    extraRoadAddr += extraRoadAddr !== "" ? ", " + data.buildingName : data.buildingName;
+                }
+                postcode.value = data.zonecode;
+                roadAddress.value = roadAddr;
+            },
+        }).open({
+            left: window.screen.width / 2 - width / 2,
+            top: window.screen.height / 2 - height / 2,
+        });
+    };
+}
+exports.default = get_estimate;
+//# sourceMappingURL=get_esimate.js.map
+
+/***/ }),
+
 /***/ "./dist/public/index.js":
 /*!******************************!*\
   !*** ./dist/public/index.js ***!
@@ -247,61 +339,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var register_1 = __importDefault(__webpack_require__(/*! ./register */ "./dist/public/register.js"));
-var login_1 = __importDefault(__webpack_require__(/*! ./login */ "./dist/public/login.js"));
 var estimate_1 = __importDefault(__webpack_require__(/*! ./estimate */ "./dist/public/estimate.js"));
-estimate_1.default();
-login_1.default();
-register_1.default();
+var get_esimate_1 = __importDefault(__webpack_require__(/*! ./get_esimate */ "./dist/public/get_esimate.js"));
 var path = window.location.pathname;
+console.log(path);
+if (path === "/api/register_previous" || "/api/register/common") {
+    register_1.default();
+}
+if (path === "/estimate") {
+    estimate_1.default();
+}
+if (path === "/api/get_estimate") {
+    get_esimate_1.default();
+}
 $(".mp-btn_estimate").on("click", function () {
     location.href = "/estimate";
 });
 //# sourceMappingURL=index.js.map
-
-/***/ }),
-
-/***/ "./dist/public/login.js":
-/*!******************************!*\
-  !*** ./dist/public/login.js ***!
-  \******************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var loginEmail = document.querySelector("#login_email");
-var loginPwd = document.querySelector("#login_pwd");
-var loginBtn = document.querySelector(".login-btn");
-function login() {
-    // async function login_previous(url, data) {
-    //   let token = document
-    //     .querySelector('meta[name="csrf-token"]')
-    //     .getAttribute("content");
-    //   try {
-    //     let fetchResult = await fetch(url, {
-    //       method: "post",
-    //       credentials: "same-origin",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         "CSRF-Token": token,
-    //       },
-    //       body: JSON.stringify(data),
-    //     });
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // }
-    // loginBtn.addEventListener("click", (e) => {
-    //   let inputdata = { email: loginEmail.value, password: loginPwd.value };
-    //   // login_previous("http://localhost:3000/api/login_process", inputdata);
-    // });
-    window.login_verify = function () {
-        return true;
-    };
-}
-exports.default = login;
-//# sourceMappingURL=login.js.map
 
 /***/ }),
 

@@ -14,7 +14,7 @@ import jwt from "jsonwebtoken";
 import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
 import auth from "../lib/authStatus";
-import authStatus from "../lib/authStatus";
+import { selcted_sympton } from "../lib/symptonList";
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
@@ -167,7 +167,24 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
 //isnotlogined
 router.get("/get_estimate", csrfProtection, verify, (req, res) => {
   let authUI = auth.status(req, res);
-  res.render("get_estimate", { authUI: authUI });
+  let { code } = req.session;
+  let list = selcted_sympton(code);
+  res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
 });
+
+router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
+  console.log(req.body);
+});
+// router.post("/get_saveEstimateData", parseForm, csrfProtection, (req, res) => {
+//   let responseData: object = {};
+//   if (req.session.code) {
+//     responseData = {
+//       code: req.session.code,
+//     };
+//     res.json(responseData);
+//   }
+// });
+
+router.get("/mypage", verify, (req, res) => {});
 
 export default router;

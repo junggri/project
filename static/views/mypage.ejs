@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="nav-bar">
+        <div class="nb-left">
+          <span class="nb-left-name">name</span>
+        </div>
+        <ul class="nb-right">
+          <li class="nb-right_customer nb-right_list"><a href="/customer">고객센터</a></li>
+          <li class="nb-right_usage nb-right_list"><a href="/howtouse">이용안내</a></li>
+          <%- authUI %>
+        </ul>
+      </nav>
+
+      <div class="footer"></div>
+    </div>
+  </body>
+  <script src="bundle.js"></script>
+</html>

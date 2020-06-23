@@ -4,12 +4,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var register_1 = __importDefault(require("./register"));
-var login_1 = __importDefault(require("./login"));
 var estimate_1 = __importDefault(require("./estimate"));
-estimate_1.default();
-login_1.default();
-register_1.default();
+var get_esimate_1 = __importDefault(require("./get_esimate"));
 var path = window.location.pathname;
+console.log(path);
+if (path === "/api/register_previous" || "/api/register/common") {
+    register_1.default();
+}
+if (path === "/estimate") {
+    estimate_1.default();
+}
+if (path === "/api/get_estimate") {
+    get_esimate_1.default();
+}
 $(".mp-btn_estimate").on("click", function () {
     location.href = "/estimate";
 });

@@ -39,8 +39,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.selcted_sympton = exports.symptonList = void 0;
 var symptonModel_1 = __importDefault(require("./model/symptonModel"));
-var symptonList = function () { return __awaiter(void 0, void 0, void 0, function () {
+exports.symptonList = function () { return __awaiter(void 0, void 0, void 0, function () {
     var symptons, container, i, list;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -56,5 +57,11 @@ var symptonList = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
-exports.default = symptonList;
+exports.selcted_sympton = function (code) {
+    var list = "";
+    for (var i = 0; i < code.length; i++) {
+        list += " <div class=\"show-user-selected-item\">" + code[i] + "</div>";
+    }
+    return list;
+};
 //# sourceMappingURL=symptonList.js.map

@@ -40,7 +40,6 @@ function default_1() {
     var estimate_container = document.querySelector(".estimate-pre-result-itembox");
     var estimate_list = document.querySelector(".estimate-pre-result-item");
     var estimate_price = document.querySelector(".estimate-pre-price");
-    var problem_item = document.querySelectorAll(".problem-item");
     var estimate_num = document.querySelector(".estimate-pre-num");
     var estimateForm = document.querySelector(".estimateForm");
     var estimate_item;

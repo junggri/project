@@ -10,7 +10,6 @@ export default function () {
   const estimate_container = document.querySelector(".estimate-pre-result-itembox") as HTMLDivElement;
   const estimate_list = document.querySelector(".estimate-pre-result-item");
   const estimate_price = document.querySelector(".estimate-pre-price");
-  const problem_item = document.querySelectorAll(".problem-item");
   const estimate_num = document.querySelector(".estimate-pre-num");
   const estimateForm = document.querySelector(".estimateForm") as HTMLFormElement;
   let estimate_item;
@@ -71,6 +70,7 @@ export default function () {
       }
     } catch (error) {}
   }
+
   $(".estimate-btn").on("click", () => {
     if (estimate_item === undefined) {
       alert("선택하신 증상이 없습니다.");
