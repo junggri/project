@@ -1,14 +1,14 @@
 let user = require("../../lib/model/usermodel");
 let userController: any = {};
 
-userController.tokenUpdate = (req, res, _email, _refresh_token) => {
+userController.tokenUpdate = (req: any, res: any, _email: string, _refresh_token: string) => {
   user
     .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token } })
-    .then((result) => {
+    .then((result: any) => {
       console.log("토큰 재발급했어요");
       res.redirect("/");
     })
-    .catch((err) => {
+    .catch((err: any) => {
       console.error(err);
     });
 };

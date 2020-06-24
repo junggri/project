@@ -11,7 +11,7 @@ let pwd2 = document.querySelector("#common_checkpwd") as HTMLInputElement;
 let email = document.querySelector("#common_email") as HTMLInputElement;
 let validation_emailBox = document.querySelector(".cb-email-validation") as HTMLInputElement;
 let validation_btn = document.querySelector(".email-validationBtn") as HTMLInputElement;
-let validation_num = null;
+let validation_num: string;
 let emailFlag = false;
 let email_is_exist = false;
 
@@ -33,7 +33,7 @@ export default function register() {
     }
   });
   ///animation of reigster_preivious page///
-  async function checkEmail(url, data) {
+  async function checkEmail(url: string, data: any) {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     try {
       let fetchResult = await fetch(url, {

@@ -12,6 +12,8 @@ function get_estimate() {
     var page_1 = document.querySelector(".page-1");
     var page_2 = document.querySelector(".page-2");
     var bodyPage = document.querySelector(".get-estimate-page");
+    var imgBtn = document.querySelector(".add-img-icon");
+    var fileBtn = document.querySelector('input[type="file"]');
     // (async function get_saveEstimateData() {
     //   let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     //   try {
@@ -56,6 +58,25 @@ function get_estimate() {
         clickPreviousBtn();
         moveTop();
     });
+    imgBtn.addEventListener("click", function () {
+        fileBtn.click();
+    });
+    function fetchImage(data) {
+        var formData = new FormData();
+        for (var i = 0; i < data.length; i++) {
+            formData.append("data", data[i]);
+        }
+        fetch("http://localhost:3000/api/upload_image", {
+            method: "POST",
+            body: formData,
+        })
+            .then(function (response) { return response.json(); })
+            .then(function (response) { return console.log("Success:", JSON.stringify(response)); })
+            .catch(function (error) { return console.error("Error:", error); });
+    }
+    window.FileUpload = function (e) {
+        fetchImage(e.target.files);
+    };
     window.openAddresss = function () {
         new daum.Postcode({
             width: width,

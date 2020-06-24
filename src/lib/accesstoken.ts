@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-export function createToken(req, res, email, name) {
+export function createToken(req: any, res: any, email: string, name: string) {
   let token = jwt.sign(
     {
       email: email,

@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
+import path from "path";
 import { createToken } from "../lib/accesstoken";
 import refreshToken from "../lib/refreshtoken";
 import crypto from "crypto";
@@ -15,10 +16,21 @@ import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
 import auth from "../lib/authStatus";
 import { selcted_sympton } from "../lib/symptonList";
+import multer from "multer";
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
-
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "upload/");
+    },
+    filename: function (req, file, cb) {
+      cb(null, new Date().valueOf() + path.extname(file.originalname));
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+}).array("data", 10);
 // router.use("/", verify);
 //모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
@@ -156,7 +168,7 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
     jwt.verify(token, process.env.JWT_SECRET);
     res.json({ state: true });
   } catch (error) {
-    let sympton_code = req.body.sort((a, b) => {
+    let sympton_code = req.body.sort((a: number, b: number) => {
       return a - b;
     });
     req.session.code = sympton_code;
@@ -184,6 +196,13 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
 //     res.json(responseData);
 //   }
 // });
+
+router.post("/upload_image", (req, res, next) => {
+  upload(req, res, (err: any) => {
+    if (err) console.error(err);
+    console.log(req.files);
+  });
+});
 
 router.get("/mypage", verify, (req, res) => {});
 

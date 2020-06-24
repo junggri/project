@@ -2,9 +2,9 @@ import jwt from "jsonwebtoken";
 import { createToken } from "./accesstoken";
 import users from "../lib/model/usermodel";
 
-let email = null;
+let email: string;
 
-export function verify(req, res, next) {
+export function verify(req: any, res: any, next: any) {
   const token = req.cookies.jwttoken;
   let decoded: any = null;
   try {
@@ -52,7 +52,7 @@ export function verify(req, res, next) {
   }
 }
 
-export function isLogined(req, res, next) {
+export function isLogined(req: any, res: any, next: any) {
   const token = req.cookies.jwttoken;
   try {
     jwt.verify(token, process.env.JWT_SECRET);
@@ -63,7 +63,7 @@ export function isLogined(req, res, next) {
   }
 }
 
-export function isNotLogined(req, res, next) {
+export function isNotLogined(req: any, res: any, next: any) {
   const token = req.cookies.jwttoken;
   try {
     jwt.verify(token, process.env.JWT_SECRET);

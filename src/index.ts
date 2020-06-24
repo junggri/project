@@ -61,6 +61,8 @@ app.get("env") === "development" ? app.use(express.static(path.join(__dirname + 
 
 app.use(express.static(path.join(__dirname, "../static/css")));
 app.use(express.static(path.join(__dirname, "../static/image")));
+app.use(express.static(path.join(__dirname, "../upload")));
+// app.use("/upload", express.static(path.join(__dirname, "../upload")));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

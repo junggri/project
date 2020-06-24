@@ -50,7 +50,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const stream = {
-  write: (message) => {
+  write: (message: any) => {
     logger.info(message);
   },
 };

@@ -14,7 +14,7 @@ export let symptonList = async () => {
   return container;
 };
 
-export let selcted_sympton = (code) => {
+export let selcted_sympton = (code: any) => {
   let list = "";
   for (let i = 0; i < code.length; i++) {
     list += ` <div class="show-user-selected-item">${code[i]}</div>`;

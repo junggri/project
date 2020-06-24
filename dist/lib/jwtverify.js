@@ -7,7 +7,7 @@ exports.isNotLogined = exports.isLogined = exports.verify = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var accesstoken_1 = require("./accesstoken");
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
-var email = null;
+var email;
 function verify(req, res, next) {
     var token = req.cookies.jwttoken;
     var decoded = null;

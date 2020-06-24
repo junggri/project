@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var jwtverify_1 = require("../lib/jwtverify");
+var path_1 = __importDefault(require("path"));
 var accesstoken_1 = require("../lib/accesstoken");
 var refreshtoken_1 = __importDefault(require("../lib/refreshtoken"));
 var crypto_1 = __importDefault(require("crypto"));
@@ -55,9 +56,21 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
 var symptonList_1 = require("../lib/symptonList");
+var multer_1 = __importDefault(require("multer"));
 var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
+var upload = multer_1.default({
+    storage: multer_1.default.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, "upload/");
+        },
+        filename: function (req, file, cb) {
+            cb(null, new Date().valueOf() + path_1.default.extname(file.originalname));
+        },
+    }),
+    limits: { fileSize: 5 * 1024 * 1024 },
+}).array("data", 10);
 // router.use("/", verify);
 //모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
@@ -259,6 +272,13 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
 //     res.json(responseData);
 //   }
 // });
+router.post("/upload_image", function (req, res, next) {
+    upload(req, res, function (err) {
+        if (err)
+            console.error(err);
+        console.log(req.files);
+    });
+});
 router.get("/mypage", jwtverify_1.verify, function (req, res) { });
 exports.default = router;
 //# sourceMappingURL=api.js.map

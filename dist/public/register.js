@@ -44,7 +44,7 @@ var pwd2 = document.querySelector("#common_checkpwd");
 var email = document.querySelector("#common_email");
 var validation_emailBox = document.querySelector(".cb-email-validation");
 var validation_btn = document.querySelector(".email-validationBtn");
-var validation_num = null;
+var validation_num;
 var emailFlag = false;
 var email_is_exist = false;
 function register() {

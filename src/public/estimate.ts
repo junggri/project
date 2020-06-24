@@ -12,12 +12,12 @@ export default function () {
   const estimate_price = document.querySelector(".estimate-pre-price");
   const estimate_num = document.querySelector(".estimate-pre-num");
   const estimateForm = document.querySelector(".estimateForm") as HTMLFormElement;
-  let estimate_item;
-  let added_item;
+  let estimate_item: any;
+  let added_item: any;
   let lists_height: number = 0;
   let price: number = 0;
 
-  window.add_List = function (e) {
+  window.add_List = function (e: any) {
     if (e.checked) {
       let li = document.createElement("li");
       let span = document.createElement("span");
@@ -44,7 +44,7 @@ export default function () {
     estimate_container.scrollTop = estimate_container.scrollHeight;
   };
 
-  async function isLogined(url, data) {
+  async function isLogined(url: string, data: any) {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");

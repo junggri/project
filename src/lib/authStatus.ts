@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-let decoded;
+let decoded: any;
 let authStatus = {
-  isLogined: function (req, res) {
+  isLogined: function (req: any, res: any) {
     const token = req.cookies.jwttoken;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -11,7 +11,7 @@ let authStatus = {
       return false;
     }
   },
-  status: function (req, res) {
+  status: function (req: any, res: any) {
     let UI = null;
     if (this.isLogined(req, res)) {
       UI = `<li class="nb-right_login nb-right_list"><a href="/api/login">${decoded.username}</a></li>`;
