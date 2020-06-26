@@ -16,6 +16,10 @@ export let symptonList = async () => {
 
 export let selcted_sympton = (code: any) => {
   let list = "";
+  if (code === undefined) {
+    list = ` <div class="show-user-selected-item">선택하신 증상이 없습니다.</div>`;
+    return list;
+  }
   for (let i = 0; i < code.length; i++) {
     list += ` <div class="show-user-selected-item">${code[i]}</div>`;
   }

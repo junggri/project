@@ -1,10 +1,8 @@
-import { json } from "body-parser";
-import { format } from "url";
-
 declare global {
   interface Window {
     openAddresss: any;
-    FileUpload: any;
+    previous_fileUpload: any;
+    add_fileUpload: any;
   }
 }
 
@@ -19,29 +17,11 @@ export default function get_estimate() {
   let submitBtn = document.querySelector(".estimate-btn-box-submit") as HTMLDivElement;
   let page_1 = document.querySelector(".page-1") as HTMLDivElement;
   let page_2 = document.querySelector(".page-2") as HTMLDivElement;
-  let bodyPage = document.querySelector(".get-estimate-page") as HTMLDivElement;
   let imgBtn = document.querySelector(".add-img-icon") as HTMLElement;
   let fileBtn = document.querySelector('input[type="file"]') as HTMLElement;
-
-  // (async function get_saveEstimateData() {
-  //   let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  //   try {
-  //     let result = await fetch("http://localhost:3000/api/get_saveEstimateData", {
-  //       method: "POST",
-  //       credentials: "same-origin",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "CSRF-Token": token,
-  //       },
-  //       // body: JSON.stringify({ email: data }),
-  //     });
-  //     if (result.status === 200 || 201) {
-  //       let response = await result.json();
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // })();
+  let addFileBtn = document.querySelector(".add_new_image_btn") as HTMLElement;
+  let addImgBox = document.querySelector(".img-item-addBox") as HTMLElement;
+  let remakeFlag = false;
 
   function clickNextBtn() {
     page_1.style.display = "none";
@@ -57,6 +37,7 @@ export default function get_estimate() {
     nextBtn.style.display = "block";
     submitBtn.style.display = "none";
   }
+
   function moveTop(): void {
     $("html,body").animate({ scrollTop: 0 }, 300);
   }
@@ -74,22 +55,99 @@ export default function get_estimate() {
     fileBtn.click();
   });
 
-  function fetchImage(data: any) {
+  addImgBox.addEventListener("click", () => {
+    addFileBtn.click();
+  });
+
+  function makeSymptonImg(imgArray: string[]) {
+    remakeFlag = true;
+    if (imgArray === undefined) {
+      return;
+    }
+    addImgBox.style.display = "inline-block";
+    imgBtn.style.display = "none";
+    let imgBox = document.querySelector(".si-img-itemBox");
+    for (let i = 0; i < imgArray.length; i++) {
+      let imgItem = document.createElement("div");
+      imgItem.classList.add("img-item");
+      imgItem.style.backgroundImage = `url("/${imgArray[i]}")`;
+      imgBox.insertBefore(imgItem, imgBox.firstChild);
+    }
+  }
+
+  function removeAndMakeNewImage(imgArray: string[]) {
+    addImgBox.style.display = "inline-block";
+    let imgBox = document.querySelector(".si-img-itemBox");
+    while (imgBox.hasChildNodes) {
+      if (imgBox.firstChild === null) {
+        break;
+      }
+      imgBox.removeChild(imgBox.firstChild);
+    }
+    for (let i = 0; i < imgArray.length; i++) {
+      let imgItem = document.createElement("div");
+      imgItem.classList.add("img-item");
+      imgItem.style.backgroundImage = `url("/${imgArray[i]}")`;
+      imgBox.insertBefore(imgItem, imgBox.firstChild);
+    }
+  }
+
+  async function fetchImage(url: string, data: any) {
     let formData = new FormData();
     for (let i = 0; i < data.length; i++) {
       formData.append("data", data[i]);
     }
-    fetch("http://localhost:3000/api/upload_image", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((response) => console.log("Success:", JSON.stringify(response)))
-      .catch((error) => console.error("Error:", error));
-  }
+    try {
+      let result = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+      if (result.status === 200 || 201) {
+        let response = await result.json();
 
-  window.FileUpload = (e: any) => {
-    fetchImage(e.target.files);
+        if (url === "http://localhost:3000/api/fetch_upload_image") {
+          makeSymptonImg(response);
+        } else {
+          removeAndMakeNewImage(response);
+        }
+      } else {
+        throw new Error("fetch_image failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  //리로드시 세션에 있는 정보로 자신을 등록하는 용도
+  (async function reloadGetSessionData() {
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("CSRF-Token", token);
+    try {
+      let result = await fetch("http://localhost:3000/api/fetch_session", {
+        method: "post",
+        credentials: "same-origin",
+        headers: myHeaders,
+      });
+      if (result.status === 200 || 201) {
+        let response = await result.json();
+        if (response.state === false) return;
+        //if session.img isnt defineded runtun
+        makeSymptonImg(response);
+      } else {
+        throw new Error("reload fetch failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  })();
+
+  window.add_fileUpload = (e: any) => {
+    fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
+  };
+
+  window.previous_fileUpload = (e: any) => {
+    fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
   };
 
   window.openAddresss = () => {

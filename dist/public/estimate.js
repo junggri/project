@@ -111,6 +111,7 @@ function default_1() {
                     case 5: return [3 /*break*/, 7];
                     case 6:
                         error_1 = _a.sent();
+                        console.error(error_1);
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
                 }

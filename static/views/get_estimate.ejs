@@ -51,8 +51,11 @@
             <div class="si-detail">정확한 견적을 위하여 사진을 등록해주세요. (최대 10장)</div>
             <div class="si-box">
               <div class="si-img-box">
-                  <input type="file" name="file" style="display: none;" accept="image/*" multiple onchange="FileUpload(event)">
+                  <input type="file" name="file" style="display: none;" accept="image/*" multiple onchange="previous_fileUpload(event)">
+                  <input type="file" name="file" class="add_new_image_btn" style="display: none;" accept="image/*" multiple onchange="add_fileUpload(event)">
                   <div class="add-img-icon"></div>   
+                  <div class="si-img-itemBox"></div>
+                  <div class="img-item-addBox"></div>
               </div>
             </div>
             <div class="si-img-length">0 / 10개 등록</div>
@@ -101,7 +104,6 @@
                 name="detailAddress"
                 placeholder="상세주소"
                 autocomplete="off"
-                
               />
           </section>
           <section class='user-want-to-provider'>

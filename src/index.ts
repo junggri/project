@@ -14,7 +14,6 @@ import { stream } from "./lib/winston";
 import createError from "http-errors";
 import dotenv from "dotenv";
 import passport from "passport";
-
 dotenv.config();
 const RedisStore = connectRedis(session);
 const _client = redis.createClient();
@@ -63,7 +62,7 @@ app.use(express.static(path.join(__dirname, "../static/css")));
 app.use(express.static(path.join(__dirname, "../static/image")));
 app.use(express.static(path.join(__dirname, "../upload")));
 // app.use("/upload", express.static(path.join(__dirname, "../upload")));
-
+console.log(path.join(__dirname, "../upload"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

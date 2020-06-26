@@ -59,6 +59,10 @@ exports.symptonList = function () { return __awaiter(void 0, void 0, void 0, fun
 }); };
 exports.selcted_sympton = function (code) {
     var list = "";
+    if (code === undefined) {
+        list = " <div class=\"show-user-selected-item\">\uC120\uD0DD\uD558\uC2E0 \uC99D\uC0C1\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.</div>";
+        return list;
+    }
     for (var i = 0; i < code.length; i++) {
         list += " <div class=\"show-user-selected-item\">" + code[i] + "</div>";
     }

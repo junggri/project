@@ -68,7 +68,9 @@ export default function () {
       } else {
         throw new Error("로그인유무 확인 실패");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   $(".estimate-btn").on("click", () => {

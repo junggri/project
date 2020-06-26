@@ -1,6 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
 import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
-import path from "path";
 import { createToken } from "../lib/accesstoken";
 import refreshToken from "../lib/refreshtoken";
 import crypto from "crypto";
@@ -16,21 +15,13 @@ import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
 import auth from "../lib/authStatus";
 import { selcted_sympton } from "../lib/symptonList";
-import multer from "multer";
+import path from "path";
+import upload from "../lib/multer";
+import fs from "fs";
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, "upload/");
-    },
-    filename: function (req, file, cb) {
-      cb(null, new Date().valueOf() + path.extname(file.originalname));
-    },
-  }),
-  limits: { fileSize: 5 * 1024 * 1024 },
-}).array("data", 10);
+
 // router.use("/", verify);
 //모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
@@ -164,20 +155,21 @@ router.post("/check_email", parseForm, csrfProtection, verify, isLogined, async 
 
 router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
   const token = req.cookies.jwttoken;
+  let sympton_code = req.body.sort((a: number, b: number) => {
+    return a - b;
+  });
   try {
     jwt.verify(token, process.env.JWT_SECRET);
     res.json({ state: true });
   } catch (error) {
-    let sympton_code = req.body.sort((a: number, b: number) => {
-      return a - b;
-    });
-    req.session.code = sympton_code;
     res.json({ state: false });
   }
+  req.session.code = sympton_code;
 });
 
 //isnotlogined
 router.get("/get_estimate", csrfProtection, verify, (req, res) => {
+  console.log(req.session);
   let authUI = auth.status(req, res);
   let { code } = req.session;
   let list = selcted_sympton(code);
@@ -187,20 +179,25 @@ router.get("/get_estimate", csrfProtection, verify, (req, res) => {
 router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
   console.log(req.body);
 });
-// router.post("/get_saveEstimateData", parseForm, csrfProtection, (req, res) => {
-//   let responseData: object = {};
-//   if (req.session.code) {
-//     responseData = {
-//       code: req.session.code,
-//     };
-//     res.json(responseData);
-//   }
-// });
 
-router.post("/upload_image", (req, res, next) => {
+router.post("/fetch_session", parseForm, csrfProtection, verify, (req, res) => {
+  //img가 없다면 아무일도 일어나지 않아야한다.
+  req.session.img === undefined ? res.json({ state: false }) : res.json(req.session.img);
+});
+
+router.post("/fetch_upload_image", verify, (req: any, res, next) => {
   upload(req, res, (err: any) => {
     if (err) console.error(err);
-    console.log(req.files);
+    console.log(req.session);
+    res.json(req.session.img);
+  });
+});
+
+router.post("/fetch_add_upload_image", verify, (req: any, res, next) => {
+  upload(req, res, (err: any) => {
+    if (err) console.error(err);
+    console.log(req.session);
+    res.json(req.session.img);
   });
 });
 

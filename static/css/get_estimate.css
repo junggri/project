@@ -94,11 +94,34 @@
   padding: 10px;
 }
 .img-item {
-  border: 1px solid black;
   width: 90px;
   height: 90px;
   display: inline-block;
   margin: 5px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px 0 rgba(196, 206, 219, 0.3);
+}
+.si-img-itemBox {
+  display: inline-block;
+}
+.img-item-addBox {
+  width: 90px;
+  height: 90px;
+  display: inline-block;
+  margin: 5px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px 0 rgba(196, 206, 219, 0.3);
+  background-image: url("/icon.svg");
+  background-size: 60%, 60%;
+  background-position: 50%, 50%;
+  display: none;
+}
+.img-item-addBox:hover {
+  cursor: pointer;
 }
 .si-img-length {
   font-size: 12px;

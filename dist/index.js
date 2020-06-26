@@ -56,6 +56,7 @@ app.use(express_1.default.static(path_1.default.join(__dirname, "../static/css")
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/image")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../upload")));
 // app.use("/upload", express.static(path.join(__dirname, "../upload")));
+console.log(path_1.default.join(__dirname, "../upload"));
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(helmet_1.default.frameguard({ action: "deny" }));
