@@ -83,6 +83,7 @@ function default_1() {
                         myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
                         myHeaders.append("CSRF-Token", token);
+                        console.log(data);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
@@ -100,6 +101,7 @@ function default_1() {
                         response = _a.sent();
                         if (response.state === true) {
                             estimateForm.submit();
+                            estimateForm.reset();
                         }
                         else {
                             if (confirm("로그인이 필요한 서비스입니다.")) {
@@ -120,7 +122,6 @@ function default_1() {
     }
     $(".estimate-btn").on("click", function () {
         if (estimate_item === undefined) {
-            alert("선택하신 증상이 없습니다.");
             return;
         }
         var data = [];

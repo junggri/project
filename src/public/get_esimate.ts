@@ -30,6 +30,7 @@ export default function get_estimate() {
     nextBtn.style.display = "none";
     submitBtn.style.display = "block";
   }
+
   function clickPreviousBtn() {
     page_1.style.display = "block";
     page_2.style.display = "none";
@@ -59,6 +60,46 @@ export default function get_estimate() {
     addFileBtn.click();
   });
 
+  function commonMakeImg(imgArray: string[]) {
+    let imgBox = document.querySelector(".si-img-itemBox");
+    for (let i = 0; i < imgArray.length; i++) {
+      let imgItem = document.createElement("div");
+      let cancelIcon = document.createElement("div");
+      cancelIcon.classList.add("img-box-cancel");
+      imgItem.classList.add("img-item");
+      imgItem.dataset.img = imgArray[i];
+      imgItem.style.backgroundImage = `url("/${imgArray[i]}")`;
+      imgItem.appendChild(cancelIcon);
+      imgBox.insertBefore(imgItem, imgBox.firstChild);
+      cancelIcon.addEventListener("click", (e: any) => {
+        let targetData = e.target.parentNode.dataset.img;
+        fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
+      });
+    }
+  }
+  async function fetchDeleteImg(url: string, data: string) {
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("CSRF-Token", token);
+    try {
+      let result = await fetch(url, {
+        method: "post",
+        credentials: "same-origin",
+        headers: myHeaders,
+        body: JSON.stringify({ data: data }),
+      });
+      if (result.status === 200 || 201) {
+        let response = await result.json();
+        console.log(response));
+      } else {
+        throw new Error("reload fetch failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   function makeSymptonImg(imgArray: string[]) {
     remakeFlag = true;
     if (imgArray === undefined) {
@@ -66,17 +107,10 @@ export default function get_estimate() {
     }
     addImgBox.style.display = "inline-block";
     imgBtn.style.display = "none";
-    let imgBox = document.querySelector(".si-img-itemBox");
-    for (let i = 0; i < imgArray.length; i++) {
-      let imgItem = document.createElement("div");
-      imgItem.classList.add("img-item");
-      imgItem.style.backgroundImage = `url("/${imgArray[i]}")`;
-      imgBox.insertBefore(imgItem, imgBox.firstChild);
-    }
+    commonMakeImg(imgArray);
   }
 
   function removeAndMakeNewImage(imgArray: string[]) {
-    addImgBox.style.display = "inline-block";
     let imgBox = document.querySelector(".si-img-itemBox");
     while (imgBox.hasChildNodes) {
       if (imgBox.firstChild === null) {
@@ -84,12 +118,8 @@ export default function get_estimate() {
       }
       imgBox.removeChild(imgBox.firstChild);
     }
-    for (let i = 0; i < imgArray.length; i++) {
-      let imgItem = document.createElement("div");
-      imgItem.classList.add("img-item");
-      imgItem.style.backgroundImage = `url("/${imgArray[i]}")`;
-      imgBox.insertBefore(imgItem, imgBox.firstChild);
-    }
+    addImgBox.style.display = "inline-block";
+    commonMakeImg(imgArray);
   }
 
   async function fetchImage(url: string, data: any) {
@@ -104,7 +134,6 @@ export default function get_estimate() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
-
         if (url === "http://localhost:3000/api/fetch_upload_image") {
           makeSymptonImg(response);
         } else {

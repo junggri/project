@@ -1,7 +1,6 @@
 import multer from "multer";
 import path from "path";
 let session_img: string[] = [];
-let new_session_img: string[] = [];
 
 const upload = multer({
   storage: multer.diskStorage({

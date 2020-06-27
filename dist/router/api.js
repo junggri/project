@@ -55,7 +55,9 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
 var symptonList_1 = require("../lib/symptonList");
+var path_1 = __importDefault(require("path"));
 var multer_1 = __importDefault(require("../lib/multer"));
+var fs_1 = __importDefault(require("fs"));
 var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
@@ -232,6 +234,7 @@ router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
     var sympton_code = req.body.sort(function (a, b) {
         return a - b;
     });
+    req.session.code = sympton_code;
     try {
         jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         res.json({ state: true });
@@ -239,7 +242,6 @@ router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
     catch (error) {
         res.json({ state: false });
     }
-    req.session.code = sympton_code;
 });
 //isnotlogined
 router.get("/get_estimate", csrfProtection, jwtverify_1.verify, function (req, res) {
@@ -249,28 +251,36 @@ router.get("/get_estimate", csrfProtection, jwtverify_1.verify, function (req, r
     var list = symptonList_1.selcted_sympton(code);
     res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
 });
-router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
-    console.log(req.body);
+router.post("/delete_session_img", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
+    var imgPath = path_1.default.join(__dirname, "../../upload");
+    fs_1.default.unlink(imgPath + "/" + req.body.data, function () {
+        req.session.test = "a";
+        console.log(req.session);
+        res.json(req.session);
+    });
 });
 router.post("/fetch_session", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
-    //img가 없다면 아무일도 일어나지 않아야한다.
+    // console.log(2, req.session);
     req.session.img === undefined ? res.json({ state: false }) : res.json(req.session.img);
 });
 router.post("/fetch_upload_image", jwtverify_1.verify, function (req, res, next) {
     multer_1.default(req, res, function (err) {
-        if (err)
+        if (err) {
             console.error(err);
-        console.log(req.session);
+        }
         res.json(req.session.img);
     });
 });
 router.post("/fetch_add_upload_image", jwtverify_1.verify, function (req, res, next) {
     multer_1.default(req, res, function (err) {
-        if (err)
+        if (err) {
             console.error(err);
-        console.log(req.session);
+        }
         res.json(req.session.img);
     });
+});
+router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
+    console.log(req.body);
 });
 router.get("/mypage", jwtverify_1.verify, function (req, res) { });
 exports.default = router;

@@ -179,6 +179,7 @@ function default_1() {
                         myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
                         myHeaders.append("CSRF-Token", token);
+                        console.log(data);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
@@ -196,6 +197,7 @@ function default_1() {
                         response = _a.sent();
                         if (response.state === true) {
                             estimateForm.submit();
+                            estimateForm.reset();
                         }
                         else {
                             if (confirm("로그인이 필요한 서비스입니다.")) {
@@ -216,7 +218,6 @@ function default_1() {
     }
     $(".estimate-btn").on("click", function () {
         if (estimate_item === undefined) {
-            alert("선택하신 증상이 없습니다.");
             return;
         }
         var data = [];
@@ -326,6 +327,62 @@ function get_estimate() {
     addImgBox.addEventListener("click", function () {
         addFileBtn.click();
     });
+    function commonMakeImg(imgArray) {
+        var imgBox = document.querySelector(".si-img-itemBox");
+        for (var i = 0; i < imgArray.length; i++) {
+            var imgItem = document.createElement("div");
+            var cancelIcon = document.createElement("div");
+            cancelIcon.classList.add("img-box-cancel");
+            imgItem.classList.add("img-item");
+            imgItem.dataset.img = imgArray[i];
+            imgItem.style.backgroundImage = "url(\"/" + imgArray[i] + "\")";
+            imgItem.appendChild(cancelIcon);
+            imgBox.insertBefore(imgItem, imgBox.firstChild);
+            cancelIcon.addEventListener("click", function (e) {
+                var targetData = e.target.parentNode.dataset.img;
+                fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
+            });
+        }
+    }
+    function fetchDeleteImg(url, data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var token, myHeaders, result, response, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                        myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        myHeaders.append("CSRF-Token", token);
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        return [4 /*yield*/, fetch(url, {
+                                method: "post",
+                                credentials: "same-origin",
+                                headers: myHeaders,
+                                body: JSON.stringify({ data: data }),
+                            })];
+                    case 2:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, result.json()];
+                    case 3:
+                        response = _a.sent();
+                        console.log(response);
+                        ;
+                        return [3 /*break*/, 5];
+                    case 4: throw new Error("reload fetch failed");
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_1 = _a.sent();
+                        console.error(error_1);
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    }
     function makeSymptonImg(imgArray) {
         remakeFlag = true;
         if (imgArray === undefined) {
@@ -333,16 +390,9 @@ function get_estimate() {
         }
         addImgBox.style.display = "inline-block";
         imgBtn.style.display = "none";
-        var imgBox = document.querySelector(".si-img-itemBox");
-        for (var i = 0; i < imgArray.length; i++) {
-            var imgItem = document.createElement("div");
-            imgItem.classList.add("img-item");
-            imgItem.style.backgroundImage = "url(\"/" + imgArray[i] + "\")";
-            imgBox.insertBefore(imgItem, imgBox.firstChild);
-        }
+        commonMakeImg(imgArray);
     }
     function removeAndMakeNewImage(imgArray) {
-        addImgBox.style.display = "inline-block";
         var imgBox = document.querySelector(".si-img-itemBox");
         while (imgBox.hasChildNodes) {
             if (imgBox.firstChild === null) {
@@ -350,16 +400,12 @@ function get_estimate() {
             }
             imgBox.removeChild(imgBox.firstChild);
         }
-        for (var i = 0; i < imgArray.length; i++) {
-            var imgItem = document.createElement("div");
-            imgItem.classList.add("img-item");
-            imgItem.style.backgroundImage = "url(\"/" + imgArray[i] + "\")";
-            imgBox.insertBefore(imgItem, imgBox.firstChild);
-        }
+        addImgBox.style.display = "inline-block";
+        commonMakeImg(imgArray);
     }
     function fetchImage(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var formData, i, result, response, error_1;
+            var formData, i, result, response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -390,8 +436,8 @@ function get_estimate() {
                     case 4: throw new Error("fetch_image failed");
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_1 = _a.sent();
-                        console.error(error_1);
+                        error_2 = _a.sent();
+                        console.error(error_2);
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
                 }
@@ -401,7 +447,7 @@ function get_estimate() {
     //리로드시 세션에 있는 정보로 자신을 등록하는 용도
     (function reloadGetSessionData() {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_2;
+            var token, myHeaders, result, response, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -431,8 +477,8 @@ function get_estimate() {
                     case 4: throw new Error("reload fetch failed");
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_2 = _a.sent();
-                        console.error(error_2);
+                        error_3 = _a.sent();
+                        console.error(error_3);
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
                 }

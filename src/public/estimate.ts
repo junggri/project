@@ -49,6 +49,7 @@ export default function () {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("CSRF-Token", token);
+    console.log(data);
     try {
       let result = await fetch(url, {
         method: "POST",
@@ -60,6 +61,7 @@ export default function () {
         let response = await result.json();
         if (response.state === true) {
           estimateForm.submit();
+          estimateForm.reset();
         } else {
           if (confirm("로그인이 필요한 서비스입니다.")) {
             location.href = "/api/login";
@@ -75,7 +77,6 @@ export default function () {
 
   $(".estimate-btn").on("click", () => {
     if (estimate_item === undefined) {
-      alert("선택하신 증상이 없습니다.");
       return;
     }
     let data = [];

@@ -158,13 +158,13 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
   let sympton_code = req.body.sort((a: number, b: number) => {
     return a - b;
   });
+  req.session.code = sympton_code;
   try {
     jwt.verify(token, process.env.JWT_SECRET);
     res.json({ state: true });
   } catch (error) {
     res.json({ state: false });
   }
-  req.session.code = sympton_code;
 });
 
 //isnotlogined
@@ -176,29 +176,40 @@ router.get("/get_estimate", csrfProtection, verify, (req, res) => {
   res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
 });
 
-router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
-  console.log(req.body);
+router.post("/delete_session_img", parseForm, csrfProtection, verify, (req, res) => {
+  let imgPath = path.join(__dirname, "../../upload");
+  fs.unlink(`${imgPath}/${req.body.data}`, () => {
+    req.session.test = "a";
+    console.log(req.session);
+    res.json(req.session);
+  });
 });
 
 router.post("/fetch_session", parseForm, csrfProtection, verify, (req, res) => {
-  //img가 없다면 아무일도 일어나지 않아야한다.
+  // console.log(2, req.session);
   req.session.img === undefined ? res.json({ state: false }) : res.json(req.session.img);
 });
 
 router.post("/fetch_upload_image", verify, (req: any, res, next) => {
   upload(req, res, (err: any) => {
-    if (err) console.error(err);
-    console.log(req.session);
+    if (err) {
+      console.error(err);
+    }
     res.json(req.session.img);
   });
 });
 
 router.post("/fetch_add_upload_image", verify, (req: any, res, next) => {
   upload(req, res, (err: any) => {
-    if (err) console.error(err);
-    console.log(req.session);
+    if (err) {
+      console.error(err);
+    }
     res.json(req.session.img);
   });
+});
+
+router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
+  console.log(req.body);
 });
 
 router.get("/mypage", verify, (req, res) => {});
