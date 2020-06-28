@@ -3,7 +3,6 @@ import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
 import { createToken } from "../lib/accesstoken";
 import refreshToken from "../lib/refreshtoken";
 import crypto from "crypto";
-import users from "../lib/model/usermodel";
 import mongoSanitize from "mongo-sanitize";
 import crypto_cre from "../config/crypto.json";
 import csrf from "csurf";
@@ -13,11 +12,13 @@ import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
+import symptonModel from "../lib/model/registerSympton";
+import users from "../lib/model/usermodel";
 import auth from "../lib/authStatus";
 import { selcted_sympton } from "../lib/symptonList";
 import path from "path";
-import upload from "../lib/multer";
 import fs from "fs";
+import { upload, reupload } from "../lib/multer";
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
@@ -168,8 +169,7 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
 });
 
 //isnotlogined
-router.get("/get_estimate", csrfProtection, verify, (req, res) => {
-  console.log(req.session);
+router.get("/get_estimate", csrfProtection, verify, isNotLogined, (req, res) => {
   let authUI = auth.status(req, res);
   let { code } = req.session;
   let list = selcted_sympton(code);
@@ -178,38 +178,44 @@ router.get("/get_estimate", csrfProtection, verify, (req, res) => {
 
 router.post("/delete_session_img", parseForm, csrfProtection, verify, (req, res) => {
   let imgPath = path.join(__dirname, "../../upload");
-  fs.unlink(`${imgPath}/${req.body.data}`, () => {
-    req.session.test = "a";
-    console.log(req.session);
-    res.json(req.session);
+  fs.unlink(`${imgPath}/${req.body.data}`, (err) => {
+    if (err) console.error(err);
+    req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+    res.json(req.session.img);
   });
 });
 
 router.post("/fetch_session", parseForm, csrfProtection, verify, (req, res) => {
-  // console.log(2, req.session);
-  req.session.img === undefined ? res.json({ state: false }) : res.json(req.session.img);
+  console.log(req.session);
+  req.session.img === undefined || req.session.img.length === 0 ? res.json({ state: false }) : res.json(req.session.img);
 });
 
 router.post("/fetch_upload_image", verify, (req: any, res, next) => {
+  req.session.img = [];
   upload(req, res, (err: any) => {
     if (err) {
       console.error(err);
+      req.session.img = [];
+      res.json({ state: false });
+      return;
     }
     res.json(req.session.img);
   });
 });
 
 router.post("/fetch_add_upload_image", verify, (req: any, res, next) => {
-  upload(req, res, (err: any) => {
+  reupload(req, res, (err: any) => {
     if (err) {
       console.error(err);
+      return;
     }
     res.json(req.session.img);
   });
 });
 
 router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
-  console.log(req.body);
+  console.log(req.body, req.session);
+  let registerSympton = new symptonModel();
 });
 
 router.get("/mypage", verify, (req, res) => {});

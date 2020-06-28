@@ -55,7 +55,6 @@
                   <input type="file" name="file" class="add_new_image_btn" style="display: none;" accept="image/*" multiple onchange="add_fileUpload(event)">
                   <div class="add-img-icon"></div>   
                   <div class="si-img-itemBox"></div>
-                  <div class="img-item-addBox"></div>
               </div>
             </div>
             <div class="si-img-length">0 / 10개 등록</div>
@@ -104,11 +103,12 @@
                 name="detailAddress"
                 placeholder="상세주소"
                 autocomplete="off"
+                required
               />
           </section>
           <section class='user-want-to-provider'>
             <span class="user-want-slo">00에게 원하는 말씀을 작성해주세요.</span>
-            <textarea name="userwant-content" id="userwant-box"  cols="70" rows="6" placeholder="ex)마스크를 착용해주세요."></textarea>
+            <textarea name="userwant_content" id="userwant-box"  cols="70" rows="6" placeholder="ex)마스크를 착용해주세요."></textarea>
           </section>
         </div>
        <footer class="estimate-btn-box">

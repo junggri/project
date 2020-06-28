@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/style.css" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css"
-    />
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
@@ -23,30 +19,13 @@
         <div class="login-slo">
           로그인
         </div>
-        <form
-          method="POST"
-          action="/api/login_process"
-          class="login_form"
-          onsubmit="return login_verify()"
-        >
+        <form method="POST" action="/api/login_process" class="login_form">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="lb-registerbox lb-email">
-            <input
-              id="login_email"
-              type="text"
-              placeholder="이메일을 입력하세요."
-              name="login_email"
-              autocomplete="off"
-            />
+            <input id="login_email" type="text" placeholder="이메일을 입력하세요." name="login_email" autocomplete="off" />
           </div>
           <div class="lb-registerbox lb-pwd">
-            <input
-              id="login_pwd"
-              name="login_pwd"
-              type="password"
-              placeholder="비밀번호 입력해주세요."
-              autocomplete="off"
-            />
+            <input id="login_pwd" name="login_pwd" type="password" placeholder="비밀번호 입력해주세요." autocomplete="off" />
           </div>
           <span class="condition-login"><%=msg%></span>
           <div class="login-for-user">

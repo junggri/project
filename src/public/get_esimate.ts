@@ -20,8 +20,7 @@ export default function get_estimate() {
   let imgBtn = document.querySelector(".add-img-icon") as HTMLElement;
   let fileBtn = document.querySelector('input[type="file"]') as HTMLElement;
   let addFileBtn = document.querySelector(".add_new_image_btn") as HTMLElement;
-  let addImgBox = document.querySelector(".img-item-addBox") as HTMLElement;
-  let remakeFlag = false;
+  let lengthFlag: boolean = true;
 
   function clickNextBtn() {
     page_1.style.display = "none";
@@ -56,27 +55,73 @@ export default function get_estimate() {
     fileBtn.click();
   });
 
-  addImgBox.addEventListener("click", () => {
-    addFileBtn.click();
-  });
-
   function commonMakeImg(imgArray: string[]) {
     let imgBox = document.querySelector(".si-img-itemBox");
+    let addImgBox = document.createElement("div");
     for (let i = 0; i < imgArray.length; i++) {
       let imgItem = document.createElement("div");
       let cancelIcon = document.createElement("div");
       cancelIcon.classList.add("img-box-cancel");
       imgItem.classList.add("img-item");
-      imgItem.dataset.img = imgArray[i];
       imgItem.style.backgroundImage = `url("/${imgArray[i]}")`;
+      imgItem.dataset.img = imgArray[i];
       imgItem.appendChild(cancelIcon);
       imgBox.insertBefore(imgItem, imgBox.firstChild);
       cancelIcon.addEventListener("click", (e: any) => {
         let targetData = e.target.parentNode.dataset.img;
         fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
+        imgBox.removeChild(e.target.parentNode);
       });
     }
+    addImgBox.classList.add("img-item-addBox");
+    addImgBox.addEventListener("click", (e) => {
+      if (!lengthFlag) {
+        alert("등록가능한 사진을 초과하셨습니다.");
+        return;
+      }
+      addFileBtn.click();
+    });
+    imgBox.appendChild(addImgBox);
   }
+
+  function makeSymptonImg(imgArray: string[]) {
+    if (imgArray === undefined) {
+      return;
+    }
+    imgBtn.style.display = "none";
+    commonMakeImg(imgArray);
+  }
+
+  function removeAndMakeNewImage(imgArray: string[]) {
+    let imgBox = document.querySelector(".si-img-itemBox");
+    while (imgBox.hasChildNodes) {
+      if (imgBox.firstChild === null) {
+        break;
+      }
+      imgBox.removeChild(imgBox.firstChild);
+    }
+    commonMakeImg(imgArray);
+  }
+
+  function lengthOfImg(data: string[]) {
+    let imgLength = document.querySelector(".si-img-length");
+    imgLength.textContent = `${data.length} / 10개 등록`;
+    if (data.length === 0) {
+      let imgBox = document.querySelector(".si-img-itemBox");
+      while (imgBox.hasChildNodes) {
+        if (imgBox.firstChild === null) {
+          break;
+        }
+        imgBox.removeChild(imgBox.firstChild);
+      }
+      imgBtn.style.display = "block";
+    } else if (data.length === 10) {
+      lengthFlag = false;
+    } else {
+      lengthFlag = true;
+    }
+  }
+
   async function fetchDeleteImg(url: string, data: string) {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();
@@ -91,35 +136,13 @@ export default function get_estimate() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
-        console.log(response));
+        lengthOfImg(response);
       } else {
         throw new Error("reload fetch failed");
       }
     } catch (error) {
       console.error(error);
     }
-  }
-
-  function makeSymptonImg(imgArray: string[]) {
-    remakeFlag = true;
-    if (imgArray === undefined) {
-      return;
-    }
-    addImgBox.style.display = "inline-block";
-    imgBtn.style.display = "none";
-    commonMakeImg(imgArray);
-  }
-
-  function removeAndMakeNewImage(imgArray: string[]) {
-    let imgBox = document.querySelector(".si-img-itemBox");
-    while (imgBox.hasChildNodes) {
-      if (imgBox.firstChild === null) {
-        break;
-      }
-      imgBox.removeChild(imgBox.firstChild);
-    }
-    addImgBox.style.display = "inline-block";
-    commonMakeImg(imgArray);
   }
 
   async function fetchImage(url: string, data: any) {
@@ -134,10 +157,16 @@ export default function get_estimate() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
+        if (response.state === false) {
+          alert("최대 10장까지 등록가능합니다");
+          return;
+        }
         if (url === "http://localhost:3000/api/fetch_upload_image") {
           makeSymptonImg(response);
+          lengthOfImg(response);
         } else {
           removeAndMakeNewImage(response);
+          lengthOfImg(response);
         }
       } else {
         throw new Error("fetch_image failed");
@@ -163,6 +192,7 @@ export default function get_estimate() {
         if (response.state === false) return;
         //if session.img isnt defineded runtun
         makeSymptonImg(response);
+        lengthOfImg(response);
       } else {
         throw new Error("reload fetch failed");
       }

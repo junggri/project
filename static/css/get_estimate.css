@@ -120,7 +120,6 @@
   background-image: url("/icon.svg");
   background-size: 60%, 60%;
   background-position: 50%, 50%;
-  display: none;
 }
 .img-box-cancel {
   background-image: url("/icon-cancel.svg");

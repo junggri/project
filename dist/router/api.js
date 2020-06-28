@@ -44,7 +44,6 @@ var jwtverify_1 = require("../lib/jwtverify");
 var accesstoken_1 = require("../lib/accesstoken");
 var refreshtoken_1 = __importDefault(require("../lib/refreshtoken"));
 var crypto_1 = __importDefault(require("crypto"));
-var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var mongo_sanitize_1 = __importDefault(require("mongo-sanitize"));
 var crypto_json_1 = __importDefault(require("../config/crypto.json"));
 var csurf_1 = __importDefault(require("csurf"));
@@ -53,11 +52,13 @@ var mailer_json_1 = __importDefault(require("../config/mailer.json"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
+var registerSympton_1 = __importDefault(require("../lib/model/registerSympton"));
+var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
 var symptonList_1 = require("../lib/symptonList");
 var path_1 = __importDefault(require("path"));
-var multer_1 = __importDefault(require("../lib/multer"));
 var fs_1 = __importDefault(require("fs"));
+var multer_1 = require("../lib/multer");
 var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
@@ -244,8 +245,7 @@ router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
     }
 });
 //isnotlogined
-router.get("/get_estimate", csrfProtection, jwtverify_1.verify, function (req, res) {
-    console.log(req.session);
+router.get("/get_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var authUI = authStatus_1.default.status(req, res);
     var code = req.session.code;
     var list = symptonList_1.selcted_sympton(code);
@@ -253,34 +253,41 @@ router.get("/get_estimate", csrfProtection, jwtverify_1.verify, function (req, r
 });
 router.post("/delete_session_img", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
     var imgPath = path_1.default.join(__dirname, "../../upload");
-    fs_1.default.unlink(imgPath + "/" + req.body.data, function () {
-        req.session.test = "a";
-        console.log(req.session);
-        res.json(req.session);
+    fs_1.default.unlink(imgPath + "/" + req.body.data, function (err) {
+        if (err)
+            console.error(err);
+        req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+        res.json(req.session.img);
     });
 });
 router.post("/fetch_session", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
-    // console.log(2, req.session);
-    req.session.img === undefined ? res.json({ state: false }) : res.json(req.session.img);
+    console.log(req.session);
+    req.session.img === undefined || req.session.img.length === 0 ? res.json({ state: false }) : res.json(req.session.img);
 });
 router.post("/fetch_upload_image", jwtverify_1.verify, function (req, res, next) {
-    multer_1.default(req, res, function (err) {
+    req.session.img = [];
+    multer_1.upload(req, res, function (err) {
         if (err) {
             console.error(err);
+            req.session.img = [];
+            res.json({ state: false });
+            return;
         }
         res.json(req.session.img);
     });
 });
 router.post("/fetch_add_upload_image", jwtverify_1.verify, function (req, res, next) {
-    multer_1.default(req, res, function (err) {
+    multer_1.reupload(req, res, function (err) {
         if (err) {
             console.error(err);
+            return;
         }
         res.json(req.session.img);
     });
 });
 router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
-    console.log(req.body);
+    console.log(req.body, req.session);
+    var registerSympton = new registerSympton_1.default();
 });
 router.get("/mypage", jwtverify_1.verify, function (req, res) { });
 exports.default = router;

@@ -50,8 +50,7 @@ function get_estimate() {
     var imgBtn = document.querySelector(".add-img-icon");
     var fileBtn = document.querySelector('input[type="file"]');
     var addFileBtn = document.querySelector(".add_new_image_btn");
-    var addImgBox = document.querySelector(".img-item-addBox");
-    var remakeFlag = false;
+    var lengthFlag = true;
     function clickNextBtn() {
         page_1.style.display = "none";
         page_2.style.display = "block";
@@ -80,24 +79,69 @@ function get_estimate() {
     imgBtn.addEventListener("click", function () {
         fileBtn.click();
     });
-    addImgBox.addEventListener("click", function () {
-        addFileBtn.click();
-    });
     function commonMakeImg(imgArray) {
         var imgBox = document.querySelector(".si-img-itemBox");
+        var addImgBox = document.createElement("div");
         for (var i = 0; i < imgArray.length; i++) {
             var imgItem = document.createElement("div");
             var cancelIcon = document.createElement("div");
             cancelIcon.classList.add("img-box-cancel");
             imgItem.classList.add("img-item");
-            imgItem.dataset.img = imgArray[i];
             imgItem.style.backgroundImage = "url(\"/" + imgArray[i] + "\")";
+            imgItem.dataset.img = imgArray[i];
             imgItem.appendChild(cancelIcon);
             imgBox.insertBefore(imgItem, imgBox.firstChild);
             cancelIcon.addEventListener("click", function (e) {
                 var targetData = e.target.parentNode.dataset.img;
                 fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
+                imgBox.removeChild(e.target.parentNode);
             });
+        }
+        addImgBox.classList.add("img-item-addBox");
+        addImgBox.addEventListener("click", function (e) {
+            if (!lengthFlag) {
+                alert("등록가능한 사진을 초과하셨습니다.");
+                return;
+            }
+            addFileBtn.click();
+        });
+        imgBox.appendChild(addImgBox);
+    }
+    function makeSymptonImg(imgArray) {
+        if (imgArray === undefined) {
+            return;
+        }
+        imgBtn.style.display = "none";
+        commonMakeImg(imgArray);
+    }
+    function removeAndMakeNewImage(imgArray) {
+        var imgBox = document.querySelector(".si-img-itemBox");
+        while (imgBox.hasChildNodes) {
+            if (imgBox.firstChild === null) {
+                break;
+            }
+            imgBox.removeChild(imgBox.firstChild);
+        }
+        commonMakeImg(imgArray);
+    }
+    function lengthOfImg(data) {
+        var imgLength = document.querySelector(".si-img-length");
+        imgLength.textContent = data.length + " / 10\uAC1C \uB4F1\uB85D";
+        if (data.length === 0) {
+            var imgBox = document.querySelector(".si-img-itemBox");
+            while (imgBox.hasChildNodes) {
+                if (imgBox.firstChild === null) {
+                    break;
+                }
+                imgBox.removeChild(imgBox.firstChild);
+            }
+            imgBtn.style.display = "block";
+        }
+        else if (data.length === 10) {
+            lengthFlag = false;
+        }
+        else {
+            lengthFlag = true;
         }
     }
     function fetchDeleteImg(url, data) {
@@ -125,8 +169,7 @@ function get_estimate() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        console.log(response);
-                        ;
+                        lengthOfImg(response);
                         return [3 /*break*/, 5];
                     case 4: throw new Error("reload fetch failed");
                     case 5: return [3 /*break*/, 7];
@@ -138,26 +181,6 @@ function get_estimate() {
                 }
             });
         });
-    }
-    function makeSymptonImg(imgArray) {
-        remakeFlag = true;
-        if (imgArray === undefined) {
-            return;
-        }
-        addImgBox.style.display = "inline-block";
-        imgBtn.style.display = "none";
-        commonMakeImg(imgArray);
-    }
-    function removeAndMakeNewImage(imgArray) {
-        var imgBox = document.querySelector(".si-img-itemBox");
-        while (imgBox.hasChildNodes) {
-            if (imgBox.firstChild === null) {
-                break;
-            }
-            imgBox.removeChild(imgBox.firstChild);
-        }
-        addImgBox.style.display = "inline-block";
-        commonMakeImg(imgArray);
     }
     function fetchImage(url, data) {
         return __awaiter(this, void 0, void 0, function () {
@@ -182,11 +205,17 @@ function get_estimate() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
+                        if (response.state === false) {
+                            alert("최대 10장까지 등록가능합니다");
+                            return [2 /*return*/];
+                        }
                         if (url === "http://localhost:3000/api/fetch_upload_image") {
                             makeSymptonImg(response);
+                            lengthOfImg(response);
                         }
                         else {
                             removeAndMakeNewImage(response);
+                            lengthOfImg(response);
                         }
                         return [3 /*break*/, 5];
                     case 4: throw new Error("fetch_image failed");
@@ -229,6 +258,7 @@ function get_estimate() {
                             return [2 /*return*/];
                         //if session.img isnt defineded runtun
                         makeSymptonImg(response);
+                        lengthOfImg(response);
                         return [3 /*break*/, 5];
                     case 4: throw new Error("reload fetch failed");
                     case 5: return [3 /*break*/, 7];
