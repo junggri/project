@@ -13,12 +13,10 @@ var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
 router.get("/", csrfProtection, jwtverify_1.verify, function (req, res, next) {
-    console.log(req.session);
     var authUI = authStatus_1.default.status(req, res);
     res.render("index", { authUI: authUI });
 });
 router.get("/estimate", jwtverify_1.verify, csrfProtection, function (req, res, next) {
-    console.log(req.session);
     var authUI = authStatus_1.default.status(req, res);
     symptonList_1.symptonList().then(function (result) {
         res.render("estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result });

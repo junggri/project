@@ -8,7 +8,7 @@ export default function refreshToken(req: any, res: any, email: string, name: st
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: "60s",
+      expiresIn: "6m",
       issuer: "localhost",
       subject: "userinfo",
     }

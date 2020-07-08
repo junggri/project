@@ -57,15 +57,33 @@ exports.symptonList = function () { return __awaiter(void 0, void 0, void 0, fun
         }
     });
 }); };
-exports.selcted_sympton = function (code) {
-    var list = "";
-    if (code === undefined) {
-        list = " <div class=\"show-user-selected-item\">\uC120\uD0DD\uD558\uC2E0 \uC99D\uC0C1\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.</div>";
-        return list;
-    }
-    for (var i = 0; i < code.length; i++) {
-        list += " <div class=\"show-user-selected-item\">" + code[i] + "</div>";
-    }
-    return list;
-};
+exports.selcted_sympton = function (code) { return __awaiter(void 0, void 0, void 0, function () {
+    var list, data, i, result, i;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                list = "";
+                data = [];
+                if (code === undefined)
+                    return [2 /*return*/, (list = " <div class=\"show-user-selected-item\">\uC120\uD0DD\uD558\uC2E0 \uC99D\uC0C1\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.</div>")];
+                i = 0;
+                _a.label = 1;
+            case 1:
+                if (!(i < code.length)) return [3 /*break*/, 4];
+                return [4 /*yield*/, symptonModel_1.default.find({ code: code[i] })];
+            case 2:
+                result = _a.sent();
+                data.push(result[0].content);
+                _a.label = 3;
+            case 3:
+                i++;
+                return [3 /*break*/, 1];
+            case 4:
+                for (i = 0; i < data.length; i++) {
+                    list += " <div class=\"show-user-selected-item\">" + data[i] + "</div>";
+                }
+                return [2 /*return*/, list];
+        }
+    });
+}); };
 //# sourceMappingURL=symptonList.js.map

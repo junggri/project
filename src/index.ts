@@ -35,7 +35,7 @@ let sess = {
     host: process.env.HOST,
     port: Number(process.env.port),
     client: _client,
-    ttl: 60 * 60 * 24, //second
+    ttl: 60 * 60 * 5, //second
   }),
   cookie: {
     httpOnly: true,
@@ -61,8 +61,7 @@ app.get("env") === "development" ? app.use(express.static(path.join(__dirname + 
 app.use(express.static(path.join(__dirname, "../static/css")));
 app.use(express.static(path.join(__dirname, "../static/image")));
 app.use(express.static(path.join(__dirname, "../upload")));
-// app.use("/upload", express.static(path.join(__dirname, "../upload")));
-console.log(path.join(__dirname, "../upload"));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

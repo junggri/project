@@ -17,8 +17,10 @@
 }
 .nb-right_list {
   display: inline-block;
-
   margin-left: 20px;
+}
+.nb-right_isLogined {
+  cursor: pointer;
 }
 .main-page {
   height: 350px;

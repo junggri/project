@@ -1,0 +1,210 @@
+.mypage-state {
+  width: 800px;
+  position: relative;
+  margin: 0 auto;
+}
+.ms-username {
+  font-weight: 400;
+  font-size: 30px;
+  margin-top: 80px;
+  letter-spacing: 2px;
+}
+.ms-userState {
+  margin-top: 70px;
+  font-size: 0;
+  display: flex;
+  justify-content: space-between;
+}
+.ms-userImg {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+.ms-editBtn {
+  font-size: 15px;
+  vertical-align: bottom;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  font-weight: 100;
+  letter-spacing: 2px;
+  padding: 10px;
+  margin-left: 30px;
+  cursor: pointer;
+}
+.ms-userShowStateBox {
+  display: inline-block;
+  font-size: 0;
+  display: flex;
+}
+.ms-userShowStateBox span {
+  display: flex;
+  justify-content: center;
+}
+.userShowStateBox-register,
+.userShowStateBox-connect,
+.userShowStateBox-complete {
+  display: inline-block;
+  margin-right: 20px;
+  margin-top: 22px;
+}
+.userShowStateBox-text {
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.userShowStateBox-number {
+  font-weight: bold;
+  margin-bottom: 15px;
+  font-size: 23px;
+  cursor: pointer;
+}
+.edit-btn {
+  border: 1px solid black;
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  cursor: pointer;
+}
+.edit-btn span {
+  font-size: 13px;
+  font-weight: 100;
+}
+.mypage-showResult {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  margin-top: 60px;
+}
+.mypage-showResult-slo {
+  width: 800px;
+  position: relative;
+  margin: 0 auto;
+  font-size: 20px;
+  padding-top: 40px;
+}
+.ms-resultBox {
+  width: 800px;
+  position: relative;
+  margin: 0 auto;
+  margin-top: 40px;
+  padding-bottom: 100px;
+  font-weight: 100;
+}
+.ms-resultBox-nonedata {
+  text-align: center;
+  padding: 100px;
+}
+.ms-resultItem {
+  position: relative;
+  border-radius: 4px;
+  padding: 10px;
+  vertical-align: middle;
+  font-size: 0;
+  display: flex;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 35px;
+}
+.ms-resultItem-img {
+  display: inline-block;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  width: 120px;
+  height: 120px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+.ms-resultItem-time {
+  margin-left: 15px;
+  margin-top: 14px;
+  font-size: 100;
+  display: block;
+  font-size: 12px;
+}
+.ms-resultItem-symptom {
+  margin-left: 15px;
+  margin-top: 22px;
+  font-size: 100;
+  display: inline-block;
+  font-size: 15px;
+}
+.ms-resultItem-price {
+  margin-left: 15px;
+  margin-top: 20px;
+  font-weight: 600;
+  display: block;
+  font-size: 15px;
+}
+.ms-resultItem-BtnBox {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+}
+.ms-resultItem-modifieBtn {
+  font-size: 14px;
+  display: inline-block;
+  font-weight: 100;
+  padding: 10px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+.ms-resultItem-deleteBtn {
+  font-size: 14px;
+  display: inline-block;
+  font-weight: 100;
+  padding: 10px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  margin-left: 15px;
+  cursor: pointer;
+}
+/*  */
+.modified-estimate-page {
+  width: 700px;
+  position: relative;
+  margin: 0 auto;
+  margin-top: 60px;
+}
+.me-slo {
+  font-size: 25px;
+}
+.me-estimateBox {
+  margin-top: 50px;
+}
+.me-estimateBox-slo {
+  display: inline-block;
+}
+.me-showEstimate {
+  margin-top: 20px;
+}
+.me-showEstimate span {
+  display: block;
+  margin-bottom: 6px;
+}
+.modified-estimate-btn {
+  outline-style: none;
+  position: absolute;
+  border: 1px solid black;
+  display: inline-block;
+  padding: 20px 40px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px 0 rgba(196, 206, 219, 0.3);
+  letter-spacing: 1.2px;
+  background-color: transparent;
+  font-size: 16px;
+  right: 0;
+  cursor: pointer;
+}
+.modified-cancel-btn {
+  position: absolute;
+  border: 1px solid black;
+  display: inline-block;
+  padding: 20px 40px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px 0 rgba(196, 206, 219, 0.3);
+  letter-spacing: 1.2px;
+  font-size: 16px;
+  left: 0;
+  cursor: pointer;
+}

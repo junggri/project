@@ -10,7 +10,7 @@ function createToken(req, res, email, name) {
         email: email,
         username: name,
     }, process.env.JWT_SECRET, {
-        expiresIn: "30s",
+        expiresIn: "30m",
         issuer: "localhost",
         subject: "userinfo",
     });

@@ -1,5 +1,8 @@
+import { Request, Response, NextFunction } from "express";
 import multer from "multer";
+import jwt from "jsonwebtoken";
 import path from "path";
+import registerSymController from "../lib/controller/registerSymContoller";
 
 export const upload = multer({
   storage: multer.diskStorage({
@@ -12,7 +15,7 @@ export const upload = multer({
       req.session.img.push(filename);
     },
   }),
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
 }).array("data", 10);
 
 export const reupload = multer({
@@ -28,5 +31,37 @@ export const reupload = multer({
       }
     },
   }),
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
+}).array("data");
+
+export const modifiedUpload = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "upload/");
+    },
+    filename: async function (req: Request, file: any, cb) {
+      let filename: string = new Date().valueOf() + path.extname(file.originalname);
+      cb(null, filename);
+      req.session.img.push(filename);
+      registerSymController.UpdateImg(req);
+    },
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+}).array("data", 10);
+
+export const modifiedReupload = multer({
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "upload/");
+    },
+    filename: function (req, file: any, cb) {
+      let filename: string = new Date().valueOf() + path.extname(file.originalname);
+      cb(null, filename);
+      if (req.session.img.length < 10) {
+        req.session.img.push(filename);
+        registerSymController.UpdateImg(req);
+      }
+    },
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
 }).array("data");

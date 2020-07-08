@@ -38,7 +38,7 @@ export default function () {
       price -= Number(e.parentNode.dataset.price);
       estimate_item = document.querySelectorAll(".estimate-item");
     }
-    console.log(estimate_item);
+    // console.log(estimate_item);
     estimate_price.textContent = `${String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
     estimate_num.textContent = `${estimate_item.length}개 선택`;
     estimate_container.scrollTop = estimate_container.scrollHeight;
@@ -49,7 +49,7 @@ export default function () {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("CSRF-Token", token);
-    console.log(data);
+    // console.log(data);
     try {
       let result = await fetch(url, {
         method: "POST",

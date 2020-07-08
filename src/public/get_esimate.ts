@@ -3,10 +3,17 @@ declare global {
     openAddresss: any;
     previous_fileUpload: any;
     add_fileUpload: any;
+    formAndBlockBack: any;
+    noBack: any;
   }
 }
 
 export default function get_estimate() {
+  window.history.forward();
+  window.noBack = () => {
+    window.history.forward();
+  };
+
   let width = 500;
   let height = 500;
   let daum: any = window["daum"];
@@ -20,6 +27,7 @@ export default function get_estimate() {
   let imgBtn = document.querySelector(".add-img-icon") as HTMLElement;
   let fileBtn = document.querySelector('input[type="file"]') as HTMLElement;
   let addFileBtn = document.querySelector(".add_new_image_btn") as HTMLElement;
+  let registerFrom = document.querySelector(".register_sympton_form") as HTMLFormElement;
   let lengthFlag: boolean = true;
 
   function clickNextBtn() {
@@ -55,6 +63,25 @@ export default function get_estimate() {
     fileBtn.click();
   });
 
+  function lengthOfImg(data: string[]) {
+    let imgLength = document.querySelector(".si-img-length");
+    imgLength.textContent = `${data.length} / 10개 등록`;
+    if (data.length === 0) {
+      let imgBox = document.querySelector(".si-img-itemBox");
+      while (imgBox.hasChildNodes) {
+        if (imgBox.firstChild === null) {
+          break;
+        }
+        imgBox.removeChild(imgBox.firstChild);
+      }
+      imgBtn.style.display = "block";
+    } else if (data.length === 10) {
+      lengthFlag = false;
+    } else {
+      lengthFlag = true;
+    }
+  }
+
   function commonMakeImg(imgArray: string[]) {
     let imgBox = document.querySelector(".si-img-itemBox");
     let addImgBox = document.createElement("div");
@@ -82,6 +109,7 @@ export default function get_estimate() {
       addFileBtn.click();
     });
     imgBox.appendChild(addImgBox);
+    lengthOfImg(imgArray);
   }
 
   function makeSymptonImg(imgArray: string[]) {
@@ -103,24 +131,31 @@ export default function get_estimate() {
     commonMakeImg(imgArray);
   }
 
-  function lengthOfImg(data: string[]) {
-    let imgLength = document.querySelector(".si-img-length");
-    imgLength.textContent = `${data.length} / 10개 등록`;
-    if (data.length === 0) {
-      let imgBox = document.querySelector(".si-img-itemBox");
-      while (imgBox.hasChildNodes) {
-        if (imgBox.firstChild === null) {
-          break;
+  (async function reloadGetSessionData() {
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("CSRF-Token", token);
+    try {
+      let result = await fetch("http://localhost:3000/api/fetch_session", {
+        method: "post",
+        credentials: "same-origin",
+        headers: myHeaders,
+      });
+      if (result.status === 200 || 201) {
+        let response = await result.json();
+        if (response.state === false) {
+          return;
         }
-        imgBox.removeChild(imgBox.firstChild);
+        //if session.img isnt defineded runtun
+        makeSymptonImg(response);
+      } else {
+        throw new Error("reload fetch failed");
       }
-      imgBtn.style.display = "block";
-    } else if (data.length === 10) {
-      lengthFlag = false;
-    } else {
-      lengthFlag = true;
+    } catch (error) {
+      console.error(error);
     }
-  }
+  })();
 
   async function fetchDeleteImg(url: string, data: string) {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
@@ -163,10 +198,8 @@ export default function get_estimate() {
         }
         if (url === "http://localhost:3000/api/fetch_upload_image") {
           makeSymptonImg(response);
-          lengthOfImg(response);
         } else {
           removeAndMakeNewImage(response);
-          lengthOfImg(response);
         }
       } else {
         throw new Error("fetch_image failed");
@@ -176,35 +209,13 @@ export default function get_estimate() {
     }
   }
   //리로드시 세션에 있는 정보로 자신을 등록하는 용도
-  (async function reloadGetSessionData() {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    try {
-      let result = await fetch("http://localhost:3000/api/fetch_session", {
-        method: "post",
-        credentials: "same-origin",
-        headers: myHeaders,
-      });
-      if (result.status === 200 || 201) {
-        let response = await result.json();
-        if (response.state === false) return;
-        //if session.img isnt defineded runtun
-        makeSymptonImg(response);
-        lengthOfImg(response);
-      } else {
-        throw new Error("reload fetch failed");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  })();
 
   window.add_fileUpload = (e: any) => {
     fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
   };
-
+  window.formAndBlockBack = () => {
+    registerFrom.submit();
+  };
   window.previous_fileUpload = (e: any) => {
     fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
   };
@@ -230,4 +241,15 @@ export default function get_estimate() {
       top: window.screen.height / 2 - height / 2,
     });
   };
+
+  // let a = [1, 2, 3];
+  // let b = [1, 2];
+  // for (let i = 0; i < a.length; i++) {
+  //   // b.includes(a[i]);
+  //   console.log(b.includes(a[i]));
+  //   if (!b.includes(a[i])) {
+  //     console.log(a.splice(a.indexOf(a[i]), 1));
+  //   }
+  // }
+  //  사진다른거 삭제하기
 }

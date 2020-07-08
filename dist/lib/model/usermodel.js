@@ -31,8 +31,7 @@ var users = new mongoose_1.default.Schema({
         type: String,
     },
     createdAt: {
-        type: Date,
-        default: Date.now,
+        type: String,
     },
     refresh_token: {
         type: String,

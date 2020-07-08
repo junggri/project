@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <meta name="csrf-token" content="<%= csrfToken %>" />
     <link rel="stylesheet" href="/style.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -20,9 +21,35 @@
           <%- authUI %>
         </ul>
       </nav>
-
-      <div class="footer"></div>
+      <section class="mypage-state">
+        <div class="ms-username">이정수 님</div>
+        <div class="ms-userState">
+          <div class="ms-userShowStateBox">
+            <div class="userShowStateBox-register">
+              <span class="userShowStateBox-register-number userShowStateBox-number"><%- len %></span>
+              <span class="userShowStateBox-register-text userShowStateBox-text">등록 증상</span>
+            </div>
+            <div class="userShowStateBox-connect">
+              <span class="userShowStateBox-connect-number userShowStateBox-number">0</span>
+              <span class="userShowStateBox-connect-text userShowStateBox-text">진행중</span>
+            </div>
+            <div class="userShowStateBox-complete">
+              <span class="userShowStateBox-complete-number userShowStateBox-number">0</span>
+              <span class="userShowStateBox-complete-text userShowStateBox-text">수리완료</span>
+            </div>
+          </div>
+          <span class="ms-userImg"></span>
+        </div>
+        <div class="edit-btn">
+          <span>프로필 편집</span>
+        </div>
+      </section>
+      <section class="mypage-showResult">
+        <div class="ms-resultBox">
+          <%- list %>
+        </div>
+      </section>
     </div>
   </body>
-  <script src="bundle.js"></script>
+  <script src="/bundle.js"></script>
 </html>

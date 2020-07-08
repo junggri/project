@@ -8,7 +8,7 @@ export function createToken(req: any, res: any, email: string, name: string) {
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: "30s",
+      expiresIn: "30m",
       issuer: "localhost",
       subject: "userinfo",
     }

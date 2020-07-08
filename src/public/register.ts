@@ -47,7 +47,7 @@ export default function register() {
       });
       if (fetchResult.status === 200 || 201) {
         let result = await fetchResult.json();
-        console.log(result);
+        // console.log(result);
         validation_num = result.validation_num;
         $(".state-email").html(result.msg);
         if (result.state === "true") {
@@ -140,7 +140,7 @@ export default function register() {
   });
   /////////////////
   window.verify = () => {
-    console.log(pwd_reg.test(pwd.value), pwd.value === pwd2.value, emailFlag);
+    // console.log(pwd_reg.test(pwd.value), pwd.value === pwd2.value, emailFlag);
     if (pwd_reg.test(pwd.value) && pwd.value === pwd2.value && emailFlag) {
       return true;
     } else {

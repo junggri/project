@@ -1,8 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
-import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
-import { createToken } from "../lib/accesstoken";
 import refreshToken from "../lib/refreshtoken";
 import crypto from "crypto";
+import url from "url";
+import moment from "moment";
 import mongoSanitize from "mongo-sanitize";
 import crypto_cre from "../config/crypto.json";
 import csrf from "csurf";
@@ -12,23 +12,29 @@ import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
-import symptonModel from "../lib/model/registerSympton";
+import registerSymController from "../lib/controller/registerSymContoller";
+import imageController from "../lib/controller/imageContoller";
 import users from "../lib/model/usermodel";
 import auth from "../lib/authStatus";
-import { selcted_sympton } from "../lib/symptonList";
 import path from "path";
 import fs from "fs";
-import { upload, reupload } from "../lib/multer";
+import { selcted_sympton } from "../lib/symptonList";
+import { upload, reupload, modifiedUpload, modifiedReupload } from "../lib/multer";
+import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
+import { createToken } from "../lib/accesstoken";
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
+
+interface Decoded {
+  email: string;
+}
 
 // router.use("/", verify);
 //모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
 
 router.get("/login", csrfProtection, verify, isLogined, (req: any, res) => {
-  console.log(req.session);
   res.render("login", { csrfToken: req.csrfToken(), msg: "" });
 });
 
@@ -103,12 +109,14 @@ router.post("/register_common_process", parseForm, csrfProtection, verify, isLog
   let inputdata;
   crypto.randomBytes(crypto_cre.len, (err, buf) => {
     let salt = buf.toString("base64");
+    let time = moment().format("YYYY-MM-DD");
     crypto.pbkdf2(common_pwd, salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
       inputdata = {
         email: common_email,
         password: key.toString("base64"),
         name: common_name,
         salt: salt,
+        createdAt: time,
       };
       let Users: any = new users(inputdata);
       try {
@@ -168,25 +176,31 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
   }
 });
 
-//isnotlogined
 router.get("/get_estimate", csrfProtection, verify, isNotLogined, (req, res) => {
+  if (url.parse(req.url).query === null) {
+    res.redirect("/");
+  }
   let authUI = auth.status(req, res);
   let { code } = req.session;
-  let list = selcted_sympton(code);
-  res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
-});
-
-router.post("/delete_session_img", parseForm, csrfProtection, verify, (req, res) => {
-  let imgPath = path.join(__dirname, "../../upload");
-  fs.unlink(`${imgPath}/${req.body.data}`, (err) => {
-    if (err) console.error(err);
-    req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
-    res.json(req.session.img);
+  selcted_sympton(code).then((result) => {
+    res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result });
   });
 });
 
+router.post("/delete_session_img", parseForm, csrfProtection, verify, (req, res) => {
+  try {
+    let imgPath = path.join(__dirname, "../../upload");
+    fs.unlink(`${imgPath}/${req.body.data}`, async (err) => {
+      if (err) console.error(err);
+      req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+      res.json(req.session.img);
+    });
+  } catch (error) {
+    console.error("이미지 삭제 실패");
+  }
+});
+
 router.post("/fetch_session", parseForm, csrfProtection, verify, (req, res) => {
-  console.log(req.session);
   req.session.img === undefined || req.session.img.length === 0 ? res.json({ state: false }) : res.json(req.session.img);
 });
 
@@ -214,10 +228,112 @@ router.post("/fetch_add_upload_image", verify, (req: any, res, next) => {
 });
 
 router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
-  console.log(req.body, req.session);
-  let registerSympton = new symptonModel();
+  const token = req.cookies.jwttoken;
+  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content } = req.body;
+  let { code, img } = req.session;
+  let _time = moment().format("YYYY-MM-DD");
+  let detailAddress = sanitizeHtml(req.body.detailAddress);
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let inputdata = {
+      email: (decoded as Decoded).email,
+      code: code,
+      sympton_detail: sanitizeHtml(sympton_detail),
+      img: img,
+      userwant_time: { time, minute },
+      address: { postcode, roadAddress, detailAddress },
+      userwant_content: sanitizeHtml(userwant_content),
+      createdAt: _time,
+    };
+    let imageData = {
+      image: img,
+    };
+    req.session.img = [];
+    req.session.code = [];
+    imageController.save(req, res, imageData);
+    registerSymController.save(req, res, inputdata, (decoded as Decoded).email);
+    res.redirect("/api/mypage");
+  } catch (error) {
+    console.error(error);
+  }
 });
 
-router.get("/mypage", verify, (req, res) => {});
+//isnotlogined
+router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
+  const token = req.cookies.jwttoken;
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    registerSymController.findAllRegister(req, res, (decoded as Decoded).email);
+  } catch (error) {
+    console.error(error, "로그인이 되지 않아습니다.");
+  }
+});
 
+router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async (req, res) => {
+  let authUI = auth.status(req, res);
+  let response = await registerSymController.findCodeBeforeModified(req, res);
+  if (response === null) {
+    res.redirect("/api/mypage");
+  }
+  let codeList = await selcted_sympton(response.code);
+  req.session._id = req.url.split("/")[2];
+  res.render("modified_estimate", { authUI: authUI, csrfToken: req.csrfToken(), register_symptons: codeList });
+});
+
+router.post("/modified_get_image", async (req, res) => {
+  req.session.img = [];
+  let response = await registerSymController.findImageBeforeModified(req, res);
+  for (let i = 0; i < response.img.length; i++) {
+    req.session.img.push(response.img[i]);
+  }
+  res.json(response);
+});
+
+router.post("/modified_delete_session_img", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
+  let imgPath = path.join(__dirname, "../../upload");
+  fs.unlink(`${imgPath}/${req.body.data}`, async (err) => {
+    if (err) console.error(err);
+    req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+    registerSymController.UpdateImg(req, res);
+    res.json(req.session.img);
+  });
+});
+
+router.post("/modified_upload_image", verify, (req: any, res, next) => {
+  modifiedUpload(req, res, (err: any) => {
+    if (err) {
+      console.error(err);
+      req.session.img = [];
+      registerSymController.UpdateImg(req);
+      res.json({ state: false });
+      return;
+    }
+    res.json(req.session.img);
+  });
+});
+
+router.post("/modified_add_upload_image", verify, (req: any, res, next) => {
+  modifiedReupload(req, res, (err: any) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    res.json(req.session.img);
+  });
+});
+
+router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
+  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content } = req.body;
+  let detailAddress = sanitizeHtml(req.body.detailAddress);
+  let data = {
+    sympton_detail: sanitizeHtml(sympton_detail),
+    time: time,
+    minute: minute,
+    postcode: postcode,
+    roadAddress: roadAddress,
+    detailAddress: detailAddress,
+    userwant_content: sanitizeHtml(userwant_content),
+  };
+  registerSymController.modified(req, res, data);
+});
 export default router;

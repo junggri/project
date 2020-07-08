@@ -4,9 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var mongoose_1 = __importDefault(require("mongoose"));
 var registerSympton = new mongoose_1.default.Schema({
-    registrant: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "User" }],
-    sympton_code: {
-        type: Number,
+    registrant: {
+        type: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "testuser" }],
+    },
+    email: {
+        type: String,
+    },
+    code: {
+        type: Array,
     },
     sympton_detail: {
         type: String,
@@ -27,10 +32,11 @@ var registerSympton = new mongoose_1.default.Schema({
         roadAddress: { type: String },
         detailAddress: { type: String },
     },
-    userwant_content: { type: String },
+    userwant_content: {
+        type: String,
+    },
     createdAt: {
-        type: Date,
-        default: Date.now,
+        type: String,
     },
 });
 module.exports = mongoose_1.default.model("RegisterSympton", registerSympton);

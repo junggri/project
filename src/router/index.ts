@@ -9,13 +9,11 @@ const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
 
 router.get("/", csrfProtection, verify, (req, res, next) => {
-  console.log(req.session);
   let authUI = auth.status(req, res);
   res.render("index", { authUI: authUI });
 });
 
 router.get("/estimate", verify, csrfProtection, (req, res, next) => {
-  console.log(req.session);
   let authUI = auth.status(req, res);
   symptonList().then((result) => {
     res.render("estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result });

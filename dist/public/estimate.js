@@ -68,7 +68,7 @@ function default_1() {
             price -= Number(e.parentNode.dataset.price);
             estimate_item = document.querySelectorAll(".estimate-item");
         }
-        console.log(estimate_item);
+        // console.log(estimate_item);
         estimate_price.textContent = String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "\uC6D0";
         estimate_num.textContent = estimate_item.length + "\uAC1C \uC120\uD0DD";
         estimate_container.scrollTop = estimate_container.scrollHeight;
@@ -83,7 +83,6 @@ function default_1() {
                         myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
                         myHeaders.append("CSRF-Token", token);
-                        console.log(data);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);

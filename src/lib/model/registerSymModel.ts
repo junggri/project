@@ -1,8 +1,13 @@
 import mongoose from "mongoose";
 const registerSympton = new mongoose.Schema({
-  registrant: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  sympton_code: {
-    type: Number,
+  registrant: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "testuser" }],
+  },
+  email: {
+    type: String,
+  },
+  code: {
+    type: Array,
   },
   sympton_detail: {
     type: String,
@@ -12,10 +17,12 @@ const registerSympton = new mongoose.Schema({
   },
   userwant_time: {
     time: {
-      type: Number,
+      type: String,
+      default: 12,
     },
     minute: {
-      type: Number,
+      type: String,
+      default: 0,
     },
   },
   address: {
@@ -23,8 +30,13 @@ const registerSympton = new mongoose.Schema({
     roadAddress: { type: String },
     detailAddress: { type: String },
   },
-  userwant_content: { type: String },
+  userwant_content: {
+    type: String,
+  },
   createdAt: {
+    type: String,
+  },
+  create: {
     type: Date,
     default: Date.now,
   },

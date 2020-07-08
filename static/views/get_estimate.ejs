@@ -10,7 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   </head>
-  <body>
+  <body onload="noBack()" onpageshow="if(event.persisted) noBack();">
     <div id="app">
       <nav class="nav-bar">
         <div class="nb-left">
@@ -26,7 +26,7 @@
           <%- authUI %>
         </ul>
       </nav>
-      <form action="register_estimate_process" method="POST" >
+      <form action="register_estimate_process" method="POST" class="register_sympton_form">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       <section class="get-estimate-page">
         <span class="ge-slo">선택하신 증상 외 추가적인 </br>세부사항을 입력해주세요.</span>
@@ -42,7 +42,7 @@
               <div class="ss-detail">
                 세부 내용을 작성해 주세요.
               </div>
-             <textarea name="sympton-detail" id="sympton-detail" cols="70" rows="6" placeholder="ex)컴퓨터가 켜지지 않아요."></textarea>
+             <textarea name="sympton_detail" id="sympton-detail" cols="70" rows="6" placeholder="ex)컴퓨터가 켜지지 않아요."></textarea>
              <span>구체적으로 작성하면 보다 정확한 견적이 가능합니다.</span>
             </div>
           </section>
@@ -65,10 +65,18 @@
             <div class="st-slo">시간을 선택해주세요.</div>
             <select name="time" id="st-time">
               <option value="" disabled selected>시간</option>
+              <option value="09">9시</option>
+              <option value="10">10시</option>
+              <option value="11">11시</option>
               <option value="12">12시</option>
-              <option value="1">1시</option>
-              <option value="2">2시</option>
-              <option value="3">3시</option>
+              <option value="13">1시</option>
+              <option value="14">2시</option>
+              <option value="15">3시</option>
+              <option value="16">4시</option>
+              <option value="17">5시</option>
+              <option value="18">6시</option>
+              <option value="19">7시</option>
+              <option value="20">8시</option>
             </select>
             <select name="minute" id="st-minute">
               <option value="" disabled selected>분</option>
@@ -76,6 +84,8 @@
               <option value="10">10분</option>
               <option value="20">20분</option>
               <option value="30">30분</option>
+              <option value="40">40분</option>
+              <option value="50">50분</option>    
             </select>
           </section>
           <section class="user-location">
@@ -88,7 +98,7 @@
               readonly
               required
             />
-            <button id="adr_btn" onclick="openAddresss()">주소찾기</button></br>
+            <span id="adr_btn" onclick="openAddresss()">주소찾기</span></br>
               <input
                 type="text"
                 id="roadAddress"
@@ -114,7 +124,7 @@
        <footer class="estimate-btn-box">
         <div class="estimate-btn-box-previous">이전으로</div>
         <div class="estimate-btn-box-next">다음으로</div>
-        <input type="submit" class="estimate-btn-box-submit" value="견적받기"></input>
+        <input type="button" class="estimate-btn-box-submit" value="견적받기" onclick="formAndBlockBack()" >
        </footer>
       </section>
     </form>

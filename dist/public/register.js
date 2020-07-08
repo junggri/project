@@ -91,7 +91,7 @@ function register() {
                         return [4 /*yield*/, fetchResult.json()];
                     case 3:
                         result = _a.sent();
-                        console.log(result);
+                        // console.log(result);
                         validation_num = result.validation_num;
                         $(".state-email").html(result.msg);
                         if (result.state === "true") {
@@ -190,7 +190,7 @@ function register() {
     });
     /////////////////
     window.verify = function () {
-        console.log(pwd_reg.test(pwd.value), pwd.value === pwd2.value, emailFlag);
+        // console.log(pwd_reg.test(pwd.value), pwd.value === pwd2.value, emailFlag);
         if (pwd_reg.test(pwd.value) && pwd.value === pwd2.value && emailFlag) {
             return true;
         }

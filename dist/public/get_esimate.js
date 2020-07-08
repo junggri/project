@@ -37,6 +37,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 function get_estimate() {
+    window.history.forward();
+    window.noBack = function () {
+        window.history.forward();
+    };
     var width = 500;
     var height = 500;
     var daum = window["daum"];
@@ -50,6 +54,7 @@ function get_estimate() {
     var imgBtn = document.querySelector(".add-img-icon");
     var fileBtn = document.querySelector('input[type="file"]');
     var addFileBtn = document.querySelector(".add_new_image_btn");
+    var registerFrom = document.querySelector(".register_sympton_form");
     var lengthFlag = true;
     function clickNextBtn() {
         page_1.style.display = "none";
@@ -79,6 +84,26 @@ function get_estimate() {
     imgBtn.addEventListener("click", function () {
         fileBtn.click();
     });
+    function lengthOfImg(data) {
+        var imgLength = document.querySelector(".si-img-length");
+        imgLength.textContent = data.length + " / 10\uAC1C \uB4F1\uB85D";
+        if (data.length === 0) {
+            var imgBox = document.querySelector(".si-img-itemBox");
+            while (imgBox.hasChildNodes) {
+                if (imgBox.firstChild === null) {
+                    break;
+                }
+                imgBox.removeChild(imgBox.firstChild);
+            }
+            imgBtn.style.display = "block";
+        }
+        else if (data.length === 10) {
+            lengthFlag = false;
+        }
+        else {
+            lengthFlag = true;
+        }
+    }
     function commonMakeImg(imgArray) {
         var imgBox = document.querySelector(".si-img-itemBox");
         var addImgBox = document.createElement("div");
@@ -106,6 +131,7 @@ function get_estimate() {
             addFileBtn.click();
         });
         imgBox.appendChild(addImgBox);
+        lengthOfImg(imgArray);
     }
     function makeSymptonImg(imgArray) {
         if (imgArray === undefined) {
@@ -124,29 +150,50 @@ function get_estimate() {
         }
         commonMakeImg(imgArray);
     }
-    function lengthOfImg(data) {
-        var imgLength = document.querySelector(".si-img-length");
-        imgLength.textContent = data.length + " / 10\uAC1C \uB4F1\uB85D";
-        if (data.length === 0) {
-            var imgBox = document.querySelector(".si-img-itemBox");
-            while (imgBox.hasChildNodes) {
-                if (imgBox.firstChild === null) {
-                    break;
-                }
-                imgBox.removeChild(imgBox.firstChild);
-            }
-            imgBtn.style.display = "block";
-        }
-        else if (data.length === 10) {
-            lengthFlag = false;
-        }
-        else {
-            lengthFlag = true;
-        }
-    }
-    function fetchDeleteImg(url, data) {
+    (function reloadGetSessionData() {
         return __awaiter(this, void 0, void 0, function () {
             var token, myHeaders, result, response, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                        myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        myHeaders.append("CSRF-Token", token);
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/fetch_session", {
+                                method: "post",
+                                credentials: "same-origin",
+                                headers: myHeaders,
+                            })];
+                    case 2:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, result.json()];
+                    case 3:
+                        response = _a.sent();
+                        if (response.state === false) {
+                            return [2 /*return*/];
+                        }
+                        //if session.img isnt defineded runtun
+                        makeSymptonImg(response);
+                        return [3 /*break*/, 5];
+                    case 4: throw new Error("reload fetch failed");
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_1 = _a.sent();
+                        console.error(error_1);
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    })();
+    function fetchDeleteImg(url, data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var token, myHeaders, result, response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -174,8 +221,8 @@ function get_estimate() {
                     case 4: throw new Error("reload fetch failed");
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_1 = _a.sent();
-                        console.error(error_1);
+                        error_2 = _a.sent();
+                        console.error(error_2);
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
                 }
@@ -184,7 +231,7 @@ function get_estimate() {
     }
     function fetchImage(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var formData, i, result, response, error_2;
+            var formData, i, result, response, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -211,56 +258,12 @@ function get_estimate() {
                         }
                         if (url === "http://localhost:3000/api/fetch_upload_image") {
                             makeSymptonImg(response);
-                            lengthOfImg(response);
                         }
                         else {
                             removeAndMakeNewImage(response);
-                            lengthOfImg(response);
                         }
                         return [3 /*break*/, 5];
                     case 4: throw new Error("fetch_image failed");
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_2 = _a.sent();
-                        console.error(error_2);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
-                }
-            });
-        });
-    }
-    //리로드시 세션에 있는 정보로 자신을 등록하는 용도
-    (function reloadGetSessionData() {
-        return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_3;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/fetch_session", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                            })];
-                    case 2:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
-                    case 3:
-                        response = _a.sent();
-                        if (response.state === false)
-                            return [2 /*return*/];
-                        //if session.img isnt defineded runtun
-                        makeSymptonImg(response);
-                        lengthOfImg(response);
-                        return [3 /*break*/, 5];
-                    case 4: throw new Error("reload fetch failed");
                     case 5: return [3 /*break*/, 7];
                     case 6:
                         error_3 = _a.sent();
@@ -270,9 +273,13 @@ function get_estimate() {
                 }
             });
         });
-    })();
+    }
+    //리로드시 세션에 있는 정보로 자신을 등록하는 용도
     window.add_fileUpload = function (e) {
         fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
+    };
+    window.formAndBlockBack = function () {
+        registerFrom.submit();
     };
     window.previous_fileUpload = function (e) {
         fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
@@ -298,6 +305,16 @@ function get_estimate() {
             top: window.screen.height / 2 - height / 2,
         });
     };
+    // let a = [1, 2, 3];
+    // let b = [1, 2];
+    // for (let i = 0; i < a.length; i++) {
+    //   // b.includes(a[i]);
+    //   console.log(b.includes(a[i]));
+    //   if (!b.includes(a[i])) {
+    //     console.log(a.splice(a.indexOf(a[i]), 1));
+    //   }
+    // }
+    //  사진다른거 삭제하기
 }
 exports.default = get_estimate;
 //# sourceMappingURL=get_esimate.js.map

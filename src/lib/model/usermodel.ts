@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import moment from "moment";
 const users = new mongoose.Schema({
   email: {
     type: String,
@@ -27,8 +28,7 @@ const users = new mongoose.Schema({
     type: String,
   },
   createdAt: {
-    type: Date,
-    default: Date.now,
+    type: String,
   },
   refresh_token: {
     type: String,
