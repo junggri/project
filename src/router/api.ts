@@ -265,7 +265,7 @@ router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     registerSymController.findAllRegister(req, res, (decoded as Decoded).email);
   } catch (error) {
-    console.error(error, "로그인이 되지 않아습니다.");
+    console.error(error, "로그인이 되지 않았습니다.");
   }
 });
 
@@ -335,5 +335,17 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     userwant_content: sanitizeHtml(userwant_content),
   };
   registerSymController.modified(req, res, data);
+});
+
+router.post("/delete_register_sympton", parseForm, csrfProtection, verify, isNotLogined, async (req, res) => {
+  const token = req.cookies.jwttoken;
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    registerSymController.deleteSympton(req, res);
+    let result = await registerSymController.find(req, res, (decoded as Decoded).email);
+    res.json(result);
+  } catch (error) {
+    console.error(error, "로그인이 되지 않았습니다.");
+  }
 });
 export default router;

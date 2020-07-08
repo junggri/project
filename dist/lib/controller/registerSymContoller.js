@@ -44,6 +44,17 @@ var registerSymModel_1 = __importDefault(require("../model/registerSymModel"));
 var mypageState_1 = require("../mypageState");
 var authStatus_1 = __importDefault(require("../authStatus"));
 var registerSymController = {};
+registerSymController.find = function (req, res, email) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, registerSymModel_1.default.find({ email: email })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
 registerSymController.save = function (req, res, data, _email) {
     var registerSympton = new registerSymModel_1.default(data);
     registerSympton
@@ -96,20 +107,19 @@ registerSymController.findImageBeforeModified = function (req, res) { return __a
         }
     });
 }); };
-// registerSymController.findRegisterImg = async (id: string) => {
-//   let result = await registerSym.find({ _id: id });
-//   return result;
-// };
 registerSymController.UpdateImg = function (req, res) {
-    registerSymModel_1.default.updateMany({ _id: req.session._id }, { $set: { img: req.session.img } }).then(function () { });
+    registerSymModel_1.default.update({ _id: req.session._id }, { $set: { img: req.session.img } }).then(function () { });
 };
 registerSymController.modified = function (req, res, data) {
     var sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content;
     registerSymModel_1.default
-        .updateMany({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
+        .update({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
         .then(function () {
         res.redirect("/api/mypage");
     });
+};
+registerSymController.deleteSympton = function (req, res) {
+    registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function (result) { });
 };
 exports.default = registerSymController;
 //# sourceMappingURL=registerSymContoller.js.map

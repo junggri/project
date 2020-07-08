@@ -42,7 +42,7 @@
               <div class="ss-detail">
                 세부 내용을 작성해 주세요.
               </div>
-             <textarea name="sympton_detail" id="sympton-detail" cols="70" rows="6" placeholder="ex)컴퓨터가 켜지지 않아요."></textarea>
+             <textarea name="sympton_detail" id="sympton-detail"  cols="70" rows="6" placeholder="ex)컴퓨터가 켜지지 않아요." ></textarea>
              <span>구체적으로 작성하면 보다 정확한 견적이 가능합니다.</span>
             </div>
           </section>
@@ -63,7 +63,7 @@
         <div class="page-2">
           <section class="selected-time">
             <div class="st-slo">시간을 선택해주세요.</div>
-            <select name="time" id="st-time">
+            <select name="time" id="st-time" >
               <option value="" disabled selected>시간</option>
               <option value="09">9시</option>
               <option value="10">10시</option>
@@ -78,7 +78,7 @@
               <option value="19">7시</option>
               <option value="20">8시</option>
             </select>
-            <select name="minute" id="st-minute">
+            <select name="minute" id="st-minute" >
               <option value="" disabled selected>분</option>
               <option value="0">00분</option>
               <option value="10">10분</option>
@@ -96,7 +96,6 @@
               placeholder="우편번호"
               name="postcode"
               readonly
-              required
             />
             <span id="adr_btn" onclick="openAddresss()">주소찾기</span></br>
               <input
@@ -105,7 +104,6 @@
                 name="roadAddress"
                 placeholder="도로명주소"
                 readonly
-                required
               />
               <input
                 type="text"
@@ -113,18 +111,18 @@
                 name="detailAddress"
                 placeholder="상세주소"
                 autocomplete="off"
-                required
+                readonly
               />
           </section>
           <section class='user-want-to-provider'>
             <span class="user-want-slo">00에게 원하는 말씀을 작성해주세요.</span>
-            <textarea name="userwant_content" id="userwant-box"  cols="70" rows="6" placeholder="ex)마스크를 착용해주세요."></textarea>
+            <textarea name="userwant_content" id="userwant-box"  cols="70" rows="6" placeholder="ex)마스크를 착용해주세요." ></textarea>
           </section>
         </div>
        <footer class="estimate-btn-box">
         <div class="estimate-btn-box-previous">이전으로</div>
         <div class="estimate-btn-box-next">다음으로</div>
-        <input type="button" class="estimate-btn-box-submit" value="견적받기" onclick="formAndBlockBack()" >
+        <input type="submit" class="estimate-btn-box-submit" value="견적받기" onclick="formAndBlockBack()" >
        </footer>
       </section>
     </form>

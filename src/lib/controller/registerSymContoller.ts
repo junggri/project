@@ -6,6 +6,11 @@ import auth from "../authStatus";
 
 let registerSymController: any = {};
 
+registerSymController.find = async (req: Request, res: Response, email: string) => {
+  let result = await registerSym.find({ email: email });
+  return result;
+};
+
 registerSymController.save = (req: any, res: any, data: any, _email: string) => {
   let registerSympton: any = new registerSym(data);
   registerSympton
@@ -48,24 +53,23 @@ registerSymController.findImageBeforeModified = async (req: Request, res: Respon
   return result;
 };
 
-// registerSymController.findRegisterImg = async (id: string) => {
-//   let result = await registerSym.find({ _id: id });
-//   return result;
-// };
-
 registerSymController.UpdateImg = (req: Request, res: Response) => {
-  registerSym.updateMany({ _id: req.session._id }, { $set: { img: req.session.img } }).then(() => {});
+  registerSym.update({ _id: req.session._id }, { $set: { img: req.session.img } }).then(() => {});
 };
 
 registerSymController.modified = (req: Request, res: Response, data: any) => {
   let { sympton_detail, time, minute, postcode, roadAddress, detailAddress, userwant_content } = data;
   registerSym
-    .updateMany(
+    .update(
       { _id: req.session._id },
       { $set: { sympton_detail: sympton_detail, userwant_time: { time, minute }, address: { postcode, roadAddress, detailAddress }, userwant_content: userwant_content } }
     )
     .then(() => {
       res.redirect("/api/mypage");
     });
+};
+
+registerSymController.deleteSympton = (req: Request, res: Response) => {
+  registerSym.deleteOne({ _id: req.body.id }).then((result) => {});
 };
 export default registerSymController;

@@ -279,7 +279,9 @@ function get_estimate() {
         fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
     };
     window.formAndBlockBack = function () {
-        registerFrom.submit();
+        if (confirm("간편견적을 받아보시겠습니까?")) {
+            registerFrom.submit();
+        }
     };
     window.previous_fileUpload = function (e) {
         fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);

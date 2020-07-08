@@ -339,7 +339,7 @@ router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogin
         registerSymContoller_1.default.findAllRegister(req, res, decoded.email);
     }
     catch (error) {
-        console.error(error, "로그인이 되지 않아습니다.");
+        console.error(error, "로그인이 되지 않았습니다.");
     }
 });
 router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -428,5 +428,29 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     };
     registerSymContoller_1.default.modified(req, res, data);
 });
+router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, decoded, result, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = req.cookies.jwttoken;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+                registerSymContoller_1.default.deleteSympton(req, res);
+                return [4 /*yield*/, registerSymContoller_1.default.find(req, res, decoded.email)];
+            case 2:
+                result = _a.sent();
+                res.json(result);
+                return [3 /*break*/, 4];
+            case 3:
+                error_4 = _a.sent();
+                console.error(error_4, "로그인이 되지 않았습니다.");
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
 exports.default = router;
 //# sourceMappingURL=api.js.map
