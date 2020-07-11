@@ -307,16 +307,6 @@ function get_estimate() {
             top: window.screen.height / 2 - height / 2,
         });
     };
-    // let a = [1, 2, 3];
-    // let b = [1, 2];
-    // for (let i = 0; i < a.length; i++) {
-    //   // b.includes(a[i]);
-    //   console.log(b.includes(a[i]));
-    //   if (!b.includes(a[i])) {
-    //     console.log(a.splice(a.indexOf(a[i]), 1));
-    //   }
-    // }
-    //  사진다른거 삭제하기
 }
 exports.default = get_estimate;
 //# sourceMappingURL=get_esimate.js.map

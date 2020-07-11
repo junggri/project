@@ -16,6 +16,7 @@ export function verify(req: any, res: any, next: any) {
   } catch (error) {
     // console.log(error);
     if (!token) {
+      console.log("아직 토큰은 업습니다.");
       next();
     }
     if (error.name === "TokenExpiredError") {

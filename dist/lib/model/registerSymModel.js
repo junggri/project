@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var mongoose_1 = __importDefault(require("mongoose"));
 var registerSympton = new mongoose_1.default.Schema({
-    registrant: {
-        type: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "testuser" }],
-    },
+    // registrant: {
+    //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: "testuser" }],
+    // },
     email: {
         type: String,
     },

@@ -39,69 +39,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.modifiedReupload = exports.modifiedUpload = exports.reupload = exports.upload = void 0;
-var multer_1 = __importDefault(require("multer"));
+var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
-exports.upload = multer_1.default({
-    storage: multer_1.default.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, "upload/");
-        },
-        filename: function (req, file, cb) {
-            var filename = new Date().valueOf() + path_1.default.extname(file.originalname);
-            cb(null, filename);
-            req.session.img.push(filename);
-        },
-    }),
-    limits: { fileSize: 10 * 1024 * 1024 },
-}).array("data", 10);
-exports.reupload = multer_1.default({
-    storage: multer_1.default.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, "upload/");
-        },
-        filename: function (req, file, cb) {
-            var filename = new Date().valueOf() + path_1.default.extname(file.originalname);
-            cb(null, filename);
-            if (req.session.img.length < 10) {
-                req.session.img.push(filename);
-            }
-        },
-    }),
-    limits: { fileSize: 10 * 1024 * 1024 },
-}).array("data");
-exports.modifiedUpload = multer_1.default({
-    storage: multer_1.default.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, "upload/");
-        },
-        filename: function (req, file, cb) {
-            return __awaiter(this, void 0, void 0, function () {
-                var filename;
-                return __generator(this, function (_a) {
-                    filename = new Date().valueOf() + path_1.default.extname(file.originalname);
-                    cb(null, filename);
-                    req.session.img.push(filename);
+var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
+var savedImg = [];
+function default_1(email) {
+    return __awaiter(this, void 0, void 0, function () {
+        var imgPath, users;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    imgPath = path_1.default.join(__dirname, "../../upload");
+                    return [4 /*yield*/, usermodel_1.default.findOne({ email: email }).populate("register_sympton")];
+                case 1:
+                    users = _a.sent();
+                    console.log(users);
+                    // for (let i = 0; i < result.register_sympton.length; i++) {
+                    //   for (let j = 0; j < result.register_sympton[i].img.length; j++) {
+                    //     console.log(result.register_sympton[i].img[j]);
+                    //     savedImg.push(result.register_sympton[i].img[j]);
+                    //   }
+                    // }
+                    fs_1.default.readdir(imgPath, function (err, data) {
+                        if (err)
+                            console.error(err);
+                        for (var i = 0; i < data.length; i++) {
+                            if (!savedImg.includes(data[i])) {
+                                fs_1.default.unlink(imgPath + "/" + data[i], function (err) {
+                                    if (err)
+                                        console.error(err);
+                                });
+                            }
+                        }
+                    });
                     return [2 /*return*/];
-                });
-            });
-        },
-    }),
-    limits: { fileSize: 10 * 1024 * 1024 },
-}).array("data", 10);
-exports.modifiedReupload = multer_1.default({
-    storage: multer_1.default.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, "upload/");
-        },
-        filename: function (req, file, cb) {
-            var filename = new Date().valueOf() + path_1.default.extname(file.originalname);
-            cb(null, filename);
-            if (req.session.img.length < 10) {
-                req.session.img.push(filename);
             }
-        },
-    }),
-    limits: { fileSize: 10 * 1024 * 1024 },
-}).array("data");
-//# sourceMappingURL=multer.js.map
+        });
+    });
+}
+exports.default = default_1;
+//# sourceMappingURL=deleteImg.js.map

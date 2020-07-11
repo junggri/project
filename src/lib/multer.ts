@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import multer from "multer";
-import jwt from "jsonwebtoken";
 import path from "path";
-import registerSymController from "../lib/controller/registerSymContoller";
 
 export const upload = multer({
   storage: multer.diskStorage({
@@ -43,7 +41,6 @@ export const modifiedUpload = multer({
       let filename: string = new Date().valueOf() + path.extname(file.originalname);
       cb(null, filename);
       req.session.img.push(filename);
-      registerSymController.UpdateImg(req);
     },
   }),
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -59,7 +56,6 @@ export const modifiedReupload = multer({
       cb(null, filename);
       if (req.session.img.length < 10) {
         req.session.img.push(filename);
-        registerSymController.UpdateImg(req);
       }
     },
   }),

@@ -56,7 +56,7 @@ exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, voi
             case 1:
                 if (!(i < data.length)) return [3 /*break*/, 4];
                 mainImg = void 0;
-                data[i].img[0] !== undefined ? (mainImg = "url('/" + data[i].img[0] + "')") : (mainImg = "url('/noimage.svg')");
+                data[i].img[0] !== undefined || null ? (mainImg = "url('/" + data[i].img[0] + "')") : (mainImg = "url('/noimage.svg')");
                 codeText = void 0;
                 return [4 /*yield*/, symptonModel_1.default.find({ code: data[i].code[0] })];
             case 2:

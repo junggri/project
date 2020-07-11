@@ -16,12 +16,11 @@ import registerSymController from "../lib/controller/registerSymContoller";
 import imageController from "../lib/controller/imageContoller";
 import users from "../lib/model/usermodel";
 import auth from "../lib/authStatus";
-import path from "path";
-import fs from "fs";
 import { selcted_sympton } from "../lib/symptonList";
 import { upload, reupload, modifiedUpload, modifiedReupload } from "../lib/multer";
 import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
 import { createToken } from "../lib/accesstoken";
+import deleteImg from "../lib/deleteImg";
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
@@ -188,16 +187,8 @@ router.get("/get_estimate", csrfProtection, verify, isNotLogined, (req, res) => 
 });
 
 router.post("/delete_session_img", parseForm, csrfProtection, verify, (req, res) => {
-  try {
-    let imgPath = path.join(__dirname, "../../upload");
-    fs.unlink(`${imgPath}/${req.body.data}`, async (err) => {
-      if (err) console.error(err);
-      req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
-      res.json(req.session.img);
-    });
-  } catch (error) {
-    console.error("이미지 삭제 실패");
-  }
+  req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+  res.json(req.session.img);
 });
 
 router.post("/fetch_session", parseForm, csrfProtection, verify, (req, res) => {
@@ -263,6 +254,7 @@ router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
   const token = req.cookies.jwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    deleteImg((decoded as Decoded).email);
     registerSymController.findAllRegister(req, res, (decoded as Decoded).email);
   } catch (error) {
     console.error(error, "로그인이 되지 않았습니다.");
@@ -273,7 +265,7 @@ router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async
   let authUI = auth.status(req, res);
   let response = await registerSymController.findCodeBeforeModified(req, res);
   if (response === null) {
-    res.redirect("/api/mypage");
+    return res.redirect("/api/mypage");
   }
   let codeList = await selcted_sympton(response.code);
   req.session._id = req.url.split("/")[2];
@@ -290,13 +282,8 @@ router.post("/modified_get_image", async (req, res) => {
 });
 
 router.post("/modified_delete_session_img", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
-  let imgPath = path.join(__dirname, "../../upload");
-  fs.unlink(`${imgPath}/${req.body.data}`, async (err) => {
-    if (err) console.error(err);
-    req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
-    registerSymController.UpdateImg(req, res);
-    res.json(req.session.img);
-  });
+  req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+  res.json(req.session.img);
 });
 
 router.post("/modified_upload_image", verify, (req: any, res, next) => {
@@ -304,7 +291,6 @@ router.post("/modified_upload_image", verify, (req: any, res, next) => {
     if (err) {
       console.error(err);
       req.session.img = [];
-      registerSymController.UpdateImg(req);
       res.json({ state: false });
       return;
     }
@@ -325,23 +311,28 @@ router.post("/modified_add_upload_image", verify, (req: any, res, next) => {
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
   let { sympton_detail, time, minute, postcode, roadAddress, userwant_content } = req.body;
   let detailAddress = sanitizeHtml(req.body.detailAddress);
+  let imgData = { image: req.session.img };
   let data = {
     sympton_detail: sanitizeHtml(sympton_detail),
     time: time,
     minute: minute,
+    img: req.session.img,
     postcode: postcode,
     roadAddress: roadAddress,
     detailAddress: detailAddress,
     userwant_content: sanitizeHtml(userwant_content),
   };
+  imageController.save(req, res, imgData);
   registerSymController.modified(req, res, data);
+  req.session.img = [];
+  req.session.code = [];
 });
 
 router.post("/delete_register_sympton", parseForm, csrfProtection, verify, isNotLogined, async (req, res) => {
   const token = req.cookies.jwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    registerSymController.deleteSympton(req, res);
+    registerSymController.deleteSympton(req, res, (decoded as Decoded).email);
     let result = await registerSymController.find(req, res, (decoded as Decoded).email);
     res.json(result);
   } catch (error) {

@@ -57,12 +57,11 @@ var registerSymContoller_1 = __importDefault(require("../lib/controller/register
 var imageContoller_1 = __importDefault(require("../lib/controller/imageContoller"));
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
-var path_1 = __importDefault(require("path"));
-var fs_1 = __importDefault(require("fs"));
 var symptonList_1 = require("../lib/symptonList");
 var multer_1 = require("../lib/multer");
 var jwtverify_1 = require("../lib/jwtverify");
 var accesstoken_1 = require("../lib/accesstoken");
+var deleteImg_1 = __importDefault(require("../lib/deleteImg"));
 var csrfProtection = csurf_1.default({ cookie: true });
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
@@ -260,21 +259,8 @@ router.get("/get_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNo
     });
 });
 router.post("/delete_session_img", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
-    try {
-        var imgPath = path_1.default.join(__dirname, "../../upload");
-        fs_1.default.unlink(imgPath + "/" + req.body.data, function (err) { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                if (err)
-                    console.error(err);
-                req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
-                res.json(req.session.img);
-                return [2 /*return*/];
-            });
-        }); });
-    }
-    catch (error) {
-        console.error("이미지 삭제 실패");
-    }
+    req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+    res.json(req.session.img);
 });
 router.post("/fetch_session", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
     req.session.img === undefined || req.session.img.length === 0 ? res.json({ state: false }) : res.json(req.session.img);
@@ -336,6 +322,7 @@ router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogin
     var token = req.cookies.jwttoken;
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        deleteImg_1.default(decoded.email);
         registerSymContoller_1.default.findAllRegister(req, res, decoded.email);
     }
     catch (error) {
@@ -352,7 +339,7 @@ router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtveri
             case 1:
                 response = _a.sent();
                 if (response === null) {
-                    res.redirect("/api/mypage");
+                    return [2 /*return*/, res.redirect("/api/mypage")];
                 }
                 return [4 /*yield*/, symptonList_1.selcted_sympton(response.code)];
             case 2:
@@ -381,24 +368,14 @@ router.post("/modified_get_image", function (req, res) { return __awaiter(void 0
     });
 }); });
 router.post("/modified_delete_session_img", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
-    var imgPath = path_1.default.join(__dirname, "../../upload");
-    fs_1.default.unlink(imgPath + "/" + req.body.data, function (err) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            if (err)
-                console.error(err);
-            req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
-            registerSymContoller_1.default.UpdateImg(req, res);
-            res.json(req.session.img);
-            return [2 /*return*/];
-        });
-    }); });
+    req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+    res.json(req.session.img);
 });
 router.post("/modified_upload_image", jwtverify_1.verify, function (req, res, next) {
     multer_1.modifiedUpload(req, res, function (err) {
         if (err) {
             console.error(err);
             req.session.img = [];
-            registerSymContoller_1.default.UpdateImg(req);
             res.json({ state: false });
             return;
         }
@@ -417,16 +394,21 @@ router.post("/modified_add_upload_image", jwtverify_1.verify, function (req, res
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content;
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
+    var imgData = { image: req.session.img };
     var data = {
         sympton_detail: sanitize_html_1.default(sympton_detail),
         time: time,
         minute: minute,
+        img: req.session.img,
         postcode: postcode,
         roadAddress: roadAddress,
         detailAddress: detailAddress,
         userwant_content: sanitize_html_1.default(userwant_content),
     };
+    imageContoller_1.default.save(req, res, imgData);
     registerSymContoller_1.default.modified(req, res, data);
+    req.session.img = [];
+    req.session.code = [];
 });
 router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var token, decoded, result, error_4;
@@ -438,7 +420,7 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.v
             case 1:
                 _a.trys.push([1, 3, , 4]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                registerSymContoller_1.default.deleteSympton(req, res);
+                registerSymContoller_1.default.deleteSympton(req, res, decoded.email);
                 return [4 /*yield*/, registerSymContoller_1.default.find(req, res, decoded.email)];
             case 2:
                 result = _a.sent();

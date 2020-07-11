@@ -550,16 +550,6 @@ function get_estimate() {
             top: window.screen.height / 2 - height / 2,
         });
     };
-    // let a = [1, 2, 3];
-    // let b = [1, 2];
-    // for (let i = 0; i < a.length; i++) {
-    //   // b.includes(a[i]);
-    //   console.log(b.includes(a[i]));
-    //   if (!b.includes(a[i])) {
-    //     console.log(a.splice(a.indexOf(a[i]), 1));
-    //   }
-    // }
-    //  사진다른거 삭제하기
 }
 exports.default = get_estimate;
 //# sourceMappingURL=get_esimate.js.map
@@ -680,15 +670,21 @@ function mypage() {
     var minuteOption = document.getElementById("st-minute");
     var userwant_box = document.querySelector("#userwant-box");
     var cancelBtn = document.querySelector(".modified-cancel-btn");
+    var modifiedBtn = document.querySelector(".modified-estimate-btn");
     var modifiedForm = document.querySelector(".modified_estimate_form");
     var lengthFlag = true;
     imgBtn.addEventListener("click", function () {
         fileBtn.click();
     });
-    cancelBtn.addEventListener("click", function () {
-        var cancelConfirm = confirm("현재까지 수정한 입력정보는 저장됩니다. 그래도 취소하시겠습니?");
-        if (cancelConfirm) {
+    modifiedBtn.addEventListener("click", function (e) {
+        if (confirm("입력하신 정보를 수정하시겠습니까?")) {
             modifiedForm.submit();
+        }
+    });
+    cancelBtn.addEventListener("click", function () {
+        var cancelConfirm = confirm("수정하신 정보가 저장되지 않습니다. 정말로 취소하시겠습니까?");
+        if (cancelConfirm) {
+            location.href = "/api/mypage";
         }
     });
     function selectedTime(response) {
@@ -1141,7 +1137,7 @@ function register() {
                         return [4 /*yield*/, fetchResult.json()];
                     case 3:
                         result = _a.sent();
-                        // console.log(result);
+                        console.log(result);
                         validation_num = result.validation_num;
                         $(".state-email").html(result.msg);
                         if (result.state === "true") {

@@ -13,6 +13,7 @@ export default function mypage() {
   let minuteOption = document.getElementById("st-minute") as HTMLSelectElement;
   let userwant_box = document.querySelector("#userwant-box");
   let cancelBtn = document.querySelector(".modified-cancel-btn");
+  let modifiedBtn = document.querySelector(".modified-estimate-btn") as HTMLInputElement;
   let modifiedForm = document.querySelector(".modified_estimate_form") as HTMLFormElement;
   let lengthFlag: boolean = true;
 
@@ -24,10 +25,16 @@ export default function mypage() {
     userwant_time: { time: number; minute: number };
   }
 
-  cancelBtn.addEventListener("click", () => {
-    let cancelConfirm = confirm("현재까지 수정한 입력정보는 저장됩니다. 그래도 취소하시겠습니?");
-    if (cancelConfirm) {
+  modifiedBtn.addEventListener("click", (e) => {
+    if (confirm("입력하신 정보를 수정하시겠습니까?")) {
       modifiedForm.submit();
+    }
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    let cancelConfirm = confirm("수정하신 정보가 저장되지 않습니다. 정말로 취소하시겠습니까?");
+    if (cancelConfirm) {
+      location.href = "/api/mypage";
     }
   });
 

@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 const registerSympton = new mongoose.Schema({
-  registrant: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "testuser" }],
-  },
+  // registrant: {
+  //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: "testuser" }],
+  // },
   email: {
     type: String,
   },

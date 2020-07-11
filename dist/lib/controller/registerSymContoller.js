@@ -55,24 +55,36 @@ registerSymController.find = function (req, res, email) { return __awaiter(void 
         }
     });
 }); };
-registerSymController.save = function (req, res, data, _email) {
-    var registerSympton = new registerSymModel_1.default(data);
-    registerSympton
-        .save()
-        .then(function () {
-        usermodel_1.default.findOne({ email: _email }, function (err, user) {
-            registerSympton.registrant.push(user);
-            registerSympton.save();
+registerSymController.save = function (req, res, data, _email) { return __awaiter(void 0, void 0, void 0, function () {
+    var registerSympton;
+    return __generator(this, function (_a) {
+        registerSympton = new registerSymModel_1.default(data);
+        registerSympton
+            .save()
+            .then(function () { return __awaiter(void 0, void 0, void 0, function () {
+            var user;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, usermodel_1.default.findOne({ email: _email })];
+                    case 1:
+                        user = _a.sent();
+                        user.register_sympton.push(registerSympton._id);
+                        // user.register_sympton.push(result._id); 위와 동일
+                        //populate에는 objectId _id를 넣어줘어야한다.
+                        user.save();
+                        return [2 /*return*/];
+                }
+            });
+        }); })
+            .catch(function (err) {
+            res.status(500).json("에러");
         });
-    })
-        .catch(function (err) {
-        res.status(500).json("에러");
+        return [2 /*return*/];
     });
-};
+}); };
 registerSymController.findAllRegister = function (req, res, _email) {
     registerSymModel_1.default
         .find({ email: _email })
-        .populate("registrant")
         .sort({ create: -1 })
         .then(function (result) {
         mypageState_1.makeListSympton(result).then(function (_list) {
@@ -89,7 +101,7 @@ registerSymController.findCodeBeforeModified = function (req, res) { return __aw
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: req.url.split("/")[2] }).populate("registrant")];
+            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: req.url.split("/")[2] })];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];
@@ -100,26 +112,41 @@ registerSymController.findImageBeforeModified = function (req, res) { return __a
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: req.body.url }).populate("registrant")];
+            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: req.body.url })];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];
         }
     });
 }); };
-registerSymController.UpdateImg = function (req, res) {
-    registerSymModel_1.default.update({ _id: req.session._id }, { $set: { img: req.session.img } }).then(function () { });
-};
-registerSymController.modified = function (req, res, data) {
-    var sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content;
-    registerSymModel_1.default
-        .update({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
-        .then(function () {
-        res.redirect("/api/mypage");
+registerSymController.modified = function (req, res, data) { return __awaiter(void 0, void 0, void 0, function () {
+    var sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content;
+    return __generator(this, function (_a) {
+        sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content;
+        registerSymModel_1.default
+            .update({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
+            .then(function () {
+            res.redirect("/api/mypage");
+        });
+        return [2 /*return*/];
     });
-};
-registerSymController.deleteSympton = function (req, res) {
-    registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function (result) { });
-};
+}); };
+registerSymController.deleteSympton = function (req, res, email) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, usermodel_1.default.find({ email: email }).populate("register_sympton")];
+                    case 1:
+                        result = _a.sent();
+                        console.log(result);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        return [2 /*return*/];
+    });
+}); };
 exports.default = registerSymController;
 //# sourceMappingURL=registerSymContoller.js.map

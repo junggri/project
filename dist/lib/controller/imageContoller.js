@@ -7,7 +7,11 @@ var imageModel_1 = __importDefault(require("../model/imageModel"));
 var imageController = {};
 imageController.save = function (req, res, data) {
     var Img = new imageModel_1.default(data);
-    Img.save();
+    Img.save()
+        .then(function (result) { })
+        .catch(function (err) {
+        console.error(err);
+    });
 };
 exports.default = imageController;
 //# sourceMappingURL=imageContoller.js.map

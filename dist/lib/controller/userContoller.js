@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var user = require("../../lib/model/usermodel");
+var usermodel_1 = __importDefault(require("../../lib/model/usermodel"));
 var userController = {};
 userController.tokenUpdate = function (req, res, _email, _refresh_token) {
-    user
+    usermodel_1.default
         .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token } })
         .then(function (result) {
         console.log("토큰 재발급했어요");

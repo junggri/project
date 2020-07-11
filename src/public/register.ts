@@ -47,7 +47,7 @@ export default function register() {
       });
       if (fetchResult.status === 200 || 201) {
         let result = await fetchResult.json();
-        // console.log(result);
+        console.log(result);
         validation_num = result.validation_num;
         $(".state-email").html(result.msg);
         if (result.state === "true") {

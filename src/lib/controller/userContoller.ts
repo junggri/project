@@ -1,4 +1,4 @@
-let user = require("../../lib/model/usermodel");
+import user from "../../lib/model/usermodel";
 let userController: any = {};
 
 userController.tokenUpdate = (req: any, res: any, _email: string, _refresh_token: string) => {

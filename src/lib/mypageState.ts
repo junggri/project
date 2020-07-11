@@ -18,7 +18,7 @@ export let makeListSympton = async (data: any) => {
   }
   for (let i = 0; i < data.length; i++) {
     let mainImg;
-    data[i].img[0] !== undefined ? (mainImg = `url('/${data[i].img[0]}')`) : (mainImg = `url('/noimage.svg')`);
+    data[i].img[0] !== undefined || null ? (mainImg = `url('/${data[i].img[0]}')`) : (mainImg = `url('/noimage.svg')`);
     let codeText: string;
     let result: Content = await symptonModel.find({ code: data[i].code[0] });
     if (data[i].code.length === 1) {

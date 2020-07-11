@@ -11,15 +11,16 @@ registerSymController.find = async (req: Request, res: Response, email: string) 
   return result;
 };
 
-registerSymController.save = (req: any, res: any, data: any, _email: string) => {
+registerSymController.save = async (req: any, res: any, data: any, _email: string) => {
   let registerSympton: any = new registerSym(data);
   registerSympton
     .save()
-    .then(() => {
-      users.findOne({ email: _email }, (err, user) => {
-        registerSympton.registrant.push(user);
-        registerSympton.save();
-      });
+    .then(async () => {
+      let user: any = await users.findOne({ email: _email });
+      user.register_sympton.push(registerSympton._id);
+      // user.register_sympton.push(result._id); 위와 동일
+      //populate에는 objectId _id를 넣어줘어야한다.
+      user.save();
     })
     .catch((err: any) => {
       res.status(500).json("에러");
@@ -29,7 +30,6 @@ registerSymController.save = (req: any, res: any, data: any, _email: string) => 
 registerSymController.findAllRegister = (req: any, res: any, _email: string) => {
   registerSym
     .find({ email: _email })
-    .populate("registrant")
     .sort({ create: -1 })
     .then((result: any) => {
       makeListSympton(result).then((_list) => {
@@ -44,32 +44,31 @@ registerSymController.findAllRegister = (req: any, res: any, _email: string) => 
 };
 
 registerSymController.findCodeBeforeModified = async (req: Request, res: Response) => {
-  let result = await registerSym.findOne({ _id: req.url.split("/")[2] }).populate("registrant");
+  let result = await registerSym.findOne({ _id: req.url.split("/")[2] });
   return result;
 };
 
 registerSymController.findImageBeforeModified = async (req: Request, res: Response) => {
-  let result = await registerSym.findOne({ _id: req.body.url }).populate("registrant");
+  let result = await registerSym.findOne({ _id: req.body.url });
   return result;
 };
 
-registerSymController.UpdateImg = (req: Request, res: Response) => {
-  registerSym.update({ _id: req.session._id }, { $set: { img: req.session.img } }).then(() => {});
-};
-
-registerSymController.modified = (req: Request, res: Response, data: any) => {
-  let { sympton_detail, time, minute, postcode, roadAddress, detailAddress, userwant_content } = data;
+registerSymController.modified = async (req: Request, res: Response, data: any) => {
+  let { sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content } = data;
   registerSym
     .update(
       { _id: req.session._id },
-      { $set: { sympton_detail: sympton_detail, userwant_time: { time, minute }, address: { postcode, roadAddress, detailAddress }, userwant_content: userwant_content } }
+      { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time, minute }, address: { postcode, roadAddress, detailAddress }, userwant_content: userwant_content } }
     )
     .then(() => {
       res.redirect("/api/mypage");
     });
 };
 
-registerSymController.deleteSympton = (req: Request, res: Response) => {
-  registerSym.deleteOne({ _id: req.body.id }).then((result) => {});
+registerSymController.deleteSympton = async (req: Request, res: Response, email: string) => {
+  registerSym.deleteOne({ _id: req.body.id }).then(async () => {
+    let result = await users.find({ email: email }).populate("register_sympton");
+    console.log(result);
+  });
 };
 export default registerSymController;
