@@ -1,34 +1,56 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var loginEmail = document.querySelector("#login_email");
-var loginPwd = document.querySelector("#login_pwd");
-var loginBtn = document.querySelector(".login-btn");
 function login() {
-    // async function login_previous(url, data) {
-    //   let token = document
-    //     .querySelector('meta[name="csrf-token"]')
-    //     .getAttribute("content");
-    //   try {
-    //     let fetchResult = await fetch(url, {
-    //       method: "post",
-    //       credentials: "same-origin",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         "CSRF-Token": token,
-    //       },
-    //       body: JSON.stringify(data),
-    //     });
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // }
-    // loginBtn.addEventListener("click", (e) => {
-    //   let inputdata = { email: loginEmail.value, password: loginPwd.value };
-    //   // login_previous("http://localhost:3000/api/login_process", inputdata);
-    // });
-    window.login_verify = function () {
-        return true;
-    };
+    var checkBox = document.querySelector("#checkbox_id");
+    var emailBox = document.querySelector("#login_email");
+    $(document).ready(function () {
+        emailBox.focus();
+        var userInputEmail = getCookie("userInputEmail");
+        $("#login_email").val(userInputEmail);
+        if ($("#login_email").val() !== "") {
+            checkBox.checked = true;
+        }
+        $("#checkbox_id").change(function () {
+            if ($("#checkbox_id").is(":checked")) {
+                var userInputEmail_1 = $("#login_email").val();
+                setCookie("userInputEmail", userInputEmail_1, 7);
+            }
+            else {
+                deleteCookie("userInputEmail");
+            }
+        });
+        $("login_email").keyup(function () {
+            if ($("#checkbox_id").is(":checked")) {
+                var userInputEmail_2 = $("login_email").val();
+                setCookie("userInputEmail", userInputEmail_2, 7);
+            }
+        });
+    });
+    function setCookie(cookieName, value, exdays) {
+        var exdate = new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var cookieValue = escape(value) + (exdays == null ? "" : "; expires=" + exdate.toUTCString());
+        document.cookie = cookieName + "=" + cookieValue;
+    }
+    function deleteCookie(cookieName) {
+        var expireDate = new Date();
+        expireDate.setDate(expireDate.getDate() - 1);
+        document.cookie = cookieName + "= " + "; expires=" + expireDate.toUTCString();
+    }
+    function getCookie(cookieName) {
+        cookieName = cookieName + "=";
+        var cookieData = document.cookie;
+        var start = cookieData.indexOf(cookieName);
+        var cookieValue = "";
+        if (start != -1) {
+            start += cookieName.length;
+            var end = cookieData.indexOf(";", start);
+            if (end == -1)
+                end = cookieData.length;
+            cookieValue = cookieData.substring(start, end);
+        }
+        return unescape(cookieValue);
+    }
 }
 exports.default = login;
 //# sourceMappingURL=login.js.map

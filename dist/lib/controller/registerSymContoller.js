@@ -97,6 +97,17 @@ registerSymController.findAllRegister = function (req, res, _email) {
         console.error(err);
     });
 };
+registerSymController.getAllImage = function (email) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, registerSymModel_1.default.find({ email: email })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
 registerSymController.findCodeBeforeModified = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
@@ -124,7 +135,7 @@ registerSymController.modified = function (req, res, data) { return __awaiter(vo
     return __generator(this, function (_a) {
         sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content;
         registerSymModel_1.default
-            .update({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
+            .updateOne({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
             .then(function () {
             res.redirect("/api/mypage");
         });

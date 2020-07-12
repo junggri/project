@@ -347,16 +347,16 @@ function get_estimate() {
             lengthFlag = true;
         }
     }
-    function commonMakeImg(imgArray) {
+    function commonMakeImg(data) {
         var imgBox = document.querySelector(".si-img-itemBox");
         var addImgBox = document.createElement("div");
-        for (var i = 0; i < imgArray.length; i++) {
+        for (var i = 0; i < data.img.length; i++) {
             var imgItem = document.createElement("div");
             var cancelIcon = document.createElement("div");
             cancelIcon.classList.add("img-box-cancel");
             imgItem.classList.add("img-item");
-            imgItem.style.backgroundImage = "url(\"/" + imgArray[i] + "\")";
-            imgItem.dataset.img = imgArray[i];
+            imgItem.style.backgroundImage = "url(\"/" + data.email.email + "/" + data.img[i] + "\")";
+            imgItem.dataset.img = data.img[i];
             imgItem.appendChild(cancelIcon);
             imgBox.insertBefore(imgItem, imgBox.firstChild);
             cancelIcon.addEventListener("click", function (e) {
@@ -374,16 +374,16 @@ function get_estimate() {
             addFileBtn.click();
         });
         imgBox.appendChild(addImgBox);
-        lengthOfImg(imgArray);
+        lengthOfImg(data.img);
     }
-    function makeSymptonImg(imgArray) {
-        if (imgArray === undefined) {
+    function makeSymptonImg(data) {
+        if (data.img === undefined) {
             return;
         }
         imgBtn.style.display = "none";
-        commonMakeImg(imgArray);
+        commonMakeImg(data);
     }
-    function removeAndMakeNewImage(imgArray) {
+    function removeAndMakeNewImage(data) {
         var imgBox = document.querySelector(".si-img-itemBox");
         while (imgBox.hasChildNodes) {
             if (imgBox.firstChild === null) {
@@ -391,7 +391,7 @@ function get_estimate() {
             }
             imgBox.removeChild(imgBox.firstChild);
         }
-        commonMakeImg(imgArray);
+        commonMakeImg(data);
     }
     (function reloadGetSessionData() {
         return __awaiter(this, void 0, void 0, function () {
@@ -570,12 +570,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var register_1 = __importDefault(__webpack_require__(/*! ./register */ "./dist/public/register.js"));
+var login_1 = __importDefault(__webpack_require__(/*! ./login */ "./dist/public/login.js"));
 var estimate_1 = __importDefault(__webpack_require__(/*! ./estimate */ "./dist/public/estimate.js"));
 var get_esimate_1 = __importDefault(__webpack_require__(/*! ./get_esimate */ "./dist/public/get_esimate.js"));
 var mypqge_1 = __importDefault(__webpack_require__(/*! ./mypqge */ "./dist/public/mypqge.js"));
 var modified_estimate_1 = __importDefault(__webpack_require__(/*! ./modified_estimate */ "./dist/public/modified_estimate.js"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
 var path = window.location.pathname;
+if (path === "/api/login" || path === "/api/login_process") {
+    login_1.default();
+}
 if (path === "/api/register_previous" || "/api/register/common") {
     register_1.default();
 }
@@ -606,6 +610,73 @@ function index() {
     });
 }
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./dist/public/login.js":
+/*!******************************!*\
+  !*** ./dist/public/login.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function login() {
+    var checkBox = document.querySelector("#checkbox_id");
+    var emailBox = document.querySelector("#login_email");
+    $(document).ready(function () {
+        emailBox.focus();
+        var userInputEmail = getCookie("userInputEmail");
+        $("#login_email").val(userInputEmail);
+        if ($("#login_email").val() !== "") {
+            checkBox.checked = true;
+        }
+        $("#checkbox_id").change(function () {
+            if ($("#checkbox_id").is(":checked")) {
+                var userInputEmail_1 = $("#login_email").val();
+                setCookie("userInputEmail", userInputEmail_1, 7);
+            }
+            else {
+                deleteCookie("userInputEmail");
+            }
+        });
+        $("login_email").keyup(function () {
+            if ($("#checkbox_id").is(":checked")) {
+                var userInputEmail_2 = $("login_email").val();
+                setCookie("userInputEmail", userInputEmail_2, 7);
+            }
+        });
+    });
+    function setCookie(cookieName, value, exdays) {
+        var exdate = new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var cookieValue = escape(value) + (exdays == null ? "" : "; expires=" + exdate.toUTCString());
+        document.cookie = cookieName + "=" + cookieValue;
+    }
+    function deleteCookie(cookieName) {
+        var expireDate = new Date();
+        expireDate.setDate(expireDate.getDate() - 1);
+        document.cookie = cookieName + "= " + "; expires=" + expireDate.toUTCString();
+    }
+    function getCookie(cookieName) {
+        cookieName = cookieName + "=";
+        var cookieData = document.cookie;
+        var start = cookieData.indexOf(cookieName);
+        var cookieValue = "";
+        if (start != -1) {
+            start += cookieName.length;
+            var end = cookieData.indexOf(";", start);
+            if (end == -1)
+                end = cookieData.length;
+            cookieValue = cookieData.substring(start, end);
+        }
+        return unescape(cookieValue);
+    }
+}
+exports.default = login;
+//# sourceMappingURL=login.js.map
 
 /***/ }),
 
@@ -725,13 +796,13 @@ function mypage() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        symptonDetail.textContent = response.sympton_detail;
-                        postcode.value = response.address.postcode;
-                        roadAddress.value = response.address.roadAddress;
-                        detailAddress.value = response.address.detailAddress;
-                        userwant_box.textContent = response.userwant_content;
-                        selectedTime(response);
-                        makeSymptonImg(response.img);
+                        symptonDetail.textContent = response.response.sympton_detail;
+                        postcode.value = response.response.address.postcode;
+                        roadAddress.value = response.response.address.roadAddress;
+                        detailAddress.value = response.response.address.detailAddress;
+                        userwant_box.textContent = response.response.userwant_content;
+                        selectedTime(response.response);
+                        makeSymptonImg(response);
                         return [3 /*break*/, 5];
                     case 4: throw new Error("reload fetch failed");
                     case 5: return [3 /*break*/, 7];
@@ -764,21 +835,21 @@ function mypage() {
             lengthFlag = true;
         }
     }
-    function commonMakeImg(imgArray) {
+    function commonMakeImg(data) {
         var imgBox = document.querySelector(".si-img-itemBox");
         var addImgBox = document.createElement("div");
-        for (var i = 0; i < imgArray.length; i++) {
+        for (var i = 0; i < data.img.length; i++) {
             var imgItem = document.createElement("div");
             var cancelIcon = document.createElement("div");
             cancelIcon.classList.add("img-box-cancel");
             imgItem.classList.add("img-item");
-            imgItem.style.backgroundImage = "url(\"/" + imgArray[i] + "\")";
-            imgItem.dataset.img = imgArray[i];
+            imgItem.style.backgroundImage = "url(\"/" + data.email.email + "/" + data.img[i] + "\")";
+            imgItem.dataset.img = data.img[i];
             imgItem.appendChild(cancelIcon);
             imgBox.insertBefore(imgItem, imgBox.firstChild);
             cancelIcon.addEventListener("click", function (e) {
                 var targetData = e.target.parentNode.dataset.img;
-                fetchDeleteImg("http://localhost:3000/api/modified_delete_session_img", targetData);
+                fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
                 imgBox.removeChild(e.target.parentNode);
             });
         }
@@ -791,16 +862,16 @@ function mypage() {
             addFileBtn.click();
         });
         imgBox.appendChild(addImgBox);
-        lengthOfImg(imgArray);
+        lengthOfImg(data.img);
     }
-    function makeSymptonImg(imgArray) {
-        if (imgArray === undefined) {
+    function makeSymptonImg(data) {
+        if (data.img === undefined) {
             return;
         }
         imgBtn.style.display = "none";
-        commonMakeImg(imgArray);
+        commonMakeImg(data);
     }
-    function removeAndMakeNewImage(imgArray) {
+    function removeAndMakeNewImage(data) {
         var imgBox = document.querySelector(".si-img-itemBox");
         while (imgBox.hasChildNodes) {
             if (imgBox.firstChild === null) {
@@ -808,7 +879,7 @@ function mypage() {
             }
             imgBox.removeChild(imgBox.firstChild);
         }
-        commonMakeImg(imgArray);
+        commonMakeImg(data);
     }
     function fetchDeleteImg(url, data) {
         return __awaiter(this, void 0, void 0, function () {

@@ -1,11 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 import multer from "multer";
 import path from "path";
+import jwt from "jsonwebtoken";
 
 export const upload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "upload/");
+      const token = req.cookies.jwttoken;
+      try {
+        let decoded: any = jwt.verify(token, process.env.JWT_SECRET);
+        cb(null, `upload/${decoded.email}`);
+      } catch (error) {
+        console.error(error);
+      }
     },
     filename: function (req, file: any, cb) {
       let filename: string = new Date().valueOf() + path.extname(file.originalname);
@@ -19,7 +26,13 @@ export const upload = multer({
 export const reupload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "upload/");
+      const token = req.cookies.jwttoken;
+      try {
+        let decoded: any = jwt.verify(token, process.env.JWT_SECRET);
+        cb(null, `upload/${decoded.email}`);
+      } catch (error) {
+        console.error(error);
+      }
     },
     filename: function (req, file: any, cb) {
       let filename: string = new Date().valueOf() + path.extname(file.originalname);
@@ -35,7 +48,13 @@ export const reupload = multer({
 export const modifiedUpload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "upload/");
+      const token = req.cookies.jwttoken;
+      try {
+        let decoded: any = jwt.verify(token, process.env.JWT_SECRET);
+        cb(null, `upload/${decoded.email}`);
+      } catch (error) {
+        console.error(error);
+      }
     },
     filename: async function (req: Request, file: any, cb) {
       let filename: string = new Date().valueOf() + path.extname(file.originalname);
@@ -49,7 +68,13 @@ export const modifiedUpload = multer({
 export const modifiedReupload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, "upload/");
+      const token = req.cookies.jwttoken;
+      try {
+        let decoded: any = jwt.verify(token, process.env.JWT_SECRET);
+        cb(null, `upload/${decoded.email}`);
+      } catch (error) {
+        console.error(error);
+      }
     },
     filename: function (req, file: any, cb) {
       let filename: string = new Date().valueOf() + path.extname(file.originalname);

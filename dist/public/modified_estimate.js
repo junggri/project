@@ -106,13 +106,13 @@ function mypage() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        symptonDetail.textContent = response.sympton_detail;
-                        postcode.value = response.address.postcode;
-                        roadAddress.value = response.address.roadAddress;
-                        detailAddress.value = response.address.detailAddress;
-                        userwant_box.textContent = response.userwant_content;
-                        selectedTime(response);
-                        makeSymptonImg(response.img);
+                        symptonDetail.textContent = response.response.sympton_detail;
+                        postcode.value = response.response.address.postcode;
+                        roadAddress.value = response.response.address.roadAddress;
+                        detailAddress.value = response.response.address.detailAddress;
+                        userwant_box.textContent = response.response.userwant_content;
+                        selectedTime(response.response);
+                        makeSymptonImg(response);
                         return [3 /*break*/, 5];
                     case 4: throw new Error("reload fetch failed");
                     case 5: return [3 /*break*/, 7];
@@ -145,21 +145,21 @@ function mypage() {
             lengthFlag = true;
         }
     }
-    function commonMakeImg(imgArray) {
+    function commonMakeImg(data) {
         var imgBox = document.querySelector(".si-img-itemBox");
         var addImgBox = document.createElement("div");
-        for (var i = 0; i < imgArray.length; i++) {
+        for (var i = 0; i < data.img.length; i++) {
             var imgItem = document.createElement("div");
             var cancelIcon = document.createElement("div");
             cancelIcon.classList.add("img-box-cancel");
             imgItem.classList.add("img-item");
-            imgItem.style.backgroundImage = "url(\"/" + imgArray[i] + "\")";
-            imgItem.dataset.img = imgArray[i];
+            imgItem.style.backgroundImage = "url(\"/" + data.email.email + "/" + data.img[i] + "\")";
+            imgItem.dataset.img = data.img[i];
             imgItem.appendChild(cancelIcon);
             imgBox.insertBefore(imgItem, imgBox.firstChild);
             cancelIcon.addEventListener("click", function (e) {
                 var targetData = e.target.parentNode.dataset.img;
-                fetchDeleteImg("http://localhost:3000/api/modified_delete_session_img", targetData);
+                fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
                 imgBox.removeChild(e.target.parentNode);
             });
         }
@@ -172,16 +172,16 @@ function mypage() {
             addFileBtn.click();
         });
         imgBox.appendChild(addImgBox);
-        lengthOfImg(imgArray);
+        lengthOfImg(data.img);
     }
-    function makeSymptonImg(imgArray) {
-        if (imgArray === undefined) {
+    function makeSymptonImg(data) {
+        if (data.img === undefined) {
             return;
         }
         imgBtn.style.display = "none";
-        commonMakeImg(imgArray);
+        commonMakeImg(data);
     }
-    function removeAndMakeNewImage(imgArray) {
+    function removeAndMakeNewImage(data) {
         var imgBox = document.querySelector(".si-img-itemBox");
         while (imgBox.hasChildNodes) {
             if (imgBox.firstChild === null) {
@@ -189,7 +189,7 @@ function mypage() {
             }
             imgBox.removeChild(imgBox.firstChild);
         }
-        commonMakeImg(imgArray);
+        commonMakeImg(data);
     }
     function fetchDeleteImg(url, data) {
         return __awaiter(this, void 0, void 0, function () {

@@ -42,24 +42,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
+var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
 var savedImg = [];
 function default_1(email) {
     return __awaiter(this, void 0, void 0, function () {
-        var imgPath, users;
+        var imgPath, result, users, i, j;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    imgPath = path_1.default.join(__dirname, "../../upload");
-                    return [4 /*yield*/, usermodel_1.default.findOne({ email: email }).populate("register_sympton")];
+                    imgPath = path_1.default.join(__dirname, "../../upload/" + email);
+                    return [4 /*yield*/, registerSymContoller_1.default.getAllImage(email)];
                 case 1:
+                    result = _a.sent();
+                    return [4 /*yield*/, usermodel_1.default.findOne({ email: email }).populate("register_sympton")];
+                case 2:
                     users = _a.sent();
-                    console.log(users);
-                    // for (let i = 0; i < result.register_sympton.length; i++) {
-                    //   for (let j = 0; j < result.register_sympton[i].img.length; j++) {
-                    //     console.log(result.register_sympton[i].img[j]);
-                    //     savedImg.push(result.register_sympton[i].img[j]);
-                    //   }
-                    // }
+                    // console.log(users);
+                    for (i = 0; i < result.length; i++) {
+                        for (j = 0; j < result[i].img.length; j++) {
+                            savedImg.push(result[i].img[j]);
+                        }
+                    }
                     fs_1.default.readdir(imgPath, function (err, data) {
                         if (err)
                             console.error(err);

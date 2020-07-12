@@ -66,13 +66,13 @@ export default function mypage() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
-        symptonDetail.textContent = response.sympton_detail;
-        postcode.value = response.address.postcode;
-        roadAddress.value = response.address.roadAddress;
-        detailAddress.value = response.address.detailAddress;
-        userwant_box.textContent = response.userwant_content;
-        selectedTime(response);
-        makeSymptonImg(response.img);
+        symptonDetail.textContent = response.response.sympton_detail;
+        postcode.value = response.response.address.postcode;
+        roadAddress.value = response.response.address.roadAddress;
+        detailAddress.value = response.response.address.detailAddress;
+        userwant_box.textContent = response.response.userwant_content;
+        selectedTime(response.response);
+        makeSymptonImg(response);
       } else {
         throw new Error("reload fetch failed");
       }
@@ -100,21 +100,21 @@ export default function mypage() {
     }
   }
 
-  function commonMakeImg(imgArray: string[]) {
+  function commonMakeImg(data: any) {
     let imgBox = document.querySelector(".si-img-itemBox");
     let addImgBox = document.createElement("div");
-    for (let i = 0; i < imgArray.length; i++) {
+    for (let i = 0; i < data.img.length; i++) {
       let imgItem = document.createElement("div");
       let cancelIcon = document.createElement("div");
       cancelIcon.classList.add("img-box-cancel");
       imgItem.classList.add("img-item");
-      imgItem.style.backgroundImage = `url("/${imgArray[i]}")`;
-      imgItem.dataset.img = imgArray[i];
+      imgItem.style.backgroundImage = `url("/${data.email.email}/${data.img[i]}")`;
+      imgItem.dataset.img = data.img[i];
       imgItem.appendChild(cancelIcon);
       imgBox.insertBefore(imgItem, imgBox.firstChild);
       cancelIcon.addEventListener("click", (e: any) => {
         let targetData = e.target.parentNode.dataset.img;
-        fetchDeleteImg("http://localhost:3000/api/modified_delete_session_img", targetData);
+        fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
         imgBox.removeChild(e.target.parentNode);
       });
     }
@@ -127,18 +127,18 @@ export default function mypage() {
       addFileBtn.click();
     });
     imgBox.appendChild(addImgBox);
-    lengthOfImg(imgArray);
+    lengthOfImg(data.img);
   }
 
-  function makeSymptonImg(imgArray: string[]) {
-    if (imgArray === undefined) {
+  function makeSymptonImg(data: any) {
+    if (data.img === undefined) {
       return;
     }
     imgBtn.style.display = "none";
-    commonMakeImg(imgArray);
+    commonMakeImg(data);
   }
 
-  function removeAndMakeNewImage(imgArray: string[]) {
+  function removeAndMakeNewImage(data: any) {
     let imgBox = document.querySelector(".si-img-itemBox");
     while (imgBox.hasChildNodes) {
       if (imgBox.firstChild === null) {
@@ -146,7 +146,7 @@ export default function mypage() {
       }
       imgBox.removeChild(imgBox.firstChild);
     }
-    commonMakeImg(imgArray);
+    commonMakeImg(data);
   }
 
   async function fetchDeleteImg(url: string, data: string) {

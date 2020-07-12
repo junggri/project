@@ -37,4 +37,4 @@ const users = new mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "RegisterSympton" }],
   },
 });
-export = mongoose.model("testuser", users);
+export = mongoose.model("User", users);

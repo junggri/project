@@ -44,7 +44,7 @@
   display: flex;
   justify-content: space-between;
 }
-.login-for-user-left span {
+.login-for-user-left label {
   vertical-align: 2px;
   font-size: 13px;
   font-weight: 100;

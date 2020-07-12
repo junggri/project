@@ -104,16 +104,16 @@ function get_estimate() {
             lengthFlag = true;
         }
     }
-    function commonMakeImg(imgArray) {
+    function commonMakeImg(data) {
         var imgBox = document.querySelector(".si-img-itemBox");
         var addImgBox = document.createElement("div");
-        for (var i = 0; i < imgArray.length; i++) {
+        for (var i = 0; i < data.img.length; i++) {
             var imgItem = document.createElement("div");
             var cancelIcon = document.createElement("div");
             cancelIcon.classList.add("img-box-cancel");
             imgItem.classList.add("img-item");
-            imgItem.style.backgroundImage = "url(\"/" + imgArray[i] + "\")";
-            imgItem.dataset.img = imgArray[i];
+            imgItem.style.backgroundImage = "url(\"/" + data.email.email + "/" + data.img[i] + "\")";
+            imgItem.dataset.img = data.img[i];
             imgItem.appendChild(cancelIcon);
             imgBox.insertBefore(imgItem, imgBox.firstChild);
             cancelIcon.addEventListener("click", function (e) {
@@ -131,16 +131,16 @@ function get_estimate() {
             addFileBtn.click();
         });
         imgBox.appendChild(addImgBox);
-        lengthOfImg(imgArray);
+        lengthOfImg(data.img);
     }
-    function makeSymptonImg(imgArray) {
-        if (imgArray === undefined) {
+    function makeSymptonImg(data) {
+        if (data.img === undefined) {
             return;
         }
         imgBtn.style.display = "none";
-        commonMakeImg(imgArray);
+        commonMakeImg(data);
     }
-    function removeAndMakeNewImage(imgArray) {
+    function removeAndMakeNewImage(data) {
         var imgBox = document.querySelector(".si-img-itemBox");
         while (imgBox.hasChildNodes) {
             if (imgBox.firstChild === null) {
@@ -148,7 +148,7 @@ function get_estimate() {
             }
             imgBox.removeChild(imgBox.firstChild);
         }
-        commonMakeImg(imgArray);
+        commonMakeImg(data);
     }
     (function reloadGetSessionData() {
         return __awaiter(this, void 0, void 0, function () {

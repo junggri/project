@@ -43,6 +43,11 @@ registerSymController.findAllRegister = (req: any, res: any, _email: string) => 
     });
 };
 
+registerSymController.getAllImage = async (email: string) => {
+  let result = await registerSym.find({ email: email });
+  return result;
+};
+
 registerSymController.findCodeBeforeModified = async (req: Request, res: Response) => {
   let result = await registerSym.findOne({ _id: req.url.split("/")[2] });
   return result;
@@ -56,7 +61,7 @@ registerSymController.findImageBeforeModified = async (req: Request, res: Respon
 registerSymController.modified = async (req: Request, res: Response, data: any) => {
   let { sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content } = data;
   registerSym
-    .update(
+    .updateOne(
       { _id: req.session._id },
       { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time, minute }, address: { postcode, roadAddress, detailAddress }, userwant_content: userwant_content } }
     )

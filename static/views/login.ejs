@@ -30,11 +30,11 @@
           <span class="condition-login"><%=msg%></span>
           <div class="login-for-user">
             <section class="login-for-user-left">
-              <input type="checkbox" />
-              <span>아이디 저장</span>
+              <input type="checkbox" id="checkbox_id" />
+              <label for="checkbox_id">아이디 저장</label>
             </section>
             <section class="login-for-user-right">
-              <span>아이디 / 비밀번호 찾기</span>
+              <a href="/api/find_user"><span>아이디 / 비밀번호 찾기</span></a>
             </section>
           </div>
           <input type="submit" class="login-btn" value="로그인" />

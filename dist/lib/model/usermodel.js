@@ -41,5 +41,5 @@ var users = new mongoose_1.default.Schema({
         type: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "RegisterSympton" }],
     },
 });
-module.exports = mongoose_1.default.model("testuser", users);
+module.exports = mongoose_1.default.model("User", users);
 //# sourceMappingURL=usermodel.js.map

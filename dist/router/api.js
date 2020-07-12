@@ -42,6 +42,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var refreshtoken_1 = __importDefault(require("../lib/refreshtoken"));
 var crypto_1 = __importDefault(require("crypto"));
+var fs_1 = __importDefault(require("fs"));
+var path_1 = __importDefault(require("path"));
 var url_1 = __importDefault(require("url"));
 var moment_1 = __importDefault(require("moment"));
 var mongo_sanitize_1 = __importDefault(require("mongo-sanitize"));
@@ -57,6 +59,7 @@ var registerSymContoller_1 = __importDefault(require("../lib/controller/register
 var imageContoller_1 = __importDefault(require("../lib/controller/imageContoller"));
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
+var getDataFromToken_1 = __importDefault(require("../lib/getDataFromToken"));
 var symptonList_1 = require("../lib/symptonList");
 var multer_1 = require("../lib/multer");
 var jwtverify_1 = require("../lib/jwtverify");
@@ -152,8 +155,8 @@ router.get("/register/:way", csrfProtection, jwtverify_1.verify, jwtverify_1.isL
     req.params.way === "common" ? res.render("common", { csrfToken: req.csrfToken() }) : res.render("provide", { csrfToken: req.csrfToken() });
 });
 router.post("/register_common_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res, next) {
+    var inputdata = {};
     var _a = req.body, common_email = _a.common_email, common_name = _a.common_name, common_pwd = _a.common_pwd;
-    var inputdata;
     crypto_1.default.randomBytes(crypto_json_1.default.len, function (err, buf) {
         var salt = buf.toString("base64");
         var time = moment_1.default().format("YYYY-MM-DD");
@@ -263,10 +266,12 @@ router.post("/delete_session_img", parseForm, csrfProtection, jwtverify_1.verify
     res.json(req.session.img);
 });
 router.post("/fetch_session", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
-    req.session.img === undefined || req.session.img.length === 0 ? res.json({ state: false }) : res.json(req.session.img);
+    var decoded = getDataFromToken_1.default(req, res);
+    req.session.img === undefined || req.session.img.length === 0 ? res.json({ state: false }) : res.json({ img: req.session.img, email: decoded });
 });
 router.post("/fetch_upload_image", jwtverify_1.verify, function (req, res, next) {
     req.session.img = [];
+    var decoded = getDataFromToken_1.default(req, res);
     multer_1.upload(req, res, function (err) {
         if (err) {
             console.error(err);
@@ -274,16 +279,17 @@ router.post("/fetch_upload_image", jwtverify_1.verify, function (req, res, next)
             res.json({ state: false });
             return;
         }
-        res.json(req.session.img);
+        res.json({ img: req.session.img, email: decoded });
     });
 });
 router.post("/fetch_add_upload_image", jwtverify_1.verify, function (req, res, next) {
+    var decoded = getDataFromToken_1.default(req, res);
     multer_1.reupload(req, res, function (err) {
         if (err) {
             console.error(err);
             return;
         }
-        res.json(req.session.img);
+        res.json({ img: req.session.img, email: decoded });
     });
 });
 router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
@@ -311,6 +317,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
         req.session.code = [];
         imageContoller_1.default.save(req, res, imageData);
         registerSymContoller_1.default.save(req, res, inputdata, decoded.email);
+        deleteImg_1.default(decoded.email);
         res.redirect("/api/mypage");
     }
     catch (error) {
@@ -322,7 +329,10 @@ router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogin
     var token = req.cookies.jwttoken;
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        deleteImg_1.default(decoded.email);
+        var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../..//upload/" + decoded.email))));
+        if (!fs_1.default.existsSync(_dir)) {
+            fs_1.default.mkdirSync(_dir);
+        }
         registerSymContoller_1.default.findAllRegister(req, res, decoded.email);
     }
     catch (error) {
@@ -351,18 +361,21 @@ router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtveri
     });
 }); });
 router.post("/modified_get_image", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, i;
+    var decoded, response, i;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 req.session.img = [];
+                decoded = getDataFromToken_1.default(req, res);
                 return [4 /*yield*/, registerSymContoller_1.default.findImageBeforeModified(req, res)];
             case 1:
                 response = _a.sent();
+                if (response.img === null)
+                    return [2 /*return*/];
                 for (i = 0; i < response.img.length; i++) {
                     req.session.img.push(response.img[i]);
                 }
-                res.json(response);
+                res.json({ response: response, email: decoded, img: req.session.img });
                 return [2 /*return*/];
         }
     });
@@ -372,6 +385,7 @@ router.post("/modified_delete_session_img", parseForm, csrfProtection, jwtverify
     res.json(req.session.img);
 });
 router.post("/modified_upload_image", jwtverify_1.verify, function (req, res, next) {
+    var decoded = getDataFromToken_1.default(req, res);
     multer_1.modifiedUpload(req, res, function (err) {
         if (err) {
             console.error(err);
@@ -379,19 +393,21 @@ router.post("/modified_upload_image", jwtverify_1.verify, function (req, res, ne
             res.json({ state: false });
             return;
         }
-        res.json(req.session.img);
+        res.json({ img: req.session.img, email: decoded });
     });
 });
 router.post("/modified_add_upload_image", jwtverify_1.verify, function (req, res, next) {
+    var decoded = getDataFromToken_1.default(req, res);
     multer_1.modifiedReupload(req, res, function (err) {
         if (err) {
             console.error(err);
             return;
         }
-        res.json(req.session.img);
+        res.json({ img: req.session.img, email: decoded });
     });
 });
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
+    var decoded = getDataFromToken_1.default(req, res);
     var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content;
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
     var imgData = { image: req.session.img };
@@ -409,6 +425,7 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     registerSymContoller_1.default.modified(req, res, data);
     req.session.img = [];
     req.session.code = [];
+    deleteImg_1.default(decoded.email);
 });
 router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var token, decoded, result, error_4;
@@ -424,6 +441,7 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.v
                 return [4 /*yield*/, registerSymContoller_1.default.find(req, res, decoded.email)];
             case 2:
                 result = _a.sent();
+                deleteImg_1.default(decoded.email);
                 res.json(result);
                 return [3 /*break*/, 4];
             case 3:

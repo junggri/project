@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
 import refreshToken from "../lib/refreshtoken";
 import crypto from "crypto";
+import fs from "fs";
+import path from "path";
 import url from "url";
 import moment from "moment";
 import mongoSanitize from "mongo-sanitize";
@@ -16,11 +18,13 @@ import registerSymController from "../lib/controller/registerSymContoller";
 import imageController from "../lib/controller/imageContoller";
 import users from "../lib/model/usermodel";
 import auth from "../lib/authStatus";
+import getDataFromToken from "../lib/getDataFromToken";
 import { selcted_sympton } from "../lib/symptonList";
 import { upload, reupload, modifiedUpload, modifiedReupload } from "../lib/multer";
 import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
 import { createToken } from "../lib/accesstoken";
 import deleteImg from "../lib/deleteImg";
+
 const csrfProtection = csrf({ cookie: true });
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
@@ -104,8 +108,8 @@ router.get("/register/:way", csrfProtection, verify, isLogined, (req: any, res) 
 });
 
 router.post("/register_common_process", parseForm, csrfProtection, verify, isLogined, (req, res, next) => {
+  let inputdata = {};
   const { common_email, common_name, common_pwd } = req.body;
-  let inputdata;
   crypto.randomBytes(crypto_cre.len, (err, buf) => {
     let salt = buf.toString("base64");
     let time = moment().format("YYYY-MM-DD");
@@ -192,11 +196,13 @@ router.post("/delete_session_img", parseForm, csrfProtection, verify, (req, res)
 });
 
 router.post("/fetch_session", parseForm, csrfProtection, verify, (req, res) => {
-  req.session.img === undefined || req.session.img.length === 0 ? res.json({ state: false }) : res.json(req.session.img);
+  let decoded = getDataFromToken(req, res);
+  req.session.img === undefined || req.session.img.length === 0 ? res.json({ state: false }) : res.json({ img: req.session.img, email: decoded });
 });
 
 router.post("/fetch_upload_image", verify, (req: any, res, next) => {
   req.session.img = [];
+  let decoded = getDataFromToken(req, res);
   upload(req, res, (err: any) => {
     if (err) {
       console.error(err);
@@ -204,17 +210,18 @@ router.post("/fetch_upload_image", verify, (req: any, res, next) => {
       res.json({ state: false });
       return;
     }
-    res.json(req.session.img);
+    res.json({ img: req.session.img, email: decoded });
   });
 });
 
 router.post("/fetch_add_upload_image", verify, (req: any, res, next) => {
+  let decoded = getDataFromToken(req, res);
   reupload(req, res, (err: any) => {
     if (err) {
       console.error(err);
       return;
     }
-    res.json(req.session.img);
+    res.json({ img: req.session.img, email: decoded });
   });
 });
 
@@ -243,6 +250,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
     req.session.code = [];
     imageController.save(req, res, imageData);
     registerSymController.save(req, res, inputdata, (decoded as Decoded).email);
+    deleteImg((decoded as Decoded).email);
     res.redirect("/api/mypage");
   } catch (error) {
     console.error(error);
@@ -254,7 +262,10 @@ router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
   const token = req.cookies.jwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    deleteImg((decoded as Decoded).email);
+    let _dir = path.join(path.join(path.join(__dirname + `/../..//upload/${(decoded as Decoded).email}`)));
+    if (!fs.existsSync(_dir)) {
+      fs.mkdirSync(_dir);
+    }
     registerSymController.findAllRegister(req, res, (decoded as Decoded).email);
   } catch (error) {
     console.error(error, "로그인이 되지 않았습니다.");
@@ -274,11 +285,13 @@ router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async
 
 router.post("/modified_get_image", async (req, res) => {
   req.session.img = [];
+  let decoded = getDataFromToken(req, res);
   let response = await registerSymController.findImageBeforeModified(req, res);
+  if (response.img === null) return;
   for (let i = 0; i < response.img.length; i++) {
     req.session.img.push(response.img[i]);
   }
-  res.json(response);
+  res.json({ response: response, email: decoded, img: req.session.img });
 });
 
 router.post("/modified_delete_session_img", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
@@ -287,6 +300,7 @@ router.post("/modified_delete_session_img", parseForm, csrfProtection, verify, i
 });
 
 router.post("/modified_upload_image", verify, (req: any, res, next) => {
+  let decoded = getDataFromToken(req, res);
   modifiedUpload(req, res, (err: any) => {
     if (err) {
       console.error(err);
@@ -294,21 +308,23 @@ router.post("/modified_upload_image", verify, (req: any, res, next) => {
       res.json({ state: false });
       return;
     }
-    res.json(req.session.img);
+    res.json({ img: req.session.img, email: decoded });
   });
 });
 
 router.post("/modified_add_upload_image", verify, (req: any, res, next) => {
+  let decoded = getDataFromToken(req, res);
   modifiedReupload(req, res, (err: any) => {
     if (err) {
       console.error(err);
       return;
     }
-    res.json(req.session.img);
+    res.json({ img: req.session.img, email: decoded });
   });
 });
 
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
+  let decoded = getDataFromToken(req, res);
   let { sympton_detail, time, minute, postcode, roadAddress, userwant_content } = req.body;
   let detailAddress = sanitizeHtml(req.body.detailAddress);
   let imgData = { image: req.session.img };
@@ -326,6 +342,7 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
   registerSymController.modified(req, res, data);
   req.session.img = [];
   req.session.code = [];
+  deleteImg((decoded as Decoded).email);
 });
 
 router.post("/delete_register_sympton", parseForm, csrfProtection, verify, isNotLogined, async (req, res) => {
@@ -334,6 +351,7 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, verify, isNot
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     registerSymController.deleteSympton(req, res, (decoded as Decoded).email);
     let result = await registerSymController.find(req, res, (decoded as Decoded).email);
+    deleteImg((decoded as Decoded).email);
     res.json(result);
   } catch (error) {
     console.error(error, "로그인이 되지 않았습니다.");
