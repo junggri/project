@@ -7,6 +7,7 @@ import url from "url";
 import moment from "moment";
 import mongoSanitize from "mongo-sanitize";
 import crypto_cre from "../config/crypto.json";
+import flash from "connect-flash";
 import csrf from "csurf";
 import mail from "../lib/nodeMailer";
 import mailCre from "../config/mailer.json";
@@ -24,8 +25,13 @@ import { upload, reupload, modifiedUpload, modifiedReupload } from "../lib/multe
 import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
 import { createToken } from "../lib/accesstoken";
 import deleteImg from "../lib/deleteImg";
-
-const csrfProtection = csrf({ cookie: true });
+import { encrypt, decrypt } from "../lib/setAndGetCookie";
+const csrfProtection = csrf({
+  cookie: {
+    httpOnly: true,
+    // secure: true,
+  },
+});
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
 
@@ -38,7 +44,15 @@ interface Decoded {
 //토큰값은 쿠키ㅔㅇ 저장한다
 
 router.get("/login", csrfProtection, verify, isLogined, (req: any, res) => {
-  res.render("login", { csrfToken: req.csrfToken(), msg: "" });
+  res.render("login", { csrfToken: req.csrfToken(), msg: req.flash("msg") });
+});
+
+router.post("/setUserEmailCookie", csrfProtection, verify, (req, res) => {
+  let cookieEmail = req.body.email;
+  const encryptResult = encrypt(cookieEmail);
+  const decryptResult = decrypt(encryptResult);
+  console.log("decrypt result:", decryptResult);
+  res.json({ email: encryptResult, decrypt: decryptResult });
 });
 
 router.post("/login_process", parseForm, csrfProtection, verify, isLogined, async (req: any, res: any) => {
@@ -47,10 +61,8 @@ router.post("/login_process", parseForm, csrfProtection, verify, isLogined, asyn
   try {
     let result: any = await users.findOne({ email: { $in: [_email] } });
     if (result === null) {
-      return res.render("login", {
-        csrfToken: req.csrfToken(),
-        msg: "등록되지 않은 이메일이거나 잘못된 이메일입니다.",
-      });
+      req.flash("msg", "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.");
+      return res.redirect("login");
     } else {
       crypto.pbkdf2(_pwd, result.salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, (err, key) => {
         if (key.toString("base64") === result.password) {
@@ -87,10 +99,8 @@ router.post("/login_process", parseForm, csrfProtection, verify, isLogined, asyn
               });
           }
         } else {
-          return res.render("login", {
-            csrfToken: req.csrfToken(),
-            msg: "비밀번호가 일치하지 않습니다.",
-          });
+          req.flash("msg", "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.");
+          return res.redirect("login");
         }
       });
     }

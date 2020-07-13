@@ -17,6 +17,7 @@ var server_1 = __importDefault(require("./lib/server"));
 var compression_1 = __importDefault(require("compression"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var passport_1 = __importDefault(require("passport"));
+var connect_flash_1 = __importDefault(require("connect-flash"));
 dotenv_1.default.config();
 var RedisStore = connect_redis_1.default(express_session_1.default);
 var _client = redis_1.default.createClient();
@@ -52,6 +53,7 @@ app.use(express_session_1.default(sess));
 // app.use(logger("prod", { stream })); //prod combined
 app.use(morgan_1.default("dev"));
 app.get("env") === "development" ? app.use(express_1.default.static(path_1.default.join(__dirname + "/../dist/public", "dist"))) : app.use(express_1.default.static(path_1.default.join(__dirname + "/public", "dist")));
+app.use(connect_flash_1.default());
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/image")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../upload")));

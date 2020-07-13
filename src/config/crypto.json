@@ -1,5 +1,7 @@
 {
   "num": 100122,
   "len": 64,
-  "sys": "sha512"
+  "sys": "sha512",
+  "hiddenKey": "123dcsn!@#d2u32$!@$F#$",
+  "algorism": "aes-256-cbc"
 }

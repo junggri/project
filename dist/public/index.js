@@ -11,7 +11,7 @@ var mypqge_1 = __importDefault(require("./mypqge"));
 var modified_estimate_1 = __importDefault(require("./modified_estimate"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
 var path = window.location.pathname;
-if (path === "/api/login" || path === "/api/login_process") {
+if (path === "/api/login") {
     login_1.default();
 }
 if (path === "/api/register_previous" || "/api/register/common") {

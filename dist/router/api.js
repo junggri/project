@@ -65,14 +65,26 @@ var multer_1 = require("../lib/multer");
 var jwtverify_1 = require("../lib/jwtverify");
 var accesstoken_1 = require("../lib/accesstoken");
 var deleteImg_1 = __importDefault(require("../lib/deleteImg"));
-var csrfProtection = csurf_1.default({ cookie: true });
+var setAndGetCookie_1 = require("../lib/setAndGetCookie");
+var csrfProtection = csurf_1.default({
+    cookie: {
+        httpOnly: true,
+    },
+});
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
 var router = express_1.default.Router();
 // router.use("/", verify);
 //모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
 router.get("/login", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
-    res.render("login", { csrfToken: req.csrfToken(), msg: "" });
+    res.render("login", { csrfToken: req.csrfToken(), msg: req.flash("msg") });
+});
+router.post("/setUserEmailCookie", csrfProtection, jwtverify_1.verify, function (req, res) {
+    var cookieEmail = req.body.email;
+    var encryptResult = setAndGetCookie_1.encrypt(cookieEmail);
+    var decryptResult = setAndGetCookie_1.decrypt(encryptResult);
+    console.log("decrypt result:", decryptResult);
+    res.json({ email: encryptResult, decrypt: decryptResult });
 });
 router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _email, _pwd, result_1, error_1;
@@ -88,10 +100,8 @@ router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwt
             case 2:
                 result_1 = _a.sent();
                 if (result_1 === null) {
-                    return [2 /*return*/, res.render("login", {
-                            csrfToken: req.csrfToken(),
-                            msg: "등록되지 않은 이메일이거나 잘못된 이메일입니다.",
-                        })];
+                    req.flash("msg", "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.");
+                    return [2 /*return*/, res.redirect("login")];
                 }
                 else {
                     crypto_1.default.pbkdf2(_pwd, result_1.salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) {
@@ -132,10 +142,8 @@ router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwt
                             }
                         }
                         else {
-                            return res.render("login", {
-                                csrfToken: req.csrfToken(),
-                                msg: "비밀번호가 일치하지 않습니다.",
-                            });
+                            req.flash("msg", "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.");
+                            return res.redirect("login");
                         }
                     });
                 }

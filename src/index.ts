@@ -14,6 +14,8 @@ import { stream } from "./lib/winston";
 import createError from "http-errors";
 import dotenv from "dotenv";
 import passport from "passport";
+import flash from "connect-flash";
+import csrf from "csurf";
 dotenv.config();
 const RedisStore = connectRedis(session);
 const _client = redis.createClient();
@@ -57,6 +59,7 @@ app.use(session(sess));
 app.use(logger("dev"));
 
 app.get("env") === "development" ? app.use(express.static(path.join(__dirname + "/../dist/public", "dist"))) : app.use(express.static(path.join(__dirname + "/public", "dist")));
+app.use(flash());
 
 app.use(express.static(path.join(__dirname, "../static/css")));
 app.use(express.static(path.join(__dirname, "../static/image")));

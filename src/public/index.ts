@@ -7,7 +7,7 @@ import modified_estimate from "./modified_estimate";
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
 let path = window.location.pathname;
 
-if (path === "/api/login" || path === "/api/login_process") {
+if (path === "/api/login") {
   login();
 }
 if (path === "/api/register_previous" || "/api/register/common") {
