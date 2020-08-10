@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import registerSym from "../model/registerSymModel";
 import { makeListSympton } from "../mypageState";
 import auth from "../authStatus";
-
+import { stream } from "winston";
 let registerSymController: any = {};
 
 registerSymController.find = async (req: Request, res: Response, email: string) => {
@@ -23,7 +23,7 @@ registerSymController.save = async (req: any, res: any, data: any, _email: strin
       user.save();
     })
     .catch((err: any) => {
-      res.status(500).json("에러");
+      return console.error(err);
     });
 };
 
@@ -32,6 +32,7 @@ registerSymController.findAllRegister = (req: any, res: any, _email: string) => 
     .find({ email: _email })
     .sort({ create: -1 })
     .then((result: any) => {
+      console.log(result);
       makeListSympton(result).then((_list) => {
         let _registerNum = result.length;
         let authUI = auth.status(req, res);
@@ -71,9 +72,13 @@ registerSymController.modified = async (req: Request, res: Response, data: any) 
 };
 
 registerSymController.deleteSympton = async (req: Request, res: Response, email: string) => {
+  let arr: string[] = [];
   registerSym.deleteOne({ _id: req.body.id }).then(async () => {
-    let result = await users.find({ email: email }).populate("register_sympton");
-    console.log(result);
+    let result: any = await users.findOne({ email: email }).populate("register_sympton");
+    for (let i = 0; i < result.register_sympton.length; i++) {
+      arr.push(result.register_sympton[i]._id);
+    }
+    await users.updateOne({ email: email }, { $set: { register_sympton: arr } });
   });
 };
 export default registerSymController;

@@ -77,7 +77,7 @@ registerSymController.save = function (req, res, data, _email) { return __awaite
             });
         }); })
             .catch(function (err) {
-            res.status(500).json("에러");
+            return console.error(err);
         });
         return [2 /*return*/];
     });
@@ -87,6 +87,7 @@ registerSymController.findAllRegister = function (req, res, _email) {
         .find({ email: _email })
         .sort({ create: -1 })
         .then(function (result) {
+        console.log(result);
         mypageState_1.makeListSympton(result).then(function (_list) {
             var _registerNum = result.length;
             var authUI = authStatus_1.default.status(req, res);
@@ -143,15 +144,22 @@ registerSymController.modified = function (req, res, data) { return __awaiter(vo
     });
 }); };
 registerSymController.deleteSympton = function (req, res, email) { return __awaiter(void 0, void 0, void 0, function () {
+    var arr;
     return __generator(this, function (_a) {
+        arr = [];
         registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result;
+            var result, i;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, usermodel_1.default.find({ email: email }).populate("register_sympton")];
+                    case 0: return [4 /*yield*/, usermodel_1.default.findOne({ email: email }).populate("register_sympton")];
                     case 1:
                         result = _a.sent();
-                        console.log(result);
+                        for (i = 0; i < result.register_sympton.length; i++) {
+                            arr.push(result.register_sympton[i]._id);
+                        }
+                        return [4 /*yield*/, usermodel_1.default.updateOne({ email: email }, { $set: { register_sympton: arr } })];
+                    case 2:
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });

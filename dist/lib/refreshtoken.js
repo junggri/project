@@ -9,7 +9,7 @@ function refreshToken(req, res, email, name) {
         email: email,
         username: name,
     }, process.env.JWT_SECRET, {
-        expiresIn: "6m",
+        expiresIn: "1d",
         issuer: "localhost",
         subject: "userinfo",
     });

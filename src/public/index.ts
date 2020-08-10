@@ -4,13 +4,40 @@ import estimate from "./estimate";
 import getEstimate from "./get_esimate";
 import mypage from "./mypqge";
 import modified_estimate from "./modified_estimate";
+import findUserData from "./findUserData";
+import reset from "./reset";
+import oauth from "./oauth";
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
+let mainName = document.querySelector(".nb-left-name");
 let path = window.location.pathname;
+let navigationBox = document.querySelector(".nb-navigation") as HTMLDivElement;
+let logout = document.querySelector(".nb-profile-logout");
+let logoutForm = document.querySelector(".logout-form") as HTMLFormElement;
+let body = document.querySelector("#app") as HTMLDivElement;
 
+if (window.location.href.includes("#")) {
+  window.location.href = window.location.href.slice(0, -1);
+}
+
+if (path === "/api/oauth_register") {
+  oauth();
+}
+if (path.split("/")[2] === "reset") {
+  reset();
+}
+if (path === "/api/find_user_email") {
+  findUserData();
+}
+if (path === "/api/find_user_pwd") {
+  findUserData();
+}
 if (path === "/api/login") {
   login();
 }
-if (path === "/api/register_previous" || "/api/register/common") {
+if (path === "/api/register_previous") {
+  reigster();
+}
+if (path === "/api/register/common") {
   reigster();
 }
 if (path === "/estimate") {
@@ -31,13 +58,28 @@ if (path === "/") {
 
 if (LoginmyBtn !== null) {
   LoginmyBtn.addEventListener("click", (e) => {
-    location.href = "/api/mypage";
+    navigationBox.style.display = navigationBox.style.display === "" ? "block" : "";
+  });
+}
+
+if (mainName !== null) {
+  mainName.addEventListener("click", () => {
+    location.href = "/";
+  });
+}
+
+if (logout !== null) {
+  logout.addEventListener("click", async () => {
+    if (confirm("로그아웃 하시겠습니까?")) {
+      return logoutForm.submit();
+    } else {
+      return false;
+    }
   });
 }
 
 function index() {
   let estimateBtn = document.querySelector(".mp-btn_estimate");
-
   estimateBtn.addEventListener("click", (e) => {
     location.href = "/estimate";
   });

@@ -20,7 +20,7 @@ export const upload = multer({
       req.session.img.push(filename);
     },
   }),
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 20 * 1024 * 1024 },
 }).array("data", 10);
 
 export const reupload = multer({
@@ -42,7 +42,7 @@ export const reupload = multer({
       }
     },
   }),
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 20 * 1024 * 1024 },
 }).array("data");
 
 export const modifiedUpload = multer({
@@ -62,7 +62,7 @@ export const modifiedUpload = multer({
       req.session.img.push(filename);
     },
   }),
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 20 * 1024 * 1024 },
 }).array("data", 10);
 
 export const modifiedReupload = multer({
@@ -84,5 +84,5 @@ export const modifiedReupload = multer({
       }
     },
   }),
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: 20 * 1024 * 1024 },
 }).array("data");

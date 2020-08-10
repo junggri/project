@@ -76,7 +76,7 @@
   background-color: white;
   z-index: 999;
 }
-.register-email :hover {
+.register-email:hover {
   cursor: pointer;
 }
 .register-common {
@@ -127,6 +127,7 @@
   height: 52px;
   box-sizing: border-box;
   transition: all 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 .cb-registerbox:hover {
   border: 1px solid rgba(0, 0, 0, 0.5);

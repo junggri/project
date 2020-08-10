@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="nav-bar">
+        <div class="nb-left">
+          <span class="nb-left-name common-name">name</span>
+        </div>
+      </nav>
+      <div class="oauth-register-box">
+        <div class="or-slo">
+          일반회원가입
+        </div>
+        <span class="or-detail">
+          간편회원가입을 통하여 다양한 해택을 누려보세요.
+        </span>
+        <form action="/api/oauth_register_process" class="oauth-form" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <input type="hidden" name="id" value="<%= id %>" />
+          <div class="cb-registerbox or-email">
+            <input id="oauth_email" type="text" value="<%= email %>" placeholder="이메일을 입력하세요." name="oauth_email" autocomplete="off" readonly required />
+          </div>
+          <div class="cb-registerbox or-name">
+            <input id="oauth_name" type="text" value="<%= name %>" placeholder="이름을 입력하세요." name="oauth_name" autocomplete="off" required />
+          </div>
+          <input type="submit" value="가입하기" class="or-button" />
+        </form>
+      </div>
+    </div>
+    <script src="/bundle.js"></script>
+  </body>
+</html>

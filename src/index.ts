@@ -15,7 +15,6 @@ import createError from "http-errors";
 import dotenv from "dotenv";
 import passport from "passport";
 import flash from "connect-flash";
-import csrf from "csurf";
 dotenv.config();
 const RedisStore = connectRedis(session);
 const _client = redis.createClient();
@@ -37,7 +36,7 @@ let sess = {
     host: process.env.HOST,
     port: Number(process.env.port),
     client: _client,
-    ttl: 60 * 60 * 5, //second
+    ttl: 60 * 60 * 24, //second
   }),
   cookie: {
     httpOnly: true,
@@ -57,8 +56,8 @@ app.use(session(sess));
 
 // app.use(logger("prod", { stream })); //prod combined
 app.use(logger("dev"));
-
 app.get("env") === "development" ? app.use(express.static(path.join(__dirname + "/../dist/public", "dist"))) : app.use(express.static(path.join(__dirname + "/public", "dist")));
+//bundel.js위치
 app.use(flash());
 
 app.use(express.static(path.join(__dirname, "../static/css")));
@@ -84,6 +83,7 @@ app.engine("html", require("ejs").renderFile);
 import indexRouter from "./router/index";
 import authRouter from "./router/auth";
 import apiRouter from "./router/api";
+import { clearScreenDown } from "readline";
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);

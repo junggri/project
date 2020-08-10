@@ -19,7 +19,6 @@
   margin-bottom: 100px;
   animation: pageSlideUp 1s;
 }
-
 .ge-slo {
   display: block;
   line-height: 1.5;
@@ -35,7 +34,6 @@
   font-size: 16px;
   font-weight: 600;
 }
-
 .show-user-selected-box {
   margin-top: 20px;
   font-size: 0px;
@@ -99,7 +97,7 @@
   height: 90px;
   display: inline-block;
   margin: 5px;
-  background-size: cover;
+  background-size: contain;
   background-position: 50% 50%;
   background-repeat: no-repeat;
   border: 1px solid rgba(0, 0, 0, 0.05);

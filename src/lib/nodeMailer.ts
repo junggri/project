@@ -1,6 +1,5 @@
 let mailCre = require("../config/mailer.json");
 import nodemailer from "nodemailer";
-
 export default function mail(mailOption: any) {
   let transpoter = nodemailer.createTransport({
     service: "naver",
@@ -17,7 +16,7 @@ export default function mail(mailOption: any) {
     if (err) {
       console.log(err);
     } else {
-      console.log(info.respose);
+      // console.log(info);
     }
   });
 }

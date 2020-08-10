@@ -61,7 +61,7 @@ exports.upload = multer_1.default({
             req.session.img.push(filename);
         },
     }),
-    limits: { fileSize: 10 * 1024 * 1024 },
+    limits: { fileSize: 20 * 1024 * 1024 },
 }).array("data", 10);
 exports.reupload = multer_1.default({
     storage: multer_1.default.diskStorage({
@@ -83,7 +83,7 @@ exports.reupload = multer_1.default({
             }
         },
     }),
-    limits: { fileSize: 10 * 1024 * 1024 },
+    limits: { fileSize: 20 * 1024 * 1024 },
 }).array("data");
 exports.modifiedUpload = multer_1.default({
     storage: multer_1.default.diskStorage({
@@ -109,7 +109,7 @@ exports.modifiedUpload = multer_1.default({
             });
         },
     }),
-    limits: { fileSize: 10 * 1024 * 1024 },
+    limits: { fileSize: 20 * 1024 * 1024 },
 }).array("data", 10);
 exports.modifiedReupload = multer_1.default({
     storage: multer_1.default.diskStorage({
@@ -131,6 +131,6 @@ exports.modifiedReupload = multer_1.default({
             }
         },
     }),
-    limits: { fileSize: 10 * 1024 * 1024 },
+    limits: { fileSize: 20 * 1024 * 1024 },
 }).array("data");
 //# sourceMappingURL=multer.js.map

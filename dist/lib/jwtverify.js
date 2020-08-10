@@ -21,7 +21,7 @@ function verify(req, res, next) {
     catch (error) {
         // console.log(error);
         if (!token) {
-            console.log("아직 토큰은 업습니다.");
+            console.log("아직 토큰은 없습니다.");
             next();
         }
         if (error.name === "TokenExpiredError") {

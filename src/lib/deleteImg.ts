@@ -2,17 +2,17 @@ import fs from "fs";
 import path from "path";
 import user from "../lib/model/usermodel";
 import registerController from "../lib/controller/registerSymContoller";
+import { format } from "url";
 let savedImg: string[] = [];
+let arrImg: string[] = [];
 
 export default async function (email: string) {
   let imgPath = path.join(__dirname, `../../upload/${email}`);
   let result = await registerController.getAllImage(email);
-  let users: any = await user.findOne({ email: email }).populate("register_sympton");
-  // console.log(users);
+  // let users: any = await user.findOne({ email: email }).populate("register_sympton");
+
   for (let i = 0; i < result.length; i++) {
-    for (let j = 0; j < result[i].img.length; j++) {
-      savedImg.push(result[i].img[j]);
-    }
+    savedImg = arrImg.concat(savedImg, result[i].img);
   }
 
   fs.readdir(imgPath, (err, data) => {
@@ -24,5 +24,6 @@ export default async function (email: string) {
         });
       }
     }
+    savedImg = [];
   });
 }

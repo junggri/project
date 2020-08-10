@@ -22,7 +22,7 @@ function mail(mailOption) {
             console.log(err);
         }
         else {
-            console.log(info.respose);
+            // console.log(info);
         }
     });
 }

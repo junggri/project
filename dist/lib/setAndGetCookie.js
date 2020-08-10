@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decrypt = exports.encrypt = void 0;
 var crypto_1 = __importDefault(require("crypto"));
-var ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "abcdefghijklmnop".repeat(2); // Must be 256 bits (32 characters)
+var ENCRYPTION_KEY = process.env.ENCRYPTION_KEY; // Must be 256 bits (32 characters)
 var IV_LENGTH = 16; // For AES, this is always 16
 function encrypt(text) {
     var iv = crypto_1.default.randomBytes(IV_LENGTH);

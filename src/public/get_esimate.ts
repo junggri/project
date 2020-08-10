@@ -91,6 +91,7 @@ export default function get_estimate() {
       cancelIcon.classList.add("img-box-cancel");
       imgItem.classList.add("img-item");
       imgItem.style.backgroundImage = `url("/${data.email.email}/${data.img[i]}")`;
+
       imgItem.dataset.img = data.img[i];
       imgItem.appendChild(cancelIcon);
       imgBox.insertBefore(imgItem, imgBox.firstChild);

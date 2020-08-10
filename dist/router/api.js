@@ -56,7 +56,6 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var sanitize_html_1 = __importDefault(require("sanitize-html"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
 var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
-var imageContoller_1 = __importDefault(require("../lib/controller/imageContoller"));
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
 var getDataFromToken_1 = __importDefault(require("../lib/getDataFromToken"));
@@ -66,6 +65,7 @@ var jwtverify_1 = require("../lib/jwtverify");
 var accesstoken_1 = require("../lib/accesstoken");
 var deleteImg_1 = __importDefault(require("../lib/deleteImg"));
 var setAndGetCookie_1 = require("../lib/setAndGetCookie");
+// import passportController from "../lib/controller/passportController";
 var csrfProtection = csurf_1.default({
     cookie: {
         httpOnly: true,
@@ -76,15 +76,18 @@ var router = express_1.default.Router();
 // router.use("/", verify);
 //모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
+router.post("/setUserEmailCookie", csrfProtection, jwtverify_1.verify, function (req, res) {
+    if (req.body.state === "set") {
+        var encryptResult = setAndGetCookie_1.encrypt(req.body.email);
+        res.json({ email: encryptResult });
+    }
+    else {
+        var decryptResult = setAndGetCookie_1.decrypt(req.body.email);
+        res.json({ decrypt: decryptResult });
+    }
+});
 router.get("/login", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
     res.render("login", { csrfToken: req.csrfToken(), msg: req.flash("msg") });
-});
-router.post("/setUserEmailCookie", csrfProtection, jwtverify_1.verify, function (req, res) {
-    var cookieEmail = req.body.email;
-    var encryptResult = setAndGetCookie_1.encrypt(cookieEmail);
-    var decryptResult = setAndGetCookie_1.decrypt(encryptResult);
-    console.log("decrypt result:", decryptResult);
-    res.json({ email: encryptResult, decrypt: decryptResult });
 });
 router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _email, _pwd, result_1, error_1;
@@ -96,7 +99,7 @@ router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwt
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, usermodel_1.default.findOne({ email: { $in: [_email] } })];
+                return [4 /*yield*/, usermodel_1.default.findOne({ email: _email })];
             case 2:
                 result_1 = _a.sent();
                 if (result_1 === null) {
@@ -114,6 +117,7 @@ router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwt
                             if (save_token_1 === undefined) {
                                 //없네 오키 발급해줄게
                                 userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token_1);
+                                return res.redirect("/");
                             }
                             else {
                                 //있깄있는데 너가 유효한지 확인해볼게
@@ -129,14 +133,15 @@ router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwt
                                 validation_refreshToken
                                     //야 유효하니까 새로발급안하고 로그인해도 되겠다
                                     .then(function () {
-                                    console.log("토큰이 유효해요");
-                                    res.redirect("/");
+                                    console.log("리프래쉬 토큰이 유효해요");
+                                    return res.redirect("/");
                                 })
                                     .catch(function (err) {
                                     if (err.name === "TokenExpiredError") {
                                         //있긴있는데 유효하지가 않아서 재발금을 해야겠네ㄴ
                                         console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
                                         userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token_1);
+                                        return res.redirect("/");
                                     }
                                 });
                             }
@@ -156,6 +161,22 @@ router.post("/login_process", parseForm, csrfProtection, jwtverify_1.verify, jwt
         }
     });
 }); });
+// router.get("/oauth_register", csrfProtection, verify, isLogined, (req, res) => {
+//   let _email, _name, _id: string;
+//   let user: UserData = (req.user as Json)._json;
+//   console.log(req.user);
+//   if ((req.user as UserData).provider === "google") {
+//     (_email = user.email), (_name = user.name), (_id = user.sub);
+//   } else if ((req.user as UserData).provider === "naver") {
+//     if (user.name === undefined) _name = "";
+//     (_email = user.email), (_id = user.id);
+//   } else if ((req.user as UserData).provider === "kakao") {
+//   }
+//   res.render("oauth", { csrfToken: req.csrfToken(), email: _email, name: _name, id: _id });
+// });
+// router.post("/oauth_register_process", csrfProtection, verify, isLogined, (req, res) => {
+//   passportController.save(req, res, req.body);
+// });
 router.get("/register_previous", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
     res.render("registerprevious");
 });
@@ -318,12 +339,8 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
             userwant_content: sanitize_html_1.default(userwant_content),
             createdAt: _time,
         };
-        var imageData = {
-            image: img,
-        };
         req.session.img = [];
         req.session.code = [];
-        imageContoller_1.default.save(req, res, imageData);
         registerSymContoller_1.default.save(req, res, inputdata, decoded.email);
         deleteImg_1.default(decoded.email);
         res.redirect("/api/mypage");
@@ -337,7 +354,7 @@ router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogin
     var token = req.cookies.jwttoken;
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../..//upload/" + decoded.email))));
+        var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.email))));
         if (!fs_1.default.existsSync(_dir)) {
             fs_1.default.mkdirSync(_dir);
         }
@@ -368,7 +385,7 @@ router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtveri
         }
     });
 }); });
-router.post("/modified_get_image", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/modified_get_image", jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var decoded, response, i;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -418,7 +435,6 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     var decoded = getDataFromToken_1.default(req, res);
     var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content;
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
-    var imgData = { image: req.session.img };
     var data = {
         sympton_detail: sanitize_html_1.default(sympton_detail),
         time: time,
@@ -429,7 +445,6 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
         detailAddress: detailAddress,
         userwant_content: sanitize_html_1.default(userwant_content),
     };
-    imageContoller_1.default.save(req, res, imgData);
     registerSymContoller_1.default.modified(req, res, data);
     req.session.img = [];
     req.session.code = [];
@@ -460,5 +475,82 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.v
         }
     });
 }); });
+router.get("/find_user_email", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
+    var authUI = authStatus_1.default.status(req, res);
+    res.render("findUserEmail", { authUI: authUI, csrfToken: req.csrfToken() });
+});
+router.get("/find_user_pwd", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
+    var authUI = authStatus_1.default.status(req, res);
+    res.render("findUserPwd", { authUI: authUI, csrfToken: req.csrfToken() });
+});
+router.post("/check_user_eamil", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, userContoller_1.default.find(req.body.email)];
+            case 1:
+                result = _a.sent();
+                if (result.length === 0) {
+                    res.json({ state: false, inputdata: req.body.email });
+                }
+                else {
+                    res.json({ state: true, email: result[0].email });
+                }
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/check_user_and_sendEamil", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var encryptResult, result, token, mailOption;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                encryptResult = setAndGetCookie_1.encrypt(req.body.email);
+                return [4 /*yield*/, userContoller_1.default.find(req.body.email)];
+            case 1:
+                result = _a.sent();
+                token = crypto_1.default.randomBytes(20).toString("hex");
+                mailOption = {
+                    from: mailer_json_1.default.email,
+                    to: req.body.email,
+                    subject: "비밀번호 재설정 링크입니다..",
+                    html: "\uBE44\uBC00\uBC88\uD638 \uCD08\uAE30\uD654\uB97C \uC704\uD558\uC5EC \uC544\uB798\uC758 \uB9C1\uD06C\uB97C \uD074\uB9AD\uD574\uC8FC\uC138\uC694 \n          <a href=\"http://localhost:3000/api/reset?reto=" + token + "&email=" + encryptResult + "\">\uBE44\uBC00\uBC88\uD638 \uCD08\uAE30\uD654</a>",
+                };
+                if (result.length === 0) {
+                    res.json({ state: false, inputdata: req.body.email });
+                }
+                else {
+                    res.cookie("rs_to", token, { httpOnly: true, expires: new Date(Date.now() + 60000 * 5) });
+                    nodeMailer_1.default(mailOption);
+                    res.json({ state: "can-reset" });
+                }
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.get("/reset", csrfProtection, jwtverify_1.verify, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var decryptResult;
+    return __generator(this, function (_a) {
+        decryptResult = setAndGetCookie_1.decrypt(req.query.email);
+        if (req.cookies.rs_to === req.query.reto) {
+            res.render("reset", { csrfToken: req.csrfToken(), email: decryptResult });
+        }
+        else {
+            return [2 /*return*/, res.status(400).send("잘못된 접근입니다.").end()];
+        }
+        return [2 /*return*/];
+    });
+}); });
+router.post("/reset_process", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        res.clearCookie("rs_to");
+        userContoller_1.default.resetPassword(req, res);
+        return [2 /*return*/];
+    });
+}); });
+router.post("/logout_process", jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
+    res.clearCookie("jwttoken");
+    return res.redirect(req.get("Referrer"));
+});
 exports.default = router;
 //# sourceMappingURL=api.js.map

@@ -1,0 +1,122 @@
+.findUserIdBox {
+  position: relative;
+  width: 1170px;
+  margin: 0 auto;
+  margin-top: 100px;
+}
+.fs-find-user-email,
+.fs-find-slash,
+.fs-find-user-pwd {
+  font-size: 30px;
+  font-weight: 600;
+}
+.fs-user-opacity {
+  opacity: 0.4;
+}
+.fs-find-user-email {
+  cursor: pointer;
+}
+.fs-find-user-pwd {
+  cursor: pointer;
+}
+.fs-find-user-email:hover,
+.fs-find-user-pwd:hover {
+  transition: all 0.3s;
+  opacity: 1;
+}
+.fs-find-slash {
+  margin: 0 15px;
+}
+.fs-detail {
+  line-height: 1.2;
+  margin-top: 30px;
+}
+.findUserInputBox {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  margin-top: 40px;
+  font-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.findUserInputBox-userInput {
+  border: 1px solid black;
+  width: 350px;
+  margin-top: 60px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+}
+.findUserInputBox-userInput:hover {
+  border: 1px solid rgba(0, 0, 0, 0.8);
+}
+#findUserInput {
+  height: 46px;
+  font-size: 15px;
+  outline-style: none;
+  border: none;
+  width: 100%;
+  padding-left: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.findUser-btn {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  outline-style: none;
+  background-color: transparent;
+  width: 350px;
+  height: 46px;
+  margin-top: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.findUserResultBox {
+  margin-top: 40px;
+  position: relative;
+  margin: 0 auto;
+  display: none;
+}
+.findEmail {
+  position: relative;
+  margin: 0 auto;
+  width: 350px;
+  margin-top: 20px;
+
+  font-size: 20px;
+}
+.findResult {
+  position: relative;
+  margin: 0 auto;
+  width: 350px;
+  margin-top: 10px;
+  line-height: 1.4;
+  font-size: 16px;
+  font-weight: 300;
+}
+.findUserResultBox-btnBox {
+  position: relative;
+  width: 350px;
+  margin: 0 auto;
+}
+.findUserResultBox-btnBox-login {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  text-align: center;
+  padding: 15px 10px;
+  margin-top: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.findUserResultBox-btnBox-confirm {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  text-align: center;
+  padding: 15px 10px;
+  margin-top: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.findUserResultBox-btnBox-register {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  text-align: center;
+  padding: 15px 10px;
+  margin-top: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}

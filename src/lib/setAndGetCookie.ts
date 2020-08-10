@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || "abcdefghijklmnop".repeat(2); // Must be 256 bits (32 characters)
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY; // Must be 256 bits (32 characters)
 const IV_LENGTH = 16; // For AES, this is always 16
 
 export function encrypt(text: string) {
@@ -16,6 +16,5 @@ export function decrypt(text: string) {
   const encryptedText = Buffer.from(textParts.join(":"), "hex");
   const decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(ENCRYPTION_KEY), iv);
   const decrypted = decipher.update(encryptedText);
-
   return Buffer.concat([decrypted, decipher.final()]).toString();
 }

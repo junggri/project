@@ -35,7 +35,7 @@ var sess = {
         host: process.env.HOST,
         port: Number(process.env.port),
         client: _client,
-        ttl: 60 * 60 * 5,
+        ttl: 60 * 60 * 24,
     }),
     cookie: {
         httpOnly: true,
@@ -53,6 +53,7 @@ app.use(express_session_1.default(sess));
 // app.use(logger("prod", { stream })); //prod combined
 app.use(morgan_1.default("dev"));
 app.get("env") === "development" ? app.use(express_1.default.static(path_1.default.join(__dirname + "/../dist/public", "dist"))) : app.use(express_1.default.static(path_1.default.join(__dirname + "/public", "dist")));
+//bundel.js위치
 app.use(connect_flash_1.default());
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/image")));

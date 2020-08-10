@@ -136,6 +136,7 @@ function register() {
     //send send ajax request
     $(".email-checkBtn").on("click", function () {
         if ($("#validation_email").val() === validation_num) {
+            $(".state-email").html("인증번호가 일치합니다.");
             validation_emailBox.style.display = "none";
             $(".email-validationBtn").css("display", "none");
             $(".changeEmail-Btn").css("display", "block");

@@ -18,10 +18,85 @@
 .nb-right_list {
   display: inline-block;
   margin-left: 20px;
+  vertical-align: middle;
+}
+.nb-left-name {
+  cursor: pointer;
 }
 .nb-right_isLogined {
   cursor: pointer;
+  position: relative;
+  background-image: url("/usericon.png");
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-position: 50%, 50%;
+  background-repeat: no-repeat;
+  opacity: 0.9;
 }
+.nb-navigation {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  position: absolute;
+  right: 17.5%;
+  width: 300px;
+  height: 350px;
+  background-color: white;
+  z-index: 999;
+  padding: 30px 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 6px;
+  display: none;
+}
+.nb-name {
+  display: inline-block;
+  font-size: 25px;
+  font-weight: 600;
+}
+.nb-profile {
+  margin-top: 30px;
+  position: relative;
+}
+.nb-profile::after {
+  content: "";
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: absolute;
+  margin-top: 20px;
+}
+.nb-profile-img {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  vertical-align: middle;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.nb-profile-modify {
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 13px;
+  padding: 5px 10px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  cursor: pointer;
+  font-weight: 300;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: white;
+  background-color: #14c48a;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+.nb-profile-mypage {
+  margin-top: 60px;
+  cursor: pointer;
+}
+.nb-profile-logout {
+  margin-top: 30px;
+  cursor: pointer;
+}
+/*  */
 .main-page {
   height: 350px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.15);

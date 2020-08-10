@@ -6,11 +6,7 @@
     <title>Document</title>
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <link rel="stylesheet" href="/style.css" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css"
-    />
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
@@ -24,21 +20,10 @@
         <div class="cb-slo">
           일반회원가입
         </div>
-        <form
-          method="POST"
-          action="/api/register_common_process"
-          class="common_form"
-          onsubmit="return verify()"
-        >
+        <form method="POST" action="/api/register_common_process" class="common_form" onsubmit="return verify()">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="cb-registerbox cb-email">
-            <input
-              id="common_email"
-              type="text"
-              placeholder="이메일을 입력하세요."
-              name="common_email"
-              autocomplete="off"
-            />
+            <input id="common_email" type="text" placeholder="이메일을 입력하세요." name="common_email" autocomplete="off" />
             <div class="email-validationBtn">
               <span>인증하기</span>
             </div>
@@ -51,46 +36,20 @@
           </div>
           <div class="state-email state-register"></div>
           <div class="cb-registerbox cb-email-validation">
-            <input
-              id="validation_email"
-              type="text"
-              maxlength="6"
-              placeholder="인증번호를 입력하세요."
-              autocomplete="off"
-            />
+            <input id="validation_email" type="text" maxlength="6" placeholder="인증번호를 입력하세요." autocomplete="off" />
             <div class="email-checkBtn">
               <span>확인</span>
             </div>
           </div>
-          <div class="timer state-register"></div>
+          <div class="state-register"></div>
           <div class="cb-registerbox cb-name">
-            <input
-              id="common_name"
-              required="true"
-              type="text"
-              placeholder="사용자 이름을 입력해주세요."
-              name="common_name"
-              autocomplete="off"
-            />
+            <input id="common_name" required="true" type="text" placeholder="사용자 이름을 입력해주세요." name="common_name" autocomplete="off" />
           </div>
           <div class="cb-registerbox cb-pwd">
-            <input
-              id="common_pwd"
-              type="password"
-              placeholder="비밀번호 입력해주세요."
-              autocomplete="off"
-              required="true"
-            />
+            <input id="common_pwd" type="password" placeholder="비밀번호 입력해주세요." autocomplete="off" required="true" />
           </div>
           <div class="cb-registerbox cb-checkpwd">
-            <input
-              id="common_checkpwd"
-              name="common_pwd"
-              type="password"
-              placeholder="비밀번호 확인해주세요."
-              autocomplete="off"
-              required="true"
-            />
+            <input id="common_checkpwd" name="common_pwd" type="password" placeholder="비밀번호 확인해주세요." autocomplete="off" required="true" />
           </div>
           <div class="condition-register">
             숫자, 영문, 특수문자 (!@#$%^&*+=-)를 조합한 8자 이상

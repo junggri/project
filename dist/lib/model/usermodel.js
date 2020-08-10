@@ -13,20 +13,6 @@ var users = new mongoose_1.default.Schema({
     name: {
         type: String,
     },
-    social: {
-        naver: {
-            name: String,
-            id: Number,
-        },
-        goolge: {
-            name: String,
-            id: Number,
-        },
-        kakao: {
-            name: String,
-            id: Number,
-        },
-    },
     salt: {
         type: String,
     },
@@ -35,6 +21,9 @@ var users = new mongoose_1.default.Schema({
     },
     refresh_token: {
         type: String,
+    },
+    predict_price: {
+        type: Number,
     },
     register_sympton: {
         //새로운 모델을 만들어서 정보는 저장하지말고 오브젝트만 저정한다...

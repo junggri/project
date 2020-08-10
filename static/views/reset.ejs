@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <form action="/api/reset_process" id="reset-form" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="hidden" name="email" value="<%= email %>" />
+        <div class="reset-slo">비밀번호 변경</div>
+        <div class="reset-detail">새로운 비밀번호를 입력해주세요</div>
+        <div class="reset-input-box">
+          <div class="rib-box1">
+            <span>비밀번호</span>
+            <input type="password" id="rib-pwd1" name="pwd1" placeholder="변경할 비밀번호를 입력해주세요." /></br>
+            <div class="rib-state">숫자, 영문, 특수문자 (!@#$%^&*+=-)를 조합한 8자 이상</div>
+          </div>
+          <div class="rib-box2">
+            <span>비밀번호 확인</span>
+            <input type="password" id="rib-pwd2" name="pwd2" placeholder="비밀번호를 확인해주세요." />
+          </div>
+          <div class="reset-state"></div>
+          <input type="button" class="reset-btn" value="변경하기">
+        </div>
+      </form>
+    </div>
+    <script src="/bundle.js"></script>
+  </body>
+</html>

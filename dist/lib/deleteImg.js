@@ -41,12 +41,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
-var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
 var savedImg = [];
+var arrImg = [];
 function default_1(email) {
     return __awaiter(this, void 0, void 0, function () {
-        var imgPath, result, users, i, j;
+        var imgPath, result, i;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -54,14 +54,9 @@ function default_1(email) {
                     return [4 /*yield*/, registerSymContoller_1.default.getAllImage(email)];
                 case 1:
                     result = _a.sent();
-                    return [4 /*yield*/, usermodel_1.default.findOne({ email: email }).populate("register_sympton")];
-                case 2:
-                    users = _a.sent();
-                    // console.log(users);
+                    // let users: any = await user.findOne({ email: email }).populate("register_sympton");
                     for (i = 0; i < result.length; i++) {
-                        for (j = 0; j < result[i].img.length; j++) {
-                            savedImg.push(result[i].img[j]);
-                        }
+                        savedImg = arrImg.concat(savedImg, result[i].img);
                     }
                     fs_1.default.readdir(imgPath, function (err, data) {
                         if (err)
@@ -74,6 +69,7 @@ function default_1(email) {
                                 });
                             }
                         }
+                        savedImg = [];
                     });
                     return [2 /*return*/];
             }

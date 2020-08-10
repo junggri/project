@@ -40,53 +40,71 @@ function login() {
     $(document).ready(function () {
         var _this = this;
         var checkBox = document.querySelector("#checkbox_id");
-        var emailBox = document.querySelector("#login_email");
         var loginBoxValue = document.querySelector("#login_email");
-        var email;
-        emailBox.focus();
         var userInputEmail = getCookie("userInputEmail");
-        loginBoxValue.value = email;
-        if (loginBoxValue.value !== "") {
-            checkBox.checked = true;
+        loginBoxValue.focus();
+        function getEmailFromCookie(email, state) {
+            return __awaiter(this, void 0, void 0, function () {
+                var token, myHeaders, response, result;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (email === "")
+                                return [2 /*return*/];
+                            token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                            myHeaders = new Headers();
+                            myHeaders.append("Content-Type", "application/json");
+                            myHeaders.append("CSRF-Token", token);
+                            return [4 /*yield*/, fetch("http://localhost:3000/api/setUserEmailCookie", {
+                                    method: "POST",
+                                    credentials: "same-origin",
+                                    headers: myHeaders,
+                                    body: JSON.stringify({ email: email, state: state }),
+                                })];
+                        case 1:
+                            response = _a.sent();
+                            if (!(response.status === 200 || 201)) return [3 /*break*/, 3];
+                            return [4 /*yield*/, response.json()];
+                        case 2:
+                            result = _a.sent();
+                            return [2 /*return*/, result];
+                        case 3: return [2 /*return*/];
+                    }
+                });
+            });
         }
+        getEmailFromCookie(userInputEmail, "get").then(function (result) {
+            if (result === undefined)
+                return;
+            loginBoxValue.value = result.decrypt;
+            checkBox.checked = true;
+        });
         checkBox.addEventListener("change", function () { return __awaiter(_this, void 0, void 0, function () {
-            var userInputEmail_1, token, myHeaders, response, result;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!checkBox.checked) return [3 /*break*/, 4];
-                        userInputEmail_1 = loginBoxValue.value;
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/setUserEmailCookie", {
-                                method: "POST",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ email: userInputEmail_1 }),
-                            })];
-                    case 1:
-                        response = _a.sent();
-                        if (!(response.status === 200 || 201)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        result = _a.sent();
-                        email = result.decrypt;
+                if (loginBoxValue.value === "")
+                    return [2 /*return*/];
+                if (checkBox.checked) {
+                    getEmailFromCookie(loginBoxValue.value, "set").then(function (result) {
                         setCookie("userInputEmail", result.email, 7);
-                        _a.label = 3;
-                    case 3: return [3 /*break*/, 5];
-                    case 4:
-                        deleteCookie("userInputEmail");
-                        _a.label = 5;
-                    case 5: return [2 /*return*/];
+                    });
                 }
+                else {
+                    deleteCookie("userInputEmail");
+                }
+                return [2 /*return*/];
             });
         }); });
+        loginBoxValue.addEventListener("input", function () {
+            if (checkBox.checked) {
+                getEmailFromCookie(loginBoxValue.value, "set").then(function (result) {
+                    setCookie("userInputEmail", result.email, 7);
+                });
+            }
+        });
         function setCookie(cookieName, value, exdays) {
             var exdate = new Date();
             exdate.setDate(exdate.getDate() + exdays);
-            var cookieValue = escape(value) + (exdays == null ? "" : "; expires=" + exdate.toUTCString());
+            var cookieValue = value + (exdays == null ? "" : "; expires=" + exdate.toUTCString());
             document.cookie = cookieName + "=" + cookieValue;
         }
         function deleteCookie(cookieName) {
