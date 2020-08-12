@@ -90,8 +90,7 @@ export default function get_estimate() {
       let cancelIcon = document.createElement("div");
       cancelIcon.classList.add("img-box-cancel");
       imgItem.classList.add("img-item");
-      imgItem.style.backgroundImage = `url("/${data.email.email}/${data.img[i]}")`;
-
+      imgItem.style.backgroundImage = `url("/${data.email.user_objectId}/${data.img[i]}")`;
       imgItem.dataset.img = data.img[i];
       imgItem.appendChild(cancelIcon);
       imgBox.insertBefore(imgItem, imgBox.firstChild);
@@ -214,11 +213,16 @@ export default function get_estimate() {
   window.add_fileUpload = (e: any) => {
     fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
   };
+
   window.formAndBlockBack = () => {
-    if (confirm("간편견적을 받아보시겠습니까?")) {
+    let check = confirm("간편견적을 받아보시겠습니까?");
+    if (check) {
       registerFrom.submit();
+    } else {
+      return false;
     }
   };
+
   window.previous_fileUpload = (e: any) => {
     fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
   };

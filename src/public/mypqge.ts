@@ -2,6 +2,7 @@ export default function mypage() {
   let modifiedBtn = document.querySelectorAll(".ms-resultItem-modifieBtn");
   let deleteBtn = document.querySelectorAll(".ms-resultItem-deleteBtn");
   let registerNum = document.querySelector(".userShowStateBox-register-number");
+
   for (let i = 0; i < modifiedBtn.length; i++) {
     modifiedBtn[i].addEventListener("click", () => {
       let userNode: any = modifiedBtn[i].parentNode.parentNode.parentNode;

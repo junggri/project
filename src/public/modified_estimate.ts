@@ -108,7 +108,7 @@ export default function mypage() {
       let cancelIcon = document.createElement("div");
       cancelIcon.classList.add("img-box-cancel");
       imgItem.classList.add("img-item");
-      imgItem.style.backgroundImage = `url("/${data.email.email}/${data.img[i]}")`;
+      imgItem.style.backgroundImage = `url("/${data.email.user_objectId}/${data.img[i]}")`;
       imgItem.dataset.img = data.img[i];
       imgItem.appendChild(cancelIcon);
       imgBox.insertBefore(imgItem, imgBox.firstChild);

@@ -3,6 +3,9 @@ const registerSympton = new mongoose.Schema({
   // registrant: {
   //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: "testuser" }],
   // },
+  user_object_id: {
+    type: String,
+  },
   email: {
     type: String,
   },
@@ -32,6 +35,9 @@ const registerSympton = new mongoose.Schema({
   },
   userwant_content: {
     type: String,
+  },
+  predict_price: {
+    type: Number,
   },
   createdAt: {
     type: String,

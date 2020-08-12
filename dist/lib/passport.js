@@ -27,7 +27,6 @@ passport.use(new NaverStrategy({
     clientID: naver_json_1.default.clientID,
     clientSecret: naver_json_1.default.clientSecret,
     callbackURL: naver_json_1.default.callbackURL,
-    authType: "reauthenticate",
 }, function (accessToken, refreshToken, profile, done) {
     return done(null, profile);
 }));

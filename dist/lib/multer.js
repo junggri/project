@@ -49,7 +49,7 @@ exports.upload = multer_1.default({
             var token = req.cookies.jwttoken;
             try {
                 var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                cb(null, "upload/" + decoded.email);
+                cb(null, "upload/" + decoded.user_objectId);
             }
             catch (error) {
                 console.error(error);
@@ -69,7 +69,7 @@ exports.reupload = multer_1.default({
             var token = req.cookies.jwttoken;
             try {
                 var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                cb(null, "upload/" + decoded.email);
+                cb(null, "upload/" + decoded.user_objectId);
             }
             catch (error) {
                 console.error(error);
@@ -91,7 +91,7 @@ exports.modifiedUpload = multer_1.default({
             var token = req.cookies.jwttoken;
             try {
                 var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                cb(null, "upload/" + decoded.email);
+                cb(null, "upload/" + decoded.user_objectId);
             }
             catch (error) {
                 console.error(error);
@@ -117,7 +117,7 @@ exports.modifiedReupload = multer_1.default({
             var token = req.cookies.jwttoken;
             try {
                 var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                cb(null, "upload/" + decoded.email);
+                cb(null, "upload/" + decoded.user_objectId);
             }
             catch (error) {
                 console.error(error);

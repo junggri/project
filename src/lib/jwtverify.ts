@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { createToken } from "./accesstoken";
 import users from "../lib/model/usermodel";
-
 let email: string;
 
 export function verify(req: any, res: any, next: any) {
@@ -16,13 +15,13 @@ export function verify(req: any, res: any, next: any) {
   } catch (error) {
     // console.log(error);
     if (!token) {
-      console.log("아직 토큰은 없습니다.");
+      console.log("아직 토큰은 없습니다. 로그인이 안되있는거지");
       next();
     }
     if (error.name === "TokenExpiredError") {
       //토큰이 만료됬네? 오케이 리프레쉬 토큰확인해볼게
       users
-        .findOne({ email: { $in: [email] } })
+        .findOne({ _id: { $in: [decoded.user_objectId] } })
         .then((result: any) => {
           let validation_promise = new Promise((resolve, reject) => {
             try {
@@ -35,13 +34,13 @@ export function verify(req: any, res: any, next: any) {
           validation_promise
             .then((result: any) => {
               //어 리프레쉬 토큰 있고 유효하네
-              console.log("리프레쉬 토큰이 있고 유효해요.", result);
-              createToken(req, res, email, result.username);
+              console.log("리프레쉬 토큰이 있고 유효하니 로그인을 유지시켜줄게");
+              createToken(req, res, email, result.username, decoded.user_objectId);
               return res.redirect(req.originalUrl);
             })
             .catch((err) => {
               //야 리프레쉬 토큰은 있는데 유효기간이 끝났어
-              console.log("로그인이 필요합니다.");
+              console.log("토큰은 쿠키에 저장되어있긴해 근데 로그인이 되지 않아 있네?, 또는 리프레쉬 토큰이 만료되서 로그인해서 새로운 리프레쉬 토큰을 발급받아, 로그인이 필요합니다.");
               next();
             });
         })

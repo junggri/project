@@ -37,7 +37,6 @@ passport.use(
       clientID: naverCre.clientID,
       clientSecret: naverCre.clientSecret,
       callbackURL: naverCre.callbackURL,
-      authType: "reauthenticate",
     },
     function (accessToken: any, refreshToken: any, profile: any, done: any) {
       return done(null, profile);

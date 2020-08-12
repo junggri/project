@@ -1,14 +1,52 @@
 declare global {
   interface Window {
-    login_verify: any;
+    // login_verify: any;
   }
 }
 export default function login() {
   $(document).ready(function () {
     let checkBox = document.querySelector("#checkbox_id") as HTMLInputElement;
     let loginBoxValue = document.querySelector("#login_email") as HTMLInputElement;
+    let pwdValue = document.querySelector("#login_pwd") as HTMLInputElement;
     let userInputEmail: string = getCookie("userInputEmail");
+    let loginBtn = document.querySelector(".login-btn") as HTMLDivElement;
+    let state = document.querySelector(".condition-login") as HTMLDivElement;
     loginBoxValue.focus();
+
+    interface Data {
+      email: string;
+      pwd: string;
+    }
+
+    async function loginProcess(data: Data) {
+      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("CSRF-Token", token);
+      let reuslt = await fetch("http://localhost:3000/api/login_process", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: myHeaders,
+        body: JSON.stringify(data),
+      });
+      try {
+        if (reuslt.status === 200 || 201) {
+          let response = await reuslt.json();
+          if (response.state) {
+            window.location.href = response.url;
+          } else {
+            state.textContent = response.msg;
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    loginBtn.addEventListener("click", () => {
+      let data: Data = { email: loginBoxValue.value, pwd: pwdValue.value };
+      loginProcess(data);
+    });
 
     async function getEmailFromCookie(email: string, state: string) {
       if (email === "") return;

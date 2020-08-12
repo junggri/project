@@ -44,18 +44,18 @@ var registerSymModel_1 = __importDefault(require("../model/registerSymModel"));
 var mypageState_1 = require("../mypageState");
 var authStatus_1 = __importDefault(require("../authStatus"));
 var registerSymController = {};
-registerSymController.find = function (req, res, email) { return __awaiter(void 0, void 0, void 0, function () {
+registerSymController.find = function (req, res, email, id) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymModel_1.default.find({ email: email })];
+            case 0: return [4 /*yield*/, registerSymModel_1.default.find({ user_object_id: id })];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];
         }
     });
 }); };
-registerSymController.save = function (req, res, data, _email) { return __awaiter(void 0, void 0, void 0, function () {
+registerSymController.save = function (req, res, data, _email, id) { return __awaiter(void 0, void 0, void 0, function () {
     var registerSympton;
     return __generator(this, function (_a) {
         registerSympton = new registerSymModel_1.default(data);
@@ -65,7 +65,7 @@ registerSymController.save = function (req, res, data, _email) { return __awaite
             var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, usermodel_1.default.findOne({ email: _email })];
+                    case 0: return [4 /*yield*/, usermodel_1.default.findOne({ _id: id })];
                     case 1:
                         user = _a.sent();
                         user.register_sympton.push(registerSympton._id);
@@ -82,27 +82,42 @@ registerSymController.save = function (req, res, data, _email) { return __awaite
         return [2 /*return*/];
     });
 }); };
-registerSymController.findAllRegister = function (req, res, _email) {
-    registerSymModel_1.default
-        .find({ email: _email })
-        .sort({ create: -1 })
-        .then(function (result) {
-        console.log(result);
-        mypageState_1.makeListSympton(result).then(function (_list) {
-            var _registerNum = result.length;
-            var authUI = authStatus_1.default.status(req, res);
-            res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, len: _registerNum });
+registerSymController.findAllRegister = function (req, res, _email, id) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        registerSymModel_1.default
+            .find({ user_object_id: id })
+            .sort({ create: -1 })
+            .then(function (result) {
+            mypageState_1.makeListSympton(result).then(function (_list) { return __awaiter(void 0, void 0, void 0, function () {
+                var _registerNum, authUI, user;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            console.log(result);
+                            _registerNum = result.length;
+                            authUI = authStatus_1.default.status(req, res);
+                            return [4 /*yield*/, usermodel_1.default.findOne({ _id: id })];
+                        case 1:
+                            user = _a.sent();
+                            console.log(user);
+                            res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, len: _registerNum, username: user.name });
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+        })
+            .catch(function (err) {
+            console.error(err);
         });
-    })
-        .catch(function (err) {
-        console.error(err);
+        return [2 /*return*/];
     });
-};
-registerSymController.getAllImage = function (email) { return __awaiter(void 0, void 0, void 0, function () {
+}); };
+//수정완료
+registerSymController.getAllImage = function (id) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymModel_1.default.find({ email: email })];
+            case 0: return [4 /*yield*/, registerSymModel_1.default.find({ user_object_id: id })];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];
@@ -138,28 +153,29 @@ registerSymController.modified = function (req, res, data) { return __awaiter(vo
         registerSymModel_1.default
             .updateOne({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
             .then(function () {
-            res.redirect("/api/mypage");
+            req.session._id = "";
+            return res.redirect("/api/mypage");
         });
         return [2 /*return*/];
     });
 }); };
-registerSymController.deleteSympton = function (req, res, email) { return __awaiter(void 0, void 0, void 0, function () {
+registerSymController.deleteSympton = function (req, res, email, id) { return __awaiter(void 0, void 0, void 0, function () {
     var arr;
     return __generator(this, function (_a) {
         arr = [];
         registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, i;
+            var result, i, s1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, usermodel_1.default.findOne({ email: email }).populate("register_sympton")];
+                    case 0: return [4 /*yield*/, usermodel_1.default.findOne({ _id: id }).populate("register_sympton")];
                     case 1:
                         result = _a.sent();
                         for (i = 0; i < result.register_sympton.length; i++) {
                             arr.push(result.register_sympton[i]._id);
                         }
-                        return [4 /*yield*/, usermodel_1.default.updateOne({ email: email }, { $set: { register_sympton: arr } })];
+                        return [4 /*yield*/, usermodel_1.default.updateOne({ _id: id }, { $set: { register_sympton: arr } })];
                     case 2:
-                        _a.sent();
+                        s1 = _a.sent();
                         return [2 /*return*/];
                 }
             });

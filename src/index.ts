@@ -37,6 +37,7 @@ let sess = {
     port: Number(process.env.port),
     client: _client,
     ttl: 60 * 60 * 24, //second
+    //ttl을 토큰시간과 맞춰야 하나 ???....
   }),
   cookie: {
     httpOnly: true,
@@ -83,7 +84,6 @@ app.engine("html", require("ejs").renderFile);
 import indexRouter from "./router/index";
 import authRouter from "./router/auth";
 import apiRouter from "./router/api";
-import { clearScreenDown } from "readline";
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);

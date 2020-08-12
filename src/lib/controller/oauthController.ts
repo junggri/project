@@ -1,4 +1,4 @@
-import auth from "../model/passportModel";
+import auth from "../model/oauthModel";
 import { Request, Response, NextFunction } from "express";
 let passportController: any = {};
 

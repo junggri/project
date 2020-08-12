@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
 
-export default function refreshToken(req: any, res: any, email: string, name: string) {
+export default function refreshToken(req: any, res: any, email: string, name: string, id: string) {
   let refresh_token = jwt.sign(
     {
       email: email,
       username: name,
+      user_objectId: id,
     },
     process.env.JWT_SECRET,
     {

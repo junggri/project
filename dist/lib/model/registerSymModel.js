@@ -7,6 +7,9 @@ var registerSympton = new mongoose_1.default.Schema({
     // registrant: {
     //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: "testuser" }],
     // },
+    user_object_id: {
+        type: String,
+    },
     email: {
         type: String,
     },
@@ -36,6 +39,9 @@ var registerSympton = new mongoose_1.default.Schema({
     },
     userwant_content: {
         type: String,
+    },
+    predict_price: {
+        type: Number,
     },
     createdAt: {
         type: String,

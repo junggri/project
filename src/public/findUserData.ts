@@ -61,9 +61,9 @@ export default function () {
   findResultBtn.addEventListener("click", () => {
     if (userInputData.value === "") return;
     if (window.location.pathname === "/api/find_user_email") {
-      findUserData("http://localhost:3000/api/check_user_eamil", userInputData.value);
+      findUserData("http://localhost:3000/api/check_user_email", userInputData.value);
     } else {
-      findUserData("http://localhost:3000/api/check_user_and_sendEamil", userInputData.value);
+      findUserData("http://localhost:3000/api/check_user_and_sendEmail", userInputData.value);
     }
   });
 }

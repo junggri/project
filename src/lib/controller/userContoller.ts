@@ -3,9 +3,9 @@ import crypto from "crypto";
 import crypto_cre from "../../config/crypto.json";
 let userController: any = {};
 
-userController.tokenUpdate = (req: any, res: any, _email: string, _refresh_token: string) => {
+userController.tokenUpdate = (req: any, res: any, _email: string, _refresh_token: string, userObjectId: string) => {
   user
-    .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token } })
+    .updateOne({ _id: userObjectId }, { $set: { refresh_token: _refresh_token } })
     .then((result: any) => {
       console.log("토큰 재발급했어요");
     })

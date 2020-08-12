@@ -42,6 +42,7 @@ function default_1() {
     var estimate_price = document.querySelector(".estimate-pre-price");
     var estimate_num = document.querySelector(".estimate-pre-num");
     var estimateForm = document.querySelector(".estimateForm");
+    var fetchData = {};
     var estimate_item;
     var added_item;
     var lists_height = 0;
@@ -127,7 +128,11 @@ function default_1() {
         for (var i = 0; i < estimate_item.length; i++) {
             data.push(estimate_item[i].dataset.code);
         }
-        isLogined("http://localhost:3000/api/pre_estimate", data);
+        fetchData = {
+            code: data,
+            price: price,
+        };
+        isLogined("http://localhost:3000/api/pre_estimate", fetchData);
     });
     //input submit으로 바꾸고 실핼하기
 }

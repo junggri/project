@@ -3,20 +3,19 @@ import { Request, Response } from "express";
 import registerSym from "../model/registerSymModel";
 import { makeListSympton } from "../mypageState";
 import auth from "../authStatus";
-import { stream } from "winston";
 let registerSymController: any = {};
 
-registerSymController.find = async (req: Request, res: Response, email: string) => {
-  let result = await registerSym.find({ email: email });
+registerSymController.find = async (req: Request, res: Response, email: string, id: string) => {
+  let result = await registerSym.find({ user_object_id: id });
   return result;
 };
 
-registerSymController.save = async (req: any, res: any, data: any, _email: string) => {
+registerSymController.save = async (req: any, res: any, data: any, _email: string, id: string) => {
   let registerSympton: any = new registerSym(data);
   registerSympton
     .save()
     .then(async () => {
-      let user: any = await users.findOne({ email: _email });
+      let user: any = await users.findOne({ _id: id });
       user.register_sympton.push(registerSympton._id);
       // user.register_sympton.push(result._id); 위와 동일
       //populate에는 objectId _id를 넣어줘어야한다.
@@ -27,25 +26,28 @@ registerSymController.save = async (req: any, res: any, data: any, _email: strin
     });
 };
 
-registerSymController.findAllRegister = (req: any, res: any, _email: string) => {
+registerSymController.findAllRegister = async (req: any, res: any, _email: string, id: string) => {
   registerSym
-    .find({ email: _email })
+    .find({ user_object_id: id })
     .sort({ create: -1 })
     .then((result: any) => {
-      console.log(result);
-      makeListSympton(result).then((_list) => {
+      makeListSympton(result).then(async (_list) => {
+        console.log(result);
         let _registerNum = result.length;
         let authUI = auth.status(req, res);
-        res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, len: _registerNum });
+        let user: any = await users.findOne({ _id: id });
+        console.log(user);
+        res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, len: _registerNum, username: user.name });
       });
     })
     .catch((err: any) => {
       console.error(err);
     });
 };
+//수정완료
 
-registerSymController.getAllImage = async (email: string) => {
-  let result = await registerSym.find({ email: email });
+registerSymController.getAllImage = async (id: string) => {
+  let result = await registerSym.find({ user_object_id: id });
   return result;
 };
 
@@ -67,18 +69,19 @@ registerSymController.modified = async (req: Request, res: Response, data: any) 
       { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time, minute }, address: { postcode, roadAddress, detailAddress }, userwant_content: userwant_content } }
     )
     .then(() => {
-      res.redirect("/api/mypage");
+      req.session._id = "";
+      return res.redirect("/api/mypage");
     });
 };
 
-registerSymController.deleteSympton = async (req: Request, res: Response, email: string) => {
+registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
   let arr: string[] = [];
   registerSym.deleteOne({ _id: req.body.id }).then(async () => {
-    let result: any = await users.findOne({ email: email }).populate("register_sympton");
+    let result: any = await users.findOne({ _id: id }).populate("register_sympton");
     for (let i = 0; i < result.register_sympton.length; i++) {
       arr.push(result.register_sympton[i]._id);
     }
-    await users.updateOne({ email: email }, { $set: { register_sympton: arr } });
+    let s1 = await users.updateOne({ _id: id }, { $set: { register_sympton: arr } });
   });
 };
 export default registerSymController;

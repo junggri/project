@@ -9,9 +9,10 @@ declare global {
 export default function () {
   const estimate_container = document.querySelector(".estimate-pre-result-itembox") as HTMLDivElement;
   const estimate_list = document.querySelector(".estimate-pre-result-item");
-  const estimate_price = document.querySelector(".estimate-pre-price");
+  const estimate_price = document.querySelector(".estimate-pre-price") as HTMLDivElement;
   const estimate_num = document.querySelector(".estimate-pre-num");
   const estimateForm = document.querySelector(".estimateForm") as HTMLFormElement;
+  let fetchData = {};
   let estimate_item: any;
   let added_item: any;
   let lists_height: number = 0;
@@ -83,7 +84,11 @@ export default function () {
     for (let i = 0; i < estimate_item.length; i++) {
       data.push(estimate_item[i].dataset.code);
     }
-    isLogined("http://localhost:3000/api/pre_estimate", data);
+    fetchData = {
+      code: data,
+      price: price,
+    };
+    isLogined("http://localhost:3000/api/pre_estimate", fetchData);
   });
   //input submit으로 바꾸고 실핼하기
 }

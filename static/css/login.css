@@ -57,11 +57,14 @@
 .login-btn {
   width: 100%;
   height: 55px;
-  margin-top: 15px;
+  margin-top: 35px;
   border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
+  outline-style: none;
+  cursor: pointer;
 }
 .lb-oauthbox {
   width: 400px;

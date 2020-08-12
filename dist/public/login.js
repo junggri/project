@@ -41,8 +41,57 @@ function login() {
         var _this = this;
         var checkBox = document.querySelector("#checkbox_id");
         var loginBoxValue = document.querySelector("#login_email");
+        var pwdValue = document.querySelector("#login_pwd");
         var userInputEmail = getCookie("userInputEmail");
+        var loginBtn = document.querySelector(".login-btn");
+        var state = document.querySelector(".condition-login");
         loginBoxValue.focus();
+        function loginProcess(data) {
+            return __awaiter(this, void 0, void 0, function () {
+                var token, myHeaders, reuslt, response, error_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                            myHeaders = new Headers();
+                            myHeaders.append("Content-Type", "application/json");
+                            myHeaders.append("CSRF-Token", token);
+                            return [4 /*yield*/, fetch("http://localhost:3000/api/login_process", {
+                                    method: "POST",
+                                    credentials: "same-origin",
+                                    headers: myHeaders,
+                                    body: JSON.stringify(data),
+                                })];
+                        case 1:
+                            reuslt = _a.sent();
+                            _a.label = 2;
+                        case 2:
+                            _a.trys.push([2, 5, , 6]);
+                            if (!(reuslt.status === 200 || 201)) return [3 /*break*/, 4];
+                            return [4 /*yield*/, reuslt.json()];
+                        case 3:
+                            response = _a.sent();
+                            if (response.state) {
+                                window.location.href = response.url;
+                            }
+                            else {
+                                state.textContent = response.msg;
+                            }
+                            _a.label = 4;
+                        case 4: return [3 /*break*/, 6];
+                        case 5:
+                            error_1 = _a.sent();
+                            console.error(error_1);
+                            return [3 /*break*/, 6];
+                        case 6: return [2 /*return*/];
+                    }
+                });
+            });
+        }
+        loginBtn.addEventListener("click", function () {
+            var data = { email: loginBoxValue.value, pwd: pwdValue.value };
+            loginProcess(data);
+        });
         function getEmailFromCookie(email, state) {
             return __awaiter(this, void 0, void 0, function () {
                 var token, myHeaders, response, result;

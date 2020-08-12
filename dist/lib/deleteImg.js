@@ -44,14 +44,14 @@ var path_1 = __importDefault(require("path"));
 var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
 var savedImg = [];
 var arrImg = [];
-function default_1(email) {
+function default_1(email, id) {
     return __awaiter(this, void 0, void 0, function () {
         var imgPath, result, i;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    imgPath = path_1.default.join(__dirname, "../../upload/" + email);
-                    return [4 /*yield*/, registerSymContoller_1.default.getAllImage(email)];
+                    imgPath = path_1.default.join(__dirname, "../../upload/" + id);
+                    return [4 /*yield*/, registerSymContoller_1.default.getAllImage(id)];
                 case 1:
                     result = _a.sent();
                     // let users: any = await user.findOne({ email: email }).populate("register_sympton");

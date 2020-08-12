@@ -41,7 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var passport_1 = __importDefault(require("../lib/passport"));
 var express_1 = __importDefault(require("express"));
-var passportController_1 = __importDefault(require("../lib/controller/passportController"));
+var oauthController_1 = __importDefault(require("../lib/controller/oauthController"));
 var accesstoken_1 = require("../lib/accesstoken");
 var refreshtoken_1 = __importDefault(require("../lib/refreshtoken"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -56,18 +56,19 @@ router.get("/google/callback", passport_1.default.authenticate("google", {
         var result, _refresh_token_1, save_token_1, validation_refreshToken;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, passportController_1.default.find(req.user._json.email)];
+                case 0: return [4 /*yield*/, oauthController_1.default.find(req.user._json.email)];
                 case 1:
                     result = _a.sent();
+                    console.log(result);
                     if (result === null) {
                         return [2 /*return*/, res.redirect("/api/oauth_register")];
                     }
                     else {
-                        accesstoken_1.createToken(req, res, req.user._json.email, result.name);
-                        _refresh_token_1 = refreshtoken_1.default(req, res, req.user._json.email, result.name);
+                        accesstoken_1.createToken(req, res, req.user._json.email, result.name, result._id);
+                        _refresh_token_1 = refreshtoken_1.default(req, res, req.user._json.email, result.name, result._id);
                         save_token_1 = result._refresh_token;
                         if (save_token_1 === undefined) {
-                            passportController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_1);
+                            oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_1);
                         }
                         else {
                             validation_refreshToken = new Promise(function (resolve, reject) {
@@ -87,7 +88,7 @@ router.get("/google/callback", passport_1.default.authenticate("google", {
                                 .catch(function (err) {
                                 if (err.name === "TokenExpiredError") {
                                     console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
-                                    passportController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_1);
+                                    oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_1);
                                 }
                             });
                         }
@@ -105,18 +106,18 @@ router.get("/naver/callback", passport_1.default.authenticate("naver", {
         var result, _refresh_token_2, save_token_2, validation_refreshToken;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, passportController_1.default.find(req.user._json.email)];
+                case 0: return [4 /*yield*/, oauthController_1.default.find(req.user._json.email)];
                 case 1:
                     result = _a.sent();
                     if (result === null) {
                         return [2 /*return*/, res.redirect("/api/oauth_register")];
                     }
                     else {
-                        accesstoken_1.createToken(req, res, req.user._json.email, result.name);
-                        _refresh_token_2 = refreshtoken_1.default(req, res, req.user._json.email, result.name);
+                        accesstoken_1.createToken(req, res, req.user._json.email, result.name, result._id);
+                        _refresh_token_2 = refreshtoken_1.default(req, res, req.user._json.email, result.name, result._id);
                         save_token_2 = result._refresh_token;
                         if (save_token_2 === undefined) {
-                            passportController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_2);
+                            oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_2);
                         }
                         else {
                             validation_refreshToken = new Promise(function (resolve, reject) {
@@ -136,7 +137,7 @@ router.get("/naver/callback", passport_1.default.authenticate("naver", {
                                 .catch(function (err) {
                                 if (err.name === "TokenExpiredError") {
                                     console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
-                                    passportController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_2);
+                                    oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_2);
                                 }
                             });
                         }

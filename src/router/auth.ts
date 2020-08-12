@@ -1,6 +1,6 @@
 import passport from "../lib/passport";
 import express, { Request, Response, NextFunction } from "express";
-import passportController from "../lib/controller/passportController";
+import passportController from "../lib/controller/oauthController";
 import user from "../lib/model/usermodel";
 import { createToken } from "../lib/accesstoken";
 import refreshToken from "../lib/refreshtoken";
@@ -25,11 +25,12 @@ router.get(
   }),
   async function (req: any, res: Response) {
     let result = await passportController.find(req.user._json.email);
+    console.log(result);
     if (result === null) {
       return res.redirect("/api/oauth_register");
     } else {
-      createToken(req, res, req.user._json.email, result.name);
-      let _refresh_token = refreshToken(req, res, req.user._json.email, result.name);
+      createToken(req, res, req.user._json.email, result.name, result._id);
+      let _refresh_token = refreshToken(req, res, req.user._json.email, result.name, result._id);
       let save_token = result._refresh_token;
       if (save_token === undefined) {
         passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token);
@@ -70,8 +71,8 @@ router.get(
     if (result === null) {
       return res.redirect("/api/oauth_register");
     } else {
-      createToken(req, res, req.user._json.email, result.name);
-      let _refresh_token = refreshToken(req, res, req.user._json.email, result.name);
+      createToken(req, res, req.user._json.email, result.name, result._id);
+      let _refresh_token = refreshToken(req, res, req.user._json.email, result.name, result._id);
       let save_token = result._refresh_token;
       if (save_token === undefined) {
         passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token);

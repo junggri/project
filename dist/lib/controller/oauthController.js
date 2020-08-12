@@ -39,42 +39,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.makeListSympton = void 0;
-var symptonModel_1 = __importDefault(require("./model/symptonModel"));
-exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, void 0, function () {
-    var list, list_1, i, mainImg, codeText, result, item;
+var oauthModel_1 = __importDefault(require("../model/oauthModel"));
+var passportController = {};
+passportController.find = function (email) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                list = "";
-                if (data.length === 0) {
-                    list_1 = "\n      <div class=\"ms-resultBox-nonedata\">\n        \uC544\uC9C1 \uC870\uD68C\uD560 \uC790\uB8CC\uAC00 \uC874\uC7AC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.\n      </div>\n    ";
-                    return [2 /*return*/, list_1];
-                }
-                i = 0;
-                _a.label = 1;
+            case 0: return [4 /*yield*/, oauthModel_1.default.findOne({ email: email })];
             case 1:
-                if (!(i < data.length)) return [3 /*break*/, 4];
-                mainImg = void 0;
-                data[i].img[0] !== undefined || null ? (mainImg = "url('/" + data[i].user_object_id + "/" + data[i].img[0] + "')") : (mainImg = "url('/noimage.svg')");
-                codeText = void 0;
-                return [4 /*yield*/, symptonModel_1.default.find({ code: data[i].code[0] })];
-            case 2:
                 result = _a.sent();
-                if (data[i].code.length === 1) {
-                    codeText = result[0].content;
-                }
-                else {
-                    codeText = result[0].content + " \uC678 " + (data[i].code.length - 1) + "\uAC1C";
-                }
-                item = " <div class=\"ms-resultItem-container\" data-id=\"" + data[i]._id + "\">\n          <div class=\"ms-resultItem\">\n          <span class=\"ms-resultItem-img\" style=\"background-image:" + mainImg + ";\"></span>\n            <div class=\"ms-resultItem-right\">\n              <span class=\"ms-resultItem-time\">" + data[i].createdAt + "</span>\n              <span class=\"ms-resultItem-symptom\">" + codeText + "</span>\n              <div class=\"ms-resultItem-price\">7000-1000\uC6D0</div>\n            </div>\n            <div class=\"ms-resultItem-BtnBox\">\n              <span class=\"ms-resultItem-modifieBtn\">\n                \uC218\uC815\uD558\uAE30\n              </span>\n              <span class=\"ms-resultItem-deleteBtn\">\n                \uC0AD\uC81C\uD558\uAE30\n              </span>\n            </div>\n          </div>  \n        </div>";
-                list += item;
-                _a.label = 3;
-            case 3:
-                i++;
-                return [3 /*break*/, 1];
-            case 4: return [2 /*return*/, list];
+                return [2 /*return*/, result];
         }
     });
 }); };
-//# sourceMappingURL=mypageState.js.map
+passportController.save = function (req, res, data) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, userData, newOauth;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, oauthModel_1.default.find({ email: data.oauth_email })];
+            case 1:
+                result = _a.sent();
+                userData = {
+                    email: data.oauth_email,
+                    oauth_id: data.id,
+                    name: data.oauth_name,
+                };
+                if (!(result.length === 0)) return [3 /*break*/, 3];
+                return [4 /*yield*/, new oauthModel_1.default(userData).save()];
+            case 2:
+                newOauth = _a.sent();
+                return [2 /*return*/, res.redirect("/")];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+passportController.tokenUpdate = function (req, res, _email, _refresh_token) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        oauthModel_1.default
+            .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token } })
+            .then(function (result) {
+            console.log("토큰 재발급했어요");
+            return res.redirect("/");
+        })
+            .catch(function (err) {
+            console.error(err);
+        });
+        return [2 /*return*/];
+    });
+}); };
+exports.default = passportController;
+//# sourceMappingURL=oauthController.js.map

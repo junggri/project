@@ -43,9 +43,9 @@ var usermodel_1 = __importDefault(require("../../lib/model/usermodel"));
 var crypto_1 = __importDefault(require("crypto"));
 var crypto_json_1 = __importDefault(require("../../config/crypto.json"));
 var userController = {};
-userController.tokenUpdate = function (req, res, _email, _refresh_token) {
+userController.tokenUpdate = function (req, res, _email, _refresh_token, userObjectId) {
     usermodel_1.default
-        .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token } })
+        .updateOne({ _id: userObjectId }, { $set: { refresh_token: _refresh_token } })
         .then(function (result) {
         console.log("토큰 재발급했어요");
     })
