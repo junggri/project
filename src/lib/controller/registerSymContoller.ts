@@ -32,7 +32,6 @@ registerSymController.findAllRegister = async (req: any, res: any, _email: strin
     .sort({ create: -1 })
     .then((result: any) => {
       makeListSympton(result).then(async (_list) => {
-        console.log(result);
         let _registerNum = result.length;
         let authUI = auth.status(req, res);
         let user: any = await users.findOne({ _id: id });
@@ -62,11 +61,11 @@ registerSymController.findImageBeforeModified = async (req: Request, res: Respon
 };
 
 registerSymController.modified = async (req: Request, res: Response, data: any) => {
-  let { sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content } = data;
+  let { sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content, sigunguCode } = data;
   registerSym
     .updateOne(
       { _id: req.session._id },
-      { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time, minute }, address: { postcode, roadAddress, detailAddress }, userwant_content: userwant_content } }
+      { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time, minute }, address: { postcode, sigunguCode, roadAddress, detailAddress }, userwant_content: userwant_content } }
     )
     .then(() => {
       req.session._id = "";

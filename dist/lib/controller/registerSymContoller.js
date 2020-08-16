@@ -93,7 +93,6 @@ registerSymController.findAllRegister = function (req, res, _email, id) { return
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            console.log(result);
                             _registerNum = result.length;
                             authUI = authStatus_1.default.status(req, res);
                             return [4 /*yield*/, usermodel_1.default.findOne({ _id: id })];
@@ -147,11 +146,11 @@ registerSymController.findImageBeforeModified = function (req, res) { return __a
     });
 }); };
 registerSymController.modified = function (req, res, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content;
+    var sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content, sigunguCode;
     return __generator(this, function (_a) {
-        sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content;
+        sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content, sigunguCode = data.sigunguCode;
         registerSymModel_1.default
-            .updateOne({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
+            .updateOne({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, sigunguCode: sigunguCode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
             .then(function () {
             req.session._id = "";
             return res.redirect("/api/mypage");

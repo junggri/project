@@ -1,6 +1,7 @@
 declare global {
   interface Window {
     verify: any;
+    IMP: any;
   }
 }
 const pwd_reg = /^.*(?=^.{8,20}$)(?=.*d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
@@ -17,21 +18,22 @@ let email_is_exist = false;
 
 export default function register() {
   $("#common_email").focus();
-  $(".register-email").on("click", () => {
-    if (registerEmail.dataset.click === "none") {
-      registerEmail.dataset.click = "click";
-      $(".arrow").html("&#8743");
-      $(".register-common, .register-provide")
-        .stop()
-        .animate({ bottom: "-90px" }, 350, () => {
-          $(".register-provide").animate({ bottom: "-165px" });
-        });
-    } else if (registerEmail.dataset.click === "click") {
-      registerEmail.dataset.click = "none";
-      $(".arrow").html("&#8744");
-      $(".register-common, .register-provide").stop().animate({ bottom: "0px" }, 500);
-    }
-  });
+
+  // $(".register-email").on("click", () => {
+  //   if (registerEmail.dataset.click === "none") {
+  //     registerEmail.dataset.click = "click";
+  //     $(".arrow").html("&#8743");
+  //     $(".register-common, .register-provide")
+  //       .stop()
+  //       .animate({ bottom: "-90px" }, 350, () => {
+  //         $(".register-provide").animate({ bottom: "-165px" });
+  //       });
+  //   } else if (registerEmail.dataset.click === "click") {
+  //     registerEmail.dataset.click = "none";
+  //     $(".arrow").html("&#8744");
+  //     $(".register-common, .register-provide").stop().animate({ bottom: "0px" }, 500);
+  //   }
+  // });
   ///animation of reigster_preivious page///
   async function checkEmail(url: string, data: any) {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");

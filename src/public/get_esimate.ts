@@ -18,6 +18,7 @@ export default function get_estimate() {
   let height = 500;
   let daum: any = window["daum"];
   let postcode = document.getElementById("postcode") as HTMLInputElement;
+  let sigungu = document.querySelector("#sigunguCode") as HTMLInputElement;
   let roadAddress = document.getElementById("roadAddress") as HTMLInputElement;
   let nextBtn = document.querySelector(".estimate-btn-box-next") as HTMLDivElement;
   let previousBtn = document.querySelector(".estimate-btn-box-previous") as HTMLDivElement;
@@ -28,6 +29,7 @@ export default function get_estimate() {
   let fileBtn = document.querySelector('input[type="file"]') as HTMLElement;
   let addFileBtn = document.querySelector(".add_new_image_btn") as HTMLElement;
   let registerFrom = document.querySelector(".register_sympton_form") as HTMLFormElement;
+
   let lengthFlag: boolean = true;
 
   function clickNextBtn() {
@@ -242,6 +244,7 @@ export default function get_estimate() {
         }
         postcode.value = data.zonecode;
         roadAddress.value = roadAddr;
+        sigungu.value = data.sigunguCode;
       },
     }).open({
       left: window.screen.width / 2 - width / 2,

@@ -42,6 +42,7 @@ function mypage() {
     var daum = window["daum"];
     var postcode = document.getElementById("postcode");
     var roadAddress = document.getElementById("roadAddress");
+    var sigungu = document.querySelector("#sigunguCode");
     var detailAddress = document.getElementById("detailAddress");
     var imgBtn = document.querySelector(".add-img-icon");
     var fileBtn = document.querySelector('input[type="file"]');
@@ -106,6 +107,7 @@ function mypage() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
+                        sigungu.value = response.response.address.sigunguCode;
                         symptonDetail.textContent = response.response.sympton_detail;
                         postcode.value = response.response.address.postcode;
                         roadAddress.value = response.response.address.roadAddress;
@@ -296,6 +298,7 @@ function mypage() {
                 }
                 postcode.value = data.zonecode;
                 roadAddress.value = roadAddr;
+                sigungu.value = data.sigunguCode;
             },
         }).open({
             left: window.screen.width / 2 - width / 2,

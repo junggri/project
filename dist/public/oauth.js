@@ -37,8 +37,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 function oauth() {
-    var userEmail = document.querySelector("#oauth_email");
-    (function checkIsExisted() {
+    var userEmail = document.querySelector("#common_email");
+    var alertBox = document.querySelector(".oauth-alert-box ");
+    var loginBtn = document.querySelector(".oab-loginBtn");
+    var emailBtn = document.querySelector(".oab-emailBtn");
+    var oauthEmail = document.querySelector("#common_email");
+    loginBtn.addEventListener("click", function (e) {
+        window.location.href = "/api/login";
+    });
+    emailBtn.addEventListener("click", function (e) {
+        alertBox.style.display = "none";
+        oauthEmail.readOnly = false;
+    });
+    function checkIsExisted() {
         return __awaiter(this, void 0, void 0, function () {
             var token, myHeaders, result, response, error_1;
             return __generator(this, function (_a) {
@@ -48,7 +59,7 @@ function oauth() {
                         myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
                         myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/check_user_email", {
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/oauth_check_user_email", {
                                 method: "post",
                                 credentials: "same-origin",
                                 headers: myHeaders,
@@ -63,7 +74,9 @@ function oauth() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        console.log(response);
+                        if (!response.state) {
+                            alertBox.style.display = "block";
+                        }
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -74,7 +87,8 @@ function oauth() {
                 }
             });
         });
-    })();
+    }
+    checkIsExisted();
 }
 exports.default = oauth;
 //# sourceMappingURL=oauth.js.map

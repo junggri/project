@@ -56,17 +56,19 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var sanitize_html_1 = __importDefault(require("sanitize-html"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
 var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
+// import oauthController from "../lib/controller/oauthController";
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
+// import oauth from "../lib/model/oauthModel";
 var getDataFromToken_1 = __importDefault(require("../lib/getDataFromToken"));
 var symptonList_1 = require("../lib/symptonList");
 var multer_1 = require("../lib/multer");
 var jwtverify_1 = require("../lib/jwtverify");
 //verify는 로그인이 유지되기 위하여 이용되는 미들웨어 get에는 무조건 포함해야하
+//islogined isnotlogind도 fetch 할때 적용된다 확인하기
 var accesstoken_1 = require("../lib/accesstoken");
 var deleteImg_1 = __importDefault(require("../lib/deleteImg"));
 var setAndGetCookie_1 = require("../lib/setAndGetCookie");
-var oauthController_1 = __importDefault(require("../lib/controller/oauthController"));
 var csrfProtection = csurf_1.default({
     cookie: {
         httpOnly: true,
@@ -150,25 +152,33 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
         }
     });
 }); });
-router.get("/oauth_register", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
-    var _email, _name, _id;
-    var user = req.user._json;
-    console.log(req.user);
-    if (req.user.provider === "google") {
-        (_email = user.email), (_name = user.name), (_id = user.sub);
-    }
-    else if (req.user.provider === "naver") {
-        if (user.name === undefined)
-            _name = "";
-        (_email = user.email), (_id = user.id);
-    }
-    else if (req.user.provider === "kakao") {
-    }
-    res.render("oauth", { csrfToken: req.csrfToken(), email: _email, name: _name, id: _id });
-});
-router.post("/oauth_register_process", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
-    oauthController_1.default.save(req, res, req.body);
-});
+// router.get("/oauth_register", csrfProtection, verify, isLogined, (req, res) => {
+//   console.log(req.user);
+//   let _email, _name, _id: string;
+//   let user: UserData = (req.user as Json)._json;
+//   if ((req.user as UserData).provider === "google") {
+//     (_email = user.email), (_name = user.name), (_id = user.sub);
+//   } else if ((req.user as UserData).provider === "naver") {
+//     if (user.name === undefined) _name = "";
+//     (_email = user.email), (_id = user.id);
+//   } else if ((req.user as UserData).provider === "kakao") {
+//   }
+//   res.render("oauth", { csrfToken: req.csrfToken(), email: _email, name: _name, id: _id });
+// });
+// router.post("/oauth_check_user_email", csrfProtection, verify, async (req, res) => {
+//   // console.log((req.user as ID).id, (req.user as Json)._json, req.body);
+//   let isUser = await users.findOne({ email: req.body.email });
+//   let isOauth = await oauth.findOne({ id: (req.user as ID).id });
+//   console.log(isUser, isOauth);
+//   if (isUser === null && isOauth === null) {
+//     return res.json({ state: true });
+//   } else {
+//     return res.json({ state: false });
+//   }
+// });
+// router.post("/oauth_register_process", csrfProtection, verify, isLogined, (req, res) => {
+//   oauthController.save(req, res, req.body);
+// });
 router.get("/register_previous", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
     res.render("registerprevious");
 });
@@ -277,6 +287,9 @@ router.get("/get_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNo
     if (url_1.default.parse(req.url).query === null) {
         res.redirect("/");
     }
+    if (req.session.img) {
+        req.session.img = [];
+    }
     var authUI = authStatus_1.default.status(req, res);
     var code = req.session.code;
     symptonList_1.selcted_sympton(code).then(function (result) {
@@ -316,7 +329,7 @@ router.post("/fetch_add_upload_image", jwtverify_1.verify, function (req, res, n
 });
 router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
     var token = req.cookies.jwttoken;
-    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, price = _a.price;
+    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, price = _a.price, sigunguCode = _a.sigunguCode;
     var _b = req.session, code = _b.code, img = _b.img;
     var _time = moment_1.default().format("YYYY-MM-DD");
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
@@ -329,7 +342,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
             sympton_detail: sanitize_html_1.default(sympton_detail),
             img: img,
             userwant_time: { time: time, minute: minute },
-            address: { postcode: postcode, roadAddress: roadAddress, detailAddress: detailAddress },
+            address: { postcode: postcode, sigunguCode: sigunguCode, roadAddress: roadAddress, detailAddress: detailAddress },
             userwant_content: sanitize_html_1.default(userwant_content),
             predict_price: price,
             createdAt: _time,
@@ -347,6 +360,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
 });
 //isnotlogined
 router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
+    console.log(req.session);
     var token = req.cookies.jwttoken;
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
@@ -430,7 +444,7 @@ router.post("/modified_add_upload_image", jwtverify_1.verify, function (req, res
 });
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var decoded = getDataFromToken_1.default(req, res);
-    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content;
+    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, sigunguCode = _a.sigunguCode;
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
     var data = {
         sympton_detail: sanitize_html_1.default(sympton_detail),
@@ -438,6 +452,7 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
         minute: minute,
         img: req.session.img,
         postcode: postcode,
+        sigunguCode: sigunguCode,
         roadAddress: roadAddress,
         detailAddress: detailAddress,
         userwant_content: sanitize_html_1.default(userwant_content),
@@ -548,6 +563,15 @@ router.post("/reset_process", csrfProtection, jwtverify_1.verify, jwtverify_1.is
 router.post("/logout_process", jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     res.clearCookie("jwttoken");
     return res.redirect(req.get("Referrer"));
+});
+router.post("/verify_phone_number", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
+    var randomArray = [];
+    for (var i = 0; i < 6; i++) {
+        var randomNum = Math.floor(Math.random() * 10);
+        randomArray.push(randomNum);
+    }
+    res.json({ verify_num: randomArray.join("") });
+    // sendVerifyNumver(req, res);
 });
 exports.default = router;
 //# sourceMappingURL=api.js.map

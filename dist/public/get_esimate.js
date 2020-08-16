@@ -45,6 +45,7 @@ function get_estimate() {
     var height = 500;
     var daum = window["daum"];
     var postcode = document.getElementById("postcode");
+    var sigungu = document.querySelector("#sigunguCode");
     var roadAddress = document.getElementById("roadAddress");
     var nextBtn = document.querySelector(".estimate-btn-box-next");
     var previousBtn = document.querySelector(".estimate-btn-box-previous");
@@ -305,6 +306,7 @@ function get_estimate() {
                 }
                 postcode.value = data.zonecode;
                 roadAddress.value = roadAddr;
+                sigungu.value = data.sigunguCode;
             },
         }).open({
             left: window.screen.width / 2 - width / 2,

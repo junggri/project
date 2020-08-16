@@ -4,6 +4,7 @@ export default function mypage() {
   let daum: any = window["daum"];
   let postcode = document.getElementById("postcode") as HTMLInputElement;
   let roadAddress = document.getElementById("roadAddress") as HTMLInputElement;
+  let sigungu = document.querySelector("#sigunguCode") as HTMLInputElement;
   let detailAddress = document.getElementById("detailAddress") as HTMLInputElement;
   let imgBtn = document.querySelector(".add-img-icon") as HTMLElement;
   let fileBtn = document.querySelector('input[type="file"]') as HTMLElement;
@@ -66,6 +67,7 @@ export default function mypage() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
+        sigungu.value = response.response.address.sigunguCode;
         symptonDetail.textContent = response.response.sympton_detail;
         postcode.value = response.response.address.postcode;
         roadAddress.value = response.response.address.roadAddress;
@@ -225,6 +227,7 @@ export default function mypage() {
         }
         postcode.value = data.zonecode;
         roadAddress.value = roadAddr;
+        sigungu.value = data.sigunguCode;
       },
     }).open({
       left: window.screen.width / 2 - width / 2,

@@ -59,7 +59,6 @@ router.get("/google/callback", passport_1.default.authenticate("google", {
                 case 0: return [4 /*yield*/, oauthController_1.default.find(req.user._json.email)];
                 case 1:
                     result = _a.sent();
-                    console.log(result);
                     if (result === null) {
                         return [2 /*return*/, res.redirect("/api/oauth_register")];
                     }
@@ -68,7 +67,7 @@ router.get("/google/callback", passport_1.default.authenticate("google", {
                         _refresh_token_1 = refreshtoken_1.default(req, res, req.user._json.email, result.name, result._id);
                         save_token_1 = result._refresh_token;
                         if (save_token_1 === undefined) {
-                            oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_1);
+                            oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_1, result._id);
                         }
                         else {
                             validation_refreshToken = new Promise(function (resolve, reject) {
@@ -88,7 +87,7 @@ router.get("/google/callback", passport_1.default.authenticate("google", {
                                 .catch(function (err) {
                                 if (err.name === "TokenExpiredError") {
                                     console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
-                                    oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_1);
+                                    oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_1, result._id);
                                 }
                             });
                         }
@@ -109,6 +108,7 @@ router.get("/naver/callback", passport_1.default.authenticate("naver", {
                 case 0: return [4 /*yield*/, oauthController_1.default.find(req.user._json.email)];
                 case 1:
                     result = _a.sent();
+                    console.log("aotu naver", result);
                     if (result === null) {
                         return [2 /*return*/, res.redirect("/api/oauth_register")];
                     }
@@ -117,7 +117,7 @@ router.get("/naver/callback", passport_1.default.authenticate("naver", {
                         _refresh_token_2 = refreshtoken_1.default(req, res, req.user._json.email, result.name, result._id);
                         save_token_2 = result._refresh_token;
                         if (save_token_2 === undefined) {
-                            oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_2);
+                            oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_2, result._id);
                         }
                         else {
                             validation_refreshToken = new Promise(function (resolve, reject) {
@@ -137,7 +137,7 @@ router.get("/naver/callback", passport_1.default.authenticate("naver", {
                                 .catch(function (err) {
                                 if (err.name === "TokenExpiredError") {
                                     console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
-                                    oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_2);
+                                    oauthController_1.default.tokenUpdate(req, res, req.user._json.email, _refresh_token_2, result._id);
                                 }
                             });
                         }

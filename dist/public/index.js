@@ -48,6 +48,7 @@ var modified_estimate_1 = __importDefault(require("./modified_estimate"));
 var findUserData_1 = __importDefault(require("./findUserData"));
 var reset_1 = __importDefault(require("./reset"));
 var oauth_1 = __importDefault(require("./oauth"));
+var provide_1 = __importDefault(require("./provide"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
 var mainName = document.querySelector(".nb-left-name");
 var path = window.location.pathname;
@@ -60,6 +61,7 @@ if (window.location.href.includes("#")) {
 }
 if (path === "/api/oauth_register") {
     oauth_1.default();
+    register_1.default();
 }
 if (path.split("/")[2] === "reset") {
     reset_1.default();
@@ -78,6 +80,9 @@ if (path === "/api/register_previous") {
 }
 if (path === "/api/register/common") {
     register_1.default();
+}
+if (path === "/api/register/provide") {
+    provide_1.default();
 }
 if (path === "/estimate") {
     estimate_1.default();

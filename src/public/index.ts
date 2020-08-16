@@ -7,6 +7,7 @@ import modified_estimate from "./modified_estimate";
 import findUserData from "./findUserData";
 import reset from "./reset";
 import oauth from "./oauth";
+import provide from "./provide";
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
 let mainName = document.querySelector(".nb-left-name");
 let path = window.location.pathname;
@@ -21,6 +22,7 @@ if (window.location.href.includes("#")) {
 
 if (path === "/api/oauth_register") {
   oauth();
+  reigster();
 }
 if (path.split("/")[2] === "reset") {
   reset();
@@ -39,6 +41,9 @@ if (path === "/api/register_previous") {
 }
 if (path === "/api/register/common") {
   reigster();
+}
+if (path === "/api/register/provide") {
+  provide();
 }
 if (path === "/estimate") {
   estimate();

@@ -5,8 +5,9 @@
 }
 .rb-slo {
   font-size: 30px;
-  margin-top: 170px;
+  margin-top: 80px;
   letter-spacing: 1.2px;
+  font-weight: 600;
 }
 .rb-detail {
   margin-top: 20px;
@@ -27,12 +28,15 @@
   justify-content: center;
 }
 .register_oauth span {
-  /* border: 1px solid black; */
   vertical-align: middle;
 }
 .rb-email {
-  width: 400px;
   position: relative;
+  font-size: 0;
+  margin-top: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .rb-emailslo {
   text-align: center;
@@ -46,7 +50,6 @@
   margin: 0 auto;
   width: 70px;
   display: block;
-  background-color: white;
   z-index: 999;
   font-weight: 100;
 }
@@ -58,55 +61,63 @@
   position: absolute;
   top: 49%;
 }
-.arrow {
-  margin-left: 5px;
-  font-size: 15px;
-}
-.register-email span {
-  vertical-align: middle;
-}
-.register-email {
-  margin-top: 30px;
-  border: 1px solid black;
-  position: relative;
-  height: 55px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  z-index: 999;
-}
-.register-email:hover {
-  cursor: pointer;
-}
-.register-common {
-  border: 1px solid black;
-  position: absolute;
-  width: 400px;
-  height: 55px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: -55px;
-  background-color: white;
-  z-index: 998;
-}
-.register-common span {
-  vertical-align: middle;
-}
+.register-common,
 .register-provide {
-  border: 1px solid black;
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px 0 rgba(196, 206, 219, 0.3);
+  padding: 100px 230px;
+  display: inline-block;
+  border-radius: 4px;
+}
+.register-common span,
+.register-provide span {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px 0 rgba(196, 206, 219, 0.3);
+  border-radius: 4px;
   position: absolute;
-  right: 0;
-  width: 400px;
-  height: 55px;
+  font-size: 17px;
+  letter-spacing: 1.2px;
+  vertical-align: middle;
+  width: 340px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 75%;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -55px;
+  background-color: #11d3b7;
+  color: #eaf4f3;
+  font-weight: 100;
 }
-.register-provide span {
-  vertical-align: middle;
+.register-common-slo {
+  font-size: 18px;
+  position: absolute;
+  width: 300px;
+  text-align: center;
+  left: 50%;
+  top: 28%;
+  font-weight: 600;
+  transform: translate(-50%, -50%);
+}
+.register-common-detail {
+  font-size: 16px;
+  position: absolute;
+  width: 320px;
+  text-align: center;
+  left: 50%;
+  top: 45%;
+  font-weight: 100;
+  transform: translate(-50%, -50%);
+}
+.register-or {
+  font-size: 16px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-weight: 100;
+  width: 460px;
+  text-align: center;
 }
 /*  */
 .common-box {
@@ -173,10 +184,15 @@
   width: 100%;
   height: 55px;
   margin-top: 40px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: #11d3b7;
+  color: #eaf4f3;
+  font-size: 16px;
+  letter-spacing: 1.2px;
+  font-weight: 100;
 }
 .register-btn:hover {
   cursor: pointer;
@@ -259,4 +275,94 @@
 }
 .changeEmail-Btn:hover {
   cursor: pointer;
+}
+/*  */
+.provide-box {
+  width: 570px;
+  position: relative;
+  margin: 0 auto;
+  margin-top: 80px;
+}
+.pb-slo {
+  font-size: 30px;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+.provide-inputBox {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 15px 20px;
+}
+.provide-item {
+  margin-top: 20px;
+}
+.provide-slo {
+  font-size: 18px;
+  font-weight: 100;
+  margin-left: 3px;
+}
+.provide-item-wrapper {
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  margin-top: 15px;
+  height: 45px;
+  box-shadow: 0 2px 4px 0 rgba(196, 206, 219, 0.3);
+}
+.provide-input {
+  height: 40px;
+  outline-style: none;
+  margin-top: 2px;
+  border: none;
+  width: 100%;
+  padding-left: 20px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 17px;
+  font-weight: 300;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+#provide-gender {
+  outline-style: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-left: 20px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 17px;
+  font-weight: 300;
+  vertical-align: middle;
+}
+.provide-state {
+  margin-top: 7px;
+  font-size: 14px;
+  font-weight: 100;
+  padding-left: 4px;
+}
+#provide-pwd {
+  font-family: "Spoqa Han Sans", "Spoqa Han Sans JP", "Sans-serif";
+}
+.provide-phone-btn,
+.provide-verify-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 100;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: pointer;
+  background-color: #11d3b7;
+  color: white;
+  width: 110px;
+}
+.provide-verify {
+  display: none;
 }

@@ -15,18 +15,20 @@ import jwt from "jsonwebtoken";
 import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
 import registerSymController from "../lib/controller/registerSymContoller";
+// import oauthController from "../lib/controller/oauthController";
 import users from "../lib/model/usermodel";
 import auth from "../lib/authStatus";
+// import oauth from "../lib/model/oauthModel";
 import getDataFromToken from "../lib/getDataFromToken";
 import { selcted_sympton } from "../lib/symptonList";
 import { upload, reupload, modifiedUpload, modifiedReupload } from "../lib/multer";
 import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
 //verify는 로그인이 유지되기 위하여 이용되는 미들웨어 get에는 무조건 포함해야하
+//islogined isnotlogind도 fetch 할때 적용된다 확인하기
 import { createToken } from "../lib/accesstoken";
 import deleteImg from "../lib/deleteImg";
 import { encrypt, decrypt } from "../lib/setAndGetCookie";
-import oauthController from "../lib/controller/oauthController";
-
+import sendVerifyNumver from "../lib/sendPhone";
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
@@ -42,6 +44,9 @@ interface Decoded {
 }
 interface Json {
   _json: any;
+}
+interface ID {
+  id: string;
 }
 interface UserData {
   provider: string;
@@ -117,23 +122,35 @@ router.post("/login_process", parseForm, csrfProtection, async (req: any, res: a
   }
 });
 
-router.get("/oauth_register", csrfProtection, verify, isLogined, (req, res) => {
-  let _email, _name, _id: string;
-  let user: UserData = (req.user as Json)._json;
-  console.log(req.user);
-  if ((req.user as UserData).provider === "google") {
-    (_email = user.email), (_name = user.name), (_id = user.sub);
-  } else if ((req.user as UserData).provider === "naver") {
-    if (user.name === undefined) _name = "";
-    (_email = user.email), (_id = user.id);
-  } else if ((req.user as UserData).provider === "kakao") {
-  }
-  res.render("oauth", { csrfToken: req.csrfToken(), email: _email, name: _name, id: _id });
-});
+// router.get("/oauth_register", csrfProtection, verify, isLogined, (req, res) => {
+//   console.log(req.user);
+//   let _email, _name, _id: string;
+//   let user: UserData = (req.user as Json)._json;
+//   if ((req.user as UserData).provider === "google") {
+//     (_email = user.email), (_name = user.name), (_id = user.sub);
+//   } else if ((req.user as UserData).provider === "naver") {
+//     if (user.name === undefined) _name = "";
+//     (_email = user.email), (_id = user.id);
+//   } else if ((req.user as UserData).provider === "kakao") {
+//   }
+//   res.render("oauth", { csrfToken: req.csrfToken(), email: _email, name: _name, id: _id });
+// });
 
-router.post("/oauth_register_process", csrfProtection, verify, isLogined, (req, res) => {
-  oauthController.save(req, res, req.body);
-});
+// router.post("/oauth_check_user_email", csrfProtection, verify, async (req, res) => {
+//   // console.log((req.user as ID).id, (req.user as Json)._json, req.body);
+//   let isUser = await users.findOne({ email: req.body.email });
+//   let isOauth = await oauth.findOne({ id: (req.user as ID).id });
+//   console.log(isUser, isOauth);
+//   if (isUser === null && isOauth === null) {
+//     return res.json({ state: true });
+//   } else {
+//     return res.json({ state: false });
+//   }
+// });
+
+// router.post("/oauth_register_process", csrfProtection, verify, isLogined, (req, res) => {
+//   oauthController.save(req, res, req.body);
+// });
 
 router.get("/register_previous", csrfProtection, verify, isLogined, (req, res) => {
   res.render("registerprevious");
@@ -220,6 +237,9 @@ router.get("/get_estimate", csrfProtection, verify, isNotLogined, (req, res) => 
   if (url.parse(req.url).query === null) {
     res.redirect("/");
   }
+  if (req.session.img) {
+    req.session.img = [];
+  }
   let authUI = auth.status(req, res);
   let { code } = req.session;
   selcted_sympton(code).then((result) => {
@@ -264,7 +284,7 @@ router.post("/fetch_add_upload_image", verify, (req: any, res, next) => {
 
 router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
   const token = req.cookies.jwttoken;
-  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, price } = req.body;
+  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, price, sigunguCode } = req.body;
   let { code, img } = req.session;
   let _time = moment().format("YYYY-MM-DD");
   let detailAddress = sanitizeHtml(req.body.detailAddress);
@@ -277,7 +297,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
       sympton_detail: sanitizeHtml(sympton_detail),
       img: img,
       userwant_time: { time, minute },
-      address: { postcode, roadAddress, detailAddress },
+      address: { postcode, sigunguCode, roadAddress, detailAddress },
       userwant_content: sanitizeHtml(userwant_content),
       predict_price: price,
       createdAt: _time,
@@ -295,6 +315,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
 
 //isnotlogined
 router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
+  console.log(req.session);
   const token = req.cookies.jwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -362,7 +383,7 @@ router.post("/modified_add_upload_image", verify, (req: any, res, next) => {
 
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
   let decoded = getDataFromToken(req, res);
-  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content } = req.body;
+  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, sigunguCode } = req.body;
   let detailAddress = sanitizeHtml(req.body.detailAddress);
   let data = {
     sympton_detail: sanitizeHtml(sympton_detail),
@@ -370,6 +391,7 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     minute: minute,
     img: req.session.img,
     postcode: postcode,
+    sigunguCode: sigunguCode,
     roadAddress: roadAddress,
     detailAddress: detailAddress,
     userwant_content: sanitizeHtml(userwant_content),
@@ -451,4 +473,13 @@ router.post("/logout_process", verify, isNotLogined, (req, res) => {
   return res.redirect(req.get("Referrer"));
 });
 
+router.post("/verify_phone_number", csrfProtection, verify, isLogined, (req, res) => {
+  let randomArray = [];
+  for (let i = 0; i < 6; i++) {
+    let randomNum = Math.floor(Math.random() * 10);
+    randomArray.push(randomNum);
+  }
+  res.json({ verify_num: randomArray.join("") });
+  // sendVerifyNumver(req, res);
+});
 export default router;

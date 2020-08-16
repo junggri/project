@@ -26,9 +26,9 @@ passportController.save = async (req: Request, res: Response, data: UserData) =>
   }
 };
 
-passportController.tokenUpdate = async (req: Request, res: Response, _email: string, _refresh_token: string) => {
+passportController.tokenUpdate = async (req: Request, res: Response, _email: string, _refresh_token: string, id: string) => {
   auth
-    .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token } })
+    .updateOne({ _id: id }, { $set: { refresh_token: _refresh_token } })
     .then((result) => {
       console.log("토큰 재발급했어요");
       return res.redirect("/");

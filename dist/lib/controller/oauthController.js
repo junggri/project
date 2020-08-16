@@ -73,10 +73,10 @@ passportController.save = function (req, res, data) { return __awaiter(void 0, v
         }
     });
 }); };
-passportController.tokenUpdate = function (req, res, _email, _refresh_token) { return __awaiter(void 0, void 0, void 0, function () {
+passportController.tokenUpdate = function (req, res, _email, _refresh_token, id) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         oauthModel_1.default
-            .updateOne({ email: _email }, { $set: { refresh_token: _refresh_token } })
+            .updateOne({ _id: id }, { $set: { refresh_token: _refresh_token } })
             .then(function (result) {
             console.log("토큰 재발급했어요");
             return res.redirect("/");

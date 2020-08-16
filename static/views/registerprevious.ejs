@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/style.css" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css"
-    />
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
@@ -19,41 +15,44 @@
           <span class="nb-left-name">name</span>
         </div>
         <div class="nb-right">
-          <span class="nb-right_customer nb-right_list"
-            ><a href="/customer">고객센터</a></span
-          >
-          <span class="nb-right_usage nb-right_list"
-            ><a href="/howtouse">이용안내</a></span
-          >
-          <span class="nb-right_register nb-right_list"
-            ><a href="/api/register_previous">회원가입</a></span
-          >
-          <span class="nb-right_login nb-right_list"
-            ><a href="/api/login">로그인</a></span
-          >
+          <span class="nb-right_customer nb-right_list"><a href="/customer">고객센터</a></span>
+          <span class="nb-right_usage nb-right_list"><a href="/howtouse">이용안내</a></span>
+          <span class="nb-right_register nb-right_list"><a href="/api/register_previous">회원가입</a></span>
+          <span class="nb-right_login nb-right_list"><a href="/api/login">로그인</a></span>
         </div>
       </div>
       <div class="register-box">
         <div class="rb-slo">회원가입</div>
-        <div class="rb-detail">회원가입 하시고</br>다양한 혜택을 누려보세요.</div>
-        <div class="rb-oauthbox">
+        <div class="rb-detail">회원가입 하시고 다양한 혜택을 누려보세요.</div>
+        <!-- <div class="rb-oauthbox">
           <div class="google register_oauth"><span><a href="/auth/google">구글</a></span></div>
           <div class="naver register_oauth"><span><a href="/auth/naver">네이버</a></span></div>
           <div class="kakao register_oauth"><span><a href="/auth/kakao">카카오</a></span></div>
-        </div>
+        </div> -->
         <div class="rb-email">
-          <div class="rb-emailslo">
+          <!-- <div class="rb-emailslo">
             <span>또는</span> 
-          </div>
-          <div class="register-email" data-click="none"> 
-            <span>이메일로 가입하기</span>
-            <span class="arrow">&#8744</span>
-          </div>
+          </div> -->
+
           <div class="register-common">
-            <span><a href="/api/register/common">일반회원</a></span>
+            <div class="register-common-slo">
+              간편견적을 받아보고 싶으신가요?
+            </div>
+            <div class="register-common-detail">
+              합리적인 가격을 통해 문제를 해결해보세요.
+            </div>
+            <a href="/api/register/common"><span>일반회원</span></a>
           </div>
+          <span class="register-or">또는</span>
+
           <div class="register-provide">
-            <span><a href="/api/register/provide">00</a></span>
+            <div class="register-common-slo">
+              OO이되어 문제를 해결해주세요.
+            </div>
+            <div class="register-common-detail">
+              도움이 필요한 고객을 만나 문제를 해결해주세요.
+            </div>
+            <a href="/api/register/provide"><span>00</span></a>
           </div>
         </div>
       </div>

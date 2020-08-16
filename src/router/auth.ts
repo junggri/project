@@ -25,7 +25,6 @@ router.get(
   }),
   async function (req: any, res: Response) {
     let result = await passportController.find(req.user._json.email);
-    console.log(result);
     if (result === null) {
       return res.redirect("/api/oauth_register");
     } else {
@@ -33,7 +32,7 @@ router.get(
       let _refresh_token = refreshToken(req, res, req.user._json.email, result.name, result._id);
       let save_token = result._refresh_token;
       if (save_token === undefined) {
-        passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token);
+        passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token, result._id);
       } else {
         let validation_refreshToken = new Promise((resolve, reject) => {
           try {
@@ -51,7 +50,7 @@ router.get(
           .catch((err) => {
             if (err.name === "TokenExpiredError") {
               console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
-              passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token);
+              passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token, result._id);
             }
           });
       }
@@ -68,6 +67,7 @@ router.get(
   }),
   async function (req: any, res: Response) {
     let result = await passportController.find(req.user._json.email);
+    console.log("aotu naver", result);
     if (result === null) {
       return res.redirect("/api/oauth_register");
     } else {
@@ -75,7 +75,7 @@ router.get(
       let _refresh_token = refreshToken(req, res, req.user._json.email, result.name, result._id);
       let save_token = result._refresh_token;
       if (save_token === undefined) {
-        passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token);
+        passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token, result._id);
       } else {
         let validation_refreshToken = new Promise((resolve, reject) => {
           try {
@@ -93,7 +93,7 @@ router.get(
           .catch((err) => {
             if (err.name === "TokenExpiredError") {
               console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
-              passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token);
+              passportController.tokenUpdate(req, res, req.user._json.email, _refresh_token, result._id);
             }
           });
       }

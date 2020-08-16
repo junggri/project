@@ -6,76 +6,71 @@
     <title>Document</title>
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <link rel="stylesheet" href="/style.css" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css"
-    />
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
     <div id="app">
-      <div class="nav-bar">
+      <nav class="nav-bar">
         <div class="nb-left">
           <span class="nb-left-name common-name">name</span>
         </div>
-      </div>
-      <div class="common-box">
-        <div class="cb-slo">
-          일반회원가입
+      </nav>
+      <div class="provide-box">
+        <div class="pb-slo">
+          OO가입하기
         </div>
-        <form
-          method="POST"
-          action="/api/register_common_process"
-          class="common_form"
-        >
+        <form method="POST" action="/api/register_provide_process" class="provide_form">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-          <div class="cb-registerbox cb-email">
-            <input
-              id="common_email"
-              type="text"
-              placeholder="이메일을 입력하세요."
-              name="common_email"
-              autocomplete="off"
-            />
+          <div class="provide-inputBox">
+            <div class="provide-name provide-item">
+              <div class="provide-slo">이름</div>
+              <div class="provide-item-wrapper">
+                <input type="text" id="provide-name" class="provide-input" name="name" />
+              </div>
+              <div class="provide-state ps-name">sda</div>
+            </div>
+            <div class="provide-gender provide-item">
+              <div class="provide-slo">성별</div>
+              <div class="provide-item-wrapper">
+                <select name="gender" id="provide-gender" class="provide-input">
+                  <option value="male" class="option">남성</option>
+                  <option value="female">여성</option>
+                </select>
+              </div>
+            </div>
+            <div class="provide-email provide-item">
+              <div class="provide-slo">이메일</div>
+              <div class="provide-item-wrapper">
+                <input type="text" id="provide-email" class="provide-input" name="email" />
+              </div>
+              <div class="provide-state ps-email"></div>
+            </div>
+            <div class="provide-pwd provide-item">
+              <div class="provide-slo">비밀번호</div>
+              <div class="provide-item-wrapper">
+                <input type="password" id="provide-pwd" class="provide-input" name="pwd" />
+              </div>
+              <div class="provide-state ps-pwd"></div>
+            </div>
+            <div class="provide-phone provide-item">
+              <div class="provide-slo">핸드폰</div>
+              <div class="provide-item-wrapper">
+                <input type="text" id="provide-phone" class="provide-input" name="phone" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');" />
+                <div class="provide-phone-btn">휴대폰 인증하기</div>
+              </div>
+              <div class="provide-state ps-phone">(-)를 제외한 번호를 입력해주세요.</div>
+            </div>
+            <div class="provide-verify provide-item">
+              <div class="provide-slo">인증번호</div>
+              <div class="provide-item-wrapper">
+                <input type="text" id="provide-verify" class="provide-input" name="phone" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');" maxlength="6" />
+                <div class="provide-verify-btn">확인</div>
+              </div>
+              <div class="provide-state ps-verify"></div>
+            </div>
+            <input type="button" class="register-btn" value="가입" />
           </div>
-          <div class="condition-register">
-            위의 이메일로 인증번호를 발송합니다.
-          </div>
-          <div class="state-email state-register">sdsds</div>
-          <div class="cb-registerbox cb-name">
-            <input
-              id="common_name"
-              type="text"
-              placeholder="사용자 이름을 입력해주세요."
-              name="common_name"
-              autocomplete="off"
-            />
-          </div>
-          <div class="cb-registerbox cb-pwd">
-            <input
-              id="common_pwd"
-              type="password"
-              placeholder="비밀번호 입력해주세요."
-              autocomplete="off"
-            />
-          </div>
-          <div class="cb-registerbox cb-checkpwd">
-            <input
-              id="common_checkpwd"
-              name="common_pwd"
-              type="password"
-              placeholder="비밀번호 확인해주세요."
-              autocomplete="off"
-            />
-          </div>
-          <div class="condition-register">
-            위의 이메일로 인증번호를 발송합니다.
-          </div>
-          <!-- <div class="state-email state-register">sdsds</div>s -->
-          <button type="submit" class="register-btn">
-            확인
-          </button>
         </form>
       </div>
     </div>
