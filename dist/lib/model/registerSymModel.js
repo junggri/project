@@ -35,6 +35,9 @@ var registerSympton = new mongoose_1.default.Schema({
     address: {
         postcode: { type: String },
         sigunguCode: { type: String },
+        sigungu: { type: String },
+        bname: { type: String },
+        bname1: { type: String },
         roadAddress: { type: String },
         detailAddress: { type: String },
     },

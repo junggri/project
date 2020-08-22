@@ -15,9 +15,9 @@ function sendVerifyNumver(req, res) {
     var user_phone_number = req.body.user_phone_number;
     var user_auth_number = randomArray.join("");
     var date = Date.now().toString();
-    var uri = "ncp:sms:kr:258388484624:authoriztion";
-    var secretKey = "iAC8fi4tH0dWVmckGrtMm92drplta6RxUhGnIKzd";
-    var accessKey = "cEk7AGKu4h9f72FEzLLC";
+    var uri = process.env.PHONE_URI;
+    var secretKey = process.env.PHONE_SECRET;
+    var accessKey = process.env.PHONE_ACCESS;
     var method = "POST";
     var space = " ";
     var newLine = "\n";
@@ -46,7 +46,7 @@ function sendVerifyNumver(req, res) {
         body: {
             type: "SMS",
             countryCode: "82",
-            from: "01077652103",
+            from: process.env.PHONE_NUMBER,
             content: "\uC778\uC99D\uBC88\uD638 " + user_auth_number + " \uC785\uB2C8\uB2E4.",
             messages: [
                 {

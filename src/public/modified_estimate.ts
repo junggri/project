@@ -2,9 +2,12 @@ export default function mypage() {
   let width = 500;
   let height = 500;
   let daum: any = window["daum"];
+  let sigungu = document.querySelector("#sigungu") as HTMLInputElement;
+  let bname = document.querySelector("#bname") as HTMLInputElement;
+  let bname1 = document.querySelector("#bname1") as HTMLInputElement;
   let postcode = document.getElementById("postcode") as HTMLInputElement;
   let roadAddress = document.getElementById("roadAddress") as HTMLInputElement;
-  let sigungu = document.querySelector("#sigunguCode") as HTMLInputElement;
+  let sigunguCode = document.querySelector("#sigunguCode") as HTMLInputElement;
   let detailAddress = document.getElementById("detailAddress") as HTMLInputElement;
   let imgBtn = document.querySelector(".add-img-icon") as HTMLElement;
   let fileBtn = document.querySelector('input[type="file"]') as HTMLElement;
@@ -67,7 +70,10 @@ export default function mypage() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
-        sigungu.value = response.response.address.sigunguCode;
+        sigungu.value = response.response.address.sigungu;
+        bname.value = response.response.address.bname;
+        bname1.value = response.response.address.bname1;
+        sigunguCode.value = response.response.address.sigunguCode;
         symptonDetail.textContent = response.response.sympton_detail;
         postcode.value = response.response.address.postcode;
         roadAddress.value = response.response.address.roadAddress;
@@ -227,7 +233,10 @@ export default function mypage() {
         }
         postcode.value = data.zonecode;
         roadAddress.value = roadAddr;
-        sigungu.value = data.sigunguCode;
+        sigunguCode.value = data.sigunguCode;
+        sigungu.value = data.sigungu;
+        bname.value = data.bname;
+        bname1.value = data.bname1;
       },
     }).open({
       left: window.screen.width / 2 - width / 2,

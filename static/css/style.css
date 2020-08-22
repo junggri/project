@@ -8,6 +8,8 @@
 @import "findUserData.css";
 @import "resetPwd.css";
 @import "oauth.css";
+@import "./provider/index.css";
+@import "./provider/findAllRegister.css";
 html,
 body,
 input {

@@ -49,6 +49,8 @@ var findUserData_1 = __importDefault(require("./findUserData"));
 var reset_1 = __importDefault(require("./reset"));
 var oauth_1 = __importDefault(require("./oauth"));
 var provide_1 = __importDefault(require("./provide"));
+var p_index_1 = __importDefault(require("./p_index"));
+var p_findAllRegister_1 = __importDefault(require("./p_findAllRegister"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
 var mainName = document.querySelector(".nb-left-name");
 var path = window.location.pathname;
@@ -58,6 +60,12 @@ var logoutForm = document.querySelector(".logout-form");
 var body = document.querySelector("#app");
 if (window.location.href.includes("#")) {
     window.location.href = window.location.href.slice(0, -1);
+}
+if (path === "/provide/index") {
+    p_index_1.default();
+}
+if (path === "/provide/findAllRegister") {
+    p_findAllRegister_1.default();
 }
 if (path === "/api/oauth_register") {
     oauth_1.default();
@@ -106,7 +114,12 @@ if (LoginmyBtn !== null) {
 }
 if (mainName !== null) {
     mainName.addEventListener("click", function () {
-        location.href = "/";
+        if (path.split("/")[1] === "api") {
+            location.href = "/";
+        }
+        else if (path.split("/")[1] === "provide") {
+            location.href = "/provide/index";
+        }
     });
 }
 if (logout !== null) {

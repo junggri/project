@@ -15,6 +15,7 @@ import createError from "http-errors";
 import dotenv from "dotenv";
 import passport from "passport";
 import flash from "connect-flash";
+
 dotenv.config();
 const RedisStore = connectRedis(session);
 const _client = redis.createClient();
@@ -84,10 +85,12 @@ app.engine("html", require("ejs").renderFile);
 import indexRouter from "./router/index";
 import authRouter from "./router/auth";
 import apiRouter from "./router/api";
+import provierRouter from "./router/provide";
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/api", apiRouter);
+app.use("/provide", provierRouter);
 
 app.set("port", process.env.PORT || 3000);
 

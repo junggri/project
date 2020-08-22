@@ -12,6 +12,5 @@ var database = mysql_1.default.createConnection({
     database: msqyl_json_1.default.database,
 });
 database.connect();
-database.end();
 exports.default = database;
 //# sourceMappingURL=mysql.js.map

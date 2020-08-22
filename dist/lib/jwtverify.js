@@ -8,12 +8,14 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var accesstoken_1 = require("./accesstoken");
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var email;
+var user_id;
 function verify(req, res, next) {
     var token = req.cookies.jwttoken;
     var decoded = null;
     try {
         decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         email = decoded.email;
+        user_id = decoded.user_objectId;
         console.log("로그인 되어있음");
         return next();
         ///로그인되었으면 next()해서 다음함수 호출
@@ -27,8 +29,9 @@ function verify(req, res, next) {
         if (error.name === "TokenExpiredError") {
             //토큰이 만료됬네? 오케이 리프레쉬 토큰확인해볼게
             usermodel_1.default
-                .findOne({ _id: { $in: [decoded.user_objectId] } })
+                .findOne({ _id: user_id })
                 .then(function (result) {
+                console.log(result);
                 var validation_promise = new Promise(function (resolve, reject) {
                     try {
                         var validation_token = jsonwebtoken_1.default.verify(result.refresh_token, process.env.JWT_SECRET);
@@ -42,10 +45,11 @@ function verify(req, res, next) {
                     .then(function (result) {
                     //어 리프레쉬 토큰 있고 유효하네
                     console.log("리프레쉬 토큰이 있고 유효하니 로그인을 유지시켜줄게");
-                    accesstoken_1.createToken(req, res, email, result.username, decoded.user_objectId);
+                    accesstoken_1.createToken(req, res, email, result.username, user_id);
                     return res.redirect(req.originalUrl);
                 })
                     .catch(function (err) {
+                    console.error(1, err);
                     //야 리프레쉬 토큰은 있는데 유효기간이 끝났어
                     console.log("토큰은 쿠키에 저장되어있긴해 근데 로그인이 되지 않아 있네?, 또는 리프레쉬 토큰이 만료되서 로그인해서 새로운 리프레쉬 토큰을 발급받아, 로그인이 필요합니다.");
                     next();
@@ -53,7 +57,7 @@ function verify(req, res, next) {
             })
                 .catch(function (err) {
                 //리프레쉬토큰 찾다가 에러나면 알려줄게
-                console.error(err);
+                console.error(2, err);
             });
         }
     }

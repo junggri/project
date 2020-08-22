@@ -1,0 +1,58 @@
+.find-registerBox {
+  width: 1170px;
+  position: relative;
+  margin: 0 auto;
+}
+.fr-sloBox {
+  /* border: 1px solid black; */
+  margin-top: 80px;
+}
+.fr-slo {
+  font-size: 50px;
+  font-weight: 600;
+}
+.fr-detail {
+  font-size: 25px;
+  margin-top: 10px;
+}
+.register-select-box {
+  margin-top: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 60px 40px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.register-select-box select {
+  width: 250px;
+  height: 40px;
+  vertical-align: middle;
+  margin-right: 25px;
+  -webkit-appearance: none;
+  padding-left: 10px;
+  font-size: 15px;
+  border-radius: 3px;
+  outline-style: none;
+}
+.register-select-box :nth-child(4) {
+  margin-right: 35px;
+}
+.register-select-box input {
+  width: 100px;
+  height: 40px;
+}
+.register-select-box span {
+  font-weight: 600;
+  margin-right: 30px;
+}
+.find-btn {
+  cursor: pointer;
+  background-color: #11d3b7;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.frr-nav {
+  border: 1px solid black;
+  margin-top: 40px;
+}

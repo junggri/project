@@ -98,7 +98,6 @@ registerSymController.findAllRegister = function (req, res, _email, id) { return
                             return [4 /*yield*/, usermodel_1.default.findOne({ _id: id })];
                         case 1:
                             user = _a.sent();
-                            console.log(user);
                             res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, len: _registerNum, username: user.name });
                             return [2 /*return*/];
                     }
@@ -146,11 +145,19 @@ registerSymController.findImageBeforeModified = function (req, res) { return __a
     });
 }); };
 registerSymController.modified = function (req, res, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content, sigunguCode;
+    var sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content, sigunguCode, sigungu, bname, bname1;
     return __generator(this, function (_a) {
-        sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content, sigunguCode = data.sigunguCode;
+        sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content, sigunguCode = data.sigunguCode, sigungu = data.sigungu, bname = data.bname, bname1 = data.bname1;
         registerSymModel_1.default
-            .updateOne({ _id: req.session._id }, { $set: { sympton_detail: sympton_detail, img: img, userwant_time: { time: time, minute: minute }, address: { postcode: postcode, sigunguCode: sigunguCode, roadAddress: roadAddress, detailAddress: detailAddress }, userwant_content: userwant_content } })
+            .updateOne({ _id: req.session._id }, {
+            $set: {
+                sympton_detail: sympton_detail,
+                img: img,
+                userwant_time: { time: time, minute: minute },
+                address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress },
+                userwant_content: userwant_content,
+            },
+        })
             .then(function () {
             req.session._id = "";
             return res.redirect("/api/mypage");

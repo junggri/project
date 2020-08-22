@@ -40,9 +40,12 @@ function mypage() {
     var width = 500;
     var height = 500;
     var daum = window["daum"];
+    var sigungu = document.querySelector("#sigungu");
+    var bname = document.querySelector("#bname");
+    var bname1 = document.querySelector("#bname1");
     var postcode = document.getElementById("postcode");
     var roadAddress = document.getElementById("roadAddress");
-    var sigungu = document.querySelector("#sigunguCode");
+    var sigunguCode = document.querySelector("#sigunguCode");
     var detailAddress = document.getElementById("detailAddress");
     var imgBtn = document.querySelector(".add-img-icon");
     var fileBtn = document.querySelector('input[type="file"]');
@@ -107,7 +110,10 @@ function mypage() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        sigungu.value = response.response.address.sigunguCode;
+                        sigungu.value = response.response.address.sigungu;
+                        bname.value = response.response.address.bname;
+                        bname1.value = response.response.address.bname1;
+                        sigunguCode.value = response.response.address.sigunguCode;
                         symptonDetail.textContent = response.response.sympton_detail;
                         postcode.value = response.response.address.postcode;
                         roadAddress.value = response.response.address.roadAddress;
@@ -298,7 +304,10 @@ function mypage() {
                 }
                 postcode.value = data.zonecode;
                 roadAddress.value = roadAddr;
-                sigungu.value = data.sigunguCode;
+                sigunguCode.value = data.sigunguCode;
+                sigungu.value = data.sigungu;
+                bname.value = data.bname;
+                bname1.value = data.bname1;
             },
         }).open({
             left: window.screen.width / 2 - width / 2,

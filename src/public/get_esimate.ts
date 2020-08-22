@@ -17,8 +17,11 @@ export default function get_estimate() {
   let width = 500;
   let height = 500;
   let daum: any = window["daum"];
+  let sigungu = document.querySelector("#sigungu") as HTMLInputElement;
+  let bname = document.querySelector("#bname") as HTMLInputElement;
+  let bname1 = document.querySelector("#bname1") as HTMLInputElement;
   let postcode = document.getElementById("postcode") as HTMLInputElement;
-  let sigungu = document.querySelector("#sigunguCode") as HTMLInputElement;
+  let sigunguCode = document.querySelector("#sigunguCode") as HTMLInputElement;
   let roadAddress = document.getElementById("roadAddress") as HTMLInputElement;
   let nextBtn = document.querySelector(".estimate-btn-box-next") as HTMLDivElement;
   let previousBtn = document.querySelector(".estimate-btn-box-previous") as HTMLDivElement;
@@ -244,7 +247,10 @@ export default function get_estimate() {
         }
         postcode.value = data.zonecode;
         roadAddress.value = roadAddr;
-        sigungu.value = data.sigunguCode;
+        sigunguCode.value = data.sigunguCode;
+        sigungu.value = data.sigungu;
+        bname.value = data.bname;
+        bname1.value = data.bname1;
       },
     }).open({
       left: window.screen.width / 2 - width / 2,

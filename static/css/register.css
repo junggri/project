@@ -175,7 +175,7 @@
   top: 16px;
   font-size: 13px;
   font-weight: 100;
-  color: red;
+  color: #ff6666;
 }
 .cb-checkpwd {
   margin-top: 15px;
@@ -339,6 +339,7 @@
   font-size: 14px;
   font-weight: 100;
   padding-left: 4px;
+  color: #ff6666;
 }
 #provide-pwd {
   font-family: "Spoqa Han Sans", "Spoqa Han Sans JP", "Sans-serif";

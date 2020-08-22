@@ -12,9 +12,9 @@ export default function sendVerifyNumver(req: any, res: any) {
   let user_auth_number = randomArray.join("");
 
   const date = Date.now().toString();
-  const uri = "ncp:sms:kr:258388484624:authoriztion";
-  const secretKey = "iAC8fi4tH0dWVmckGrtMm92drplta6RxUhGnIKzd";
-  const accessKey = "cEk7AGKu4h9f72FEzLLC";
+  const uri = process.env.PHONE_URI;
+  const secretKey = process.env.PHONE_SECRET;
+  const accessKey = process.env.PHONE_ACCESS;
   const method = "POST";
   const space = " ";
   const newLine = "\n";
@@ -47,7 +47,7 @@ export default function sendVerifyNumver(req: any, res: any) {
       body: {
         type: "SMS",
         countryCode: "82",
-        from: "01077652103",
+        from: process.env.PHONE_NUMBER,
         content: `인증번호 ${user_auth_number} 입니다.`,
         messages: [
           {

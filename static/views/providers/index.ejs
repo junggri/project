@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta HTTP-EQUIV="Pragma" CONTENT="no-cache" />
+    <meta HTTP-EQUIV="Expires" CONTENT="-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="provider-indexBox">
+        <div class="pi-slo">
+          환영합니다
+        </div>
+        <div class="pi-detail">
+          당신을 원하는 고객을 위해</br>무료로 견적서를 제출해 보세요.
+        </div>
+        <div class="pi-loginBox">
+          <div class="pi-inputbox">
+            <div class="pi-email">
+              <input type="text" id="pi-email" name="email" placeholder="이메일">
+            </div>
+            <div class="pi-pwd">
+              <input type="password" id="pi-pwd" name="pwd" placeholder="비밀번호"> 
+            </div>
+          </div>
+          <div class="pi-loginBtn">
+            <span>로그인</span>
+          </div>
+        </div>
+        <div class="pi-state"></div>
+        <div class="login-for-provider">
+          <section class="login-for-user-left login-for-provider-left">
+            <input type="checkbox" id="checkbox_id" />
+            <label for="checkbox_id">아이디 저장</label>
+          </section>
+          <section class="login-for-user-right login-for-provider-right">
+            <a href="/api/find_user_email"><span>아이디 </span></a>
+            <a href="/api/find_user_pwd"><span> / 비밀번호 찾기</span></a>
+          </section>
+        </div>
+      </div>
+    </div>
+    <script src="../bundle.js"></script>
+  </body>
+</html>

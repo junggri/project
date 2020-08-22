@@ -8,6 +8,9 @@ import findUserData from "./findUserData";
 import reset from "./reset";
 import oauth from "./oauth";
 import provide from "./provide";
+import P_index from "./p_index";
+import p_findAllRegister from "./p_findAllRegister";
+
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
 let mainName = document.querySelector(".nb-left-name");
 let path = window.location.pathname;
@@ -20,6 +23,12 @@ if (window.location.href.includes("#")) {
   window.location.href = window.location.href.slice(0, -1);
 }
 
+if (path === "/provide/index") {
+  P_index();
+}
+if (path === "/provide/findAllRegister") {
+  p_findAllRegister();
+}
 if (path === "/api/oauth_register") {
   oauth();
   reigster();
@@ -69,7 +78,11 @@ if (LoginmyBtn !== null) {
 
 if (mainName !== null) {
   mainName.addEventListener("click", () => {
-    location.href = "/";
+    if (path.split("/")[1] === "api") {
+      location.href = "/";
+    } else if (path.split("/")[1] === "provide") {
+      location.href = "/provide/index";
+    }
   });
 }
 

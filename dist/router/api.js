@@ -56,6 +56,7 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var sanitize_html_1 = __importDefault(require("sanitize-html"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
 var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
+var provideController_1 = __importDefault(require("../lib/controller/provideController"));
 // import oauthController from "../lib/controller/oauthController";
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
@@ -69,6 +70,7 @@ var jwtverify_1 = require("../lib/jwtverify");
 var accesstoken_1 = require("../lib/accesstoken");
 var deleteImg_1 = __importDefault(require("../lib/deleteImg"));
 var setAndGetCookie_1 = require("../lib/setAndGetCookie");
+var sendPhone_1 = __importDefault(require("../lib/sendPhone"));
 var csrfProtection = csurf_1.default({
     cookie: {
         httpOnly: true,
@@ -99,7 +101,7 @@ router.get("/login", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, 
     res.render("login", { csrfToken: req.csrfToken() });
 });
 router.post("/login_process", parseForm, csrfProtection, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _email, _pwd, result, userObjectId;
+    var _email, _pwd, result, userObjectId_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -108,12 +110,12 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
                 return [4 /*yield*/, usermodel_1.default.findOne({ email: _email })];
             case 1:
                 result = _a.sent();
-                userObjectId = result._id;
                 try {
                     if (result === null) {
                         res.json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
                     }
                     else {
+                        userObjectId_1 = result._id;
                         crypto_1.default.pbkdf2(_pwd, result.salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) {
                             if (key.toString("base64") === result.password) {
                                 //오케이 로그인 성공했어
@@ -121,7 +123,7 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
                                 var _refresh_token = refreshtoken_1.default(req, res, _email, result.name, result._id);
                                 var save_token = result.refresh_token;
                                 if (save_token === undefined) {
-                                    userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
+                                    userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
                                     return res.json({ url: req.session.referer, state: true });
                                 }
                                 else {
@@ -133,7 +135,7 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
                                     catch (error) {
                                         if (error.name === "TokenExpiredError") {
                                             console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
-                                            userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
+                                            userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
                                             return res.json({ url: req.session.referer, state: true });
                                         }
                                     }
@@ -224,19 +226,53 @@ router.post("/register_common_process", parseForm, csrfProtection, jwtverify_1.v
         }); });
     });
 });
+router.post("/register_provide_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var inputdata, _a, name, gender, email, pwd, phone;
+    return __generator(this, function (_b) {
+        inputdata = {};
+        _a = req.body, name = _a.name, gender = _a.gender, email = _a.email, pwd = _a.pwd, phone = _a.phone;
+        crypto_1.default.randomBytes(crypto_json_1.default.len, function (err, buf) {
+            var salt = buf.toString("base64");
+            crypto_1.default.pbkdf2(pwd, salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    inputdata = {
+                        email: email,
+                        password: key.toString("base64"),
+                        name: name,
+                        gender: gender,
+                        phone_number: phone,
+                        salt: salt,
+                    };
+                    try {
+                        provideController_1.default.save(inputdata);
+                        return [2 /*return*/, res.redirect("/provide/index")];
+                    }
+                    catch (error) {
+                        console.error(error);
+                    }
+                    return [2 /*return*/];
+                });
+            }); });
+        });
+        return [2 /*return*/];
+    });
+}); });
 router.post("/check_email", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var responseData, user, randomArray, i, randomNum, mailOption, error_2;
+    var responseData, user, provideResult, randomArray, i, randomNum, mailOption, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 responseData = null;
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
+                _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, usermodel_1.default.find({ email: req.body.email })];
             case 2:
                 user = _a.sent();
-                if (user.length === 0) {
+                return [4 /*yield*/, provideController_1.default.find(req.body.email)];
+            case 3:
+                provideResult = _a.sent();
+                if (user.length === 0 && provideResult.length === 0) {
                     randomArray = [];
                     for (i = 0; i < 6; i++) {
                         randomNum = Math.floor(Math.random() * 10);
@@ -259,12 +295,12 @@ router.post("/check_email", parseForm, csrfProtection, jwtverify_1.verify, jwtve
                     responseData = { state: "false", msg: "이미 사용중인 이메일입니다" };
                 }
                 res.json(responseData);
-                return [3 /*break*/, 4];
-            case 3:
+                return [3 /*break*/, 5];
+            case 4:
                 error_2 = _a.sent();
                 console.error(error_2);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); });
@@ -329,7 +365,7 @@ router.post("/fetch_add_upload_image", jwtverify_1.verify, function (req, res, n
 });
 router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
     var token = req.cookies.jwttoken;
-    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, price = _a.price, sigunguCode = _a.sigunguCode;
+    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, price = _a.price, sigunguCode = _a.sigunguCode, sigungu = _a.sigungu, bname = _a.bname, bname1 = _a.bname1;
     var _b = req.session, code = _b.code, img = _b.img;
     var _time = moment_1.default().format("YYYY-MM-DD");
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
@@ -342,7 +378,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
             sympton_detail: sanitize_html_1.default(sympton_detail),
             img: img,
             userwant_time: { time: time, minute: minute },
-            address: { postcode: postcode, sigunguCode: sigunguCode, roadAddress: roadAddress, detailAddress: detailAddress },
+            address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress },
             userwant_content: sanitize_html_1.default(userwant_content),
             predict_price: price,
             createdAt: _time,
@@ -360,7 +396,6 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
 });
 //isnotlogined
 router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
-    console.log(req.session);
     var token = req.cookies.jwttoken;
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
@@ -444,7 +479,8 @@ router.post("/modified_add_upload_image", jwtverify_1.verify, function (req, res
 });
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var decoded = getDataFromToken_1.default(req, res);
-    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, sigunguCode = _a.sigunguCode;
+    console.log(req.body);
+    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, sigunguCode = _a.sigunguCode, sigungu = _a.sigungu, bname = _a.bname, bname1 = _a.bname1;
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
     var data = {
         sympton_detail: sanitize_html_1.default(sympton_detail),
@@ -453,6 +489,9 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
         img: req.session.img,
         postcode: postcode,
         sigunguCode: sigunguCode,
+        sigungu: sigungu,
+        bname: bname,
+        bname1: bname1,
         roadAddress: roadAddress,
         detailAddress: detailAddress,
         userwant_content: sanitize_html_1.default(userwant_content),
@@ -503,10 +542,32 @@ router.post("/check_user_email", parseForm, csrfProtection, jwtverify_1.verify, 
             case 1:
                 result = _a.sent();
                 if (result.length === 0) {
+                    //회원정보가 존재하지 않습니다.
                     res.json({ state: false, inputdata: req.body.email });
                 }
                 else {
                     res.json({ state: true, email: result[0].email });
+                }
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/check_provide_email", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var userResult, provideResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, userContoller_1.default.find(req.body.email)];
+            case 1:
+                userResult = _a.sent();
+                return [4 /*yield*/, provideController_1.default.find(req.body.email)];
+            case 2:
+                provideResult = _a.sent();
+                if (userResult.length === 0 && provideResult.length === 0) {
+                    //중복된 이메일이 존재하지 않는다는 것
+                    res.json({ state: true });
+                }
+                else {
+                    res.json({ state: false });
                 }
                 return [2 /*return*/];
         }
@@ -560,18 +621,12 @@ router.post("/reset_process", csrfProtection, jwtverify_1.verify, jwtverify_1.is
         return [2 /*return*/];
     });
 }); });
-router.post("/logout_process", jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
+router.post("/logout_process", jwtverify_1.isNotLogined, function (req, res) {
     res.clearCookie("jwttoken");
     return res.redirect(req.get("Referrer"));
 });
 router.post("/verify_phone_number", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
-    var randomArray = [];
-    for (var i = 0; i < 6; i++) {
-        var randomNum = Math.floor(Math.random() * 10);
-        randomArray.push(randomNum);
-    }
-    res.json({ verify_num: randomArray.join("") });
-    // sendVerifyNumver(req, res);
+    sendPhone_1.default(req, res);
 });
 exports.default = router;
 //# sourceMappingURL=api.js.map

@@ -38,14 +38,24 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 function provide() {
     var _this = this;
+    var email_reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+    var pwd_reg = /^.*(?=^.{8,20}$)(?=.*d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+    var provideForm = document.querySelector(".provide_form");
     var phoneBtn = document.querySelector(".provide-phone-btn");
     var phoneNumber = document.querySelector("#provide-phone");
     var checkBox = document.querySelector(".provide-verify");
     var verifyNumber = document.querySelector("#provide-verify");
     var checkBtn = document.querySelector(".provide-verify-btn");
     var registerBtn = document.querySelector(".register-btn");
+    var inputEmail = document.querySelector("#provide-email");
+    var inputPwd = document.querySelector("#provide-pwd");
+    var statePhone = document.querySelector(".ps-phone");
     var stateVerify = document.querySelector(".ps-verify");
+    var stateEmail = document.querySelector(".ps-email");
+    var statePwd = document.querySelector(".ps-pwd");
     var verifyFlag = false;
+    var emailFlag = false;
+    var pwdFlag = false;
     var checkNumber;
     phoneBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
         var randomArray, i, randomNum, token, myHeaders, result, response;
@@ -79,7 +89,7 @@ function provide() {
                     return [4 /*yield*/, result.json()];
                 case 2:
                     response = _a.sent();
-                    console.log(response.verify_num);
+                    // console.log(response.verify_num);
                     checkNumber = response.verify_num;
                     return [2 /*return*/];
                 case 3: return [2 /*return*/];
@@ -102,8 +112,67 @@ function provide() {
             return;
         }
     });
+    inputEmail.addEventListener("blur", function (e) { return __awaiter(_this, void 0, void 0, function () {
+        var token, myHeaders, result, response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!email_reg.test(inputEmail.value)) {
+                        emailFlag = false;
+                        return [2 /*return*/, (stateEmail.textContent = "이메일 형식이 올바르지 않습니다.")];
+                    }
+                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                    myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    myHeaders.append("CSRF-Token", token);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/check_provide_email", {
+                            method: "POST",
+                            credentials: "same-origin",
+                            headers: myHeaders,
+                            body: JSON.stringify({ email: inputEmail.value }),
+                        })];
+                case 1:
+                    result = _a.sent();
+                    if (!(result.status === 201 || 201)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, result.json()];
+                case 2:
+                    response = _a.sent();
+                    if (!response.state) {
+                        emailFlag = false;
+                        stateEmail.textContent = "이미 사용중인이메일입니다.";
+                    }
+                    else {
+                        emailFlag = true;
+                        stateEmail.textContent = "사용가능한 이메일입니다.";
+                    }
+                    _a.label = 3;
+                case 3: return [2 /*return*/];
+            }
+        });
+    }); });
+    inputPwd.addEventListener("blur", function () {
+        if (pwd_reg.test(inputPwd.value)) {
+            pwdFlag = true;
+            statePwd.textContent = "비밀번호가 유효합니다.";
+        }
+        else {
+            pwdFlag = false;
+            statePwd.textContent = "비밀번호가 유효하지 않습니다";
+        }
+    });
     registerBtn.addEventListener("click", function (e) {
-        console.log(verifyFlag);
+        console.log(emailFlag, pwdFlag, verifyFlag);
+        if (emailFlag && pwdFlag && verifyFlag)
+            return provideForm.submit();
+        else {
+            if (!emailFlag)
+                stateEmail.textContent = "이메일을 확인해 주시길 바랍니다.";
+            if (!pwdFlag)
+                statePwd.textContent = "비밀번호를 확인해 주시실 바랍니다.";
+            if (!verifyFlag)
+                statePhone.textContent = "휴대폰 인증이 필요합니다.";
+            return;
+        }
     });
 }
 exports.default = provide;

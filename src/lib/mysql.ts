@@ -9,6 +9,4 @@ let database: any = mysql.createConnection({
 });
 database.connect();
 
-database.end();
-
 export default database;

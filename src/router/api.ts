@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import refreshToken from "../lib/refreshtoken";
-import crypto, { KeyObject } from "crypto";
+import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import url from "url";
@@ -15,6 +15,7 @@ import jwt from "jsonwebtoken";
 import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
 import registerSymController from "../lib/controller/registerSymContoller";
+import provideController from "../lib/controller/provideController";
 // import oauthController from "../lib/controller/oauthController";
 import users from "../lib/model/usermodel";
 import auth from "../lib/authStatus";
@@ -85,11 +86,11 @@ router.post("/login_process", parseForm, csrfProtection, async (req: any, res: a
   // let result: any = await users.findOne({ email: { $in: [_email] } });
   //보안이라는데;;흠;;;
   let result: any = await users.findOne({ email: _email });
-  let userObjectId = result._id;
   try {
     if (result === null) {
       res.json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
     } else {
+      let userObjectId = result._id;
       crypto.pbkdf2(_pwd, result.salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, (err, key) => {
         if (key.toString("base64") === result.password) {
           //오케이 로그인 성공했어
@@ -187,11 +188,36 @@ router.post("/register_common_process", parseForm, csrfProtection, verify, isLog
   });
 });
 
+router.post("/register_provide_process", parseForm, csrfProtection, verify, isLogined, async (req, res) => {
+  let inputdata = {};
+  const { name, gender, email, pwd, phone } = req.body;
+  crypto.randomBytes(crypto_cre.len, (err, buf) => {
+    let salt = buf.toString("base64");
+    crypto.pbkdf2(pwd, salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
+      inputdata = {
+        email: email,
+        password: key.toString("base64"),
+        name: name,
+        gender: gender,
+        phone_number: phone,
+        salt: salt,
+      };
+      try {
+        provideController.save(inputdata);
+        return res.redirect("/provide/index");
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  });
+});
+
 router.post("/check_email", parseForm, csrfProtection, verify, isLogined, async (req, res) => {
   let responseData = null;
   try {
     let user = await users.find({ email: req.body.email });
-    if (user.length === 0) {
+    let provideResult = await provideController.find(req.body.email);
+    if (user.length === 0 && provideResult.length === 0) {
       let randomArray = [];
       for (let i = 0; i < 6; i++) {
         let randomNum = Math.floor(Math.random() * 10);
@@ -284,7 +310,7 @@ router.post("/fetch_add_upload_image", verify, (req: any, res, next) => {
 
 router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
   const token = req.cookies.jwttoken;
-  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, price, sigunguCode } = req.body;
+  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, price, sigunguCode, sigungu, bname, bname1 } = req.body;
   let { code, img } = req.session;
   let _time = moment().format("YYYY-MM-DD");
   let detailAddress = sanitizeHtml(req.body.detailAddress);
@@ -297,7 +323,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
       sympton_detail: sanitizeHtml(sympton_detail),
       img: img,
       userwant_time: { time, minute },
-      address: { postcode, sigunguCode, roadAddress, detailAddress },
+      address: { postcode, sigunguCode, sigungu, bname, bname1, roadAddress, detailAddress },
       userwant_content: sanitizeHtml(userwant_content),
       predict_price: price,
       createdAt: _time,
@@ -315,7 +341,6 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
 
 //isnotlogined
 router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
-  console.log(req.session);
   const token = req.cookies.jwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -383,7 +408,8 @@ router.post("/modified_add_upload_image", verify, (req: any, res, next) => {
 
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
   let decoded = getDataFromToken(req, res);
-  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, sigunguCode } = req.body;
+  console.log(req.body);
+  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, sigunguCode, sigungu, bname, bname1 } = req.body;
   let detailAddress = sanitizeHtml(req.body.detailAddress);
   let data = {
     sympton_detail: sanitizeHtml(sympton_detail),
@@ -392,6 +418,9 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     img: req.session.img,
     postcode: postcode,
     sigunguCode: sigunguCode,
+    sigungu: sigungu,
+    bname: bname,
+    bname1: bname1,
     roadAddress: roadAddress,
     detailAddress: detailAddress,
     userwant_content: sanitizeHtml(userwant_content),
@@ -428,9 +457,21 @@ router.get("/find_user_pwd", csrfProtection, verify, isLogined, (req, res) => {
 router.post("/check_user_email", parseForm, csrfProtection, verify, isLogined, async (req, res) => {
   let result = await userController.find(req.body.email);
   if (result.length === 0) {
+    //회원정보가 존재하지 않습니다.
     res.json({ state: false, inputdata: req.body.email });
   } else {
     res.json({ state: true, email: result[0].email });
+  }
+});
+
+router.post("/check_provide_email", parseForm, csrfProtection, verify, isLogined, async (req, res) => {
+  let userResult = await userController.find(req.body.email);
+  let provideResult = await provideController.find(req.body.email);
+  if (userResult.length === 0 && provideResult.length === 0) {
+    //중복된 이메일이 존재하지 않는다는 것
+    res.json({ state: true });
+  } else {
+    res.json({ state: false });
   }
 });
 
@@ -468,18 +509,12 @@ router.post("/reset_process", csrfProtection, verify, isLogined, async (req, res
   userController.resetPassword(req, res);
 });
 
-router.post("/logout_process", verify, isNotLogined, (req, res) => {
+router.post("/logout_process", isNotLogined, (req, res) => {
   res.clearCookie("jwttoken");
   return res.redirect(req.get("Referrer"));
 });
 
 router.post("/verify_phone_number", csrfProtection, verify, isLogined, (req, res) => {
-  let randomArray = [];
-  for (let i = 0; i < 6; i++) {
-    let randomNum = Math.floor(Math.random() * 10);
-    randomArray.push(randomNum);
-  }
-  res.json({ verify_num: randomArray.join("") });
-  // sendVerifyNumver(req, res);
+  sendVerifyNumver(req, res);
 });
 export default router;

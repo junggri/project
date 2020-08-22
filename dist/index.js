@@ -73,9 +73,11 @@ app.engine("html", require("ejs").renderFile);
 var index_1 = __importDefault(require("./router/index"));
 var auth_1 = __importDefault(require("./router/auth"));
 var api_1 = __importDefault(require("./router/api"));
+var provide_1 = __importDefault(require("./router/provide"));
 app.use("/", index_1.default);
 app.use("/auth", auth_1.default);
 app.use("/api", api_1.default);
+app.use("/provide", provide_1.default);
 app.set("port", process.env.PORT || 3000);
 app.use(logError);
 app.use(function (req, res, next) {
