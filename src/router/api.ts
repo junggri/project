@@ -42,6 +42,7 @@ const router = express.Router();
 interface Decoded {
   email: string;
   user_objectId: string;
+  username: string;
 }
 interface Json {
   _json: any;
@@ -310,20 +311,22 @@ router.post("/fetch_add_upload_image", verify, (req: any, res, next) => {
 
 router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
   const token = req.cookies.jwttoken;
-  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, price, sigunguCode, sigungu, bname, bname1 } = req.body;
+  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, price, sigungu, bname, bname1, lat, lon } = req.body;
   let { code, img } = req.session;
+  let sigunguCode = String(req.body.sigunguCode).substr(0, 2);
   let _time = moment().format("YYYY-MM-DD");
   let detailAddress = sanitizeHtml(req.body.detailAddress);
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     let inputdata = {
+      user_name: (decoded as Decoded).username,
       user_object_id: (decoded as Decoded).user_objectId,
       email: (decoded as Decoded).email,
       code: code,
       sympton_detail: sanitizeHtml(sympton_detail),
       img: img,
       userwant_time: { time, minute },
-      address: { postcode, sigunguCode, sigungu, bname, bname1, roadAddress, detailAddress },
+      address: { postcode, sigunguCode, sigungu, bname, bname1, roadAddress, detailAddress, lat, lon },
       userwant_content: sanitizeHtml(userwant_content),
       predict_price: price,
       createdAt: _time,
@@ -345,9 +348,9 @@ router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     let _dir = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}`)));
-    if (!fs.existsSync(_dir)) {
-      fs.mkdirSync(_dir);
-    }
+    let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
+    if (!fs.existsSync(_dir)) fs.mkdirSync(_dir);
+    if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
     registerSymController.findAllRegister(req, res, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
   } catch (error) {
     console.error(error, "로그인이 되지 않았습니다.");
@@ -408,8 +411,8 @@ router.post("/modified_add_upload_image", verify, (req: any, res, next) => {
 
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, verify, isNotLogined, (req, res) => {
   let decoded = getDataFromToken(req, res);
-  console.log(req.body);
-  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, sigunguCode, sigungu, bname, bname1 } = req.body;
+  let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, sigungu, bname, bname1, lat, lon } = req.body;
+  let sigunguCode = String(req.body.sigunguCode).substr(0, 2);
   let detailAddress = sanitizeHtml(req.body.detailAddress);
   let data = {
     sympton_detail: sanitizeHtml(sympton_detail),
@@ -423,6 +426,8 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     bname1: bname1,
     roadAddress: roadAddress,
     detailAddress: detailAddress,
+    lat: lat,
+    lon: lon,
     userwant_content: sanitizeHtml(userwant_content),
   };
   registerSymController.modified(req, res, data);

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta HTTP-EQUIV="Pragma" CONTENT="no-cache" />
+    <meta HTTP-EQUIV="Expires" CONTENT="-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="nav-bar">
+        <div class="nb-left">
+          <span class="nb-left-name">name</span>
+        </div>
+        <ul class="nb-right">
+          <li class="nb-right_customer nb-right_list">
+            <a href="/customer">고객센터</a>
+          </li>
+          <li class="nb-right_usage nb-right_list">
+            <a href="/howtouse">이용안내</a>
+          </li>
+          <%- authUI %>
+        </ul>
+      </nav>
+      <div class="showBeforeEstimate-box">
+        <div class="sbe-box-content"></div>
+        <div class="sbe-user-info">
+          <div class="sbe-user-img"></div>
+          <div class="sbe-user-info-right">
+            <div class="sbe-user-name"></div>
+            <div class="sbe-user-createdAt"></div>
+          </div>
+        </div>
+        <div class="sbe-summary-box">
+          <div class="sbe-summary-box-left">
+            <div class="summary-img-box">
+              <div class="summary-main-img"></div>
+            </div>
+          </div>
+          <div class="sbe-summary-box-right">
+            <div class="sbe-summary-box-right-content">
+              <span class="content-slo">증상</span>
+              <span class="sbe-content-detail"></span>
+            </div>
+            <div class="sbe-summary-box-right-userwant">
+              <div class="sbe-userwant-time">
+                <span>요청시간</span>
+                <span class="sbe-userwant-time-resultBox"></span>
+              </div>
+              <div class="sbe-userwant-content">
+                <span>요청사항</span>
+                <span class="sbe-userwant-content-detail"></span>
+              </div>
+              <div class="sbe-userwant-location">
+                <span
+                  >위치정보<br />
+                  <span>23.4km</span>
+                </span>
+                <div>
+                  <%- Location %>
+                </div>
+              </div>
+            </div>
+            <input type="button" class="sbe-estimate-btn" value="견적서 제출하기" />
+            <div class="sbe-Precautions">
+              <div>견적서 제출시 주의사항</div>
+              <div>
+                거리정보는 직선거리이므로 정확하지 않은 거리임을 확인하시길 바랍니다.
+              </div>
+              <div>
+                거리정보는 직선거리이므로 정확하지 않은 거리임을 확인하시길 바랍니다.
+              </div>
+              <div>
+                거리정보는 직선거리이므로 정확하지 않은 거리임을 확인하시길 바랍니다.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sbe-showImg-box">
+          <%- imgs %>
+        </div>
+      </div>
+    </div>
+    <div class="sbe-estimate-box">
+      <div class="sbe-esimate-box-slo"></div>
+    </div>
+    <script src="../bundle.js"></script>
+  </body>
+</html>

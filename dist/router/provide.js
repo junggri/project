@@ -52,6 +52,9 @@ var crypto_1 = __importDefault(require("crypto"));
 var crypto_json_1 = __importDefault(require("../config/crypto.json"));
 var provideModel_1 = __importDefault(require("../lib/model/provideModel"));
 var provideController_1 = __importDefault(require("../lib/controller/provideController"));
+var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
+var p_MakeSymptonList_1 = require("../lib/p_MakeSymptonList");
+var p_makeShowData_1 = require("../lib/p_makeShowData");
 var mysql_1 = __importDefault(require("../lib/mysql"));
 var querystring_1 = __importDefault(require("querystring"));
 var p_makeJuso_1 = require("../lib/p_makeJuso");
@@ -128,16 +131,36 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
     });
 }); });
 router.get("/findAllRegister", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var authUI;
+    var authUI, pageNum, divided_num, data, allData, _AllSympton, pagination, data, allData, _AllSympton, pagination;
     return __generator(this, function (_a) {
-        authUI = p_authStatus_1.default.status(req, res);
-        if (querystring_1.default.parse(req.url).sigunguCode !== undefined && querystring_1.default.parse(req.url).sigunguCode !== "0") {
-            p_makeJuso_1.makeJuso(req, res, authUI);
+        switch (_a.label) {
+            case 0:
+                authUI = p_authStatus_1.default.status(req, res);
+                divided_num = 15;
+                querystring_1.default.parse(req.url).page === undefined ? (pageNum = 1) : (pageNum = querystring_1.default.parse(req.url).page);
+                if (!(querystring_1.default.parse(req.url).sigunguCode !== undefined && querystring_1.default.parse(req.url).sigunguCode !== "0")) return [3 /*break*/, 3];
+                return [4 /*yield*/, registerSymContoller_1.default.getSpecificData(pageNum, querystring_1.default.parse(req.url).sigunguCode, querystring_1.default.parse(req.url).sigungu, querystring_1.default.parse(req.url).bname, divided_num)];
+            case 1:
+                data = _a.sent();
+                return [4 /*yield*/, registerSymContoller_1.default.makeSpecificPagination(pageNum, querystring_1.default.parse(req.url).sigunguCode, querystring_1.default.parse(req.url).sigungu, querystring_1.default.parse(req.url).bname, divided_num)];
+            case 2:
+                allData = _a.sent();
+                _AllSympton = p_MakeSymptonList_1.MakeAllSymptonList(data, pageNum, divided_num);
+                pagination = p_MakeSymptonList_1.MakePagination(req, res, allData, divided_num);
+                p_makeJuso_1.makeJuso(req, res, authUI, _AllSympton, pagination);
+                return [3 /*break*/, 6];
+            case 3: return [4 /*yield*/, registerSymContoller_1.default.getAllData(pageNum, divided_num)];
+            case 4:
+                data = _a.sent();
+                return [4 /*yield*/, registerSymContoller_1.default.makePagination()];
+            case 5:
+                allData = _a.sent();
+                _AllSympton = p_MakeSymptonList_1.MakeAllSymptonList(data, pageNum, divided_num);
+                pagination = p_MakeSymptonList_1.MakePagination(req, res, allData, divided_num);
+                res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });
+                _a.label = 6;
+            case 6: return [2 /*return*/];
         }
-        else {
-            res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "" });
-        }
-        return [2 /*return*/];
     });
 }); });
 router.get("/selected_and_find", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
@@ -183,5 +206,34 @@ router.post("/get_sejong", csrfProtection, p_verify_1.verify, p_verify_1.isNotLo
         res.json({ sido: Array.from(new Set(data1)).sort() });
     });
 });
+router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var authUI, result, location, imgs;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                authUI = p_authStatus_1.default.status(req, res);
+                return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.url.split("?")[1])];
+            case 1:
+                result = _a.sent();
+                location = p_makeShowData_1.makeLocation(result);
+                imgs = p_makeShowData_1.makeImg(result);
+                //세종이랑 나눈다 다시하번 해보기
+                res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location, imgs: imgs });
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/get_registerData", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body._id)];
+            case 1:
+                result = _a.sent();
+                res.json({ data: result });
+                return [2 /*return*/];
+        }
+    });
+}); });
 exports.default = router;
 //# sourceMappingURL=provide.js.map

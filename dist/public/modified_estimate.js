@@ -43,6 +43,8 @@ function mypage() {
     var sigungu = document.querySelector("#sigungu");
     var bname = document.querySelector("#bname");
     var bname1 = document.querySelector("#bname1");
+    var lat = document.querySelector("#lat");
+    var lon = document.querySelector("#lon");
     var postcode = document.getElementById("postcode");
     var roadAddress = document.getElementById("roadAddress");
     var sigunguCode = document.querySelector("#sigunguCode");
@@ -113,6 +115,8 @@ function mypage() {
                         sigungu.value = response.response.address.sigungu;
                         bname.value = response.response.address.bname;
                         bname1.value = response.response.address.bname1;
+                        lat.value = response.response.address.lat;
+                        lon.value = response.response.address.lon;
                         sigunguCode.value = response.response.address.sigunguCode;
                         symptonDetail.textContent = response.response.sympton_detail;
                         postcode.value = response.response.address.postcode;
@@ -302,12 +306,33 @@ function mypage() {
                 if (data.buildingName !== "" && data.apartment === "Y") {
                     extraRoadAddr += extraRoadAddr !== "" ? ", " + data.buildingName : data.buildingName;
                 }
-                postcode.value = data.zonecode;
-                roadAddress.value = roadAddr;
-                sigunguCode.value = data.sigunguCode;
-                sigungu.value = data.sigungu;
-                bname.value = data.bname;
-                bname1.value = data.bname1;
+                Promise.resolve(data)
+                    .then(function () {
+                    var address = data.address;
+                    return new Promise(function (resolve, reject) {
+                        var geocoder = new daum.maps.services.Geocoder();
+                        geocoder.addressSearch(address, function (result, status) {
+                            if (status === daum.maps.services.Status.OK) {
+                                var _a = result[0], x = _a.x, y = _a.y;
+                                resolve({ lat: y, lon: x });
+                            }
+                            else {
+                                reject();
+                            }
+                        });
+                    });
+                })
+                    .then(function (result) {
+                    console.log(result);
+                    postcode.value = data.zonecode;
+                    roadAddress.value = roadAddr;
+                    sigunguCode.value = data.sigunguCode;
+                    sigungu.value = data.sigungu;
+                    bname.value = data.bname;
+                    bname1.value = data.bname1;
+                    lat.value = result.lat;
+                    lon.value = result.lon;
+                });
             },
         }).open({
             left: window.screen.width / 2 - width / 2,

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeJuso = void 0;
 var mysql_1 = __importDefault(require("../lib/mysql"));
 var querystring_1 = __importDefault(require("querystring"));
-exports.makeJuso = function (req, res, authUI) {
+exports.makeJuso = function (req, res, authUI, _AllSympton, pagination) {
     if (querystring_1.default.parse(req.url).sigunguCode === "sejong") {
         mysql_1.default.query("select * from " + querystring_1.default.parse(req.url).sigunguCode, function (err, data) {
             var data1 = [];
@@ -18,7 +18,6 @@ exports.makeJuso = function (req, res, authUI) {
                 data1.push(data[i].법정읍면동명);
             }
             var arr = Array.from(new Set(data1)).sort();
-            console.log(arr);
             for (var i = 0; i < arr.length; i++) {
                 if (arr[i] === querystring_1.default.parse(req.url).bname) {
                     item2 = "<option value=\"" + arr[i] + "\" selected>" + arr[i] + "</option>";
@@ -28,7 +27,7 @@ exports.makeJuso = function (req, res, authUI) {
                 }
                 list2 += item2;
             }
-            res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: list2 });
+            res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: list2, AllSympton: _AllSympton, pagination: pagination });
         });
         return;
     }
@@ -72,7 +71,7 @@ exports.makeJuso = function (req, res, authUI) {
                 list2 += item2;
             }
             ///////////////////////////////////읍면동 찾기
-            res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: list, list2: list2 });
+            res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: list, list2: list2, AllSympton: _AllSympton, pagination: pagination });
         });
     });
     return;

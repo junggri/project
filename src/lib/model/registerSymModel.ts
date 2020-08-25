@@ -3,6 +3,9 @@ const registerSympton = new mongoose.Schema({
   // registrant: {
   //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: "testuser" }],
   // },
+  user_name: {
+    type: String,
+  },
   user_object_id: {
     type: String,
   },
@@ -36,6 +39,8 @@ const registerSympton = new mongoose.Schema({
     bname1: { type: String },
     roadAddress: { type: String },
     detailAddress: { type: String },
+    lat: { type: String },
+    lon: { type: String },
   },
   userwant_content: {
     type: String,
@@ -49,6 +54,10 @@ const registerSympton = new mongoose.Schema({
   create: {
     type: Date,
     default: Date.now,
+  },
+  get_estimate_count: {
+    type: Number,
+    default: 0,
   },
 });
 

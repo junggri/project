@@ -1,7 +1,7 @@
 import mysql from "../lib/mysql";
 import qs from "querystring";
 
-export let makeJuso = (req: any, res: any, authUI: any) => {
+export let makeJuso = (req: any, res: any, authUI: any, _AllSympton: any, pagination: any) => {
   if (qs.parse(req.url).sigunguCode === "sejong") {
     mysql.query(`select * from ${qs.parse(req.url).sigunguCode}`, (err: any, data: any) => {
       let data1 = [];
@@ -12,7 +12,6 @@ export let makeJuso = (req: any, res: any, authUI: any) => {
         data1.push(data[i].법정읍면동명);
       }
       let arr = Array.from(new Set(data1)).sort();
-      console.log(arr);
       for (let i = 0; i < arr.length; i++) {
         if (arr[i] === qs.parse(req.url).bname) {
           item2 = `<option value="${arr[i]}" selected>${arr[i]}</option>`;
@@ -21,7 +20,7 @@ export let makeJuso = (req: any, res: any, authUI: any) => {
         }
         list2 += item2;
       }
-      res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: list2 });
+      res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: list2, AllSympton: _AllSympton, pagination: pagination });
     });
     return;
   }
@@ -62,7 +61,7 @@ export let makeJuso = (req: any, res: any, authUI: any) => {
         list2 += item2;
       }
       ///////////////////////////////////읍면동 찾기
-      res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: list, list2: list2 });
+      res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: list, list2: list2, AllSympton: _AllSympton, pagination: pagination });
     });
   });
   return;

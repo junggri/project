@@ -7,6 +7,9 @@ var registerSympton = new mongoose_1.default.Schema({
     // registrant: {
     //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: "testuser" }],
     // },
+    user_name: {
+        type: String,
+    },
     user_object_id: {
         type: String,
     },
@@ -40,6 +43,8 @@ var registerSympton = new mongoose_1.default.Schema({
         bname1: { type: String },
         roadAddress: { type: String },
         detailAddress: { type: String },
+        lat: { type: String },
+        lon: { type: String },
     },
     userwant_content: {
         type: String,
@@ -53,6 +58,10 @@ var registerSympton = new mongoose_1.default.Schema({
     create: {
         type: Date,
         default: Date.now,
+    },
+    get_estimate_count: {
+        type: Number,
+        default: 0,
     },
 });
 module.exports = mongoose_1.default.model("RegisterSympton", registerSympton);

@@ -5,6 +5,8 @@ export default function mypage() {
   let sigungu = document.querySelector("#sigungu") as HTMLInputElement;
   let bname = document.querySelector("#bname") as HTMLInputElement;
   let bname1 = document.querySelector("#bname1") as HTMLInputElement;
+  let lat = document.querySelector("#lat") as HTMLInputElement;
+  let lon = document.querySelector("#lon") as HTMLInputElement;
   let postcode = document.getElementById("postcode") as HTMLInputElement;
   let roadAddress = document.getElementById("roadAddress") as HTMLInputElement;
   let sigunguCode = document.querySelector("#sigunguCode") as HTMLInputElement;
@@ -19,6 +21,7 @@ export default function mypage() {
   let cancelBtn = document.querySelector(".modified-cancel-btn");
   let modifiedBtn = document.querySelector(".modified-estimate-btn") as HTMLInputElement;
   let modifiedForm = document.querySelector(".modified_estimate_form") as HTMLFormElement;
+
   let lengthFlag: boolean = true;
 
   imgBtn.addEventListener("click", () => {
@@ -73,6 +76,8 @@ export default function mypage() {
         sigungu.value = response.response.address.sigungu;
         bname.value = response.response.address.bname;
         bname1.value = response.response.address.bname1;
+        lat.value = response.response.address.lat;
+        lon.value = response.response.address.lon;
         sigunguCode.value = response.response.address.sigunguCode;
         symptonDetail.textContent = response.response.sympton_detail;
         postcode.value = response.response.address.postcode;
@@ -231,12 +236,32 @@ export default function mypage() {
         if (data.buildingName !== "" && data.apartment === "Y") {
           extraRoadAddr += extraRoadAddr !== "" ? ", " + data.buildingName : data.buildingName;
         }
-        postcode.value = data.zonecode;
-        roadAddress.value = roadAddr;
-        sigunguCode.value = data.sigunguCode;
-        sigungu.value = data.sigungu;
-        bname.value = data.bname;
-        bname1.value = data.bname1;
+        Promise.resolve(data)
+          .then(() => {
+            const { address } = data;
+            return new Promise((resolve, reject) => {
+              const geocoder = new daum.maps.services.Geocoder();
+              geocoder.addressSearch(address, (result: any, status: any) => {
+                if (status === daum.maps.services.Status.OK) {
+                  const { x, y } = result[0];
+                  resolve({ lat: y, lon: x });
+                } else {
+                  reject();
+                }
+              });
+            });
+          })
+          .then((result: any) => {
+            console.log(result);
+            postcode.value = data.zonecode;
+            roadAddress.value = roadAddr;
+            sigunguCode.value = data.sigunguCode;
+            sigungu.value = data.sigungu;
+            bname.value = data.bname;
+            bname1.value = data.bname1;
+            lat.value = result.lat;
+            lon.value = result.lon;
+          });
       },
     }).open({
       left: window.screen.width / 2 - width / 2,

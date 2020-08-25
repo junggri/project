@@ -21,18 +21,18 @@
           <%- authUI %>
         </ul>
       </nav>
-      <div class="find-registerBox">
-        <div class="fr-sloBox">
-          <div class="fr-slo">전체검색</div>
-          <div class="fr-detail">무료견적서를 제출하여 문제를 해결해주세요.</div>
-        </div>
-        <div class="register-select-box">
-          <form action="/provide/findAllRegister" method="get">
+      <form action="/provide/findAllRegister" method="get" class="findForm">
+        <div class="find-registerBox">
+          <div class="fr-sloBox">
+            <div class="fr-slo">전체검색</div>
+            <div class="fr-detail">무료견적서를 제출하여 문제를 해결해주세요.</div>
+          </div>
+          <div class="register-select-box">
             <span>
               지역선택
             </span>
             <input type="hidden" name="type" value="search" />
-            <select name="sigunguCode" id="sigunguCode">
+            <select name="sigunguCode" id="sigunguCode" onchange="get_change()">
               <option value="0" selected>-- 시 / 도</option>
               <option value="seoul">서울특별시</option>
               <option value="busan">부산광역시</option>
@@ -52,20 +52,28 @@
               <option value="gyeongsangnamdo">경상남도</option>
               <option value="jeju">제주특별자치도</option>
             </select>
-            <select name="sigungu" id="sigungu">
+            <select name="sigungu" id="sigungu" onchange="get_change()">
               <option value="0" id="sigunguSelected" selected>-- 선택</option>
               <%- list %>
             </select>
-            <select name="bname" id="bname">
+            <select name="bname" id="bname" onchange="get_change()">
               <option value="0" id="bnameSelected" selected>-- 선택</option>
               <%- list2 %>
             </select>
             <input type="submit" value="검색하기" class="find-btn" />
-          </form>
+          </div>
+          <div class="frr-nav">
+            <span class="frr-nav-content">제목</span>
+            <span class="frr-nav-whoMake">작성자</span>
+            <span class="frr-nav-createdAt">작성일</span>
+            <span class="frr-nav-estimate">견적</span>
+          </div>
+          <div class="find-register-resultBox">
+            <%- AllSympton %>
+          </div>
+          <%- pagination %>
         </div>
-        <div class="frr-nav"></div>
-        <div class="find-register-resultBox"></div>
-      </div>
+      </form>
     </div>
     <script src="../bundle.js"></script>
   </body>

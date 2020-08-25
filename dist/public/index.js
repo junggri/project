@@ -51,6 +51,7 @@ var oauth_1 = __importDefault(require("./oauth"));
 var provide_1 = __importDefault(require("./provide"));
 var p_index_1 = __importDefault(require("./p_index"));
 var p_findAllRegister_1 = __importDefault(require("./p_findAllRegister"));
+var p_showBeforeEstimate_1 = __importDefault(require("./p_showBeforeEstimate"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
 var mainName = document.querySelector(".nb-left-name");
 var path = window.location.pathname;
@@ -66,6 +67,9 @@ if (path === "/provide/index") {
 }
 if (path === "/provide/findAllRegister") {
     p_findAllRegister_1.default();
+}
+if (path === "/provide/sympton_estimate") {
+    p_showBeforeEstimate_1.default();
 }
 if (path === "/api/oauth_register") {
     oauth_1.default();

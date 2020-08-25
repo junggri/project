@@ -10,6 +10,8 @@
 @import "oauth.css";
 @import "./provider/index.css";
 @import "./provider/findAllRegister.css";
+@import "./provider/showBeforeEstimate.css";
+
 html,
 body,
 input {

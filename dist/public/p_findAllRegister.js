@@ -43,13 +43,23 @@ function p_findAllRegister() {
         var sigungu = document.querySelector("#sigungu");
         var bname = document.querySelector("#bname");
         var findBtn = document.querySelector(".find-btn");
-        var optionSelect = document.querySelector("#sigunguSelected");
-        var selected_sigunguCode, selected_sigungu;
+        var selected_sigunguCode, page_num;
+        var decodedUrl = decodeURI(document.location.search);
+        var pageValue = document.querySelector(".frr-pagination-pageNum");
+        var lastPage = document.querySelector(".frr-pagination-allPage");
+        var findForm = document.querySelector(".findForm");
+        var changeFromSelect = false;
+        var symptonItems = document.querySelectorAll(".frr-item-content");
+        // let optionSelect = document.querySelector("#sigunguSelected");
+        // let previousBtn = document.querySelector(".frr-pagination-previous") as HTMLInputElement;
+        // let nextBtn = document.querySelector(".frr-pagination-next") as HTMLInputElement;
+        makeSymptonPage(symptonItems);
         if (location.search !== "") {
-            var decodedUrl = decodeURI(document.location.search);
             for (var i = 0; i < decodedUrl.split("&").length; i++) {
                 if (decodedUrl.split("&")[i].split("=")[0] === "sigunguCode")
                     selected_sigunguCode = decodedUrl.split("&")[i].split("=")[1];
+                if (decodedUrl.split("&")[i].split("=")[0] === "page")
+                    page_num = decodedUrl.split("&")[i].split("=")[1];
             }
             //////////////////////////////////////////////////////////////////////////////////
             if (decodedUrl.split("&")[1] !== undefined) {
@@ -61,92 +71,55 @@ function p_findAllRegister() {
                 }
             }
             //////////////////////////////////////////////////////////////////////////////////
+            blockGetUrl(page_num, lastPage);
+            pageValue.value = page_num;
             if (selected_sigunguCode === "sejong")
                 sigungu.disabled = true;
         }
-        // (async function loadGetData() {
-        //   if (location.search !== "") {
-        //     let selected_sigunguCode, selected_sigungu, selected_bname;
-        //     let decodedUrl = decodeURI(document.location.search);
-        //     // ///////////////////////////////////////
-        //     for (let i = 0; i < decodedUrl.split("&").length; i++) {
-        //       if (decodedUrl.split("&")[i].split("=")[0] === "sigunguCode") selected_sigunguCode = decodedUrl.split("&")[i].split("=")[1];
-        //       if (decodedUrl.split("&")[i].split("=")[0] === "sigungu") selected_sigungu = decodedUrl.split("&")[i].split("=")[1];
-        //       if (decodedUrl.split("&")[i].split("=")[0] === "bname") selected_bname = decodedUrl.split("&")[i].split("=")[1];
-        //     }
-        //     // ///////////////////////////////////////
-        //     if (selected_sigunguCode === "0") return;
-        //     // ///////////////////////////////////////
-        //     if (selected_sigunguCode === "sejong") {
-        //       await getDataFromUrl(sigungu, selected_sigunguCode, "http://localhost:3000/provide/get_sigungu");
-        //       await getDataFromUrl(bname, selected_sigunguCode, "http://localhost:3000/provide/get_sejong");
-        //       if (decodedUrl.split("&")[2] !== undefined) {
-        //         for (let i = 0; i < bname.options.length; i++) {
-        //           if (selected_bname === bname.options[i].value) {
-        //             bname.options[i].selected = true;
-        //             bname.options[i].setAttribute("selected", "selected");
-        //           }
-        //         }
-        //       }
-        //       sigungu.disabled = true;
-        //     } else {
-        //       await getDataFromUrl(sigungu, selected_sigunguCode, "http://localhost:3000/provide/get_sigungu");
-        //       await getDataFromUrl(bname, { sido: selected_sigunguCode, sigungu: selected_sigungu }, "http://localhost:3000/provide/get_bname");
-        //       sigungu.disabled = false;
-        //     }
-        //     // ///////////////////////////////////////
-        // if (decodedUrl.split("&")[1] !== undefined) {
-        //   for (let i = 0; i < sigunguCode.options.length; i++) {
-        //     if (selected_sigunguCode === sigunguCode.options[i].value) {
-        //       sigunguCode.options[i].selected = true;
-        //       sigunguCode.options[i].setAttribute("selected", "selected");
-        //     }
-        //   }
-        // }
-        //     if (decodedUrl.split("&")[2] !== undefined) {
-        //       for (let i = 0; i < sigungu.options.length; i++) {
-        //         if (selected_sigungu === sigungu.options[i].value) {
-        //           sigungu.options[i].selected = true;
-        //           sigungu.options[i].setAttribute("selected", "selected");
-        //         }
-        //       }
-        //     }
-        //     if (decodedUrl.split("&")[3] !== undefined) {
-        //       for (let i = 0; i < bname.options.length; i++) {
-        //         if (selected_bname === bname.options[i].value) {
-        //           bname.options[i].selected = true;
-        //           bname.options[i].setAttribute("selected", "selected");
-        //         }
-        //       }
-        //     }
-        //   }
-        // })();
-        // ///////////////////////////////////////
-        // async function getDataFromUrl(target: any, data: any, url: any) {
-        //   let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        //   let myHeaders = new Headers();
-        //   myHeaders.append("Content-Type", "application/json");
-        //   myHeaders.append("CSRF-Token", token);
-        //   try {
-        //     let result = await fetch(url, {
-        //       method: "post",
-        //       credentials: "same-origin",
-        //       headers: myHeaders,
-        //       body: JSON.stringify({ data: data }),
-        //     });
-        //     if (result.status === 200 || 201) {
-        //       let response = await result.json();
-        //       for (let i = 0; i < response.sido.length; i++) {
-        //         let option = document.createElement("option") as HTMLOptionElement;
-        //         option.value = response.sido[i];
-        //         option.textContent = response.sido[i];
-        //         target.appendChild(option);
-        //       }
-        //     }
-        //   } catch (error) {
-        //     console.error(error);
-        //   }
-        // }
+        else {
+            pageValue.value = "1";
+        }
+        function blockGetUrl(page_num, lastPage) {
+            if (Number(page_num) > Number(lastPage.textContent)) {
+                alert("잘못된 접근입니다.");
+                return history.back();
+            }
+        }
+        function makeSymptonPage(symptonItems) {
+            for (var i = 0; i < symptonItems.length; i++) {
+                symptonItems[i].addEventListener("click", function (e) {
+                    window.location.href = "/provide/sympton_estimate?" + e.target.parentNode.dataset.registerid;
+                });
+            }
+        }
+        findBtn.addEventListener("click", function (e) {
+            if (changeFromSelect) {
+                pageValue.value = "1";
+            }
+        });
+        window.pagination_pre = function () {
+            if (pageValue.value === "1") {
+                return;
+            }
+            else {
+                var page = Number(pageValue.value) - 1;
+                pageValue.value = String(page);
+                findForm.submit();
+            }
+        };
+        window.pagination_next = function () {
+            if (pageValue.value === lastPage.textContent) {
+                return;
+            }
+            else {
+                var page = Number(pageValue.value) + 1;
+                pageValue.value = String(page);
+                findForm.submit();
+            }
+        };
+        window.get_change = function () {
+            changeFromSelect = true;
+        };
         function reset(target, text) {
             return __awaiter(this, void 0, void 0, function () {
                 var option;
@@ -213,10 +186,10 @@ function p_findAllRegister() {
         sigunguCode.addEventListener("change", function (e) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, reset(sigungu, "-- 선택")];
+                    case 0: return [4 /*yield*/, reset(sigungu, "-- 전체")];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, reset(bname, "-- 선택")];
+                        return [4 /*yield*/, reset(bname, "-- 전체")];
                     case 2:
                         _a.sent();
                         if (sigunguCode.options[sigunguCode.selectedIndex].value === "sejong") {
@@ -225,10 +198,10 @@ function p_findAllRegister() {
                             return [2 /*return*/];
                         }
                         if (!(sigunguCode.options[sigunguCode.selectedIndex].value === "0")) return [3 /*break*/, 5];
-                        return [4 /*yield*/, reset(sigungu, "-- 선택")];
+                        return [4 /*yield*/, reset(sigungu, "-- 전체")];
                     case 3:
                         _a.sent();
-                        return [4 /*yield*/, reset(bname, "-- 선택")];
+                        return [4 /*yield*/, reset(bname, "-- 전체")];
                     case 4:
                         _a.sent();
                         sigungu.disabled = false;
@@ -246,7 +219,7 @@ function p_findAllRegister() {
                 switch (_a.label) {
                     case 0:
                         if (!(sigungu.options[sigungu.selectedIndex].value === "0")) return [3 /*break*/, 2];
-                        return [4 /*yield*/, reset(bname, "-- 선택")];
+                        return [4 /*yield*/, reset(bname, "-- 전체")];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

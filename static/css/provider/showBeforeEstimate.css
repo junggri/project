@@ -1,0 +1,203 @@
+.showBeforeEstimate-box {
+  width: 850px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  position: relative;
+  margin: 0 auto;
+  margin-top: 50px;
+  padding: 30px 30px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 120px;
+}
+.sbe-box-content {
+  font-size: 35px;
+  font-weight: 600;
+  /* border: 1px solid black; */
+}
+.sbe-user-info {
+  margin-top: 24px;
+  font-size: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 25px;
+}
+.sbe-user-img {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+.sbe-user-info-right {
+  font-size: 14px;
+  margin-left: 8px;
+  display: inline-block;
+  vertical-align: bottom;
+}
+.sbe-user-name {
+  margin-bottom: 3px;
+}
+.sbe-user-createdAt {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.sbe-summary-box {
+  margin-top: 25px;
+  font-size: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 25px;
+}
+.sbe-summary-box-left {
+  display: inline-block;
+  vertical-align: top;
+}
+.summary-img-box {
+  width: 350px;
+  height: 350px;
+}
+.summary-main-img {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  width: 350px;
+  height: 350px;
+  background-size: contain;
+  background-position: 50%, 50%;
+  background-repeat: no-repeat;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.sbe-summary-box-right {
+  margin-left: 40px;
+  display: inline-block;
+  font-size: 16px;
+}
+.sbe-summary-box-right-content {
+  font-size: 25px;
+  width: 380px;
+  word-break: break-all;
+  line-height: 1.1;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 20px;
+}
+.content-slo {
+  margin-right: 10px;
+  color: #f58320;
+}
+.sbe-summary-box-right-userwant {
+  margin-top: 25px;
+  width: 380px;
+  font-size: 15px;
+}
+.sbe-userwant-time {
+  margin-bottom: 15px;
+}
+.sbe-userwant-time :nth-child(1) {
+  display: inline-block;
+  vertical-align: top;
+  width: 80px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.sbe-userwant-time :nth-child(2) {
+  display: inline-block;
+  margin-left: 15px;
+}
+.sbe-userwant-content :nth-child(1) {
+  display: inline-block;
+  vertical-align: top;
+  width: 80px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.sbe-userwant-content :nth-child(2) {
+  word-break: break-all;
+  display: inline-block;
+  width: 240px;
+  margin-left: 15px;
+}
+.sbe-userwant-content {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 25px;
+}
+.sbe-userwant-location {
+  margin-top: 20px;
+}
+.sbe-userwant-location > span {
+  display: inline-block;
+  vertical-align: top;
+  width: 80px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.sbe-userwant-location > div {
+  vertical-align: middle;
+  word-break: break-all;
+  display: inline-block;
+  width: 240px;
+  margin-left: 15px;
+}
+.sbe-userwant-location > div span {
+  display: inline-block;
+  padding: 4px 4px;
+  border-radius: 2px;
+  margin-right: 3px;
+  background-color: #f58320;
+  font-weight: 100;
+  color: white;
+  font-size: 13px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.sbe-userwant-location > span span {
+  font-size: 12px;
+  display: inline-block;
+  margin-top: 9px;
+  width: 80px;
+  color: #ff6666;
+}
+.sbe-estimate-btn {
+  border: none;
+  width: 100%;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  outline-style: none;
+  cursor: pointer;
+  background-color: #f58320;
+  color: white;
+  font-size: 16px;
+  font-weight: 100;
+}
+.sbe-Precautions {
+  margin-top: 30px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.sbe-Precautions :nth-child(1) {
+  margin-bottom: 5px;
+}
+.sbe-Precautions div {
+  word-break: break-all;
+  width: 380px;
+  margin-bottom: 3px;
+}
+.sbe-showImg-box {
+  margin-top: 50px;
+}
+.sbe-showImg-item {
+  width: 100%;
+  background-size: contain;
+  background-position: 50%, 50%;
+  background-repeat: no-repeat;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+/*  */
+.sbe-estimate-box {
+  border: 1px solid black;
+  width: 1000px;
+  padding: 30px 30px;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+}

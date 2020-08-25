@@ -44,6 +44,225 @@ var registerSymModel_1 = __importDefault(require("../model/registerSymModel"));
 var mypageState_1 = require("../mypageState");
 var authStatus_1 = __importDefault(require("../authStatus"));
 var registerSymController = {};
+function changeSigunguCode(sigunguCode) {
+    var findArea;
+    if (sigunguCode === "seoul")
+        findArea = "11";
+    if (sigunguCode === "busan")
+        findArea = "26";
+    if (sigunguCode === "daegu")
+        findArea = "27";
+    if (sigunguCode === "incheon")
+        findArea = "28";
+    if (sigunguCode === "gwangju")
+        findArea = "29";
+    if (sigunguCode === "daejeon")
+        findArea = "30";
+    if (sigunguCode === "ulsan")
+        findArea = "31";
+    if (sigunguCode === "sejong")
+        findArea = "36";
+    if (sigunguCode === "gyeonggido")
+        findArea = "41";
+    if (sigunguCode === "gangwon")
+        findArea = "42";
+    if (sigunguCode === "chungcheongbukdo")
+        findArea = "43";
+    if (sigunguCode === "chungcheongnamdo")
+        findArea = "44";
+    if (sigunguCode === "jeollabukdo")
+        findArea = "45";
+    if (sigunguCode === "jeollanamdo")
+        findArea = "46";
+    if (sigunguCode === "gyeongsangbukdo")
+        findArea = "47";
+    if (sigunguCode === "gyeongsangnamdo")
+        findArea = "48";
+    if (sigunguCode === "jeju")
+        findArea = "50";
+    return findArea;
+}
+registerSymController.showBeforeEstimate = function (_id) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        result = registerSymModel_1.default.findOne({ _id: _id });
+        return [2 /*return*/, result];
+    });
+}); };
+registerSymController.getAllData = function (pageNum, divided_num) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, registerSymModel_1.default
+                    .find()
+                    .sort({ create: -1 })
+                    .skip((pageNum - 1) * divided_num)
+                    .limit(divided_num)];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
+registerSymController.makePagination = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, registerSymModel_1.default.find().sort({ create: -1 })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
+registerSymController.getSpecificData = function (pageNum, sigunguCode, sigungu, bname, divided_num) { return __awaiter(void 0, void 0, void 0, function () {
+    var findArea, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                findArea = changeSigunguCode(sigunguCode);
+                if (!(sigunguCode === "sejong")) return [3 /*break*/, 5];
+                return [4 /*yield*/, registerSymModel_1.default
+                        .find({ "address.sigunguCode": findArea })
+                        .sort({ create: -1 })
+                        .skip((Number(pageNum) - 1) * divided_num)
+                        .limit(divided_num)];
+            case 1:
+                result = _a.sent();
+                if (!(sigunguCode === "sejong" && bname !== "0")) return [3 /*break*/, 4];
+                return [4 /*yield*/, registerSymModel_1.default
+                        .find()
+                        .where("address.sigunguCode")
+                        .equals(findArea)
+                        .where("address.bname")
+                        .equals(bname)
+                        .sort({ create: -1 })
+                        .skip((Number(pageNum) - 1) * divided_num)
+                        .limit(divided_num)];
+            case 2:
+                result = _a.sent();
+                if (!(result.length === 0)) return [3 /*break*/, 4];
+                return [4 /*yield*/, registerSymModel_1.default
+                        .find()
+                        .where("address.sigunguCode")
+                        .equals(findArea)
+                        .where("address.bname1")
+                        .equals(bname)
+                        .sort({ create: -1 })
+                        .skip((Number(pageNum) - 1) * divided_num)
+                        .limit(divided_num)];
+            case 3:
+                result = _a.sent();
+                _a.label = 4;
+            case 4: return [2 /*return*/, result];
+            case 5:
+                if (!(sigunguCode !== "0" && sigungu === "0" && bname === "0")) return [3 /*break*/, 7];
+                return [4 /*yield*/, registerSymModel_1.default
+                        .find({ "address.sigunguCode": findArea })
+                        .sort({ create: -1 })
+                        .skip((Number(pageNum) - 1) * divided_num)
+                        .limit(divided_num)];
+            case 6:
+                result = _a.sent();
+                return [2 /*return*/, result];
+            case 7:
+                if (!(sigunguCode !== "0" && sigungu !== "0" && bname === "0")) return [3 /*break*/, 9];
+                return [4 /*yield*/, registerSymModel_1.default.find().where("address.sigunguCode").equals(findArea).where("address.sigungu").equals(sigungu)];
+            case 8:
+                //시도와 시군구를 선택했을때
+                result = _a.sent();
+                return [2 /*return*/, result];
+            case 9:
+                if (!(sigunguCode !== "0" && sigungu !== "0" && bname !== "0")) return [3 /*break*/, 13];
+                return [4 /*yield*/, registerSymModel_1.default.find().where("address.sigunguCode").equals(findArea).where("address.sigungu").equals(sigungu).where("address.bname").equals(bname)];
+            case 10:
+                //시도와 시군구 동면읍을 선택했을떄
+                result = _a.sent();
+                if (!(result.length === 0)) return [3 /*break*/, 12];
+                return [4 /*yield*/, registerSymModel_1.default.find().where("address.sigunguCode").equals(findArea).where("address.sigungu").equals(sigungu).where("address.bname1").equals(bname)];
+            case 11:
+                result = _a.sent();
+                _a.label = 12;
+            case 12: return [2 /*return*/, result];
+            case 13: return [2 /*return*/];
+        }
+    });
+}); };
+registerSymController.makeSpecificPagination = function (pageNum, sigunguCode, sigungu, bname, divided_num) { return __awaiter(void 0, void 0, void 0, function () {
+    var findArea, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                findArea = changeSigunguCode(sigunguCode);
+                if (!(sigunguCode === "sejong")) return [3 /*break*/, 5];
+                return [4 /*yield*/, registerSymModel_1.default.find({ "address.sigunguCode": findArea }).sort({ create: -1 })];
+            case 1:
+                result = _a.sent();
+                if (!(sigunguCode === "sejong" && bname !== "0")) return [3 /*break*/, 4];
+                return [4 /*yield*/, registerSymModel_1.default.find().where("address.sigunguCode").equals(findArea).where("address.bname").equals(bname)];
+            case 2:
+                result = _a.sent();
+                if (!(result.length === 0)) return [3 /*break*/, 4];
+                return [4 /*yield*/, registerSymModel_1.default.find().where("address.sigunguCode").equals(findArea).where("address.bname1").equals(bname)];
+            case 3:
+                result = _a.sent();
+                _a.label = 4;
+            case 4: return [2 /*return*/, result];
+            case 5:
+                if (!(sigunguCode !== "0" && sigungu === "0" && bname === "0")) return [3 /*break*/, 7];
+                return [4 /*yield*/, registerSymModel_1.default.find({ "address.sigunguCode": findArea }).sort({ create: -1 })];
+            case 6:
+                result = _a.sent();
+                return [2 /*return*/, result];
+            case 7:
+                if (!(sigunguCode !== "0" && sigungu !== "0" && bname === "0")) return [3 /*break*/, 9];
+                return [4 /*yield*/, registerSymModel_1.default
+                        .find()
+                        .where("address.sigunguCode")
+                        .equals(findArea)
+                        .where("address.sigungu")
+                        .equals(sigungu)
+                        .sort({ create: -1 })
+                        .skip((Number(pageNum) - 1) * divided_num)
+                        .limit(divided_num)];
+            case 8:
+                result = _a.sent();
+                return [2 /*return*/, result];
+            case 9:
+                if (!(sigunguCode !== "0" && sigungu !== "0" && bname !== "0")) return [3 /*break*/, 13];
+                return [4 /*yield*/, registerSymModel_1.default
+                        .find()
+                        .where("address.sigunguCode")
+                        .equals(findArea)
+                        .where("address.sigungu")
+                        .equals(sigungu)
+                        .where("address.bname")
+                        .equals(bname)
+                        .sort({ create: -1 })
+                        .skip((Number(pageNum) - 1) * divided_num)
+                        .limit(divided_num)];
+            case 10:
+                result = _a.sent();
+                if (!(result.length === 0)) return [3 /*break*/, 12];
+                return [4 /*yield*/, registerSymModel_1.default
+                        .find()
+                        .where("address.sigunguCode")
+                        .equals(findArea)
+                        .where("address.sigungu")
+                        .equals(sigungu)
+                        .where("address.bname1")
+                        .equals(bname)
+                        .sort({ create: -1 })
+                        .skip((Number(pageNum) - 1) * divided_num)
+                        .limit(divided_num)];
+            case 11:
+                result = _a.sent();
+                _a.label = 12;
+            case 12: return [2 /*return*/, result];
+            case 13: return [2 /*return*/];
+        }
+    });
+}); };
 registerSymController.find = function (req, res, email, id) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
@@ -145,16 +364,16 @@ registerSymController.findImageBeforeModified = function (req, res) { return __a
     });
 }); };
 registerSymController.modified = function (req, res, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content, sigunguCode, sigungu, bname, bname1;
+    var sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content, sigunguCode, sigungu, bname, bname1, lat, lon;
     return __generator(this, function (_a) {
-        sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content, sigunguCode = data.sigunguCode, sigungu = data.sigungu, bname = data.bname, bname1 = data.bname1;
+        sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content, sigunguCode = data.sigunguCode, sigungu = data.sigungu, bname = data.bname, bname1 = data.bname1, lat = data.lat, lon = data.lon;
         registerSymModel_1.default
             .updateOne({ _id: req.session._id }, {
             $set: {
                 sympton_detail: sympton_detail,
                 img: img,
                 userwant_time: { time: time, minute: minute },
-                address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress },
+                address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress, lat: lat, lon: lon },
                 userwant_content: userwant_content,
             },
         })

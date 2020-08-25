@@ -58,6 +58,8 @@ function get_estimate() {
     var imgBtn = document.querySelector(".add-img-icon");
     var fileBtn = document.querySelector('input[type="file"]');
     var addFileBtn = document.querySelector(".add_new_image_btn");
+    var lat = document.querySelector("#lat");
+    var lon = document.querySelector("#lon");
     var registerFrom = document.querySelector(".register_sympton_form");
     var lengthFlag = true;
     function clickNextBtn() {
@@ -285,9 +287,10 @@ function get_estimate() {
     window.formAndBlockBack = function () {
         var check = confirm("간편견적을 받아보시겠습니까?");
         if (check) {
-            registerFrom.submit();
+            return true;
         }
         else {
+            alert("필수사항을 입력해주시길 바랍니다.");
             return false;
         }
     };
@@ -299,20 +302,46 @@ function get_estimate() {
             width: width,
             height: height,
             oncomplete: function (data) {
-                var roadAddr = data.roadAddress;
-                var extraRoadAddr = "";
-                if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
-                    extraRoadAddr += data.bname;
-                }
-                if (data.buildingName !== "" && data.apartment === "Y") {
-                    extraRoadAddr += extraRoadAddr !== "" ? ", " + data.buildingName : data.buildingName;
-                }
-                postcode.value = data.zonecode;
-                roadAddress.value = roadAddr;
-                sigunguCode.value = data.sigunguCode;
-                sigungu.value = data.sigungu;
-                bname.value = data.bname;
-                bname1.value = data.bname1;
+                return __awaiter(this, void 0, void 0, function () {
+                    var roadAddr, extraRoadAddr;
+                    return __generator(this, function (_a) {
+                        roadAddr = data.roadAddress;
+                        extraRoadAddr = "";
+                        if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
+                            extraRoadAddr += data.bname;
+                        }
+                        if (data.buildingName !== "" && data.apartment === "Y") {
+                            extraRoadAddr += extraRoadAddr !== "" ? ", " + data.buildingName : data.buildingName;
+                        }
+                        Promise.resolve(data)
+                            .then(function () {
+                            var address = data.address;
+                            return new Promise(function (resolve, reject) {
+                                var geocoder = new daum.maps.services.Geocoder();
+                                geocoder.addressSearch(address, function (result, status) {
+                                    if (status === daum.maps.services.Status.OK) {
+                                        var _a = result[0], x = _a.x, y = _a.y;
+                                        resolve({ lat: y, lon: x });
+                                    }
+                                    else {
+                                        reject();
+                                    }
+                                });
+                            });
+                        })
+                            .then(function (result) {
+                            postcode.value = data.zonecode;
+                            roadAddress.value = roadAddr;
+                            sigunguCode.value = data.sigunguCode;
+                            sigungu.value = data.sigungu;
+                            bname.value = data.bname;
+                            bname1.value = data.bname1;
+                            lat.value = result.lat;
+                            lon.value = result.lon;
+                        });
+                        return [2 /*return*/];
+                    });
+                });
             },
         }).open({
             left: window.screen.width / 2 - width / 2,

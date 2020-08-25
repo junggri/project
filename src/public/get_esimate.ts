@@ -31,6 +31,8 @@ export default function get_estimate() {
   let imgBtn = document.querySelector(".add-img-icon") as HTMLElement;
   let fileBtn = document.querySelector('input[type="file"]') as HTMLElement;
   let addFileBtn = document.querySelector(".add_new_image_btn") as HTMLElement;
+  let lat = document.querySelector("#lat") as HTMLInputElement;
+  let lon = document.querySelector("#lon") as HTMLInputElement;
   let registerFrom = document.querySelector(".register_sympton_form") as HTMLFormElement;
 
   let lengthFlag: boolean = true;
@@ -222,8 +224,9 @@ export default function get_estimate() {
   window.formAndBlockBack = () => {
     let check = confirm("간편견적을 받아보시겠습니까?");
     if (check) {
-      registerFrom.submit();
+      return true;
     } else {
+      alert("필수사항을 입력해주시길 바랍니다.");
       return false;
     }
   };
@@ -236,7 +239,7 @@ export default function get_estimate() {
     new daum.Postcode({
       width: width,
       height: height,
-      oncomplete: function (data: any) {
+      oncomplete: async function (data: any) {
         let roadAddr = data.roadAddress;
         let extraRoadAddr = "";
         if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
@@ -245,12 +248,31 @@ export default function get_estimate() {
         if (data.buildingName !== "" && data.apartment === "Y") {
           extraRoadAddr += extraRoadAddr !== "" ? ", " + data.buildingName : data.buildingName;
         }
-        postcode.value = data.zonecode;
-        roadAddress.value = roadAddr;
-        sigunguCode.value = data.sigunguCode;
-        sigungu.value = data.sigungu;
-        bname.value = data.bname;
-        bname1.value = data.bname1;
+        Promise.resolve(data)
+          .then(() => {
+            const { address } = data;
+            return new Promise((resolve, reject) => {
+              const geocoder = new daum.maps.services.Geocoder();
+              geocoder.addressSearch(address, (result: any, status: any) => {
+                if (status === daum.maps.services.Status.OK) {
+                  const { x, y } = result[0];
+                  resolve({ lat: y, lon: x });
+                } else {
+                  reject();
+                }
+              });
+            });
+          })
+          .then((result: any) => {
+            postcode.value = data.zonecode;
+            roadAddress.value = roadAddr;
+            sigunguCode.value = data.sigunguCode;
+            sigungu.value = data.sigungu;
+            bname.value = data.bname;
+            bname1.value = data.bname1;
+            lat.value = result.lat;
+            lon.value = result.lon;
+          });
       },
     }).open({
       left: window.screen.width / 2 - width / 2,

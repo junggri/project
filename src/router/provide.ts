@@ -1,5 +1,5 @@
 import express from "express";
-import bodyParser from "body-parser";
+import bodyParser, { json } from "body-parser";
 import csrf from "csurf";
 import auth from "../lib/p_authStatus";
 import jwt from "jsonwebtoken";
@@ -12,6 +12,8 @@ import crypto_cre from "../config/crypto.json";
 import providers from "../lib/model/provideModel";
 import providerController from "../lib/controller/provideController";
 import registerSymController from "../lib/controller/registerSymContoller";
+import { MakeAllSymptonList, MakePagination } from "../lib/p_MakeSymptonList";
+import { makeLocation, makeImg } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
 import qs from "querystring";
 import { makeJuso } from "../lib/p_makeJuso";
@@ -78,10 +80,21 @@ router.post("/login_process", parseForm, csrfProtection, async (req, res) => {
 
 router.get("/findAllRegister", csrfProtection, verify, isNotLogined, async (req, res) => {
   let authUI = auth.status(req, res);
+  let pageNum;
+  let divided_num: number = 15;
+  qs.parse(req.url).page === undefined ? (pageNum = 1) : (pageNum = qs.parse(req.url).page);
   if (qs.parse(req.url).sigunguCode !== undefined && qs.parse(req.url).sigunguCode !== "0") {
-    makeJuso(req, res, authUI);
+    let data = await registerSymController.getSpecificData(pageNum, qs.parse(req.url).sigunguCode, qs.parse(req.url).sigungu, qs.parse(req.url).bname, divided_num);
+    let allData = await registerSymController.makeSpecificPagination(pageNum, qs.parse(req.url).sigunguCode, qs.parse(req.url).sigungu, qs.parse(req.url).bname, divided_num);
+    let _AllSympton = MakeAllSymptonList(data, pageNum, divided_num);
+    let pagination = MakePagination(req, res, allData, divided_num);
+    makeJuso(req, res, authUI, _AllSympton, pagination);
   } else {
-    res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "" });
+    let data = await registerSymController.getAllData(pageNum, divided_num);
+    let allData = await registerSymController.makePagination();
+    let _AllSympton = MakeAllSymptonList(data, pageNum, divided_num);
+    let pagination = MakePagination(req, res, allData, divided_num);
+    res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });
   }
 });
 
@@ -125,4 +138,19 @@ router.post("/get_sejong", csrfProtection, verify, isNotLogined, (req, res) => {
     res.json({ sido: Array.from(new Set(data1)).sort() });
   });
 });
+
+router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
+  let authUI = auth.status(req, res);
+  let result: any = await registerSymController.showBeforeEstimate(req.url.split("?")[1]);
+  let location = makeLocation(result);
+  let imgs = makeImg(result);
+  //세종이랑 나눈다 다시하번 해보기
+  res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location, imgs: imgs });
+});
+
+router.post("/get_registerData", async (req, res) => {
+  let result = await registerSymController.showBeforeEstimate(req.body._id);
+  res.json({ data: result });
+});
+
 export default router;

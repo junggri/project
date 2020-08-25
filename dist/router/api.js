@@ -365,20 +365,22 @@ router.post("/fetch_add_upload_image", jwtverify_1.verify, function (req, res, n
 });
 router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
     var token = req.cookies.jwttoken;
-    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, price = _a.price, sigunguCode = _a.sigunguCode, sigungu = _a.sigungu, bname = _a.bname, bname1 = _a.bname1;
+    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, price = _a.price, sigungu = _a.sigungu, bname = _a.bname, bname1 = _a.bname1, lat = _a.lat, lon = _a.lon;
     var _b = req.session, code = _b.code, img = _b.img;
+    var sigunguCode = String(req.body.sigunguCode).substr(0, 2);
     var _time = moment_1.default().format("YYYY-MM-DD");
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         var inputdata = {
+            user_name: decoded.username,
             user_object_id: decoded.user_objectId,
             email: decoded.email,
             code: code,
             sympton_detail: sanitize_html_1.default(sympton_detail),
             img: img,
             userwant_time: { time: time, minute: minute },
-            address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress },
+            address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress, lat: lat, lon: lon },
             userwant_content: sanitize_html_1.default(userwant_content),
             predict_price: price,
             createdAt: _time,
@@ -400,9 +402,11 @@ router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogin
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.user_objectId))));
-        if (!fs_1.default.existsSync(_dir)) {
+        var _dir2 = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.user_objectId + "/user_img"))));
+        if (!fs_1.default.existsSync(_dir))
             fs_1.default.mkdirSync(_dir);
-        }
+        if (!fs_1.default.existsSync(_dir2))
+            fs_1.default.mkdirSync(_dir2);
         registerSymContoller_1.default.findAllRegister(req, res, decoded.email, decoded.user_objectId);
     }
     catch (error) {
@@ -479,8 +483,8 @@ router.post("/modified_add_upload_image", jwtverify_1.verify, function (req, res
 });
 router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var decoded = getDataFromToken_1.default(req, res);
-    console.log(req.body);
-    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, sigunguCode = _a.sigunguCode, sigungu = _a.sigungu, bname = _a.bname, bname1 = _a.bname1;
+    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, sigungu = _a.sigungu, bname = _a.bname, bname1 = _a.bname1, lat = _a.lat, lon = _a.lon;
+    var sigunguCode = String(req.body.sigunguCode).substr(0, 2);
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
     var data = {
         sympton_detail: sanitize_html_1.default(sympton_detail),
@@ -494,6 +498,8 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
         bname1: bname1,
         roadAddress: roadAddress,
         detailAddress: detailAddress,
+        lat: lat,
+        lon: lon,
         userwant_content: sanitize_html_1.default(userwant_content),
     };
     registerSymContoller_1.default.modified(req, res, data);

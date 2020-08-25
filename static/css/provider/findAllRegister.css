@@ -53,6 +53,111 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .frr-nav {
-  border: 1px solid black;
+  border-top: 3px solid rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.07);
   margin-top: 40px;
+  font-size: 0;
+  display: flex;
+}
+.frr-nav span {
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 10px;
+}
+
+.frr-nav-content,
+.frr-item-content {
+  width: 750px;
+}
+.frr-nav-whoMake,
+.frr-item-whoMake {
+  width: 160px;
+}
+.frr-nav-createdAt,
+.frr-item-createdAt {
+  width: 130px;
+}
+.frr-nav-estimate,
+.frr-item-estimate {
+  width: 130px;
+}
+.find-register-resultItem {
+  position: relative;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  font-size: 0;
+  display: flex;
+}
+.find-register-resultItem span {
+  font-size: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 10px;
+}
+.find-register-resultItem :nth-child(1) {
+  display: inline-block;
+  font-size: 11px;
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 1.5%;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  color: rgba(0, 0, 0, 0.6);
+}
+.find-register-resultItem :nth-child(2) {
+  justify-content: start;
+  padding-left: 60px;
+}
+.find-register-resultItem :nth-child(4) {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.find-register-resultItem :nth-child(5) {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.frr-item-content {
+  cursor: pointer;
+}
+.frr-item-whoMake {
+  font-weight: 600;
+}
+.frr-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+.frr-pagination-previous,
+.frr-pagination-next {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  padding: 20px 20px;
+  background-color: transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.frr-pagination-pageNum {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  width: 35px;
+  height: 40px;
+  font-size: 14px;
+  margin-right: 10px;
+  text-align: center;
+}
+.frr-pagination-allPage {
+  margin-left: 10px;
+}
+.doNotFindSympton {
+  /* border: 1px solid black; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  padding: 40px 20px;
 }

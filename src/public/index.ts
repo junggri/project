@@ -10,6 +10,7 @@ import oauth from "./oauth";
 import provide from "./provide";
 import P_index from "./p_index";
 import p_findAllRegister from "./p_findAllRegister";
+import p_showBeforeEstimate from "./p_showBeforeEstimate";
 
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
 let mainName = document.querySelector(".nb-left-name");
@@ -28,6 +29,9 @@ if (path === "/provide/index") {
 }
 if (path === "/provide/findAllRegister") {
   p_findAllRegister();
+}
+if (path === "/provide/sympton_estimate") {
+  p_showBeforeEstimate();
 }
 if (path === "/api/oauth_register") {
   oauth();

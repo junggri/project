@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=aeca137ffd4efb175d1b2c5bd3fa3464&libraries=services"></script>
   </head>
   <body onload="noBack()" onpageshow="if(event.persisted) noBack();">
     <div id="app">
@@ -41,9 +42,9 @@
             </div>
             <div class="ss-box">
               <div class="ss-detail">
-                세부 내용을 작성해 주세요.
+                (필수)세부 내용을 작성해 주세요.
               </div>
-             <textarea name="sympton_detail" id="sympton-detail"  cols="70" rows="6" placeholder="ex)컴퓨터가 켜지지 않아요." ></textarea>
+             <textarea name="sympton_detail" id="sympton-detail"  cols="70" rows="6" placeholder="ex)컴퓨터가 켜지지 않아요." required></textarea>
              <span>구체적으로 작성하면 보다 정확한 견적이 가능합니다.</span>
             </div>
           </section>
@@ -63,8 +64,8 @@
         </div>
         <div class="page-2">
           <section class="selected-time">
-            <div class="st-slo">시간을 선택해주세요.</div>
-            <select name="time" id="st-time" >
+            <div class="st-slo">(팔수)시간을 선택해주세요.</div>
+            <select name="time" id="st-time" required>
               <option value="" disabled selected>시간</option>
               <option value="09">9시</option>
               <option value="10">10시</option>
@@ -79,7 +80,7 @@
               <option value="19">7시</option>
               <option value="20">8시</option>
             </select>
-            <select name="minute" id="st-minute" >
+            <select name="minute" id="st-minute" required>
               <option value="" disabled selected>분</option>
               <option value="0">00분</option>
               <option value="10">10분</option>
@@ -94,7 +95,9 @@
             <input type="hidden" id="sigungu" name="sigungu">
             <input type="hidden" id="bname" name="bname">
             <input type="hidden" id="bname1" name="bname1">
-            <div class="ul-slo">주소를 입력해주세요.</div>
+            <input type="hidden" id="lat" name="lat">
+            <input type="hidden" id="lon" name="lon">
+            <div class="ul-slo">(필수)주소를 입력해주세요.</div>
               <input
               type="text"
               id="postcode"
@@ -129,7 +132,7 @@
        <footer class="estimate-btn-box">
         <div class="estimate-btn-box-previous">이전으로</div>
         <div class="estimate-btn-box-next">다음으로</div>
-        <input type="button" class="estimate-btn-box-submit" value="견적받기" onclick="formAndBlockBack()" >
+        <input type="submit" class="estimate-btn-box-submit" value="견적받기" onclick="formAndBlockBack()" >
        </footer>
       </section>
     </form>
