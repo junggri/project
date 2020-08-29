@@ -57,6 +57,7 @@ var sanitize_html_1 = __importDefault(require("sanitize-html"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
 var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
 var provideController_1 = __importDefault(require("../lib/controller/provideController"));
+var submitController_1 = __importDefault(require("../lib/controller/submitController"));
 // import oauthController from "../lib/controller/oauthController";
 var usermodel_1 = __importDefault(require("../lib/model/usermodel"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
@@ -320,7 +321,7 @@ router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
     }
 });
 router.get("/get_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
-    if (url_1.default.parse(req.url).query === null) {
+    if (url_1.default.parse(req.url).query === null || req.session.code.length === 0 || req.session.code === null) {
         res.redirect("/");
     }
     if (req.session.img) {
@@ -413,6 +414,35 @@ router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogin
         console.error(error, "로그인이 되지 않았습니다.");
     }
 });
+router.post("/find_provider", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitController_1.default.findAllProvider(req.body.sympton_id)];
+            case 1:
+                result = _a.sent();
+                if (result.length === 0) {
+                    return [2 /*return*/, res.json({ state: false })];
+                }
+                else {
+                    return [2 /*return*/, res.json({ data: result, state: true })];
+                }
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/find_submit", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitController_1.default.findSubmit(req.body.submit_id)];
+            case 1:
+                result = _a.sent();
+                result === null ? res.json({ state: false }) : res.json({ state: true, data: result });
+                return [2 /*return*/];
+        }
+    });
+}); });
 router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var authUI, response, codeList;
     return __generator(this, function (_a) {

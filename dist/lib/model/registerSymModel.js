@@ -59,9 +59,8 @@ var registerSympton = new mongoose_1.default.Schema({
         type: Date,
         default: Date.now,
     },
-    get_estimate_count: {
-        type: Number,
-        default: 0,
+    provider: {
+        type: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "Provider" }],
     },
 });
 module.exports = mongoose_1.default.model("RegisterSympton", registerSympton);

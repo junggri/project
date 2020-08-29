@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.makeImg = exports.makeLocation = void 0;
+exports.makeBtn = exports.makeImg = exports.makeLocation = void 0;
 function changeSigunguCode(sigunguCode) {
     var findArea;
     if (sigunguCode === "11")
@@ -70,5 +70,15 @@ exports.makeImg = function (data) {
         list += item;
     }
     return list;
+};
+exports.makeBtn = function (data, symptonId) {
+    var btn = "";
+    if (data.submit_register.includes(symptonId)) {
+        btn = "<input type=\"button\" class=\"sbe-delete-estimate-btn\" value=\"\uACAC\uC801\uC11C \uCDE8\uC18C\uD558\uAE30\" />";
+    }
+    else {
+        btn = "<input type=\"button\" class=\"sbe-estimate-btn\" value=\"\uACAC\uC801\uC11C \uC81C\uCD9C\uD558\uAE30\" />";
+    }
+    return btn;
 };
 //# sourceMappingURL=p_makeShowData.js.map

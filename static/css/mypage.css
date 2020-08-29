@@ -139,7 +139,19 @@
   position: absolute;
   right: 10px;
   bottom: 10px;
+  padding-top: 55px;
 }
+.ms-resultItem-showGotEstimate {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  text-align: center;
+  padding: 12px;
+  cursor: pointer;
+}
+
 .ms-resultItem-modifieBtn {
   font-size: 14px;
   display: inline-block;
@@ -207,4 +219,74 @@
   font-size: 16px;
   left: 0;
   cursor: pointer;
+}
+.show-got-estimate-container {
+  margin-top: -15px;
+  display: none;
+}
+.show-got-estimate {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.sge-item {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  display: inline-block;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  margin: 10px 10px;
+  padding: 15px 15px;
+  height: 215px;
+  cursor: pointer;
+}
+.sge-item-img {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+.sge-provider-data {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 8px;
+}
+.sge-item-name-box :nth-child(2),
+.sge-item-sex-box :nth-child(2) {
+  margin-left: 7px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+}
+.sge-item-name-box {
+  font-size: 14px;
+}
+.sge-item-sex-box {
+  font-size: 14px;
+  margin-top: 5px;
+}
+.sge-price-box {
+  margin-top: 15px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.sge-price-box :nth-child(1) {
+  font-size: 14px;
+  width: 70px;
+  text-align: center;
+  margin-right: 15px;
+  vertical-align: middle;
+}
+.sge-price-box :nth-child(2) {
+  color: #f58320;
+  font-size: 25px;
+  margin-top: 10px;
+  margin-left: 5px;
+  font-weight: 600;
+  vertical-align: middle;
 }

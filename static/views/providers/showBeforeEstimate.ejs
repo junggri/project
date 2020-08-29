@@ -27,6 +27,10 @@
           <%- authUI %>
         </ul>
       </nav>
+      <form action="/provide/submit_estimate" method="POST" class="submit_form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="hidden" name="registrant_id" value="" class="registrant_id"/>
+        <input type="hidden" name="sympton_id" value="" class="sympton_id"/>
       <div class="showBeforeEstimate-box">
         <div class="sbe-box-content"></div>
         <div class="sbe-user-info">
@@ -61,34 +65,36 @@
                   >위치정보<br />
                   <span>23.4km</span>
                 </span>
-                <div>
-                  <%- Location %>
-                </div>
+                <div><%- Location %></div>
               </div>
             </div>
-            <input type="button" class="sbe-estimate-btn" value="견적서 제출하기" />
+            <%- btn %>
             <div class="sbe-Precautions">
               <div>견적서 제출시 주의사항</div>
-              <div>
-                거리정보는 직선거리이므로 정확하지 않은 거리임을 확인하시길 바랍니다.
-              </div>
-              <div>
-                거리정보는 직선거리이므로 정확하지 않은 거리임을 확인하시길 바랍니다.
-              </div>
-              <div>
-                거리정보는 직선거리이므로 정확하지 않은 거리임을 확인하시길 바랍니다.
-              </div>
+              <div>거리정보는 직선거리이므로 정확하지 않은 거리임을 확인하시길 바랍니다.</div>
+              <div>거리정보는 직선거리이므로 정확하지 않은 거리임을 확인하시길 바랍니다.</div>
+              <div>거리정보는 직선거리이므로 정확하지 않은 거리임을 확인하시길 바랍니다.</div>
             </div>
           </div>
         </div>
-        <div class="sbe-showImg-box">
-          <%- imgs %>
-        </div>
+        <div class="sbe-showImg-box"><%- imgs %></div>
       </div>
     </div>
     <div class="sbe-estimate-box">
-      <div class="sbe-esimate-box-slo"></div>
+      <div class="sbe-estimate-box-slo">의심가는 증상을 작성해주세요.</div>
+      <textarea name="sympton_detail" id="sympton-detail" cols="70" rows="10" placeholder="의심가는 증상을 설명해 주시기 바랍니다." required></textarea>
+      <div class="sbe-estimate-box-price">견적금액을 작성해주세요.</div>
+      <div class="price-box">
+        <input type="hidden" name="save_price" class="sbe-save-price" />
+        <input type="text" class="sbe-estimate-box-price-value" name="estimate_price" placeholder="~10,000" required onKeyup="this.value=this.value.replace(/[^0-9]/g,'');" />
+        <span>원</span>
+      </div>
+      <div class="sbe-getEstimate-btnBox">
+        <input type="button" class="sbe-cancel-estimate-btn" value="취소하기" />
+        <input type="button" class="sbe-get-estimate-btn" value="제출하기" />
+      </div>
     </div>
+  </form>
     <script src="../bundle.js"></script>
   </body>
 </html>

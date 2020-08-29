@@ -16,6 +16,7 @@ import sanitizeHtml from "sanitize-html";
 import userController from "../lib/controller/userContoller";
 import registerSymController from "../lib/controller/registerSymContoller";
 import provideController from "../lib/controller/provideController";
+import submitController from "../lib/controller/submitController";
 // import oauthController from "../lib/controller/oauthController";
 import users from "../lib/model/usermodel";
 import auth from "../lib/authStatus";
@@ -261,7 +262,7 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
 });
 
 router.get("/get_estimate", csrfProtection, verify, isNotLogined, (req, res) => {
-  if (url.parse(req.url).query === null) {
+  if (url.parse(req.url).query === null || req.session.code.length === 0 || req.session.code === null) {
     res.redirect("/");
   }
   if (req.session.img) {
@@ -355,6 +356,20 @@ router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
   } catch (error) {
     console.error(error, "로그인이 되지 않았습니다.");
   }
+});
+
+router.post("/find_provider", csrfProtection, verify, isNotLogined, async (req, res) => {
+  let result = await submitController.findAllProvider(req.body.sympton_id);
+  if (result.length === 0) {
+    return res.json({ state: false });
+  } else {
+    return res.json({ data: result, state: true });
+  }
+});
+
+router.post("/find_submit", csrfProtection, verify, isNotLogined, async (req, res) => {
+  let result = await submitController.findSubmit(req.body.submit_id);
+  result === null ? res.json({ state: false }) : res.json({ state: true, data: result });
 });
 
 router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async (req, res) => {

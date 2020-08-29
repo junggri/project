@@ -11,7 +11,7 @@
 @import "./provider/index.css";
 @import "./provider/findAllRegister.css";
 @import "./provider/showBeforeEstimate.css";
-
+@import "./provider//showGotEstimate.css";
 html,
 body,
 input {

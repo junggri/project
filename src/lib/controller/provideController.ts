@@ -28,4 +28,10 @@ provideController.tokenUpdate = (req: any, res: any, _email: string, _refresh_to
       console.error(err);
     });
 };
+
+provideController.isEstimated = async (providerId: string) => {
+  let result = await provider.findOne({ _id: providerId });
+  return result;
+};
+
 export default provideController;

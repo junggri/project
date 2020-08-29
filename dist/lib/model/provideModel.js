@@ -33,8 +33,11 @@ var providers = new mongoose_1.default.Schema({
     },
     user_division: {
         type: String,
-        default: "provide",
+        default: "provider",
         required: true,
+    },
+    submit_register: {
+        type: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "RegisterSympton" }],
     },
 });
 module.exports = mongoose_1.default.model("Provider", providers);

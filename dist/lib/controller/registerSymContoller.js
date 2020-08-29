@@ -85,8 +85,12 @@ function changeSigunguCode(sigunguCode) {
 registerSymController.showBeforeEstimate = function (_id) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
-        result = registerSymModel_1.default.findOne({ _id: _id });
-        return [2 /*return*/, result];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: _id })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
     });
 }); };
 registerSymController.getAllData = function (pageNum, divided_num) { return __awaiter(void 0, void 0, void 0, function () {

@@ -28,7 +28,7 @@ function changeSigunguCode(sigunguCode: string) {
   return findArea;
 }
 registerSymController.showBeforeEstimate = async (_id: string) => {
-  let result = registerSym.findOne({ _id: _id });
+  let result = await registerSym.findOne({ _id: _id });
   return result;
 };
 

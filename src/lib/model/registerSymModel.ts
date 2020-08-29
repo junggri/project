@@ -55,9 +55,8 @@ const registerSympton = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  get_estimate_count: {
-    type: Number,
-    default: 0,
+  provider: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Provider" }],
   },
 });
 

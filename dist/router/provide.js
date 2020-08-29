@@ -53,6 +53,7 @@ var crypto_json_1 = __importDefault(require("../config/crypto.json"));
 var provideModel_1 = __importDefault(require("../lib/model/provideModel"));
 var provideController_1 = __importDefault(require("../lib/controller/provideController"));
 var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
+var submitController_1 = __importDefault(require("../lib/controller/submitController"));
 var p_MakeSymptonList_1 = require("../lib/p_MakeSymptonList");
 var p_makeShowData_1 = require("../lib/p_makeShowData");
 var mysql_1 = __importDefault(require("../lib/mysql"));
@@ -206,34 +207,102 @@ router.post("/get_sejong", csrfProtection, p_verify_1.verify, p_verify_1.isNotLo
         res.json({ sido: Array.from(new Set(data1)).sort() });
     });
 });
-router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var authUI, result, location, imgs;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                authUI = p_authStatus_1.default.status(req, res);
-                return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.url.split("?")[1])];
-            case 1:
-                result = _a.sent();
-                location = p_makeShowData_1.makeLocation(result);
-                imgs = p_makeShowData_1.makeImg(result);
-                //세종이랑 나눈다 다시하번 해보기
-                res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location, imgs: imgs });
-                return [2 /*return*/];
-        }
-    });
-}); });
-router.post("/get_registerData", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/before_getData", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body._id)];
             case 1:
                 result = _a.sent();
+                if (result === null) {
+                    return [2 /*return*/, res.json({ state: false })];
+                }
                 res.json({ data: result });
                 return [2 /*return*/];
         }
     });
 }); });
+router.post("/get_registerData", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body._id)];
+            case 1:
+                result = _a.sent();
+                if (result === null) {
+                    return [2 /*return*/, res.json({ state: false })];
+                }
+                res.json({ data: result });
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var authUI, token, decoded, result, isEstimated, location_1, imgs, btn, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                authUI = p_authStatus_1.default.status(req, res);
+                token = req.cookies.pjwttoken;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+                return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.url.split("?")[1])];
+            case 2:
+                result = _a.sent();
+                if (result === null) {
+                    return [2 /*return*/, res.redirect("/provide/findAllRegister")];
+                }
+                return [4 /*yield*/, provideController_1.default.isEstimated(decoded.user_objectId)];
+            case 3:
+                isEstimated = _a.sent();
+                location_1 = p_makeShowData_1.makeLocation(result);
+                imgs = p_makeShowData_1.makeImg(result);
+                btn = p_makeShowData_1.makeBtn(isEstimated, req.url.split("?")[1]);
+                res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location_1, imgs: imgs, btn: btn });
+                return [3 /*break*/, 5];
+            case 4:
+                error_1 = _a.sent();
+                console.error(error_1);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/submit_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, decoded;
+    return __generator(this, function (_a) {
+        token = req.cookies.pjwttoken;
+        try {
+            decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+            submitController_1.default.save(req.body.sympton_id, decoded.user_objectId, req.body);
+            res.json({ url: req.body.sympton_id, state: true });
+        }
+        catch (error) {
+            console.error(error);
+        }
+        return [2 /*return*/];
+    });
+}); });
+router.post("/delete_submit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
+    var token = req.cookies.pjwttoken;
+    try {
+        var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        submitController_1.default.delete_submit(req.body.symptonId, decoded.user_objectId);
+        res.json({ url: req.body.symptonId });
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+router.get("/showGotEstimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
+    var authUI = p_authStatus_1.default.status(req, res);
+    res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken() });
+});
+router.post("/logout_process", p_verify_1.isNotLogined, function (req, res) {
+    res.clearCookie("pjwttoken");
+    return res.redirect(req.get("Referrer"));
+});
 exports.default = router;
 //# sourceMappingURL=provide.js.map

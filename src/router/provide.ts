@@ -10,13 +10,15 @@ import mongoSanitize from "mongo-sanitize";
 import crypto from "crypto";
 import crypto_cre from "../config/crypto.json";
 import providers from "../lib/model/provideModel";
-import providerController from "../lib/controller/provideController";
+import provideController from "../lib/controller/provideController";
 import registerSymController from "../lib/controller/registerSymContoller";
+import submitEstimateController from "../lib/controller/submitController";
 import { MakeAllSymptonList, MakePagination } from "../lib/p_MakeSymptonList";
-import { makeLocation, makeImg } from "../lib/p_makeShowData";
+import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
 import qs from "querystring";
 import { makeJuso } from "../lib/p_makeJuso";
+
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
 const csrfProtection = csrf({
@@ -25,6 +27,12 @@ const csrfProtection = csrf({
     // secure: true,
   },
 });
+
+interface Decoded {
+  email: string;
+  user_objectId: string;
+  username: string;
+}
 
 router.get("/index", csrfProtection, verify, isLogined, (req, res) => {
   if (req.headers.referer === undefined) {
@@ -53,7 +61,7 @@ router.post("/login_process", parseForm, csrfProtection, async (req, res) => {
           let _refresh_token = refreshToken(req, res, _email, result.name, result._id);
           let save_token = result.refresh_token;
           if (save_token === undefined) {
-            providerController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
+            provideController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
             return res.json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
           } else {
             try {
@@ -63,7 +71,7 @@ router.post("/login_process", parseForm, csrfProtection, async (req, res) => {
             } catch (error) {
               if (error.name === "TokenExpiredError") {
                 console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
-                providerController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
+                provideController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
                 return res.json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
               }
             }
@@ -139,18 +147,71 @@ router.post("/get_sejong", csrfProtection, verify, isNotLogined, (req, res) => {
   });
 });
 
-router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
-  let authUI = auth.status(req, res);
-  let result: any = await registerSymController.showBeforeEstimate(req.url.split("?")[1]);
-  let location = makeLocation(result);
-  let imgs = makeImg(result);
-  //세종이랑 나눈다 다시하번 해보기
-  res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location, imgs: imgs });
+router.post("/before_getData", csrfProtection, verify, isNotLogined, async (req, res) => {
+  let result = await registerSymController.showBeforeEstimate(req.body._id);
+  if (result === null) {
+    return res.json({ state: false });
+  }
+  res.json({ data: result });
 });
 
-router.post("/get_registerData", async (req, res) => {
+router.post("/get_registerData", csrfProtection, verify, isNotLogined, async (req, res) => {
   let result = await registerSymController.showBeforeEstimate(req.body._id);
+  if (result === null) {
+    return res.json({ state: false });
+  }
   res.json({ data: result });
+});
+
+router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
+  let authUI = auth.status(req, res);
+  const token = req.cookies.pjwttoken;
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let result: any = await registerSymController.showBeforeEstimate(req.url.split("?")[1]);
+    if (result === null) {
+      return res.redirect("/provide/findAllRegister");
+    }
+    let isEstimated: any = await provideController.isEstimated((decoded as Decoded).user_objectId);
+    let location = makeLocation(result);
+    let imgs = makeImg(result);
+    let btn = makeBtn(isEstimated, req.url.split("?")[1]);
+    res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location, imgs: imgs, btn: btn });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.post("/submit_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
+  const token = req.cookies.pjwttoken;
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    submitEstimateController.save(req.body.sympton_id, (decoded as Decoded).user_objectId, req.body);
+    res.json({ url: req.body.sympton_id, state: true });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.post("/delete_submit", csrfProtection, verify, isNotLogined, (req, res) => {
+  const token = req.cookies.pjwttoken;
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    submitEstimateController.delete_submit(req.body.symptonId, (decoded as Decoded).user_objectId);
+    res.json({ url: req.body.symptonId });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+router.get("/showGotEstimate", csrfProtection, verify, isNotLogined, (req, res) => {
+  let authUI = auth.status(req, res);
+  res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken() });
+});
+
+router.post("/logout_process", isNotLogined, (req, res) => {
+  res.clearCookie("pjwttoken");
+  return res.redirect(req.get("Referrer"));
 });
 
 export default router;

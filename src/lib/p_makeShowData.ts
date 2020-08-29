@@ -1,5 +1,3 @@
-import compression from "compression";
-
 function changeSigunguCode(sigunguCode: string) {
   let findArea;
   if (sigunguCode === "11") findArea = "서울시";
@@ -67,4 +65,14 @@ export let makeImg = (data: any) => {
     list += item;
   }
   return list;
+};
+
+export let makeBtn = (data: any, symptonId: string) => {
+  let btn = "";
+  if (data.submit_register.includes(symptonId)) {
+    btn = `<input type="button" class="sbe-delete-estimate-btn" value="견적서 취소하기" />`;
+  } else {
+    btn = `<input type="button" class="sbe-estimate-btn" value="견적서 제출하기" />`;
+  }
+  return btn;
 };

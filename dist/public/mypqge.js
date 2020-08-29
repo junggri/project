@@ -41,6 +41,8 @@ function mypage() {
     var modifiedBtn = document.querySelectorAll(".ms-resultItem-modifieBtn");
     var deleteBtn = document.querySelectorAll(".ms-resultItem-deleteBtn");
     var registerNum = document.querySelector(".userShowStateBox-register-number");
+    var showBtn = document.querySelectorAll(".ms-resultItem-showGotEstimate");
+    var submitItem = document.querySelectorAll(".sge-item");
     var _loop_1 = function (i) {
         modifiedBtn[i].addEventListener("click", function () {
             var userNode = modifiedBtn[i].parentNode.parentNode.parentNode;
@@ -92,6 +94,87 @@ function mypage() {
     };
     for (var i = 0; i < deleteBtn.length; i++) {
         _loop_2(i);
+    }
+    for (var i = 0; i < showBtn.length; i++) {
+        showBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+            var token, myHeaders, result, response, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                        myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        myHeaders.append("CSRF-Token", token);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/find_provider", {
+                                method: "post",
+                                credentials: "same-origin",
+                                headers: myHeaders,
+                                body: JSON.stringify({ sympton_id: e.target.parentNode.parentNode.parentNode.dataset.id }),
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 5, , 6]);
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, result.json()];
+                    case 3:
+                        response = _a.sent();
+                        if (response.state === false)
+                            return [2 /*return*/, alert("받은 견적이 존재하지 않습니다.")];
+                        $("." + response.data[0].symptonId).stop().animate({ height: "toggle" });
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_2 = _a.sent();
+                        console.error(error_2);
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        }); });
+    }
+    var _loop_3 = function (i) {
+        submitItem[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+            var submitId, token, myHeaders, result, response, error_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        submitId = submitItem[i].dataset.submitid;
+                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                        myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        myHeaders.append("CSRF-Token", token);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/find_submit", {
+                                method: "post",
+                                credentials: "same-origin",
+                                headers: myHeaders,
+                                body: JSON.stringify({ submit_id: submitId }),
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 5, , 6]);
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, result.json()];
+                    case 3:
+                        response = _a.sent();
+                        if (response.state === false)
+                            return [2 /*return*/, alert("견적이 삭제되었거나, 존재하지 않습니다.")];
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_3 = _a.sent();
+                        console.error(error_3);
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        }); });
+    };
+    for (var i = 0; i < submitItem.length; i++) {
+        _loop_3(i);
     }
 }
 exports.default = mypage;

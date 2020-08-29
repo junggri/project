@@ -41,8 +41,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeListSympton = void 0;
 var symptonModel_1 = __importDefault(require("./model/symptonModel"));
+var submitController_1 = __importDefault(require("../lib/controller/submitController"));
 exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, void 0, function () {
-    var list, list_1, i, mainImg, codeText, result, item;
+    var list, list_1, i, mainImg, gender, showItem, codeText, result, response, i_1, showItems, item;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -54,26 +55,32 @@ exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, voi
                 i = 0;
                 _a.label = 1;
             case 1:
-                if (!(i < data.length)) return [3 /*break*/, 4];
-                mainImg = void 0;
-                data[i].img[0] !== undefined || null ? (mainImg = "url('/" + data[i].user_object_id + "/" + data[i].img[0] + "')") : (mainImg = "url('/noimage.svg')");
+                if (!(i < data.length)) return [3 /*break*/, 5];
+                mainImg = void 0, gender = void 0;
+                showItem = " ";
                 codeText = void 0;
                 return [4 /*yield*/, symptonModel_1.default.find({ code: data[i].code[0] })];
             case 2:
                 result = _a.sent();
-                if (data[i].code.length === 1) {
-                    codeText = result[0].content;
-                }
-                else {
-                    codeText = result[0].content + " \uC678 " + (data[i].code.length - 1) + "\uAC1C";
-                }
-                item = " <div class=\"ms-resultItem-container\" data-id=\"" + data[i]._id + "\">\n          <div class=\"ms-resultItem\">\n          <span class=\"ms-resultItem-img\" style=\"background-image:" + mainImg + ";\"></span>\n            <div class=\"ms-resultItem-right\">\n              <span class=\"ms-resultItem-time\">" + data[i].createdAt + "</span>\n              <span class=\"ms-resultItem-symptom\">" + codeText + "</span>\n              <div class=\"ms-resultItem-price\">7000-1000\uC6D0</div>\n            </div>\n            <div class=\"ms-resultItem-BtnBox\">\n              <span class=\"ms-resultItem-modifieBtn\">\n                \uC218\uC815\uD558\uAE30\n              </span>\n              <span class=\"ms-resultItem-deleteBtn\">\n                \uC0AD\uC81C\uD558\uAE30\n              </span>\n            </div>\n          </div>  \n        </div>";
-                list += item;
-                _a.label = 3;
+                return [4 /*yield*/, submitController_1.default.findAllProvider(data[i].id)];
             case 3:
+                response = _a.sent();
+                data[i].img[0] !== undefined || null ? (mainImg = "url('/" + data[i].user_object_id + "/" + data[i].img[0] + "')") : (mainImg = "url('/noimage.svg')");
+                data[i].code.length === 1 ? (codeText = result[0].content) : (codeText = result[0].content + " \uC678 " + (data[i].code.length - 1) + "\uAC1C");
+                if (response.length !== 0) {
+                    for (i_1 = 0; i_1 < response.length; i_1++) {
+                        response[i_1].provider[0].gender === "male" ? (gender = "남성") : (gender = "여성");
+                        showItems = "\n            <div class=\"sge-item\" data-submitId=" + response[i_1].id + ">\n            <div class=\"sge-item-img\"></div>\n            <div class=\"sge-provider-data\">\n              <div class=\"sge-item-name-box\">\n                <span>\uC774\uB984</span>\n                <span>" + response[i_1].provider[0].name + "</span>\n              </div>\n              <div class=\"sge-item-sex-box\">\n                <span>\uC131\uBCC4</span>\n                <span>" + gender + "</span>\n              </div>\n            </div>\n            <div class=\"sge-price-box\">\n              <div>\uACAC\uC801\uAE08\uC561</div>\n              <div>" + response[i_1].submit_price + "\uC6D0</div>\n            </div>\n          </div>\n        ";
+                        showItem += showItems;
+                    }
+                }
+                item = " <div class=\"ms-resultItem-container\" data-id=\"" + data[i]._id + "\">\n          <div class=\"ms-resultItem\">\n          <span class=\"ms-resultItem-img\" style=\"background-image:" + mainImg + ";\"></span>\n            <div class=\"ms-resultItem-right\">\n              <span class=\"ms-resultItem-time\">" + data[i].createdAt + "</span>\n              <span class=\"ms-resultItem-symptom\">" + codeText + "</span>\n              <div class=\"ms-resultItem-price\">" + data[i].predict_price + "\uC6D0</div>\n            </div>\n            <div class=\"ms-resultItem-BtnBox\">\n              <span class=\"ms-resultItem-showGotEstimate\">\n              \uBC1B\uC740\uACAC\uC801\uBCF4\uAE30\n              </span>\n              <span class=\"ms-resultItem-modifieBtn\">\n                \uC218\uC815\uD558\uAE30\n              </span>\n              <span class=\"ms-resultItem-deleteBtn\">\n                \uC0AD\uC81C\uD558\uAE30\n              </span>\n            </div>\n          </div>  \n        </div>\n        <div class=\"show-got-estimate-container " + data[i]._id + "\">\n            <div class=\"show-got-estimate\">\n            " + showItem + "\n            </div>\n          </div>\n        ";
+                list += item;
+                _a.label = 4;
+            case 4:
                 i++;
                 return [3 /*break*/, 1];
-            case 4: return [2 /*return*/, list];
+            case 5: return [2 /*return*/, list];
         }
     });
 }); };

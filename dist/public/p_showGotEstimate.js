@@ -35,52 +35,45 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var provideModel_1 = __importDefault(require("../../lib/model/provideModel"));
-var provideController = {};
-provideController.find = function (email) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
-    return __generator(this, function (_a) {
-        result = provideModel_1.default.find({ email: email });
-        return [2 /*return*/, result];
-    });
-}); };
-provideController.save = function (data) { return __awaiter(void 0, void 0, void 0, function () {
-    var Providers;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                Providers = new provideModel_1.default(data);
-                return [4 /*yield*/, Providers.save()];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); };
-provideController.tokenUpdate = function (req, res, _email, _refresh_token, userObjectId) {
-    provideModel_1.default
-        .updateOne({ _id: userObjectId }, { $set: { refresh_token: _refresh_token } })
-        .then(function (result) {
-        console.log("토큰 재발급했어요");
-    })
-        .catch(function (err) {
-        console.error(err);
-    });
-};
-provideController.isEstimated = function (providerId) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, provideModel_1.default.findOne({ _id: providerId })];
-            case 1:
-                result = _a.sent();
-                return [2 /*return*/, result];
-        }
-    });
-}); };
-exports.default = provideController;
-//# sourceMappingURL=provideController.js.map
+function showGotEstimate() {
+    function getData() {
+        return __awaiter(this, void 0, void 0, function () {
+            var token, myHeaders, result, response, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                        myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        myHeaders.append("CSRF-Token", token);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/find_submit", {
+                                method: "post",
+                                credentials: "same-origin",
+                                headers: myHeaders,
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 5, , 6]);
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, result.json()];
+                    case 3:
+                        response = _a.sent();
+                        if (response.state === false)
+                            return [2 /*return*/, alert("견적이 삭제되었거나, 존재하지 않습니다.")];
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_1 = _a.sent();
+                        console.error(error_1);
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    }
+}
+exports.default = showGotEstimate;
+//# sourceMappingURL=p_showGotEstimate.js.map

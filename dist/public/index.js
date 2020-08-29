@@ -52,6 +52,7 @@ var provide_1 = __importDefault(require("./provide"));
 var p_index_1 = __importDefault(require("./p_index"));
 var p_findAllRegister_1 = __importDefault(require("./p_findAllRegister"));
 var p_showBeforeEstimate_1 = __importDefault(require("./p_showBeforeEstimate"));
+var p_showGotEstimate_1 = __importDefault(require("./p_showGotEstimate"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
 var mainName = document.querySelector(".nb-left-name");
 var path = window.location.pathname;
@@ -62,6 +63,7 @@ var body = document.querySelector("#app");
 if (window.location.href.includes("#")) {
     window.location.href = window.location.href.slice(0, -1);
 }
+console.log(path);
 if (path === "/provide/index") {
     p_index_1.default();
 }
@@ -70,6 +72,9 @@ if (path === "/provide/findAllRegister") {
 }
 if (path === "/provide/sympton_estimate") {
     p_showBeforeEstimate_1.default();
+}
+if (path === "/provide/showGotEstimate") {
+    p_showGotEstimate_1.default();
 }
 if (path === "/api/oauth_register") {
     oauth_1.default();
@@ -129,11 +134,23 @@ if (mainName !== null) {
 if (logout !== null) {
     logout.addEventListener("click", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            if (confirm("로그아웃 하시겠습니까?")) {
-                return [2 /*return*/, logoutForm.submit()];
+            if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[1] === "") {
+                if (confirm("로그아웃 하시겠습니까?")) {
+                    logoutForm.action = "/api/logout_process";
+                    return [2 /*return*/, logoutForm.submit()];
+                }
+                else {
+                    return [2 /*return*/, false];
+                }
             }
-            else {
-                return [2 /*return*/, false];
+            else if (location.pathname.split("/")[1] === "provide") {
+                if (confirm("로그아웃 하시겠습니까?")) {
+                    logoutForm.action = "/provide/logout_process";
+                    return [2 /*return*/, logoutForm.submit()];
+                }
+                else {
+                    return [2 /*return*/, false];
+                }
             }
             return [2 /*return*/];
         });

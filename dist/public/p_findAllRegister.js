@@ -86,10 +86,48 @@ function p_findAllRegister() {
             }
         }
         function makeSymptonPage(symptonItems) {
+            var _this = this;
             for (var i = 0; i < symptonItems.length; i++) {
-                symptonItems[i].addEventListener("click", function (e) {
-                    window.location.href = "/provide/sympton_estimate?" + e.target.parentNode.dataset.registerid;
-                });
+                symptonItems[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+                    var token, myHeaders, result, response, error_1;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                                myHeaders = new Headers();
+                                myHeaders.append("Content-Type", "application/json");
+                                myHeaders.append("CSRF-Token", token);
+                                return [4 /*yield*/, fetch("http://localhost:3000/provide/before_getData", {
+                                        method: "post",
+                                        credentials: "same-origin",
+                                        headers: myHeaders,
+                                        body: JSON.stringify({ _id: e.target.parentNode.dataset.registerid }),
+                                    })];
+                            case 1:
+                                result = _a.sent();
+                                _a.label = 2;
+                            case 2:
+                                _a.trys.push([2, 5, , 6]);
+                                if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                                return [4 /*yield*/, result.json()];
+                            case 3:
+                                response = _a.sent();
+                                if (response.state === false) {
+                                    alert("존재하지 않는 자료입니다.");
+                                    window.location.href = "/provide/findAllRegister";
+                                    return [2 /*return*/];
+                                }
+                                window.location.href = "/provide/sympton_estimate?" + e.target.parentNode.dataset.registerid;
+                                _a.label = 4;
+                            case 4: return [3 /*break*/, 6];
+                            case 5:
+                                error_1 = _a.sent();
+                                console.error(error_1);
+                                return [3 /*break*/, 6];
+                            case 6: return [2 /*return*/];
+                        }
+                    });
+                }); });
             }
         }
         findBtn.addEventListener("click", function (e) {
@@ -140,7 +178,7 @@ function p_findAllRegister() {
         //////////////////////////////////////////////////////////////////////////////////
         function commonFunction(text, target, data, url) {
             return __awaiter(this, void 0, void 0, function () {
-                var token, myHeaders, result, response, i, option, error_1;
+                var token, myHeaders, result, response, i, option, error_2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0: return [4 /*yield*/, reset(target, text)];
@@ -174,8 +212,8 @@ function p_findAllRegister() {
                             _a.label = 5;
                         case 5: return [3 /*break*/, 7];
                         case 6:
-                            error_1 = _a.sent();
-                            console.error(error_1);
+                            error_2 = _a.sent();
+                            console.error(error_2);
                             return [3 /*break*/, 7];
                         case 7: return [2 /*return*/];
                     }

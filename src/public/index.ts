@@ -11,7 +11,8 @@ import provide from "./provide";
 import P_index from "./p_index";
 import p_findAllRegister from "./p_findAllRegister";
 import p_showBeforeEstimate from "./p_showBeforeEstimate";
-
+import p_showGotEstimate from "./p_showGotEstimate";
+import showGotEstimate from "./p_showGotEstimate";
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
 let mainName = document.querySelector(".nb-left-name");
 let path = window.location.pathname;
@@ -19,11 +20,10 @@ let navigationBox = document.querySelector(".nb-navigation") as HTMLDivElement;
 let logout = document.querySelector(".nb-profile-logout");
 let logoutForm = document.querySelector(".logout-form") as HTMLFormElement;
 let body = document.querySelector("#app") as HTMLDivElement;
-
 if (window.location.href.includes("#")) {
   window.location.href = window.location.href.slice(0, -1);
 }
-
+console.log(path);
 if (path === "/provide/index") {
   P_index();
 }
@@ -32,6 +32,9 @@ if (path === "/provide/findAllRegister") {
 }
 if (path === "/provide/sympton_estimate") {
   p_showBeforeEstimate();
+}
+if (path === "/provide/showGotEstimate") {
+  showGotEstimate();
 }
 if (path === "/api/oauth_register") {
   oauth();
@@ -92,10 +95,20 @@ if (mainName !== null) {
 
 if (logout !== null) {
   logout.addEventListener("click", async () => {
-    if (confirm("로그아웃 하시겠습니까?")) {
-      return logoutForm.submit();
-    } else {
-      return false;
+    if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[1] === "") {
+      if (confirm("로그아웃 하시겠습니까?")) {
+        logoutForm.action = "/api/logout_process";
+        return logoutForm.submit();
+      } else {
+        return false;
+      }
+    } else if (location.pathname.split("/")[1] === "provide") {
+      if (confirm("로그아웃 하시겠습니까?")) {
+        logoutForm.action = "/provide/logout_process";
+        return logoutForm.submit();
+      } else {
+        return false;
+      }
     }
   });
 }

@@ -1,4 +1,5 @@
 export const MakeAllSymptonList = (data: any, pageNum: any, divided_num: any) => {
+  console.log(data);
   let list = "";
   if (data.length === 0) {
     list = `
@@ -15,7 +16,7 @@ export const MakeAllSymptonList = (data: any, pageNum: any, divided_num: any) =>
             <span class="frr-item-content">${data[i].sympton_detail}</span>
             <span class="frr-item-whoMake">${data[i].user_name}</span>
             <span class="frr-item-createdAt">${data[i].createdAt}</span>
-            <span class="frr-item-estimate">${data[i].get_estimate_count}</span>
+            <span class="frr-item-estimate">${data[i].provider.length}</span>
         </div>
       `;
     list += item;

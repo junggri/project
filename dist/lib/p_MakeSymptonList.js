@@ -2,13 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MakePagination = exports.MakeAllSymptonList = void 0;
 exports.MakeAllSymptonList = function (data, pageNum, divided_num) {
+    console.log(data);
     var list = "";
     if (data.length === 0) {
         list = "\n      <div class=\"doNotFindSympton\">\n        <span>\uC870\uD68C\uD560 \uC790\uB8CC\uAC00 \uC874\uC7AC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.</span>\n      </div>\n    ";
         return list;
     }
     for (var i = 0; i < data.length; i++) {
-        var item = "\n        <div class=\"find-register-resultItem\" data-registerId=\"" + data[i]._id + "\">\n            <span>" + ((pageNum - 1) * divided_num + i + 1) + "</span>\n            <span class=\"frr-item-content\">" + data[i].sympton_detail + "</span>\n            <span class=\"frr-item-whoMake\">" + data[i].user_name + "</span>\n            <span class=\"frr-item-createdAt\">" + data[i].createdAt + "</span>\n            <span class=\"frr-item-estimate\">" + data[i].get_estimate_count + "</span>\n        </div>\n      ";
+        var item = "\n        <div class=\"find-register-resultItem\" data-registerId=\"" + data[i]._id + "\">\n            <span>" + ((pageNum - 1) * divided_num + i + 1) + "</span>\n            <span class=\"frr-item-content\">" + data[i].sympton_detail + "</span>\n            <span class=\"frr-item-whoMake\">" + data[i].user_name + "</span>\n            <span class=\"frr-item-createdAt\">" + data[i].createdAt + "</span>\n            <span class=\"frr-item-estimate\">" + data[i].provider.length + "</span>\n        </div>\n      ";
         list += item;
     }
     return list;

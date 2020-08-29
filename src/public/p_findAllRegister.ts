@@ -1,3 +1,5 @@
+import { ReplyError } from "redis";
+
 declare global {
   interface Window {
     // login_verify: any;
@@ -57,8 +59,30 @@ export default function p_findAllRegister() {
 
     function makeSymptonPage(symptonItems: any) {
       for (let i = 0; i < symptonItems.length; i++) {
-        symptonItems[i].addEventListener("click", (e: any) => {
-          window.location.href = `/provide/sympton_estimate?${e.target.parentNode.dataset.registerid}`;
+        symptonItems[i].addEventListener("click", async (e: any) => {
+          let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+          let myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+          myHeaders.append("CSRF-Token", token);
+          let result = await fetch("http://localhost:3000/provide/before_getData", {
+            method: "post",
+            credentials: "same-origin",
+            headers: myHeaders,
+            body: JSON.stringify({ _id: e.target.parentNode.dataset.registerid }),
+          });
+          try {
+            if (result.status === 200 || 201) {
+              let response = await result.json();
+              if (response.state === false) {
+                alert("존재하지 않는 자료입니다.");
+                window.location.href = "/provide/findAllRegister";
+                return;
+              }
+              window.location.href = `/provide/sympton_estimate?${e.target.parentNode.dataset.registerid}`;
+            }
+          } catch (error) {
+            console.error(error);
+          }
         });
       }
     }
