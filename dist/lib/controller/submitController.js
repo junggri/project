@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var registerSymModel_1 = __importDefault(require("../model/registerSymModel"));
 var provideModel_1 = __importDefault(require("../model/provideModel"));
 var submitEstimateModel_1 = __importDefault(require("../model/submitEstimateModel"));
+var usermodel_1 = __importDefault(require("../model/usermodel"));
 var submitController = {};
 submitController.findAllProvider = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
@@ -66,16 +67,20 @@ submitController.findSubmit = function (submitId) { return __awaiter(void 0, voi
     });
 }); };
 submitController.save = function (symptonId, providerId, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var Sympton, Provider, saveData, Sumbit;
+    var User, Sympton, Provider, saveData, Sumbit;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: symptonId })];
+            case 0: return [4 /*yield*/, usermodel_1.default.findOne({ _id: data.user_id })];
             case 1:
+                User = _a.sent();
+                return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: symptonId })];
+            case 2:
                 Sympton = _a.sent();
                 return [4 /*yield*/, provideModel_1.default.findOne({ _id: providerId })];
-            case 2:
+            case 3:
                 Provider = _a.sent();
                 saveData = {
+                    register_user: User,
                     symptonId: data.sympton_id,
                     provider: Provider,
                     content: data.content,
@@ -83,19 +88,19 @@ submitController.save = function (symptonId, providerId, data) { return __awaite
                 };
                 Sumbit = new submitEstimateModel_1.default(saveData);
                 return [4 /*yield*/, Sumbit.save()];
-            case 3:
-                _a.sent();
-                return [4 /*yield*/, Sympton.provider.push(Provider._id)];
             case 4:
                 _a.sent();
-                return [4 /*yield*/, Sympton.save()];
+                return [4 /*yield*/, Sympton.provider.push(Provider._id)];
             case 5:
                 _a.sent();
-                return [4 /*yield*/, Provider.submit_register.push(Sympton._id)];
+                return [4 /*yield*/, Sympton.save()];
             case 6:
                 _a.sent();
-                return [4 /*yield*/, Provider.save()];
+                return [4 /*yield*/, Provider.submit_register.push(Sympton._id)];
             case 7:
+                _a.sent();
+                return [4 /*yield*/, Provider.save()];
+            case 8:
                 _a.sent();
                 return [2 /*return*/];
         }

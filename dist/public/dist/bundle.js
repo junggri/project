@@ -804,7 +804,6 @@ var body = document.querySelector("#app");
 if (window.location.href.includes("#")) {
     window.location.href = window.location.href.slice(0, -1);
 }
-console.log(path);
 if (path === "/provide/index") {
     p_index_1.default();
 }
@@ -1507,6 +1506,9 @@ function mypage() {
     var registerNum = document.querySelector(".userShowStateBox-register-number");
     var showBtn = document.querySelectorAll(".ms-resultItem-showGotEstimate");
     var submitItem = document.querySelectorAll(".sge-item");
+    var acceptBtn = document.querySelectorAll(".accept-submit-btn");
+    var hiddenSubmitId = document.querySelector(".hidden_submitId");
+    var acceptForm = document.querySelector(".acceptForm");
     var _loop_1 = function (i) {
         modifiedBtn[i].addEventListener("click", function () {
             var userNode = modifiedBtn[i].parentNode.parentNode.parentNode;
@@ -1599,12 +1601,13 @@ function mypage() {
         }); });
     }
     var _loop_3 = function (i) {
-        submitItem[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+        acceptBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
             var submitId, token, myHeaders, result, response, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        submitId = submitItem[i].dataset.submitid;
+                        e.stopPropagation();
+                        submitId = acceptBtn[i].parentNode.parentNode.dataset.submitid;
                         token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
                         myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
@@ -1626,6 +1629,13 @@ function mypage() {
                         response = _a.sent();
                         if (response.state === false)
                             return [2 /*return*/, alert("견적이 삭제되었거나, 존재하지 않습니다.")];
+                        if (confirm("oo의 견적을 수락하시겠습니까")) {
+                            hiddenSubmitId.value = submitId;
+                            acceptForm.submit();
+                        }
+                        else {
+                            return [2 /*return*/, false];
+                        }
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -1637,7 +1647,32 @@ function mypage() {
             });
         }); });
     };
-    for (var i = 0; i < submitItem.length; i++) {
+    // for (let i = 0; i < submitItem.length; i++) {
+    //   submitItem[i].addEventListener("click", async (e: any) => {
+    //     e.stopPropagation();
+    //     let submitId = (submitItem[i] as any).dataset.submitid;
+    //     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    //     let myHeaders = new Headers();
+    //     myHeaders.append("Content-Type", "application/json");
+    //     myHeaders.append("CSRF-Token", token);
+    //     let result = await fetch("http://localhost:3000/api/find_submit", {
+    //       method: "post",
+    //       credentials: "same-origin",
+    //       headers: myHeaders,
+    //       body: JSON.stringify({ submit_id: submitId }),
+    //     });
+    //     try {
+    //       if (result.status === 200 || 201) {
+    //         let response = await result.json();
+    //         console.log(response);
+    //         if (response.state === false) return alert("견적이 삭제되었거나, 존재하지 않습니다.");
+    //       }
+    //     } catch (error) {
+    //       console.error(error);
+    //     }
+    //   });
+    // }
+    for (var i = 0; i < acceptBtn.length; i++) {
         _loop_3(i);
     }
 }
@@ -2201,6 +2236,7 @@ function p_showBeforeEsimate() {
     var estimate_detail_value = document.querySelector("#sympton-detail");
     var registrantId = document.querySelector(".registrant_id");
     var symptonId = document.querySelector(".sympton_id");
+    var userId = document.querySelector(".user_id");
     var deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn");
     function getDataSymtonsData() {
         return __awaiter(this, void 0, void 0, function () {
@@ -2240,6 +2276,7 @@ function p_showBeforeEsimate() {
                         userwant_detail.textContent = response.data.userwant_content;
                         registrantId.value = response.data.user_object_id;
                         symptonId.value = response.data._id;
+                        userId.value = response.data.user_object_id;
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -2287,7 +2324,12 @@ function p_showBeforeEsimate() {
                             method: "post",
                             credentials: "same-origin",
                             headers: myHeaders,
-                            body: JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length), content: estimate_detail_value.value, priceValue: priceValue.value }),
+                            body: JSON.stringify({
+                                sympton_id: document.location.search.substring(1, document.location.search.length),
+                                content: estimate_detail_value.value,
+                                priceValue: priceValue.value,
+                                user_id: userId.value,
+                            }),
                         })];
                 case 2:
                     result = _a.sent();

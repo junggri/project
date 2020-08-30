@@ -1,5 +1,3 @@
-import { ReplyError } from "redis";
-
 declare global {
   interface Window {
     // login_verify: any;

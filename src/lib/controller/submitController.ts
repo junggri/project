@@ -1,9 +1,10 @@
 import symptonModel from "../model/registerSymModel";
 import providerModel from "../model/provideModel";
 import submitModel from "../model/submitEstimateModel";
-import compression from "compression";
+import usermodel from "../model/usermodel";
 
 let submitController: any = {};
+
 interface Data {
   registrant_id: string;
   sympton_detail: string;
@@ -23,9 +24,11 @@ submitController.findSubmit = async (submitId: string) => {
 };
 
 submitController.save = async (symptonId: string, providerId: string, data: any) => {
+  let User: any = await usermodel.findOne({ _id: data.user_id });
   let Sympton: any = await symptonModel.findOne({ _id: symptonId });
   let Provider: any = await providerModel.findOne({ _id: providerId });
   let saveData = {
+    register_user: User,
     symptonId: data.sympton_id,
     provider: Provider,
     content: data.content,

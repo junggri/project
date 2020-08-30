@@ -372,6 +372,11 @@ router.post("/find_submit", csrfProtection, verify, isNotLogined, async (req, re
   result === null ? res.json({ state: false }) : res.json({ state: true, data: result });
 });
 
+router.post("/accept_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
+  let result = await submitController.findSubmit(req.body.submit_id);
+  console.log(req.body, result);
+});
+
 router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async (req, res) => {
   let authUI = auth.status(req, res);
   let response = await registerSymController.findCodeBeforeModified(req, res);

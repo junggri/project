@@ -63,7 +63,6 @@ var body = document.querySelector("#app");
 if (window.location.href.includes("#")) {
     window.location.href = window.location.href.slice(0, -1);
 }
-console.log(path);
 if (path === "/provide/index") {
     p_index_1.default();
 }

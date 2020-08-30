@@ -45,6 +45,7 @@ export let makeListSympton = async (data: any) => {
             <div class="sge-price-box">
               <div>견적금액</div>
               <div>${response[i].submit_price}원</div>
+              <div class="accept-submit-btn">수락하기</div>
             </div>
           </div>
         `;

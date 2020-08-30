@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MakePagination = exports.MakeAllSymptonList = void 0;
 exports.MakeAllSymptonList = function (data, pageNum, divided_num) {
-    console.log(data);
     var list = "";
     if (data.length === 0) {
         list = "\n      <div class=\"doNotFindSympton\">\n        <span>\uC870\uD68C\uD560 \uC790\uB8CC\uAC00 \uC874\uC7AC\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.</span>\n      </div>\n    ";

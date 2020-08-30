@@ -12,7 +12,6 @@ import P_index from "./p_index";
 import p_findAllRegister from "./p_findAllRegister";
 import p_showBeforeEstimate from "./p_showBeforeEstimate";
 import p_showGotEstimate from "./p_showGotEstimate";
-import showGotEstimate from "./p_showGotEstimate";
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
 let mainName = document.querySelector(".nb-left-name");
 let path = window.location.pathname;
@@ -23,7 +22,7 @@ let body = document.querySelector("#app") as HTMLDivElement;
 if (window.location.href.includes("#")) {
   window.location.href = window.location.href.slice(0, -1);
 }
-console.log(path);
+
 if (path === "/provide/index") {
   P_index();
 }
@@ -34,7 +33,7 @@ if (path === "/provide/sympton_estimate") {
   p_showBeforeEstimate();
 }
 if (path === "/provide/showGotEstimate") {
-  showGotEstimate();
+  p_showGotEstimate();
 }
 if (path === "/api/oauth_register") {
   oauth();

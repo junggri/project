@@ -4,6 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var mongoose_1 = __importDefault(require("mongoose"));
 var submitSympton = new mongoose_1.default.Schema({
+    register_user: {
+        type: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "User" }],
+    },
     symptonId: {
         type: String,
     },
@@ -15,6 +18,10 @@ var submitSympton = new mongoose_1.default.Schema({
     create: {
         type: Date,
         default: Date.now,
+    },
+    state: {
+        type: String,
+        default: "submit",
     },
 });
 module.exports = mongoose_1.default.model("submitEstimate", submitSympton);

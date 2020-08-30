@@ -1,5 +1,4 @@
 export const MakeAllSymptonList = (data: any, pageNum: any, divided_num: any) => {
-  console.log(data);
   let list = "";
   if (data.length === 0) {
     list = `

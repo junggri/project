@@ -21,8 +21,8 @@ export default function p_showBeforeEsimate() {
   let estimate_detail_value = document.querySelector("#sympton-detail") as HTMLTextAreaElement;
   let registrantId = document.querySelector(".registrant_id") as HTMLInputElement;
   let symptonId = document.querySelector(".sympton_id") as HTMLInputElement;
+  let userId = document.querySelector(".user_id") as HTMLInputElement;
   let deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn") as HTMLInputElement;
-
   async function getDataSymtonsData() {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();
@@ -50,6 +50,7 @@ export default function p_showBeforeEsimate() {
         userwant_detail.textContent = response.data.userwant_content;
         registrantId.value = response.data.user_object_id;
         symptonId.value = response.data._id;
+        userId.value = response.data.user_object_id;
       }
     } catch (error) {
       console.error(error);
@@ -92,7 +93,12 @@ export default function p_showBeforeEsimate() {
         method: "post",
         credentials: "same-origin",
         headers: myHeaders,
-        body: JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length), content: estimate_detail_value.value, priceValue: priceValue.value }),
+        body: JSON.stringify({
+          sympton_id: document.location.search.substring(1, document.location.search.length),
+          content: estimate_detail_value.value,
+          priceValue: priceValue.value,
+          user_id: userId.value,
+        }),
       });
       try {
         if (result.status === 200 || 201) {

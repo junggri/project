@@ -55,6 +55,7 @@ function p_showBeforeEsimate() {
     var estimate_detail_value = document.querySelector("#sympton-detail");
     var registrantId = document.querySelector(".registrant_id");
     var symptonId = document.querySelector(".sympton_id");
+    var userId = document.querySelector(".user_id");
     var deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn");
     function getDataSymtonsData() {
         return __awaiter(this, void 0, void 0, function () {
@@ -94,6 +95,7 @@ function p_showBeforeEsimate() {
                         userwant_detail.textContent = response.data.userwant_content;
                         registrantId.value = response.data.user_object_id;
                         symptonId.value = response.data._id;
+                        userId.value = response.data.user_object_id;
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -141,7 +143,12 @@ function p_showBeforeEsimate() {
                             method: "post",
                             credentials: "same-origin",
                             headers: myHeaders,
-                            body: JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length), content: estimate_detail_value.value, priceValue: priceValue.value }),
+                            body: JSON.stringify({
+                                sympton_id: document.location.search.substring(1, document.location.search.length),
+                                content: estimate_detail_value.value,
+                                priceValue: priceValue.value,
+                                user_id: userId.value,
+                            }),
                         })];
                 case 2:
                     result = _a.sent();

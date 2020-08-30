@@ -443,6 +443,18 @@ router.post("/find_submit", csrfProtection, jwtverify_1.verify, jwtverify_1.isNo
         }
     });
 }); });
+router.post("/accept_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitController_1.default.findSubmit(req.body.submit_id)];
+            case 1:
+                result = _a.sent();
+                console.log(req.body, result);
+                return [2 /*return*/];
+        }
+    });
+}); });
 router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var authUI, response, codeList;
     return __generator(this, function (_a) {

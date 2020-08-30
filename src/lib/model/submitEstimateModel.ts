@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 const submitSympton = new mongoose.Schema({
+  register_user: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  },
   symptonId: {
     type: String,
   },
@@ -11,6 +14,10 @@ const submitSympton = new mongoose.Schema({
   create: {
     type: Date,
     default: Date.now,
+  },
+  state: {
+    type: String,
+    default: "submit",
   },
 });
 
