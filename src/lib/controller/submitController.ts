@@ -14,13 +14,27 @@ interface Data {
 }
 
 submitController.findAllProvider = async (symptonId: string) => {
-  let result: any = await submitModel.find({ symptonId: symptonId }).populate("provider");
+  let arr: any = [];
+  let result: any = await submitModel.find().where("symptonId").equals(symptonId).where("state").equals("submit").populate("provider");
+  // await submitModel.updateOne({ _id: "5f4c6c7a9c243d6313ea2c99" }, { $set: { state: "submit" } });
+  // await submitModel.updateOne({ _id: "5f4c6c839c243d6313ea2c9a" }, { $set: { state: "submit" } });
+  // await submitModel.updateOne({ _id: "5f4c6c9a9c243d6313ea2c9b" }, { $set: { state: "submit" } });
+  // await submitModel.updateOne({ _id: "5f4c6cc29c243d6313ea2c9c" }, { $set: { state: "submit" } });
   return result;
 };
 
 submitController.findSubmit = async (submitId: string) => {
   let result: any = await submitModel.findOne({ _id: submitId });
   return result;
+};
+
+submitController.getProviderData = async (submitId: string) => {
+  let result: any = await submitModel.findOne({ _id: submitId }).populate("provider");
+  return result;
+};
+
+submitController.acceptSubmit = async (submitId: string) => {
+  let result = await submitModel.updateOne({ _id: submitId }, { $set: { state: "accept" } });
 };
 
 submitController.save = async (symptonId: string, providerId: string, data: any) => {
@@ -57,7 +71,7 @@ submitController.delete_submit = async (symptonId: string, providerId: string) =
   let idx2 = provider.submit_register.indexOf(symptonId);
   result.provider.splice(idx, 1);
   provider.submit_register.splice(idx2, 1);
-  await submitModel.deleteOne({ symptonId: symptonId });
+  await submitModel.deleteOne({ provider: providerId });
   await symptonModel.updateOne({ _id: symptonId }, { $set: { provider: result.provider } });
   await providerModel.updateOne({ _id: providerId }, { $set: { submit_register: provider.submit_register } });
 };

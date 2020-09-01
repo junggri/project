@@ -1507,8 +1507,6 @@ function mypage() {
     var showBtn = document.querySelectorAll(".ms-resultItem-showGotEstimate");
     var submitItem = document.querySelectorAll(".sge-item");
     var acceptBtn = document.querySelectorAll(".accept-submit-btn");
-    var hiddenSubmitId = document.querySelector(".hidden_submitId");
-    var acceptForm = document.querySelector(".acceptForm");
     var _loop_1 = function (i) {
         modifiedBtn[i].addEventListener("click", function () {
             var userNode = modifiedBtn[i].parentNode.parentNode.parentNode;
@@ -1630,8 +1628,7 @@ function mypage() {
                         if (response.state === false)
                             return [2 /*return*/, alert("견적이 삭제되었거나, 존재하지 않습니다.")];
                         if (confirm("oo의 견적을 수락하시겠습니까")) {
-                            hiddenSubmitId.value = submitId;
-                            acceptForm.submit();
+                            acceptSubmit(submitId);
                         }
                         else {
                             return [2 /*return*/, false];
@@ -1674,6 +1671,39 @@ function mypage() {
     // }
     for (var i = 0; i < acceptBtn.length; i++) {
         _loop_3(i);
+    }
+    function acceptSubmit(submitId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var token, myHeaders, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                        myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        myHeaders.append("CSRF-Token", token);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/accept_estimate", {
+                                method: "post",
+                                credentials: "same-origin",
+                                headers: myHeaders,
+                                body: JSON.stringify({ submit_id: submitId }),
+                            })];
+                    case 1:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, result.json()];
+                    case 2:
+                        response = _a.sent();
+                        if (response.state) {
+                            alert("견적을 수락하셨습니다.");
+                            window.location.href = "/api/mypage";
+                            return [2 /*return*/];
+                        }
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     }
 }
 exports.default = mypage;
@@ -2596,7 +2626,7 @@ function provide() {
         });
     }); });
     checkBtn.addEventListener("click", function (e) {
-        console.log(checkNumber, verifyNumber.value);
+        // console.log(checkNumber, verifyNumber.value);
         if (checkNumber === verifyNumber.value) {
             phoneBtn.textContent = "인증 완료";
             checkBox.style.display = "none";

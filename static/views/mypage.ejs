@@ -44,13 +44,9 @@
           <span>프로필 편집</span>
         </div>
       </section>
-      <form action="/api/accept_estimate" method="post" class="acceptForm">
-        <input type="hidden" name="submit_id" class="hidden_submitId" />
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-        <section class="mypage-showResult">
-          <div class="ms-resultBox"><%- list %></div>
-        </section>
-      </form>
+      <section class="mypage-showResult">
+        <div class="ms-resultBox"><%- list %></div>
+      </section>
     </div>
     <!-- <div class="accept-btn">수락하기</div> -->
   </body>

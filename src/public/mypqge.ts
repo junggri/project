@@ -1,3 +1,6 @@
+import { captureRejectionSymbol } from "events";
+import { json } from "body-parser";
+
 export default function mypage() {
   let modifiedBtn = document.querySelectorAll(".ms-resultItem-modifieBtn");
   let deleteBtn = document.querySelectorAll(".ms-resultItem-deleteBtn");
@@ -5,8 +8,6 @@ export default function mypage() {
   let showBtn = document.querySelectorAll(".ms-resultItem-showGotEstimate");
   let submitItem = document.querySelectorAll(".sge-item");
   let acceptBtn = document.querySelectorAll(".accept-submit-btn");
-  let hiddenSubmitId = document.querySelector(".hidden_submitId") as HTMLInputElement;
-  let acceptForm = document.querySelector(".acceptForm") as HTMLFormElement;
 
   for (let i = 0; i < modifiedBtn.length; i++) {
     modifiedBtn[i].addEventListener("click", () => {
@@ -111,12 +112,10 @@ export default function mypage() {
           let response = await result.json();
           if (response.state === false) return alert("견적이 삭제되었거나, 존재하지 않습니다.");
           if (confirm("oo의 견적을 수락하시겠습니까")) {
-            hiddenSubmitId.value = submitId;
-            acceptForm.submit();
+            acceptSubmit(submitId);
           } else {
             return false;
           }
-
           // $(".accept-btn").css({
           //   top: ($(window).height() - $(".accept-btn").outerHeight()) / 2 + $(window).scrollTop() + "px",
           //   left: ($(window).width() - $(".accept-btn").outerWidth()) / 2 + $(window).scrollLeft() + "px",
@@ -127,5 +126,25 @@ export default function mypage() {
         console.error(error);
       }
     });
+  }
+  async function acceptSubmit(submitId: string) {
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("CSRF-Token", token);
+    let result = await fetch("http://localhost:3000/api/accept_estimate", {
+      method: "post",
+      credentials: "same-origin",
+      headers: myHeaders,
+      body: JSON.stringify({ submit_id: submitId }),
+    });
+    if (result.status === 200 || 201) {
+      let response = await result.json();
+      if (response.state) {
+        alert("견적을 수락하셨습니다.");
+        window.location.href = "/api/mypage";
+        return;
+      }
+    }
   }
 }

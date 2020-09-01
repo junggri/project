@@ -7,7 +7,7 @@ var mongoose_1 = __importDefault(require("mongoose"));
 var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 var _a = process.env, MONGO_ID = _a.MONGO_ID, MONGO_PWD = _a.MONGO_PWD;
-var MONGO_URL = "mongodb://" + MONGO_ID + ":" + MONGO_PWD + "@localhost:27017/coscuz";
+var MONGO_URL = "mongodb://" + MONGO_ID + ":" + MONGO_PWD + "@localhost:27017/coscuz?replicaSet=rs0";
 // mongoose.Promise = global.Promise;
 function server() {
     if (process.env.NODE_ENV !== "production") {

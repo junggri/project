@@ -444,13 +444,17 @@ router.post("/find_submit", csrfProtection, jwtverify_1.verify, jwtverify_1.isNo
     });
 }); });
 router.post("/accept_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
+    var result, provide_phone_number;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, submitController_1.default.findSubmit(req.body.submit_id)];
+            case 0: return [4 /*yield*/, submitController_1.default.getProviderData(req.body.submit_id)];
             case 1:
                 result = _a.sent();
-                console.log(req.body, result);
+                return [4 /*yield*/, submitController_1.default.acceptSubmit(req.body.submit_id)];
+            case 2:
+                _a.sent();
+                provide_phone_number = result.provider[0].phone_number;
+                sendPhone_1.default(req, res, "alert", provide_phone_number);
                 return [2 /*return*/];
         }
     });
@@ -674,7 +678,7 @@ router.post("/logout_process", jwtverify_1.isNotLogined, function (req, res) {
     return res.redirect(req.get("Referrer"));
 });
 router.post("/verify_phone_number", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
-    sendPhone_1.default(req, res);
+    sendPhone_1.default(req, res, "authorization", req.body.user_phone_number);
 });
 exports.default = router;
 //# sourceMappingURL=api.js.map

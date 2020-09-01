@@ -30,7 +30,7 @@ import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
 import { createToken } from "../lib/accesstoken";
 import deleteImg from "../lib/deleteImg";
 import { encrypt, decrypt } from "../lib/setAndGetCookie";
-import sendVerifyNumver from "../lib/sendPhone";
+import sendPhone from "../lib/sendPhone";
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
@@ -373,8 +373,10 @@ router.post("/find_submit", csrfProtection, verify, isNotLogined, async (req, re
 });
 
 router.post("/accept_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
-  let result = await submitController.findSubmit(req.body.submit_id);
-  console.log(req.body, result);
+  let result = await submitController.getProviderData(req.body.submit_id);
+  await submitController.acceptSubmit(req.body.submit_id);
+  let provide_phone_number = result.provider[0].phone_number;
+  sendPhone(req, res, "alert", provide_phone_number);
 });
 
 router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async (req, res) => {
@@ -540,6 +542,6 @@ router.post("/logout_process", isNotLogined, (req, res) => {
 });
 
 router.post("/verify_phone_number", csrfProtection, verify, isLogined, (req, res) => {
-  sendVerifyNumver(req, res);
+  sendPhone(req, res, "authorization", req.body.user_phone_number);
 });
 export default router;

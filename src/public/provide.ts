@@ -52,7 +52,7 @@ export default function provide() {
   });
 
   checkBtn.addEventListener("click", (e) => {
-    console.log(checkNumber, verifyNumber.value);
+    // console.log(checkNumber, verifyNumber.value);
     if (checkNumber === verifyNumber.value) {
       phoneBtn.textContent = "인증 완료";
       checkBox.style.display = "none";

@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const { MONGO_ID, MONGO_PWD } = process.env;
-const MONGO_URL = `mongodb://${MONGO_ID}:${MONGO_PWD}@localhost:27017/coscuz`;
+const MONGO_URL = `mongodb://${MONGO_ID}:${MONGO_PWD}@localhost:27017/coscuz?replicaSet=rs0`;
 
 // mongoose.Promise = global.Promise;
 export default function server() {

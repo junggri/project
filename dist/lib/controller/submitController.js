@@ -45,12 +45,18 @@ var submitEstimateModel_1 = __importDefault(require("../model/submitEstimateMode
 var usermodel_1 = __importDefault(require("../model/usermodel"));
 var submitController = {};
 submitController.findAllProvider = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
+    var arr, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, submitEstimateModel_1.default.find({ symptonId: symptonId }).populate("provider")];
+            case 0:
+                arr = [];
+                return [4 /*yield*/, submitEstimateModel_1.default.find().where("symptonId").equals(symptonId).where("state").equals("submit").populate("provider")];
             case 1:
                 result = _a.sent();
+                // await submitModel.updateOne({ _id: "5f4c6c7a9c243d6313ea2c99" }, { $set: { state: "submit" } });
+                // await submitModel.updateOne({ _id: "5f4c6c839c243d6313ea2c9a" }, { $set: { state: "submit" } });
+                // await submitModel.updateOne({ _id: "5f4c6c9a9c243d6313ea2c9b" }, { $set: { state: "submit" } });
+                // await submitModel.updateOne({ _id: "5f4c6cc29c243d6313ea2c9c" }, { $set: { state: "submit" } });
                 return [2 /*return*/, result];
         }
     });
@@ -63,6 +69,28 @@ submitController.findSubmit = function (submitId) { return __awaiter(void 0, voi
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];
+        }
+    });
+}); };
+submitController.getProviderData = function (submitId) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.findOne({ _id: submitId }).populate("provider")];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
+submitController.acceptSubmit = function (submitId) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submitId }, { $set: { state: "accept" } })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/];
         }
     });
 }); };
@@ -127,7 +155,7 @@ submitController.delete_submit = function (symptonId, providerId) { return __awa
                 idx2 = provider.submit_register.indexOf(symptonId);
                 result.provider.splice(idx, 1);
                 provider.submit_register.splice(idx2, 1);
-                return [4 /*yield*/, submitEstimateModel_1.default.deleteOne({ symptonId: symptonId })];
+                return [4 /*yield*/, submitEstimateModel_1.default.deleteOne({ provider: providerId })];
             case 3:
                 _a.sent();
                 return [4 /*yield*/, registerSymModel_1.default.updateOne({ _id: symptonId }, { $set: { provider: result.provider } })];

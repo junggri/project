@@ -1,6 +1,5 @@
 import symptonModel from "./model/symptonModel";
 import submitController from "../lib/controller/submitController";
-import { ConnectionStates } from "mongoose";
 
 export let makeListSympton = async (data: any) => {
   let list = "";
