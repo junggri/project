@@ -103,7 +103,7 @@ if (path === "/api/register/provide") {
 if (path === "/estimate") {
     estimate_1.default();
 }
-if (path === "/api/mypage") {
+if (path === "/api/mypage" || path === "/api/mypage/showestimate") {
     mypqge_1.default();
 }
 if (path.split("/")[2] === "modified_estimate") {

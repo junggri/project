@@ -400,6 +400,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
 //isnotlogined
 router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var token = req.cookies.jwttoken;
+    var authUI = authStatus_1.default.status(req, res);
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.user_objectId))));
@@ -408,11 +409,26 @@ router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogin
             fs_1.default.mkdirSync(_dir);
         if (!fs_1.default.existsSync(_dir2))
             fs_1.default.mkdirSync(_dir2);
+        res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: decoded.username, useremail: decoded.email });
+    }
+    catch (error) {
+        console.error(error, "로그인이 되지 않았습니다.");
+    }
+});
+router.get("/mypage/showestimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
+    var token = req.cookies.jwttoken;
+    try {
+        var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         registerSymContoller_1.default.findAllRegister(req, res, decoded.email, decoded.user_objectId);
     }
     catch (error) {
         console.error(error, "로그인이 되지 않았습니다.");
     }
+});
+router.get("/mypage/estimateDetail/:id", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
+    console.log(req.params);
+    var authUI = authStatus_1.default.status(req, res);
+    res.render("mypageShowSubmit", { authUI: authUI, csrfToken: req.csrfToken() });
 });
 router.post("/find_provider", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
@@ -563,6 +579,7 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.v
             case 1:
                 _a.trys.push([1, 3, , 4]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+                console.log(decoded, req.body);
                 registerSymContoller_1.default.deleteSympton(req, res, decoded.email, decoded.user_objectId);
                 return [4 /*yield*/, registerSymContoller_1.default.find(req, res, decoded.email, decoded.user_objectId)];
             case 2:

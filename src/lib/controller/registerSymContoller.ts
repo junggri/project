@@ -193,10 +193,9 @@ registerSymController.findAllRegister = async (req: any, res: any, _email: strin
     .sort({ create: -1 })
     .then((result: any) => {
       makeListSympton(result).then(async (_list) => {
-        let _registerNum = result.length;
         let authUI = auth.status(req, res);
         let user: any = await users.findOne({ _id: id });
-        res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, len: _registerNum, username: user.name });
+        res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, username: user.name, useremail: user.email });
       });
     })
     .catch((err: any) => {
@@ -243,6 +242,7 @@ registerSymController.modified = async (req: Request, res: Response, data: any) 
 
 registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
   let arr: string[] = [];
+  console.log(req.body.id);
   registerSym.deleteOne({ _id: req.body.id }).then(async () => {
     let result: any = await users.findOne({ _id: id }).populate("register_sympton");
     for (let i = 0; i < result.register_sympton.length; i++) {

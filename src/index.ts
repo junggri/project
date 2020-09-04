@@ -18,7 +18,7 @@ import flash from "connect-flash";
 
 dotenv.config();
 const RedisStore = connectRedis(session);
-const _client = redis.createClient();
+const _client = redis.createClient({});
 const app = express();
 
 mongoServer();
@@ -83,12 +83,12 @@ app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
 import indexRouter from "./router/index";
-import authRouter from "./router/auth";
+// import authRouter from "./router/auth";
 import apiRouter from "./router/api";
 import provierRouter from "./router/provide";
 
 app.use("/", indexRouter);
-app.use("/auth", authRouter);
+// app.use("/auth", authRouter);
 app.use("/api", apiRouter);
 app.use("/provide", provierRouter);
 

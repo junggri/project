@@ -21,27 +21,21 @@
           <%- authUI %>
         </ul>
       </nav>
-      <section class="mypage-state">
-        <div class="ms-username">마이페이지</div>
-        <div class="ms-userState">
-          <span class="ms-userImg"></span>
-          <div class="ms-userStateRight">
-            <div><%- username %> 님</div>
-            <div><%- useremail %></div>
+      <div class="mypageShowSubmit-container">
+        <div class="mc-slo">총 0개의 견적서를 확인해주세요.</div>
+        <div class="submit-container">
+          <div class="submit-item"></div>
+          <div class="submit-item">
+            <div class="si-img"></div>
+            <div class="si-username"></div>
+          </div>
+          <div class="submit-item">
+            <div class="si-img"></div>
+            <div class="si-username"></div>
           </div>
         </div>
-        <div class="ms-userGetEstimate">
-          <a href="/api/mypage/showestimate"
-            ><section>
-              <span>받은견적 보기</span>
-            </section>
-          </a>
-        </div>
-        <div class="ms-otherBox">알림이나 결제내역, 공지사항등</div>
-      </section>
-      <section class="mypage-showResult"></section>
+      </div>
     </div>
-    <!-- <div class="accept-btn">수락하기</div> -->
   </body>
   <script src="/bundle.js"></script>
 </html>

@@ -346,16 +346,33 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
 //isnotlogined
 router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
   const token = req.cookies.jwttoken;
+  let authUI = auth.status(req, res);
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     let _dir = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}`)));
     let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
     if (!fs.existsSync(_dir)) fs.mkdirSync(_dir);
     if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
+    res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: (decoded as Decoded).username, useremail: (decoded as Decoded).email });
+  } catch (error) {
+    console.error(error, "로그인이 되지 않았습니다.");
+  }
+});
+
+router.get("/mypage/showestimate", csrfProtection, verify, isNotLogined, (req, res) => {
+  const token = req.cookies.jwttoken;
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
     registerSymController.findAllRegister(req, res, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
   } catch (error) {
     console.error(error, "로그인이 되지 않았습니다.");
   }
+});
+
+router.get("/mypage/estimateDetail/:id", csrfProtection, verify, isNotLogined, (req, res) => {
+  console.log(req.params);
+  let authUI = auth.status(req, res);
+  res.render("mypageShowSubmit", { authUI: authUI, csrfToken: req.csrfToken() });
 });
 
 router.post("/find_provider", csrfProtection, verify, isNotLogined, async (req, res) => {
@@ -462,6 +479,7 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, verify, isNot
   const token = req.cookies.jwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded, req.body);
     registerSymController.deleteSympton(req, res, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
     let result = await registerSymController.find(req, res, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
     deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);

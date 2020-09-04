@@ -312,16 +312,15 @@ registerSymController.findAllRegister = function (req, res, _email, id) { return
             .sort({ create: -1 })
             .then(function (result) {
             mypageState_1.makeListSympton(result).then(function (_list) { return __awaiter(void 0, void 0, void 0, function () {
-                var _registerNum, authUI, user;
+                var authUI, user;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            _registerNum = result.length;
                             authUI = authStatus_1.default.status(req, res);
                             return [4 /*yield*/, usermodel_1.default.findOne({ _id: id })];
                         case 1:
                             user = _a.sent();
-                            res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, len: _registerNum, username: user.name });
+                            res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, username: user.name, useremail: user.email });
                             return [2 /*return*/];
                     }
                 });
@@ -392,6 +391,7 @@ registerSymController.deleteSympton = function (req, res, email, id) { return __
     var arr;
     return __generator(this, function (_a) {
         arr = [];
+        console.log(req.body.id);
         registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function () { return __awaiter(void 0, void 0, void 0, function () {
             var result, i, s1;
             return __generator(this, function (_a) {

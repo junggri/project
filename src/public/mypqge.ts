@@ -1,12 +1,7 @@
-import { captureRejectionSymbol } from "events";
-import { json } from "body-parser";
-
 export default function mypage() {
-  let modifiedBtn = document.querySelectorAll(".ms-resultItem-modifieBtn");
-  let deleteBtn = document.querySelectorAll(".ms-resultItem-deleteBtn");
-  let registerNum = document.querySelector(".userShowStateBox-register-number");
-  let showBtn = document.querySelectorAll(".ms-resultItem-showGotEstimate");
-  let submitItem = document.querySelectorAll(".sge-item");
+  let modifiedBtn = document.querySelectorAll(".sc-item-modifiedBtn");
+  let deleteBtn = document.querySelectorAll(".sc-item-cancel");
+  let showBtn = document.querySelectorAll(".sc-item-showBtn");
   let acceptBtn = document.querySelectorAll(".accept-submit-btn");
 
   for (let i = 0; i < modifiedBtn.length; i++) {
@@ -18,7 +13,7 @@ export default function mypage() {
   }
 
   for (let i = 0; i < deleteBtn.length; i++) {
-    deleteBtn[i].addEventListener("click", async (e) => {
+    deleteBtn[i].addEventListener("click", async (e: any) => {
       let deleteConfirm = confirm("정말로 등록을 삭제하시겠습니까?");
       let target: any = deleteBtn[i].parentNode.parentNode.parentNode;
       if (deleteConfirm) {
@@ -35,7 +30,6 @@ export default function mypage() {
             body: JSON.stringify({ id: target.dataset.id }),
           });
           let response = await result.json();
-          registerNum.textContent = response.length;
         } catch (error) {
           console.error(error);
         }
@@ -45,6 +39,7 @@ export default function mypage() {
 
   for (let i = 0; i < showBtn.length; i++) {
     showBtn[i].addEventListener("click", async (e: any) => {
+      let target: any = showBtn[i].parentNode.parentNode;
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -53,13 +48,13 @@ export default function mypage() {
         method: "post",
         credentials: "same-origin",
         headers: myHeaders,
-        body: JSON.stringify({ sympton_id: e.target.parentNode.parentNode.parentNode.dataset.id }),
+        body: JSON.stringify({ sympton_id: target.dataset.id }),
       });
       try {
         if (result.status === 200 || 201) {
           let response = await result.json();
           if (response.state === false) return alert("받은 견적이 존재하지 않습니다.");
-          $(`.${response.data[0].symptonId}`).stop().animate({ height: "toggle" });
+          window.location.href = `estimateDetail/${target.dataset.id}`;
         }
       } catch (error) {
         console.error(error);
@@ -127,6 +122,7 @@ export default function mypage() {
       }
     });
   }
+
   async function acceptSubmit(submitId: string) {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();

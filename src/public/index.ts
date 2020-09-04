@@ -63,7 +63,7 @@ if (path === "/api/register/provide") {
 if (path === "/estimate") {
   estimate();
 }
-if (path === "/api/mypage") {
+if (path === "/api/mypage" || path === "/api/mypage/showestimate") {
   mypage();
 }
 if (path.split("/")[2] === "modified_estimate") {

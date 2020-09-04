@@ -844,7 +844,7 @@ if (path === "/api/register/provide") {
 if (path === "/estimate") {
     estimate_1.default();
 }
-if (path === "/api/mypage") {
+if (path === "/api/mypage" || path === "/api/mypage/showestimate") {
     mypqge_1.default();
 }
 if (path.split("/")[2] === "modified_estimate") {
@@ -1501,11 +1501,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 function mypage() {
     var _this = this;
-    var modifiedBtn = document.querySelectorAll(".ms-resultItem-modifieBtn");
-    var deleteBtn = document.querySelectorAll(".ms-resultItem-deleteBtn");
-    var registerNum = document.querySelector(".userShowStateBox-register-number");
-    var showBtn = document.querySelectorAll(".ms-resultItem-showGotEstimate");
-    var submitItem = document.querySelectorAll(".sge-item");
+    var modifiedBtn = document.querySelectorAll(".sc-item-modifiedBtn");
+    var deleteBtn = document.querySelectorAll(".sc-item-cancel");
+    var showBtn = document.querySelectorAll(".sc-item-showBtn");
     var acceptBtn = document.querySelectorAll(".accept-submit-btn");
     var _loop_1 = function (i) {
         modifiedBtn[i].addEventListener("click", function () {
@@ -1545,7 +1543,6 @@ function mypage() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        registerNum.textContent = response.length;
                         return [3 /*break*/, 5];
                     case 4:
                         error_1 = _a.sent();
@@ -1559,12 +1556,13 @@ function mypage() {
     for (var i = 0; i < deleteBtn.length; i++) {
         _loop_2(i);
     }
-    for (var i = 0; i < showBtn.length; i++) {
+    var _loop_3 = function (i) {
         showBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_2;
+            var target, token, myHeaders, result, response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        target = showBtn[i].parentNode.parentNode;
                         token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
                         myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
@@ -1573,7 +1571,7 @@ function mypage() {
                                 method: "post",
                                 credentials: "same-origin",
                                 headers: myHeaders,
-                                body: JSON.stringify({ sympton_id: e.target.parentNode.parentNode.parentNode.dataset.id }),
+                                body: JSON.stringify({ sympton_id: target.dataset.id }),
                             })];
                     case 1:
                         result = _a.sent();
@@ -1586,7 +1584,7 @@ function mypage() {
                         response = _a.sent();
                         if (response.state === false)
                             return [2 /*return*/, alert("받은 견적이 존재하지 않습니다.")];
-                        $("." + response.data[0].symptonId).stop().animate({ height: "toggle" });
+                        window.location.href = "estimateDetail/" + target.dataset.id;
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -1597,8 +1595,11 @@ function mypage() {
                 }
             });
         }); });
+    };
+    for (var i = 0; i < showBtn.length; i++) {
+        _loop_3(i);
     }
-    var _loop_3 = function (i) {
+    var _loop_4 = function (i) {
         acceptBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
             var submitId, token, myHeaders, result, response, error_3;
             return __generator(this, function (_a) {
@@ -1670,7 +1671,7 @@ function mypage() {
     //   });
     // }
     for (var i = 0; i < acceptBtn.length; i++) {
-        _loop_3(i);
+        _loop_4(i);
     }
     function acceptSubmit(submitId) {
         return __awaiter(this, void 0, void 0, function () {
