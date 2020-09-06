@@ -72,6 +72,7 @@ var accesstoken_1 = require("../lib/accesstoken");
 var deleteImg_1 = __importDefault(require("../lib/deleteImg"));
 var setAndGetCookie_1 = require("../lib/setAndGetCookie");
 var sendPhone_1 = __importDefault(require("../lib/sendPhone"));
+var mypageState_1 = require("../lib/mypageState");
 var csrfProtection = csurf_1.default({
     cookie: {
         httpOnly: true,
@@ -425,25 +426,40 @@ router.get("/mypage/showestimate", csrfProtection, jwtverify_1.verify, jwtverify
         console.error(error, "로그인이 되지 않았습니다.");
     }
 });
-router.get("/mypage/estimateDetail/:id", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
-    console.log(req.params);
-    var authUI = authStatus_1.default.status(req, res);
-    res.render("mypageShowSubmit", { authUI: authUI, csrfToken: req.csrfToken() });
-});
+router.get("/mypage/estimateDetail/:id", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var authUI, result, listLen, list;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                authUI = authStatus_1.default.status(req, res);
+                return [4 /*yield*/, submitController_1.default.findAllProvider(req.params.id)];
+            case 1:
+                result = _a.sent();
+                listLen = "\uCD1D " + result.length + "\uC758 \uACAC\uC801\uC744 \uD655\uC778\uD574\uBCF4\uC138\uC694.";
+                return [4 /*yield*/, mypageState_1.makeSumbitbox(result)];
+            case 2:
+                list = _a.sent();
+                res.render("mypageShowSubmit", { authUI: authUI, csrfToken: req.csrfToken(), len: listLen, submit_list: list });
+                return [2 /*return*/];
+        }
+    });
+}); });
 router.post("/find_provider", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
+    var result, isSubmited;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, submitController_1.default.findAllProvider(req.body.sympton_id)];
             case 1:
                 result = _a.sent();
-                if (result.length === 0) {
-                    return [2 /*return*/, res.json({ state: false })];
+                if (!(result.length === 0)) return [3 /*break*/, 2];
+                return [2 /*return*/, res.json({ state: false })];
+            case 2: return [4 /*yield*/, submitController_1.default.isSubmited(req.body.sympton_id)];
+            case 3:
+                isSubmited = _a.sent();
+                if (isSubmited.state === "accept") {
+                    return [2 /*return*/, res.json({ state: "accept" })];
                 }
-                else {
-                    return [2 /*return*/, res.json({ data: result, state: true })];
-                }
-                return [2 /*return*/];
+                return [2 /*return*/, res.json({ data: result, state: true })];
         }
     });
 }); });
@@ -466,7 +482,7 @@ router.post("/accept_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.
             case 0: return [4 /*yield*/, submitController_1.default.getProviderData(req.body.submit_id)];
             case 1:
                 result = _a.sent();
-                return [4 /*yield*/, submitController_1.default.acceptSubmit(req.body.submit_id)];
+                return [4 /*yield*/, submitController_1.default.acceptSubmit(req.body.submit_id, result.symptonId)];
             case 2:
                 _a.sent();
                 provide_phone_number = result.provider[0].phone_number;

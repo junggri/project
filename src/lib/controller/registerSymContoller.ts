@@ -34,8 +34,7 @@ registerSymController.showBeforeEstimate = async (_id: string) => {
 
 registerSymController.getAllData = async (pageNum: number, divided_num: number) => {
   //아무것도클릭 안했을때 나오는 데이터인데 순서대로 15개만 가져온다
-  let result;
-  result = await registerSym
+  let result: any = await registerSym
     .find()
     .sort({ create: -1 })
     .skip((pageNum - 1) * divided_num)
@@ -190,12 +189,11 @@ registerSymController.save = async (req: any, res: any, data: any, _email: strin
 registerSymController.findAllRegister = async (req: any, res: any, _email: string, id: string) => {
   registerSym
     .find({ user_object_id: id })
-    .sort({ create: -1 })
+    .sort({ state: 1 })
     .then((result: any) => {
       makeListSympton(result).then(async (_list) => {
         let authUI = auth.status(req, res);
-        let user: any = await users.findOne({ _id: id });
-        res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, username: user.name, useremail: user.email });
+        res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list });
       });
     })
     .catch((err: any) => {

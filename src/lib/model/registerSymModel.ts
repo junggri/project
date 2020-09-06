@@ -58,6 +58,10 @@ const registerSympton = new mongoose.Schema({
   provider: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Provider" }],
   },
+  state: {
+    type: String,
+    default: "register",
+  },
 });
 
 export = mongoose.model("RegisterSympton", registerSympton);

@@ -1,3 +1,5 @@
+import database from "src/lib/mysql";
+
 declare global {
   interface Window {
     // login_verify: any;
@@ -71,6 +73,12 @@ export default function p_findAllRegister() {
           try {
             if (result.status === 200 || 201) {
               let response = await result.json();
+              if (response.data.provider.length >= 20) {
+                return alert("견적을 초과하였습니다.");
+              }
+              if (response.data.state === "accept") {
+                return alert("진행중인 견적입니다.");
+              }
               if (response.state === false) {
                 alert("존재하지 않는 자료입니다.");
                 window.location.href = "/provide/findAllRegister";

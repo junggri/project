@@ -49,6 +49,7 @@ var findUserData_1 = __importDefault(require("./findUserData"));
 var reset_1 = __importDefault(require("./reset"));
 var oauth_1 = __importDefault(require("./oauth"));
 var provide_1 = __importDefault(require("./provide"));
+var mypageEstimate_1 = __importDefault(require("./mypageEstimate"));
 var p_index_1 = __importDefault(require("./p_index"));
 var p_findAllRegister_1 = __importDefault(require("./p_findAllRegister"));
 var p_showBeforeEstimate_1 = __importDefault(require("./p_showBeforeEstimate"));
@@ -59,7 +60,6 @@ var path = window.location.pathname;
 var navigationBox = document.querySelector(".nb-navigation");
 var logout = document.querySelector(".nb-profile-logout");
 var logoutForm = document.querySelector(".logout-form");
-var body = document.querySelector("#app");
 if (window.location.href.includes("#")) {
     window.location.href = window.location.href.slice(0, -1);
 }
@@ -74,6 +74,9 @@ if (path === "/provide/sympton_estimate") {
 }
 if (path === "/provide/showGotEstimate") {
     p_showGotEstimate_1.default();
+}
+if (path.split("/")[3] === "estimateDetail") {
+    mypageEstimate_1.default();
 }
 if (path === "/api/oauth_register") {
     oauth_1.default();

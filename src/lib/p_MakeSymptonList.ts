@@ -9,13 +9,15 @@ export const MakeAllSymptonList = (data: any, pageNum: any, divided_num: any) =>
     return list;
   }
   for (let i = 0; i < data.length; i++) {
+    let estimateState;
+    data[i].state === "accept" ? (estimateState = `<span class="frr-item-estimate">진행중</span>`) : (estimateState = `<span class="frr-item-estimate">${data[i].provider.length}</span>`);
     let item = `
         <div class="find-register-resultItem" data-registerId="${data[i]._id}">
             <span>${(pageNum - 1) * divided_num + i + 1}</span>
             <span class="frr-item-content">${data[i].sympton_detail}</span>
             <span class="frr-item-whoMake">${data[i].user_name}</span>
             <span class="frr-item-createdAt">${data[i].createdAt}</span>
-            <span class="frr-item-estimate">${data[i].provider.length}</span>
+           ${estimateState}
         </div>
       `;
     list += item;

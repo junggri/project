@@ -12,7 +12,8 @@ import crypto_cre from "../config/crypto.json";
 import providers from "../lib/model/provideModel";
 import provideController from "../lib/controller/provideController";
 import registerSymController from "../lib/controller/registerSymContoller";
-import submitEstimateController from "../lib/controller/submitController";
+import submitController from "../lib/controller/submitController";
+import jusoController from "../lib/controller/jusoController";
 import { MakeAllSymptonList, MakePagination } from "../lib/p_MakeSymptonList";
 import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
@@ -90,6 +91,8 @@ router.get("/findAllRegister", csrfProtection, verify, isNotLogined, async (req,
   let authUI = auth.status(req, res);
   let pageNum;
   let divided_num: number = 15;
+  jusoController.find();
+  // jusoController.save(["11", "26", "27", "28", "29", "30", "31", "36", "41", "42", "43", "44", "45", "46", "47", "48", "50"]);
   qs.parse(req.url).page === undefined ? (pageNum = 1) : (pageNum = qs.parse(req.url).page);
   if (qs.parse(req.url).sigunguCode !== undefined && qs.parse(req.url).sigunguCode !== "0") {
     let data = await registerSymController.getSpecificData(pageNum, qs.parse(req.url).sigunguCode, qs.parse(req.url).sigungu, qs.parse(req.url).bname, divided_num);
@@ -119,6 +122,7 @@ router.post("/get_sigungu", csrfProtection, verify, isNotLogined, (req, res) => 
     for (let i = 0; i < data.length; i++) {
       data1.push(data[i].시군구명);
     }
+
     res.json({ sido: Array.from(new Set(data1)).sort() });
   });
 });
@@ -186,7 +190,7 @@ router.post("/submit_estimate", csrfProtection, verify, isNotLogined, async (req
   const token = req.cookies.pjwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    submitEstimateController.save(req.body.sympton_id, (decoded as Decoded).user_objectId, req.body);
+    submitController.save(req.body.sympton_id, (decoded as Decoded).user_objectId, req.body);
     res.json({ url: req.body.sympton_id, state: true });
   } catch (error) {
     console.error(error);
@@ -197,7 +201,7 @@ router.post("/delete_submit", csrfProtection, verify, isNotLogined, (req, res) =
   const token = req.cookies.pjwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    submitEstimateController.delete_submit(req.body.symptonId, (decoded as Decoded).user_objectId);
+    submitController.delete_submit(req.body.symptonId, (decoded as Decoded).user_objectId);
     res.json({ url: req.body.symptonId });
   } catch (error) {
     console.error(error);

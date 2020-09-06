@@ -112,6 +112,12 @@ function p_findAllRegister() {
                                 return [4 /*yield*/, result.json()];
                             case 3:
                                 response = _a.sent();
+                                if (response.data.provider.length >= 20) {
+                                    return [2 /*return*/, alert("견적을 초과하였습니다.")];
+                                }
+                                if (response.data.state === "accept") {
+                                    return [2 /*return*/, alert("진행중인 견적입니다.")];
+                                }
                                 if (response.state === false) {
                                     alert("존재하지 않는 자료입니다.");
                                     window.location.href = "/provide/findAllRegister";

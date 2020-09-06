@@ -43,6 +43,7 @@ var registerSymModel_1 = __importDefault(require("../model/registerSymModel"));
 var provideModel_1 = __importDefault(require("../model/provideModel"));
 var submitEstimateModel_1 = __importDefault(require("../model/submitEstimateModel"));
 var usermodel_1 = __importDefault(require("../model/usermodel"));
+var moment_1 = __importDefault(require("moment"));
 var submitController = {};
 submitController.findAllProvider = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
     var arr, result;
@@ -50,13 +51,24 @@ submitController.findAllProvider = function (symptonId) { return __awaiter(void 
         switch (_a.label) {
             case 0:
                 arr = [];
-                return [4 /*yield*/, submitEstimateModel_1.default.find().where("symptonId").equals(symptonId).where("state").equals("submit").populate("provider")];
+                return [4 /*yield*/, submitEstimateModel_1.default.find().where("symptonId").equals(symptonId).populate("provider")];
             case 1:
                 result = _a.sent();
                 // await submitModel.updateOne({ _id: "5f4c6c7a9c243d6313ea2c99" }, { $set: { state: "submit" } });
                 // await submitModel.updateOne({ _id: "5f4c6c839c243d6313ea2c9a" }, { $set: { state: "submit" } });
                 // await submitModel.updateOne({ _id: "5f4c6c9a9c243d6313ea2c9b" }, { $set: { state: "submit" } });
                 // await submitModel.updateOne({ _id: "5f4c6cc29c243d6313ea2c9c" }, { $set: { state: "submit" } });
+                return [2 /*return*/, result];
+        }
+    });
+}); };
+submitController.showProvider = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.findOne({ symptonId: symptonId }).populate("provider")];
+            case 1:
+                result = _a.sent();
                 return [2 /*return*/, result];
         }
     });
@@ -83,19 +95,22 @@ submitController.getProviderData = function (submitId) { return __awaiter(void 0
         }
     });
 }); };
-submitController.acceptSubmit = function (submitId) { return __awaiter(void 0, void 0, void 0, function () {
+submitController.acceptSubmit = function (submitId, symptonId) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submitId }, { $set: { state: "accept" } })];
             case 1:
                 result = _a.sent();
+                return [4 /*yield*/, registerSymModel_1.default.updateOne({ _id: symptonId }, { $set: { state: "accept" } })];
+            case 2:
+                _a.sent();
                 return [2 /*return*/];
         }
     });
 }); };
 submitController.save = function (symptonId, providerId, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var User, Sympton, Provider, saveData, Sumbit;
+    var User, Sympton, Provider, time, saveData, Sumbit;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, usermodel_1.default.findOne({ _id: data.user_id })];
@@ -107,12 +122,14 @@ submitController.save = function (symptonId, providerId, data) { return __awaite
                 return [4 /*yield*/, provideModel_1.default.findOne({ _id: providerId })];
             case 3:
                 Provider = _a.sent();
+                time = moment_1.default().format("YYYY-MM-DD");
                 saveData = {
                     register_user: User,
                     symptonId: data.sympton_id,
                     provider: Provider,
                     content: data.content,
                     submit_price: data.priceValue,
+                    createdAt: time,
                 };
                 Sumbit = new submitEstimateModel_1.default(saveData);
                 return [4 /*yield*/, Sumbit.save()];
@@ -134,13 +151,17 @@ submitController.save = function (symptonId, providerId, data) { return __awaite
         }
     });
 }); };
-// submitController.isEstimateAlready = async (data: any) => {
-//   let result: any = await submitModel.findOne({ sympton: data }).populate("provider");
-//   if (result === null) {
-//     return null;
-//   }
-//   return result;
-// };
+submitController.isSubmited = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.findOne({ symptonId: symptonId })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
 submitController.delete_submit = function (symptonId, providerId) { return __awaiter(void 0, void 0, void 0, function () {
     var result, provider, idx, idx2;
     return __generator(this, function (_a) {

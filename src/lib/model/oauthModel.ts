@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import oauth from "src/public/oauth";
+
 const passport = new mongoose.Schema({
   email: {
     type: String,

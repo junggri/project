@@ -22,17 +22,15 @@
         </ul>
       </nav>
       <div class="mypageShowSubmit-container">
-        <div class="mc-slo">총 0개의 견적서를 확인해주세요.</div>
-        <div class="submit-container">
-          <div class="submit-item"></div>
-          <div class="submit-item">
-            <div class="si-img"></div>
-            <div class="si-username"></div>
-          </div>
-          <div class="submit-item">
-            <div class="si-img"></div>
-            <div class="si-username"></div>
-          </div>
+        <div class="mc-slo"><%- len %></div>
+        <div class="submit-container"><%- submit_list %></div>
+      </div>
+      <div class="previous-accept-box">
+        <input type="hidden" class="pab-hidden" />
+        <div class="pab-slo">견적을 수락하시겠습니까?</div>
+        <div class="pab-btnBox">
+          <div class="pab-cancelBtn">취소</div>
+          <div class="pab-confirmBtn">수락</div>
         </div>
       </div>
     </div>

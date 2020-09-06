@@ -15,6 +15,9 @@ const submitSympton = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  createdAt: {
+    type: String,
+  },
   state: {
     type: String,
     default: "submit",

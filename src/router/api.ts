@@ -31,6 +31,7 @@ import { createToken } from "../lib/accesstoken";
 import deleteImg from "../lib/deleteImg";
 import { encrypt, decrypt } from "../lib/setAndGetCookie";
 import sendPhone from "../lib/sendPhone";
+import { makeSumbitbox } from "../lib/mypageState";
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
@@ -369,10 +370,12 @@ router.get("/mypage/showestimate", csrfProtection, verify, isNotLogined, (req, r
   }
 });
 
-router.get("/mypage/estimateDetail/:id", csrfProtection, verify, isNotLogined, (req, res) => {
-  console.log(req.params);
+router.get("/mypage/estimateDetail/:id", csrfProtection, verify, isNotLogined, async (req, res) => {
   let authUI = auth.status(req, res);
-  res.render("mypageShowSubmit", { authUI: authUI, csrfToken: req.csrfToken() });
+  let result = await submitController.findAllProvider(req.params.id);
+  let listLen: string = `총 ${result.length}의 견적을 확인해보세요.`;
+  let list = await makeSumbitbox(result);
+  res.render("mypageShowSubmit", { authUI: authUI, csrfToken: req.csrfToken(), len: listLen, submit_list: list });
 });
 
 router.post("/find_provider", csrfProtection, verify, isNotLogined, async (req, res) => {
@@ -380,6 +383,11 @@ router.post("/find_provider", csrfProtection, verify, isNotLogined, async (req, 
   if (result.length === 0) {
     return res.json({ state: false });
   } else {
+    //견적이 존재하는데 ui가 변경되지 않았을경우를 위함.
+    let isSubmited = await submitController.isSubmited(req.body.sympton_id);
+    if (isSubmited.state === "accept") {
+      return res.json({ state: "accept" });
+    }
     return res.json({ data: result, state: true });
   }
 });
@@ -391,7 +399,7 @@ router.post("/find_submit", csrfProtection, verify, isNotLogined, async (req, re
 
 router.post("/accept_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
   let result = await submitController.getProviderData(req.body.submit_id);
-  await submitController.acceptSubmit(req.body.submit_id);
+  await submitController.acceptSubmit(req.body.submit_id, result.symptonId);
   let provide_phone_number = result.provider[0].phone_number;
   sendPhone(req, res, "alert", provide_phone_number);
 });

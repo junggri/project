@@ -8,7 +8,9 @@ exports.MakeAllSymptonList = function (data, pageNum, divided_num) {
         return list;
     }
     for (var i = 0; i < data.length; i++) {
-        var item = "\n        <div class=\"find-register-resultItem\" data-registerId=\"" + data[i]._id + "\">\n            <span>" + ((pageNum - 1) * divided_num + i + 1) + "</span>\n            <span class=\"frr-item-content\">" + data[i].sympton_detail + "</span>\n            <span class=\"frr-item-whoMake\">" + data[i].user_name + "</span>\n            <span class=\"frr-item-createdAt\">" + data[i].createdAt + "</span>\n            <span class=\"frr-item-estimate\">" + data[i].provider.length + "</span>\n        </div>\n      ";
+        var estimateState = void 0;
+        data[i].state === "accept" ? (estimateState = "<span class=\"frr-item-estimate\">\uC9C4\uD589\uC911</span>") : (estimateState = "<span class=\"frr-item-estimate\">" + data[i].provider.length + "</span>");
+        var item = "\n        <div class=\"find-register-resultItem\" data-registerId=\"" + data[i]._id + "\">\n            <span>" + ((pageNum - 1) * divided_num + i + 1) + "</span>\n            <span class=\"frr-item-content\">" + data[i].sympton_detail + "</span>\n            <span class=\"frr-item-whoMake\">" + data[i].user_name + "</span>\n            <span class=\"frr-item-createdAt\">" + data[i].createdAt + "</span>\n           " + estimateState + "\n        </div>\n      ";
         list += item;
     }
     return list;

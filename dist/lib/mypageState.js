@@ -39,10 +39,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.makeListSympton = void 0;
-var submitController_1 = __importDefault(require("../lib/controller/submitController"));
+exports.makeSumbitbox = exports.makeListSympton = void 0;
+var submitController_1 = __importDefault(require("./controller/submitController"));
 exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, void 0, function () {
-    var list, list_1, i, sumit, item;
+    var list, item, list_1, i, response, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -54,18 +54,37 @@ exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, voi
                 i = 0;
                 _a.label = 1;
             case 1:
-                if (!(i < data.length)) return [3 /*break*/, 4];
-                return [4 /*yield*/, submitController_1.default.findAllProvider(data[i].id)];
+                if (!(i < data.length)) return [3 /*break*/, 6];
+                if (!(data[i].state === "accept")) return [3 /*break*/, 3];
+                return [4 /*yield*/, submitController_1.default.showProvider(data[i]._id)];
             case 2:
-                sumit = _a.sent();
-                item = " \n          <div class=\"sc-item\" data-id=\"" + data[i]._id + "\">\n            <div class=\"sc-item-slo\">\uC99D\uC0C1\uC774\uB984</div>\n            <div class=\"sc-item-createdAt\">" + data[i].createdAt + "</div>\n            <div class=\"sc-item-btnBox\">\n            <span class=\"get-count\">\uACAC\uC801\uC11C \uC81C\uC548 : " + sumit.length + " \uAC1C</span>\n            <div class=\"sc-item-showBtn\">\uC790\uC138\uD788 \uBCF4\uAE30</div>\n            <div class=\"sc-item-btnBox2\">\n              <div class=\"sc-item-modifiedBtn\">\n                <span>\uC218\uC815</span>\n              </div>\n              <div class=\"sc-item-cancel\">\n                <span>\uCDE8\uC18C</span>\n              </div>\n            </div>\n          </div>\n          </div>\n        ";
-                list += item;
-                _a.label = 3;
+                response = _a.sent();
+                result = response.provider[0];
+                item = "\n      <div class=\"sc-item accept-item\" data-id=\"" + response._id + "\">\n        <div class=\"sc-item-slo\">" + result.name + " \uB2D8\uC758</br> \uACAC\uC801\uC744 \uC218\uB77D\uD558\uC168\uC2B5\uB2C8\uB2E4.</div>\n        <div class=\"show-accept-data-btn\">\n          <span>\uC790\uC138\uD788 \uBCF4\uAE30</span>\n        </div>\n     </div>\n        ";
+                return [3 /*break*/, 4];
             case 3:
+                item = " \n            <div class=\"sc-item\" data-id=\"" + data[i]._id + "\">\n              <div class=\"sc-item-slo\">" + data[i].sympton_detail + "</div>\n              <div class=\"sc-item-createdAt\">" + data[i].createdAt + "</div>\n              <div class=\"sc-item-btnBox\">\n              <span class=\"get-count\">\uACAC\uC801\uC11C \uC81C\uC548 : " + data[i].provider.length + " \uAC1C</span>\n              <div class=\"sc-item-showBtn\">\uC790\uC138\uD788 \uBCF4\uAE30</div>\n              <div class=\"sc-item-btnBox2\">\n                <div class=\"sc-item-modifiedBtn\">\n                  <span>\uC218\uC815</span>\n                </div>\n                <div class=\"sc-item-cancel\">\n                  <span>\uCDE8\uC18C</span>\n                </div>\n              </div>\n            </div>\n            </div>\n          ";
+                _a.label = 4;
+            case 4:
+                list += item;
+                _a.label = 5;
+            case 5:
                 i++;
                 return [3 /*break*/, 1];
-            case 4: return [2 /*return*/, list];
+            case 6: return [2 /*return*/, list];
         }
+    });
+}); };
+exports.makeSumbitbox = function (data) { return __awaiter(void 0, void 0, void 0, function () {
+    var list, item, gender, i;
+    return __generator(this, function (_a) {
+        list = "";
+        for (i = 0; i < data.length; i++) {
+            data[i].provider[0].gender === "male" ? (gender = "남") : (gender = "여");
+            item = "\n        <div class=\"submit-item\" data-submitId=\"" + data[i]._id + "\">\n        <div class=\"si-provider-data\">\n          <div class=\"si-img\"></div>\n          <div class=\"si-username\">" + data[i].provider[0].name + "(" + gender + ")</div>\n          <div class=\"si-email\">" + data[i].provider[0].email + "</div>\n          <div class=\"si-date\">\n            <span>\uACAC\uC801\uC81C\uCD9C\uB0A0\uC9DC :</span>\n            <span>" + data[i].create + "</span>\n          </div>\n        </div>\n        <div class=\"si-itemBox\">\n          <div class=\"si-contentBox\">\n            <span>\uC608\uC0C1\uC6D0\uC778</span>\n            <span>" + data[i].content + "</span>\n          </div>\n        </div>\n        <div class=\"si-footerBox\">\n          <div class=\"si-price\">\n            <span>\uACAC\uC801\uAE08\uC561 :</span>\n            <span>" + data[i].submit_price + "</span>\n          </div>\n          <div class=\"si-accept-btn\">\n            <span>\uC218\uB77D\uD558\uAE30</span>\n          </div>\n        </div>\n      </div>\n      ";
+            list += item;
+        }
+        return [2 /*return*/, list];
     });
 }); };
 //# sourceMappingURL=mypageState.js.map

@@ -309,20 +309,14 @@ registerSymController.findAllRegister = function (req, res, _email, id) { return
     return __generator(this, function (_a) {
         registerSymModel_1.default
             .find({ user_object_id: id })
-            .sort({ create: -1 })
+            .sort({ state: 1 })
             .then(function (result) {
             mypageState_1.makeListSympton(result).then(function (_list) { return __awaiter(void 0, void 0, void 0, function () {
-                var authUI, user;
+                var authUI;
                 return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            authUI = authStatus_1.default.status(req, res);
-                            return [4 /*yield*/, usermodel_1.default.findOne({ _id: id })];
-                        case 1:
-                            user = _a.sent();
-                            res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list, username: user.name, useremail: user.email });
-                            return [2 /*return*/];
-                    }
+                    authUI = authStatus_1.default.status(req, res);
+                    res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list });
+                    return [2 /*return*/];
                 });
             }); });
         })

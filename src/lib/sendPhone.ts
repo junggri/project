@@ -1,5 +1,6 @@
 import request from "request";
 let CryptoJS = require("crypto-js");
+
 let resultCode: any;
 let _content: string;
 

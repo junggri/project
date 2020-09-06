@@ -8,6 +8,7 @@ import findUserData from "./findUserData";
 import reset from "./reset";
 import oauth from "./oauth";
 import provide from "./provide";
+import mypageEstimate from "./mypageEstimate";
 import P_index from "./p_index";
 import p_findAllRegister from "./p_findAllRegister";
 import p_showBeforeEstimate from "./p_showBeforeEstimate";
@@ -18,7 +19,7 @@ let path = window.location.pathname;
 let navigationBox = document.querySelector(".nb-navigation") as HTMLDivElement;
 let logout = document.querySelector(".nb-profile-logout");
 let logoutForm = document.querySelector(".logout-form") as HTMLFormElement;
-let body = document.querySelector("#app") as HTMLDivElement;
+
 if (window.location.href.includes("#")) {
   window.location.href = window.location.href.slice(0, -1);
 }
@@ -34,6 +35,9 @@ if (path === "/provide/sympton_estimate") {
 }
 if (path === "/provide/showGotEstimate") {
   p_showGotEstimate();
+}
+if (path.split("/")[3] === "estimateDetail") {
+  mypageEstimate();
 }
 if (path === "/api/oauth_register") {
   oauth();

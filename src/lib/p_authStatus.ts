@@ -25,7 +25,7 @@ let authStatus = {
           <span class="nb-profile-img"></span>
           <span class="nb-profile-modify">프로필 변경</span>
         </div>
-        <div class="nb-profile-mypage"><a href="/api/mypage">마이페이지</a></div>
+        <div class="nb-profile-mypage"><a href="/provide/mypage">마이페이지</a></div>
         <form method="post" action="/api/logout_process" class="logout-form">
           <div class="nb-profile-logout">로그아웃</div>
         </form>

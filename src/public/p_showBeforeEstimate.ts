@@ -22,6 +22,7 @@ export default function p_showBeforeEsimate() {
   let registrantId = document.querySelector(".registrant_id") as HTMLInputElement;
   let symptonId = document.querySelector(".sympton_id") as HTMLInputElement;
   let userId = document.querySelector(".user_id") as HTMLInputElement;
+
   let deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn") as HTMLInputElement;
   async function getDataSymtonsData() {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");

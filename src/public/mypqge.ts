@@ -2,7 +2,7 @@ export default function mypage() {
   let modifiedBtn = document.querySelectorAll(".sc-item-modifiedBtn");
   let deleteBtn = document.querySelectorAll(".sc-item-cancel");
   let showBtn = document.querySelectorAll(".sc-item-showBtn");
-  let acceptBtn = document.querySelectorAll(".accept-submit-btn");
+  let showAccept = document.querySelectorAll(".show-accept-data-btn");
 
   for (let i = 0; i < modifiedBtn.length; i++) {
     modifiedBtn[i].addEventListener("click", () => {
@@ -54,6 +54,11 @@ export default function mypage() {
         if (result.status === 200 || 201) {
           let response = await result.json();
           if (response.state === false) return alert("받은 견적이 존재하지 않습니다.");
+          if (response.state === "accept") {
+            alert("이미 진행중인 견적입니다.");
+            window.location.reload();
+            return;
+          }
           window.location.href = `estimateDetail/${target.dataset.id}`;
         }
       } catch (error) {
@@ -62,85 +67,40 @@ export default function mypage() {
     });
   }
 
-  // for (let i = 0; i < submitItem.length; i++) {
-  //   submitItem[i].addEventListener("click", async (e: any) => {
-  //     e.stopPropagation();
-  //     let submitId = (submitItem[i] as any).dataset.submitid;
-  //     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  //     let myHeaders = new Headers();
-  //     myHeaders.append("Content-Type", "application/json");
-  //     myHeaders.append("CSRF-Token", token);
-  //     let result = await fetch("http://localhost:3000/api/find_submit", {
-  //       method: "post",
-  //       credentials: "same-origin",
-  //       headers: myHeaders,
-  //       body: JSON.stringify({ submit_id: submitId }),
-  //     });
-  //     try {
-  //       if (result.status === 200 || 201) {
-  //         let response = await result.json();
-  //         console.log(response);
-  //         if (response.state === false) return alert("견적이 삭제되었거나, 존재하지 않습니다.");
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   });
-  // }
-
-  for (let i = 0; i < acceptBtn.length; i++) {
-    acceptBtn[i].addEventListener("click", async (e: any) => {
-      e.stopPropagation();
-      let submitId = (acceptBtn[i].parentNode.parentNode as any).dataset.submitid;
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("CSRF-Token", token);
-      let result = await fetch("http://localhost:3000/api/find_submit", {
-        method: "post",
-        credentials: "same-origin",
-        headers: myHeaders,
-        body: JSON.stringify({ submit_id: submitId }),
-      });
-      try {
-        if (result.status === 200 || 201) {
-          let response = await result.json();
-          if (response.state === false) return alert("견적이 삭제되었거나, 존재하지 않습니다.");
-          if (confirm("oo의 견적을 수락하시겠습니까")) {
-            acceptSubmit(submitId);
-          } else {
-            return false;
+  async function addEventOnShowAcceptBtn(showAccept: any) {
+    for (let i = 0; i < showAccept.length; i++) {
+      showAccept[i].addEventListener("click", async (e: any) => {
+        let target: any = showAccept[i].parentNode;
+        let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("CSRF-Token", token);
+        let result = await fetch("http://localhost:3000/api/find_submit", {
+          method: "post",
+          credentials: "same-origin",
+          headers: myHeaders,
+          body: JSON.stringify({ submit_id: target.dataset.id }),
+        });
+        try {
+          if (result.status === 200 || 201) {
+            let response = await result.json();
+            console.log(response.data);
           }
-          // $(".accept-btn").css({
-          //   top: ($(window).height() - $(".accept-btn").outerHeight()) / 2 + $(window).scrollTop() + "px",
-          //   left: ($(window).width() - $(".accept-btn").outerWidth()) / 2 + $(window).scrollLeft() + "px",
-          //   display: "block",
-          // });
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    });
-  }
-
-  async function acceptSubmit(submitId: string) {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    let result = await fetch("http://localhost:3000/api/accept_estimate", {
-      method: "post",
-      credentials: "same-origin",
-      headers: myHeaders,
-      body: JSON.stringify({ submit_id: submitId }),
-    });
-    if (result.status === 200 || 201) {
-      let response = await result.json();
-      if (response.state) {
-        alert("견적을 수락하셨습니다.");
-        window.location.href = "/api/mypage";
-        return;
-      }
+      });
     }
   }
+  addEventOnShowAcceptBtn(showAccept);
+  // document.onreadystatechange = function () {
+  //   var state = document.readyState;
+  //   if (state == "interactive") {
+  //     $(".ddd").css("display", "block");
+  //   } else if (state == "complete") {
+  //     setTimeout(function () {
+  //       $(".ddd").css("display", "none");
+  //     }, 1000);
+  //   }
+  // };
 }

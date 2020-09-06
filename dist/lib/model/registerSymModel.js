@@ -62,6 +62,10 @@ var registerSympton = new mongoose_1.default.Schema({
     provider: {
         type: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "Provider" }],
     },
+    state: {
+        type: String,
+        default: "register",
+    },
 });
 module.exports = mongoose_1.default.model("RegisterSympton", registerSympton);
 //# sourceMappingURL=registerSymModel.js.map
