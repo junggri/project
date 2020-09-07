@@ -22,6 +22,10 @@ const submitSympton = new mongoose.Schema({
     type: String,
     default: "submit",
   },
+  payment: {
+    type: String,
+    default: false,
+  },
 });
 
 export = mongoose.model("submitEstimate", submitSympton);

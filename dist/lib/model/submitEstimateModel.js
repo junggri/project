@@ -26,6 +26,10 @@ var submitSympton = new mongoose_1.default.Schema({
         type: String,
         default: "submit",
     },
+    payment: {
+        type: String,
+        default: false,
+    },
 });
 module.exports = mongoose_1.default.model("submitEstimate", submitSympton);
 //# sourceMappingURL=submitEstimateModel.js.map

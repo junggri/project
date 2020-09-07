@@ -1,5 +1,3 @@
-import database from "src/lib/mysql";
-
 declare global {
   interface Window {
     // login_verify: any;

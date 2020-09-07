@@ -13,7 +13,6 @@ import providers from "../lib/model/provideModel";
 import provideController from "../lib/controller/provideController";
 import registerSymController from "../lib/controller/registerSymContoller";
 import submitController from "../lib/controller/submitController";
-import jusoController from "../lib/controller/jusoController";
 import { MakeAllSymptonList, MakePagination } from "../lib/p_MakeSymptonList";
 import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
@@ -41,7 +40,9 @@ router.get("/index", csrfProtection, verify, isLogined, (req, res) => {
   } else {
     req.session.referer = "http://localhost:3000/provide/findAllRegister";
   }
-  res.render("providers/index", { csrfToken: req.csrfToken() });
+  req.session.save(() => {
+    res.render("providers/index", { csrfToken: req.csrfToken() });
+  });
 });
 
 router.post("/login_process", parseForm, csrfProtection, async (req, res) => {
@@ -88,11 +89,10 @@ router.post("/login_process", parseForm, csrfProtection, async (req, res) => {
 });
 
 router.get("/findAllRegister", csrfProtection, verify, isNotLogined, async (req, res) => {
+  // submitController.reset();
   let authUI = auth.status(req, res);
   let pageNum;
   let divided_num: number = 15;
-  jusoController.find();
-  // jusoController.save(["11", "26", "27", "28", "29", "30", "31", "36", "41", "42", "43", "44", "45", "46", "47", "48", "50"]);
   qs.parse(req.url).page === undefined ? (pageNum = 1) : (pageNum = qs.parse(req.url).page);
   if (qs.parse(req.url).sigunguCode !== undefined && qs.parse(req.url).sigunguCode !== "0") {
     let data = await registerSymController.getSpecificData(pageNum, qs.parse(req.url).sigunguCode, qs.parse(req.url).sigungu, qs.parse(req.url).bname, divided_num);
@@ -109,10 +109,11 @@ router.get("/findAllRegister", csrfProtection, verify, isNotLogined, async (req,
   }
 });
 
-router.get("/selected_and_find", csrfProtection, verify, isNotLogined, (req, res) => {
-  let authUI = auth.status(req, res);
-  res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken() });
-});
+// router.get("/selected_and_find", csrfProtection, verify, isNotLogined, (req, res) => {
+//   let authUI = auth.status(req, res);
+//   console.log(23123123123123123);
+//   res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken() });
+// });
 
 router.post("/get_sigungu", csrfProtection, verify, isNotLogined, (req, res) => {
   if (req.body.data === "") return;
@@ -122,7 +123,6 @@ router.post("/get_sigungu", csrfProtection, verify, isNotLogined, (req, res) => 
     for (let i = 0; i < data.length; i++) {
       data1.push(data[i].시군구명);
     }
-
     res.json({ sido: Array.from(new Set(data1)).sort() });
   });
 });

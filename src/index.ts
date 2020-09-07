@@ -93,6 +93,7 @@ app.use("/api", apiRouter);
 app.use("/provide", provierRouter);
 
 app.set("port", process.env.PORT || 3000);
+app.set("port2", process.env.PORT || 3001);
 
 app.use(logError);
 
@@ -116,5 +117,9 @@ app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
 app.listen(app.get("port"), function () {
   console.log("Express server listening on port " + app.get("port"));
 });
+
+// app.listen(app.get("port2"), function () {
+//   console.log("Express server listening on port " + app.get("port2"));
+// });
 
 module.exports = app;

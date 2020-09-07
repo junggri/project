@@ -31,7 +31,7 @@ function verify(req, res, next) {
             usermodel_1.default
                 .findOne({ _id: user_id })
                 .then(function (result) {
-                console.log(result);
+                // console.log(result);
                 var validation_promise = new Promise(function (resolve, reject) {
                     try {
                         var validation_token = jsonwebtoken_1.default.verify(result.refresh_token, process.env.JWT_SECRET);

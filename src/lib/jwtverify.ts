@@ -25,7 +25,7 @@ export function verify(req: any, res: any, next: any) {
       users
         .findOne({ _id: user_id })
         .then((result: any) => {
-          console.log(result);
+          // console.log(result);
           let validation_promise = new Promise((resolve, reject) => {
             try {
               let validation_token = jwt.verify(result.refresh_token, process.env.JWT_SECRET);

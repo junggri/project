@@ -13,6 +13,7 @@ import mailCre from "../config/mailer.json";
 import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 import sanitizeHtml from "sanitize-html";
+import registerSymptonModel from "../lib/model/registerSymModel";
 import userController from "../lib/controller/userContoller";
 import registerSymController from "../lib/controller/registerSymContoller";
 import provideController from "../lib/controller/provideController";
@@ -32,6 +33,7 @@ import deleteImg from "../lib/deleteImg";
 import { encrypt, decrypt } from "../lib/setAndGetCookie";
 import sendPhone from "../lib/sendPhone";
 import { makeSumbitbox } from "../lib/mypageState";
+import { Z_ASCII } from "zlib";
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
@@ -80,7 +82,9 @@ router.get("/login", csrfProtection, verify, isLogined, (req: any, res, next) =>
   } else {
     req.session.referer = req.headers.referer;
   }
-  res.render("login", { csrfToken: req.csrfToken() });
+  req.session.save(() => {
+    res.render("login", { csrfToken: req.csrfToken() });
+  });
 });
 
 router.post("/login_process", parseForm, csrfProtection, async (req: any, res: any) => {
@@ -89,6 +93,7 @@ router.post("/login_process", parseForm, csrfProtection, async (req: any, res: a
   // let result: any = await users.findOne({ email: { $in: [_email] } });
   //보안이라는데;;흠;;;
   let result: any = await users.findOne({ email: _email });
+
   try {
     if (result === null) {
       res.json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
@@ -100,17 +105,18 @@ router.post("/login_process", parseForm, csrfProtection, async (req: any, res: a
           createToken(req, res, _email, result.name, result._id);
           let _refresh_token = refreshToken(req, res, _email, result.name, result._id);
           let save_token = result.refresh_token;
-          if (save_token === undefined) {
+          if (save_token === undefined || save_token === "") {
             userController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
+            console.log(1, req.session.referer);
             return res.json({ url: req.session.referer, state: true });
           } else {
             try {
-              console.log("리프래쉬 토큰이 있어요");
               jwt.verify(save_token, process.env.JWT_SECRET);
+              console.log("리프래쉬 토큰이 있어요", req.session.referer);
               return res.json({ url: req.session.referer, state: true });
             } catch (error) {
               if (error.name === "TokenExpiredError") {
-                console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
+                console.log("토큰이 있는데 유효하지 않아서 재발급할겡", req.session.referer);
                 userController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
                 return res.json({ url: req.session.referer, state: true });
               }
@@ -351,9 +357,9 @@ router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     let _dir = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}`)));
-    let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
+    // let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
     if (!fs.existsSync(_dir)) fs.mkdirSync(_dir);
-    if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
+    // if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
     res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: (decoded as Decoded).username, useremail: (decoded as Decoded).email });
   } catch (error) {
     console.error(error, "로그인이 되지 않았습니다.");
@@ -395,6 +401,12 @@ router.post("/find_provider", csrfProtection, verify, isNotLogined, async (req, 
 router.post("/find_submit", csrfProtection, verify, isNotLogined, async (req, res) => {
   let result = await submitController.findSubmit(req.body.submit_id);
   result === null ? res.json({ state: false }) : res.json({ state: true, data: result });
+});
+
+router.post("/get_data_accepted", csrfProtection, verify, isNotLogined, async (req, res) => {
+  let acceptData = await submitController.findSubmit(req.body.submit_id);
+  let symptonData = await registerSymptonModel.findOne({ _id: acceptData.symptonId });
+  acceptData === null ? res.json({ state: false }) : res.json({ state: true, data: acceptData, data2: symptonData });
 });
 
 router.post("/accept_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
@@ -483,14 +495,12 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
   deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
 });
 
-router.post("/delete_register_sympton", parseForm, csrfProtection, verify, isNotLogined, async (req, res) => {
+router.post("/delete_register_sympton", parseForm, csrfProtection, isNotLogined, async (req, res) => {
   const token = req.cookies.jwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded, req.body);
     registerSymController.deleteSympton(req, res, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
     let result = await registerSymController.find(req, res, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
-    deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
     res.json(result);
   } catch (error) {
     console.error(error, "로그인이 되지 않았습니다.");

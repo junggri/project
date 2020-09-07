@@ -332,6 +332,9 @@
 .show-accept-data-btn span {
   font-size: 15px;
 }
+.accept-item {
+  border: 2px solid #f58320;
+}
 /*  */
 .show-providerAndsympton-dataBox {
   border: 1px solid black;
@@ -344,6 +347,11 @@
   transform: translate(-50%, -50%);
   background-color: white;
   display: none;
+  padding: 20px 15px;
+}
+.spd-slo {
+  font-size: 25px;
+  font-weight: 600;
 }
 /* .sc-item-createdAt {
   font-size: 15px;

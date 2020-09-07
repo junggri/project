@@ -3,7 +3,9 @@ import { Request, Response } from "express";
 import registerSym from "../model/registerSymModel";
 import { makeListSympton } from "../mypageState";
 import auth from "../authStatus";
-
+import provideModel from "../model/provideModel";
+import submitModel from "../model/submitEstimateModel";
+import submitCotroller from "../controller/submitController";
 let registerSymController: any = {};
 
 function changeSigunguCode(sigunguCode: string) {
@@ -97,7 +99,6 @@ registerSymController.getSpecificData = async (pageNum: number, sigunguCode: str
     } else if (sigunguCode !== "0" && sigungu !== "0" && bname !== "0") {
       //시도와 시군구 동면읍을 선택했을떄
       result = await registerSym.find().where("address.sigunguCode").equals(findArea).where("address.sigungu").equals(sigungu).where("address.bname").equals(bname);
-
       if (result.length === 0) {
         result = await registerSym.find().where("address.sigunguCode").equals(findArea).where("address.sigungu").equals(sigungu).where("address.bname1").equals(bname);
       }
@@ -240,8 +241,19 @@ registerSymController.modified = async (req: Request, res: Response, data: any) 
 
 registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
   let arr: string[] = [];
-  console.log(req.body.id);
+
   registerSym.deleteOne({ _id: req.body.id }).then(async () => {
+    let submit: any = await submitModel.find({ symptonId: req.body.id }).populate("provider");
+    if (submit.length !== 0) {
+      for (let i = 0; i < submit.length; i++) {
+        let provider: any = await provideModel.findOne({ _id: submit[i].provider[0]._id });
+        let idx = provider.submit_register.indexOf(req.body.id);
+        provider.submit_register.splice(idx, 1);
+        console.log(provider.submit_register);
+        await provideModel.updateOne({ _id: submit[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } });
+        await submitModel.deleteOne({ symptonId: req.body.id });
+      }
+    }
     let result: any = await users.findOne({ _id: id }).populate("register_sympton");
     for (let i = 0; i < result.register_sympton.length; i++) {
       arr.push(result.register_sympton[i]._id);
@@ -249,4 +261,5 @@ registerSymController.deleteSympton = async (req: Request, res: Response, email:
     let s1 = await users.updateOne({ _id: id }, { $set: { register_sympton: arr } });
   });
 };
+
 export default registerSymController;

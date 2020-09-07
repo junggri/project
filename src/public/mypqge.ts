@@ -75,7 +75,7 @@ export default function mypage() {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append("CSRF-Token", token);
-        let result = await fetch("http://localhost:3000/api/find_submit", {
+        let result = await fetch("http://localhost:3000/api/get_data_accepted", {
           method: "post",
           credentials: "same-origin",
           headers: myHeaders,
@@ -84,7 +84,7 @@ export default function mypage() {
         try {
           if (result.status === 200 || 201) {
             let response = await result.json();
-            console.log(response.data);
+            console.log(response);
           }
         } catch (error) {
           console.error(error);

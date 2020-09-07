@@ -54,7 +54,6 @@ var provideModel_1 = __importDefault(require("../lib/model/provideModel"));
 var provideController_1 = __importDefault(require("../lib/controller/provideController"));
 var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
 var submitController_1 = __importDefault(require("../lib/controller/submitController"));
-var jusoController_1 = __importDefault(require("../lib/controller/jusoController"));
 var p_MakeSymptonList_1 = require("../lib/p_MakeSymptonList");
 var p_makeShowData_1 = require("../lib/p_makeShowData");
 var mysql_1 = __importDefault(require("../lib/mysql"));
@@ -74,7 +73,9 @@ router.get("/index", csrfProtection, p_verify_1.verify, p_verify_1.isLogined, fu
     else {
         req.session.referer = "http://localhost:3000/provide/findAllRegister";
     }
-    res.render("providers/index", { csrfToken: req.csrfToken() });
+    req.session.save(function () {
+        res.render("providers/index", { csrfToken: req.csrfToken() });
+    });
 });
 router.post("/login_process", parseForm, csrfProtection, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _email, _pwd, result, userObjectId_1;
@@ -139,8 +140,6 @@ router.get("/findAllRegister", csrfProtection, p_verify_1.verify, p_verify_1.isN
             case 0:
                 authUI = p_authStatus_1.default.status(req, res);
                 divided_num = 15;
-                jusoController_1.default.find();
-                // jusoController.save(["11", "26", "27", "28", "29", "30", "31", "36", "41", "42", "43", "44", "45", "46", "47", "48", "50"]);
                 querystring_1.default.parse(req.url).page === undefined ? (pageNum = 1) : (pageNum = querystring_1.default.parse(req.url).page);
                 if (!(querystring_1.default.parse(req.url).sigunguCode !== undefined && querystring_1.default.parse(req.url).sigunguCode !== "0")) return [3 /*break*/, 3];
                 return [4 /*yield*/, registerSymContoller_1.default.getSpecificData(pageNum, querystring_1.default.parse(req.url).sigunguCode, querystring_1.default.parse(req.url).sigungu, querystring_1.default.parse(req.url).bname, divided_num)];
@@ -167,10 +166,11 @@ router.get("/findAllRegister", csrfProtection, p_verify_1.verify, p_verify_1.isN
         }
     });
 }); });
-router.get("/selected_and_find", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
-    var authUI = p_authStatus_1.default.status(req, res);
-    res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken() });
-});
+// router.get("/selected_and_find", csrfProtection, verify, isNotLogined, (req, res) => {
+//   let authUI = auth.status(req, res);
+//   console.log(23123123123123123);
+//   res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken() });
+// });
 router.post("/get_sigungu", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
     if (req.body.data === "")
         return;

@@ -54,6 +54,7 @@ var mailer_json_1 = __importDefault(require("../config/mailer.json"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var sanitize_html_1 = __importDefault(require("sanitize-html"));
+var registerSymModel_1 = __importDefault(require("../lib/model/registerSymModel"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
 var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
 var provideController_1 = __importDefault(require("../lib/controller/provideController"));
@@ -100,7 +101,9 @@ router.get("/login", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, 
     else {
         req.session.referer = req.headers.referer;
     }
-    res.render("login", { csrfToken: req.csrfToken() });
+    req.session.save(function () {
+        res.render("login", { csrfToken: req.csrfToken() });
+    });
 });
 router.post("/login_process", parseForm, csrfProtection, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _email, _pwd, result, userObjectId_1;
@@ -124,19 +127,20 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
                                 accesstoken_1.createToken(req, res, _email, result.name, result._id);
                                 var _refresh_token = refreshtoken_1.default(req, res, _email, result.name, result._id);
                                 var save_token = result.refresh_token;
-                                if (save_token === undefined) {
+                                if (save_token === undefined || save_token === "") {
                                     userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
+                                    console.log(1, req.session.referer);
                                     return res.json({ url: req.session.referer, state: true });
                                 }
                                 else {
                                     try {
-                                        console.log("리프래쉬 토큰이 있어요");
                                         jsonwebtoken_1.default.verify(save_token, process.env.JWT_SECRET);
+                                        console.log("리프래쉬 토큰이 있어요", req.session.referer);
                                         return res.json({ url: req.session.referer, state: true });
                                     }
                                     catch (error) {
                                         if (error.name === "TokenExpiredError") {
-                                            console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
+                                            console.log("토큰이 있는데 유효하지 않아서 재발급할겡", req.session.referer);
                                             userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
                                             return res.json({ url: req.session.referer, state: true });
                                         }
@@ -405,11 +409,10 @@ router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogin
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.user_objectId))));
-        var _dir2 = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.user_objectId + "/user_img"))));
+        // let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
         if (!fs_1.default.existsSync(_dir))
             fs_1.default.mkdirSync(_dir);
-        if (!fs_1.default.existsSync(_dir2))
-            fs_1.default.mkdirSync(_dir2);
+        // if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
         res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: decoded.username, useremail: decoded.email });
     }
     catch (error) {
@@ -471,6 +474,21 @@ router.post("/find_submit", csrfProtection, jwtverify_1.verify, jwtverify_1.isNo
             case 1:
                 result = _a.sent();
                 result === null ? res.json({ state: false }) : res.json({ state: true, data: result });
+                return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/get_data_accepted", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var acceptData, symptonData;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitController_1.default.findSubmit(req.body.submit_id)];
+            case 1:
+                acceptData = _a.sent();
+                return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: acceptData.symptonId })];
+            case 2:
+                symptonData = _a.sent();
+                acceptData === null ? res.json({ state: false }) : res.json({ state: true, data: acceptData, data2: symptonData });
                 return [2 /*return*/];
         }
     });
@@ -585,7 +603,7 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     req.session.code = [];
     deleteImg_1.default(decoded.email, decoded.user_objectId);
 });
-router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var token, decoded, result, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -595,12 +613,10 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.v
             case 1:
                 _a.trys.push([1, 3, , 4]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                console.log(decoded, req.body);
                 registerSymContoller_1.default.deleteSympton(req, res, decoded.email, decoded.user_objectId);
                 return [4 /*yield*/, registerSymContoller_1.default.find(req, res, decoded.email, decoded.user_objectId)];
             case 2:
                 result = _a.sent();
-                deleteImg_1.default(decoded.email, decoded.user_objectId);
                 res.json(result);
                 return [3 /*break*/, 4];
             case 3:

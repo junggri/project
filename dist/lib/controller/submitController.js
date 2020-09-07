@@ -73,6 +73,17 @@ submitController.showProvider = function (symptonId) { return __awaiter(void 0, 
         }
     });
 }); };
+submitController.getState = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.findOne({ symptonId: symptonId })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
 submitController.findSubmit = function (submitId) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
@@ -96,7 +107,7 @@ submitController.getProviderData = function (submitId) { return __awaiter(void 0
     });
 }); };
 submitController.acceptSubmit = function (submitId, symptonId) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
+    var result, data, i, provider, idx;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submitId }, { $set: { state: "accept" } })];
@@ -105,7 +116,30 @@ submitController.acceptSubmit = function (submitId, symptonId) { return __awaite
                 return [4 /*yield*/, registerSymModel_1.default.updateOne({ _id: symptonId }, { $set: { state: "accept" } })];
             case 2:
                 _a.sent();
-                return [2 /*return*/];
+                return [4 /*yield*/, submitEstimateModel_1.default.find({ symptonId: symptonId }).populate("provider")];
+            case 3:
+                data = _a.sent();
+                i = 0;
+                _a.label = 4;
+            case 4:
+                if (!(i < data.length)) return [3 /*break*/, 9];
+                if (!(String(data[i]._id) !== submitId)) return [3 /*break*/, 8];
+                return [4 /*yield*/, provideModel_1.default.findOne({ _id: data[i].provider[0]._id })];
+            case 5:
+                provider = _a.sent();
+                idx = provider.submit_register.indexOf(data[i].symptonId);
+                provider.submit_register.splice(idx, 1);
+                return [4 /*yield*/, provideModel_1.default.updateOne({ _id: data[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } })];
+            case 6:
+                _a.sent();
+                return [4 /*yield*/, submitEstimateModel_1.default.deleteOne({ _id: submitId })];
+            case 7:
+                _a.sent();
+                _a.label = 8;
+            case 8:
+                i++;
+                return [3 /*break*/, 4];
+            case 9: return [2 /*return*/];
         }
     });
 }); };
@@ -186,6 +220,28 @@ submitController.delete_submit = function (symptonId, providerId) { return __awa
             case 5:
                 _a.sent();
                 return [2 /*return*/];
+        }
+    });
+}); };
+submitController.reset = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var User, i;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, provideModel_1.default.find()];
+            case 1:
+                User = _a.sent();
+                i = 0;
+                _a.label = 2;
+            case 2:
+                if (!(i < User.length)) return [3 /*break*/, 5];
+                return [4 /*yield*/, provideModel_1.default.updateOne({ _id: User[i]._id }, { $set: { submit_register: [] } })];
+            case 3:
+                _a.sent();
+                _a.label = 4;
+            case 4:
+                i++;
+                return [3 /*break*/, 2];
+            case 5: return [2 /*return*/];
         }
     });
 }); };

@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jusoController = {};
-var jusoModel_1 = __importDefault(require("../model/jusoModel"));
+var jusoModel_1 = __importDefault(require("../model/juso/jusoModel"));
 function changeSigunguCode(sigunguCode) {
     var findArea;
     if (sigunguCode === "seoul")
@@ -86,7 +86,7 @@ jusoController.find = function () { return __awaiter(void 0, void 0, void 0, fun
             case 0: return [4 /*yield*/, jusoModel_1.default.find()];
             case 1:
                 a = _a.sent();
-                console.log(a.length);
+                console.log(a);
                 return [2 /*return*/];
         }
     });
@@ -99,6 +99,27 @@ jusoController.save = function (data) { return __awaiter(void 0, void 0, void 0,
             a.save();
         }
         return [2 /*return*/];
+    });
+}); };
+jusoController.save1 = function (code, data) { return __awaiter(void 0, void 0, void 0, function () {
+    var findArea;
+    return __generator(this, function (_a) {
+        findArea = changeSigunguCode(code);
+        return [2 /*return*/];
+    });
+}); };
+jusoController.save2 = function (sido, sigungu, data) { return __awaiter(void 0, void 0, void 0, function () {
+    var findArea, reuslt;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                findArea = changeSigunguCode(sido);
+                return [4 /*yield*/, jusoModel_1.default.find({ sigunguCode: findArea }).where("sigungu").equals(sigungu)];
+            case 1:
+                reuslt = _a.sent();
+                console.log(reuslt);
+                return [2 /*return*/];
+        }
     });
 }); };
 exports.default = jusoController;

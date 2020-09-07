@@ -157,7 +157,7 @@ function mypage() {
                                     myHeaders = new Headers();
                                     myHeaders.append("Content-Type", "application/json");
                                     myHeaders.append("CSRF-Token", token);
-                                    return [4 /*yield*/, fetch("http://localhost:3000/api/find_submit", {
+                                    return [4 /*yield*/, fetch("http://localhost:3000/api/get_data_accepted", {
                                             method: "post",
                                             credentials: "same-origin",
                                             headers: myHeaders,
@@ -172,7 +172,7 @@ function mypage() {
                                     return [4 /*yield*/, result.json()];
                                 case 3:
                                     response = _a.sent();
-                                    console.log(response.data);
+                                    console.log(response);
                                     _a.label = 4;
                                 case 4: return [3 /*break*/, 6];
                                 case 5:

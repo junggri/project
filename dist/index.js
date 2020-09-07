@@ -79,6 +79,7 @@ app.use("/", index_1.default);
 app.use("/api", api_1.default);
 app.use("/provide", provide_1.default);
 app.set("port", process.env.PORT || 3000);
+app.set("port2", process.env.PORT || 3001);
 app.use(logError);
 app.use(function (req, res, next) {
     res.status(404).send("Sorry cant find that!");
@@ -98,5 +99,8 @@ app.use(function (err, req, res, next) {
 app.listen(app.get("port"), function () {
     console.log("Express server listening on port " + app.get("port"));
 });
+// app.listen(app.get("port2"), function () {
+//   console.log("Express server listening on port " + app.get("port2"));
+// });
 module.exports = app;
 //# sourceMappingURL=index.js.map

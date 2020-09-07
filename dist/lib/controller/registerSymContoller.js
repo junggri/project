@@ -43,6 +43,8 @@ var usermodel_1 = __importDefault(require("../model/usermodel"));
 var registerSymModel_1 = __importDefault(require("../model/registerSymModel"));
 var mypageState_1 = require("../mypageState");
 var authStatus_1 = __importDefault(require("../authStatus"));
+var provideModel_1 = __importDefault(require("../model/provideModel"));
+var submitEstimateModel_1 = __importDefault(require("../model/submitEstimateModel"));
 var registerSymController = {};
 function changeSigunguCode(sigunguCode) {
     var findArea;
@@ -385,19 +387,42 @@ registerSymController.deleteSympton = function (req, res, email, id) { return __
     var arr;
     return __generator(this, function (_a) {
         arr = [];
-        console.log(req.body.id);
         registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, i, s1;
+            var submit, i, provider, idx, result, i, s1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, usermodel_1.default.findOne({ _id: id }).populate("register_sympton")];
+                    case 0: return [4 /*yield*/, submitEstimateModel_1.default.find({ symptonId: req.body.id }).populate("provider")];
                     case 1:
+                        submit = _a.sent();
+                        if (!(submit.length !== 0)) return [3 /*break*/, 7];
+                        i = 0;
+                        _a.label = 2;
+                    case 2:
+                        if (!(i < submit.length)) return [3 /*break*/, 7];
+                        return [4 /*yield*/, provideModel_1.default.findOne({ _id: submit[i].provider[0]._id })];
+                    case 3:
+                        provider = _a.sent();
+                        idx = provider.submit_register.indexOf(req.body.id);
+                        provider.submit_register.splice(idx, 1);
+                        console.log(provider.submit_register);
+                        return [4 /*yield*/, provideModel_1.default.updateOne({ _id: submit[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } })];
+                    case 4:
+                        _a.sent();
+                        return [4 /*yield*/, submitEstimateModel_1.default.deleteOne({ symptonId: req.body.id })];
+                    case 5:
+                        _a.sent();
+                        _a.label = 6;
+                    case 6:
+                        i++;
+                        return [3 /*break*/, 2];
+                    case 7: return [4 /*yield*/, usermodel_1.default.findOne({ _id: id }).populate("register_sympton")];
+                    case 8:
                         result = _a.sent();
                         for (i = 0; i < result.register_sympton.length; i++) {
                             arr.push(result.register_sympton[i]._id);
                         }
                         return [4 /*yield*/, usermodel_1.default.updateOne({ _id: id }, { $set: { register_sympton: arr } })];
-                    case 2:
+                    case 9:
                         s1 = _a.sent();
                         return [2 /*return*/];
                 }
