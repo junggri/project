@@ -21,6 +21,10 @@ export default function mypageEstimate() {
         try {
           if (result.status === 200 || 201) {
             let response = await result.json();
+            if (response.state === "Not_common") {
+              alert("잘못된 접근입니다.");
+              return (window.location.href = "/api/mypage/showestimate");
+            }
             if (response.state === false) return alert("견적이 삭제되었거나, 존재하지 않습니다.");
             hiddenInput.value = response.data._id;
             previousAccept.style.display = "block";
@@ -31,6 +35,8 @@ export default function mypageEstimate() {
           }
         } catch (error) {
           console.error(error);
+          alert(4);
+          alert(error);
         }
       });
     }

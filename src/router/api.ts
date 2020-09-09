@@ -33,7 +33,7 @@ import deleteImg from "../lib/deleteImg";
 import { encrypt, decrypt } from "../lib/setAndGetCookie";
 import sendPhone from "../lib/sendPhone";
 import { makeSumbitbox } from "../lib/mypageState";
-import { Z_ASCII } from "zlib";
+
 const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
@@ -90,10 +90,10 @@ router.get("/login", csrfProtection, verify, isLogined, (req: any, res, next) =>
 router.post("/login_process", parseForm, csrfProtection, async (req: any, res: any) => {
   let _email = mongoSanitize(req.body.email);
   let _pwd = mongoSanitize(req.body.pwd);
+
   // let result: any = await users.findOne({ email: { $in: [_email] } });
   //보안이라는데;;흠;;;
   let result: any = await users.findOne({ email: _email });
-
   try {
     if (result === null) {
       res.json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
@@ -342,9 +342,11 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
     req.session.img = [];
     req.session.code = [];
     req.session.price = "";
-    registerSymController.save(req, res, inputdata, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
-    deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
-    res.redirect("/api/mypage");
+    req.session.save(() => {
+      registerSymController.save(req, res, inputdata, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
+      deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
+      res.redirect("/api/mypage");
+    });
   } catch (error) {
     console.error(error);
   }
@@ -400,13 +402,21 @@ router.post("/find_provider", csrfProtection, verify, isNotLogined, async (req, 
 
 router.post("/find_submit", csrfProtection, verify, isNotLogined, async (req, res) => {
   let result = await submitController.findSubmit(req.body.submit_id);
-  result === null ? res.json({ state: false }) : res.json({ state: true, data: result });
+  console.log(result);
+  if (result === null) {
+    return res.json({ state: false });
+  } else {
+    if (result.state !== "submit") {
+      return res.json({ state: "Not_common" });
+    }
+    res.json({ state: true, data: result });
+  }
 });
 
 router.post("/get_data_accepted", csrfProtection, verify, isNotLogined, async (req, res) => {
-  let acceptData = await submitController.findSubmit(req.body.submit_id);
+  let acceptData = await submitController.getProviderData(req.body.submit_id);
   let symptonData = await registerSymptonModel.findOne({ _id: acceptData.symptonId });
-  acceptData === null ? res.json({ state: false }) : res.json({ state: true, data: acceptData, data2: symptonData });
+  acceptData === null ? res.json({ state: false }) : res.json({ state: true, submit: acceptData, register: symptonData });
 });
 
 router.post("/accept_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {

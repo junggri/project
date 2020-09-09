@@ -159,6 +159,9 @@ function p_showBeforeEsimate() {
                     return [4 /*yield*/, result.json()];
                 case 4:
                     response = _a.sent();
+                    if (response.state === false) {
+                        return [2 /*return*/, alert("더이상 견적을 제시할 수 없습니다.")];
+                    }
                     if (response.state) {
                         showEstimateBox.style.display = "none";
                         alert("견적제출이 완료되었습니다.");
@@ -177,10 +180,12 @@ function p_showBeforeEsimate() {
     }); });
     if (deleteEstimateBtn !== null) {
         deleteEstimateBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_3;
+            var flag, token, myHeaders, result, response, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        flag = confirm("정말로 취소하시겠습니까?");
+                        if (!(flag === true)) return [3 /*break*/, 6];
                         token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
                         myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
@@ -200,12 +205,17 @@ function p_showBeforeEsimate() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        alert("취소가 완료되었습다.");
+                        if (response.state === false) {
+                            alert("견적이 성사되어 취소가 불가능합니다.");
+                            return [2 /*return*/, (window.location.href = "/provide/sympton_estimate")];
+                        }
+                        alert("취소가 완료되었습니다.");
                         window.location.href = "/provide/sympton_estimate?" + response.url;
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
                         error_3 = _a.sent();
+                        console.error(error_3);
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
                 }

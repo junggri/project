@@ -3,6 +3,7 @@ import providerModel from "../model/provideModel";
 import submitModel from "../model/submitEstimateModel";
 import usermodel from "../model/usermodel";
 import moment from "moment";
+import sanitizeHtml from "sanitize-html";
 
 let submitController: any = {};
 
@@ -25,7 +26,7 @@ submitController.findAllProvider = async (symptonId: string) => {
 };
 
 submitController.showProvider = async (symptonId: string) => {
-  let result: any = await submitModel.findOne({ symptonId: symptonId }).populate("provider");
+  let result: any = await submitModel.findOne({ symptonId: symptonId }).where("state").equals("accept").populate("provider");
   return result;
 };
 
@@ -45,16 +46,13 @@ submitController.getProviderData = async (submitId: string) => {
 };
 
 submitController.acceptSubmit = async (submitId: string, symptonId: string) => {
-  let result = await submitModel.updateOne({ _id: submitId }, { $set: { state: "accept" } });
+  let submits = await submitModel.find({ symptonId: symptonId });
   await symptonModel.updateOne({ _id: symptonId }, { $set: { state: "accept" } });
-  let data: any = await submitModel.find({ symptonId: symptonId }).populate("provider");
-  for (let i = 0; i < data.length; i++) {
-    if (String(data[i]._id) !== submitId) {
-      let provider: any = await providerModel.findOne({ _id: data[i].provider[0]._id });
-      let idx = provider.submit_register.indexOf(data[i].symptonId);
-      provider.submit_register.splice(idx, 1);
-      await providerModel.updateOne({ _id: data[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } });
-      await submitModel.deleteOne({ _id: submitId });
+  for (let i = 0; i < submits.length; i++) {
+    if (submitId === submits[i].id) {
+      await submitModel.updateOne({ _id: submits[i].id }, { $set: { state: "accept" } });
+    } else {
+      await submitModel.updateOne({ _id: submits[i].id }, { $set: { state: "reject" } });
     }
   }
 };
@@ -68,8 +66,8 @@ submitController.save = async (symptonId: string, providerId: string, data: any)
     register_user: User,
     symptonId: data.sympton_id,
     provider: Provider,
-    content: data.content,
-    submit_price: data.priceValue,
+    content: sanitizeHtml(data.content),
+    submit_price: sanitizeHtml(data.priceValue),
     createdAt: time,
   };
   let Sumbit = new submitModel(saveData);
@@ -85,22 +83,32 @@ submitController.isSubmited = async (symptonId: string) => {
   return result;
 };
 
-submitController.delete_submit = async (symptonId: string, providerId: string) => {
-  let result: any = await symptonModel.findOne({ _id: symptonId });
-  let provider: any = await providerModel.findOne({ _id: providerId });
-  let idx = result.provider.indexOf(providerId);
-  let idx2 = provider.submit_register.indexOf(symptonId);
-  result.provider.splice(idx, 1);
-  provider.submit_register.splice(idx2, 1);
-  await submitModel.deleteOne({ provider: providerId });
-  await symptonModel.updateOne({ _id: symptonId }, { $set: { provider: result.provider } });
-  await providerModel.updateOne({ _id: providerId }, { $set: { submit_register: provider.submit_register } });
+submitController.delete_submit = async (req: any, res: any, symptonId: string, providerId: string) => {
+  let submit: any = await submitModel.findOne().where("provider").equals(providerId).where("symptonId").equals(symptonId);
+  if (submit.state === "accept") {
+    return res.json({ state: false });
+  } else {
+    let result: any = await symptonModel.findOne({ _id: symptonId });
+    let provider: any = await providerModel.findOne({ _id: providerId });
+    let idx = result.provider.indexOf(providerId);
+    let idx2 = provider.submit_register.indexOf(symptonId);
+    result.provider.splice(idx, 1);
+    provider.submit_register.splice(idx2, 1);
+    await submitModel.deleteOne({ _id: submit._id });
+    await symptonModel.updateOne({ _id: symptonId }, { $set: { provider: result.provider } });
+    await providerModel.updateOne({ _id: providerId }, { $set: { submit_register: provider.submit_register } });
+    res.json({ url: req.body.symptonId, state: true });
+  }
 };
 
 submitController.reset = async () => {
   let User = await providerModel.find();
   for (let i = 0; i < User.length; i++) {
     await providerModel.updateOne({ _id: User[i]._id }, { $set: { submit_register: [] } });
+  }
+  let User2 = await usermodel.find();
+  for (let i = 0; i < User2.length; i++) {
+    await usermodel.updateOne({ _id: User2[i]._id }, { $set: { register_sympton: [] } });
   }
 };
 export default submitController;

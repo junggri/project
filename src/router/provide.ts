@@ -10,6 +10,7 @@ import mongoSanitize from "mongo-sanitize";
 import crypto from "crypto";
 import crypto_cre from "../config/crypto.json";
 import providers from "../lib/model/provideModel";
+import submitModel from "../lib/model/submitEstimateModel";
 import provideController from "../lib/controller/provideController";
 import registerSymController from "../lib/controller/registerSymContoller";
 import submitController from "../lib/controller/submitController";
@@ -153,6 +154,8 @@ router.post("/get_sejong", csrfProtection, verify, isNotLogined, (req, res) => {
 
 router.post("/before_getData", csrfProtection, verify, isNotLogined, async (req, res) => {
   let result = await registerSymController.showBeforeEstimate(req.body._id);
+  console.log(result);
+
   if (result === null) {
     return res.json({ state: false });
   }
@@ -190,6 +193,8 @@ router.post("/submit_estimate", csrfProtection, verify, isNotLogined, async (req
   const token = req.cookies.pjwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let submitLength = await registerSymController.isFullSubmit(req.body);
+    if (submitLength.provider.length >= 20) return res.json({ state: false });
     submitController.save(req.body.sympton_id, (decoded as Decoded).user_objectId, req.body);
     res.json({ url: req.body.sympton_id, state: true });
   } catch (error) {
@@ -197,12 +202,11 @@ router.post("/submit_estimate", csrfProtection, verify, isNotLogined, async (req
   }
 });
 
-router.post("/delete_submit", csrfProtection, verify, isNotLogined, (req, res) => {
+router.post("/delete_submit", csrfProtection, verify, isNotLogined, async (req, res) => {
   const token = req.cookies.pjwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    submitController.delete_submit(req.body.symptonId, (decoded as Decoded).user_objectId);
-    res.json({ url: req.body.symptonId });
+    submitController.delete_submit(req, res, req.body.symptonId, (decoded as Decoded).user_objectId);
   } catch (error) {
     console.error(error);
   }
@@ -211,6 +215,11 @@ router.post("/delete_submit", csrfProtection, verify, isNotLogined, (req, res) =
 router.get("/showGotEstimate", csrfProtection, verify, isNotLogined, (req, res) => {
   let authUI = auth.status(req, res);
   res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken() });
+});
+
+router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
+  let authUI = auth.status(req, res);
+  res.render("providers/p_mypage", { authUI: authUI, csrfToken: req.csrfToken() });
 });
 
 router.post("/logout_process", isNotLogined, (req, res) => {

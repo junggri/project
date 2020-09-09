@@ -239,9 +239,12 @@ registerSymController.modified = async (req: Request, res: Response, data: any) 
     });
 };
 
-registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
-  let arr: string[] = [];
+registerSymController.isFullSubmit = async (data: any) => {
+  let result: any = await registerSym.findOne({ _id: data.sympton_id });
+  return result;
+};
 
+registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
   registerSym.deleteOne({ _id: req.body.id }).then(async () => {
     let submit: any = await submitModel.find({ symptonId: req.body.id }).populate("provider");
     if (submit.length !== 0) {
@@ -255,10 +258,7 @@ registerSymController.deleteSympton = async (req: Request, res: Response, email:
       }
     }
     let result: any = await users.findOne({ _id: id }).populate("register_sympton");
-    for (let i = 0; i < result.register_sympton.length; i++) {
-      arr.push(result.register_sympton[i]._id);
-    }
-    let s1 = await users.updateOne({ _id: id }, { $set: { register_sympton: arr } });
+    let s1 = await users.updateOne({ _id: id }, { $set: { register_sympton: result.register_sympton } });
   });
 };
 

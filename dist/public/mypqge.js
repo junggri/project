@@ -42,6 +42,11 @@ function mypage() {
     var deleteBtn = document.querySelectorAll(".sc-item-cancel");
     var showBtn = document.querySelectorAll(".sc-item-showBtn");
     var showAccept = document.querySelectorAll(".show-accept-data-btn");
+    var showStatebox = document.querySelector(".show-providerAndsympton-dataBox");
+    var priceValue = document.querySelector(".spd-price-value");
+    var contentValue = document.querySelector(".submit-data-content");
+    var statePayment = document.querySelector(".spd-payment-state");
+    var checkBtn = document.querySelector(".spd-footer-btn");
     var _loop_1 = function (i) {
         modifiedBtn[i].addEventListener("click", function () {
             var userNode = modifiedBtn[i].parentNode.parentNode.parentNode;
@@ -84,6 +89,8 @@ function mypage() {
                     case 4:
                         error_1 = _a.sent();
                         console.error(error_1);
+                        alert(1);
+                        alert(error_1);
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
                 }
@@ -132,6 +139,8 @@ function mypage() {
                     case 5:
                         error_2 = _a.sent();
                         console.error(error_2);
+                        alert(2);
+                        alert(error_2);
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
                 }
@@ -148,7 +157,7 @@ function mypage() {
             return __generator(this, function (_a) {
                 _loop_4 = function (i) {
                     showAccept[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                        var target, token, myHeaders, result, response, error_3;
+                        var target, token, myHeaders, result, response, payment, error_3;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -173,11 +182,28 @@ function mypage() {
                                 case 3:
                                     response = _a.sent();
                                     console.log(response);
+                                    payment = void 0;
+                                    console.log(response.submit.payment);
+                                    response.submit.payment === false ? (payment = "결제전") : (payment = "결제 완료");
+                                    showStatebox.style.display = "block";
+                                    $(".show-providerAndsympton-dataBox").css({
+                                        top: ($(window).height() - $(".show-providerAndsympton-dataBox").outerHeight()) / 2 + $(window).scrollTop() + "px",
+                                        left: ($(window).width() - $(".show-providerAndsympton-dataBox").outerWidth()) / 2 + $(window).scrollLeft() + "px",
+                                    });
+                                    priceValue.textContent = response.submit.submit_price + " \uC6D0";
+                                    contentValue.textContent = response.submit.content;
+                                    statePayment.textContent = payment;
                                     _a.label = 4;
-                                case 4: return [3 /*break*/, 6];
+                                case 4:
+                                    checkBtn.addEventListener("click", function (e) {
+                                        showStatebox.style.display = "none";
+                                    });
+                                    return [3 /*break*/, 6];
                                 case 5:
                                     error_3 = _a.sent();
                                     console.error(error_3);
+                                    alert(3);
+                                    alert(error_3);
                                     return [3 /*break*/, 6];
                                 case 6: return [2 /*return*/];
                             }

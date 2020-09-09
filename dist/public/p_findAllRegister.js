@@ -89,7 +89,7 @@ function p_findAllRegister() {
             var _this = this;
             for (var i = 0; i < symptonItems.length; i++) {
                 symptonItems[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                    var token, myHeaders, result, response, error_1;
+                    var token, myHeaders, result, response, err, error_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -112,24 +112,25 @@ function p_findAllRegister() {
                                 return [4 /*yield*/, result.json()];
                             case 3:
                                 response = _a.sent();
-                                if (response.data.provider.length >= 20) {
-                                    return [2 /*return*/, alert("견적을 초과하였습니다.")];
+                                if (response.state === false) {
+                                    err = new Error("삭제된 증상입니다.");
+                                    err.name = "Delete_data";
+                                    throw err;
                                 }
                                 if (response.data.state === "accept") {
                                     return [2 /*return*/, alert("진행중인 견적입니다.")];
                                 }
-                                if (response.state === false) {
-                                    alert("존재하지 않는 자료입니다.");
-                                    window.location.href = "/provide/findAllRegister";
-                                    return [2 /*return*/];
+                                if (response.data.provider.length >= 20) {
+                                    return [2 /*return*/, alert("견적을 초과하였습니다.")];
                                 }
                                 window.location.href = "/provide/sympton_estimate?" + e.target.parentNode.dataset.registerid;
                                 _a.label = 4;
                             case 4: return [3 /*break*/, 6];
                             case 5:
                                 error_1 = _a.sent();
-                                console.error(error_1);
-                                return [3 /*break*/, 6];
+                                console.error(error_1, error_1.name);
+                                alert(error_1);
+                                return [2 /*return*/, window.location.reload()];
                             case 6: return [2 /*return*/];
                         }
                     });

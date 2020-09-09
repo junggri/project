@@ -27,7 +27,7 @@ var submitSympton = new mongoose_1.default.Schema({
         default: "submit",
     },
     payment: {
-        type: String,
+        type: Boolean,
         default: false,
     },
 });

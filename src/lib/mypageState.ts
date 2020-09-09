@@ -16,15 +16,32 @@ export let makeListSympton = async (data: any) => {
     if (data[i].state === "accept") {
       let response = await submitController.showProvider(data[i]._id);
       let result = response.provider[0];
+
+      // 이때의 data-id는 submitid
       item = `
-      <div class="sc-item accept-item" data-id="${response._id}">
-        <div class="sc-item-slo">${result.name} 님의</br> 견적을 수락하셨습니다.</div>
+        <div class="sc-item accept-item" data-id="${response._id}">
+        <div class="sc-item-accept-slo">${result.name} 님의</br> 견적을 수락하셨습니다.</div>
+        <div class="sc-accept-provider-data-box">
+            <div class="sapd-data">
+              <span>이  름 :</span>
+              <span>${result.name}</span>
+            </div>
+            <div class="sapd-data">
+              <span>번  호 :</span>
+              <span>${result.phone_number}</span>
+            </div>
+            <div class="sapd-data">
+              <span>이메일 :</span>
+              <span>${result.email}</span>
+            </div>
+        </div>
         <div class="show-accept-data-btn">
           <span>자세히 보기</span>
         </div>
-     </div>
+    </div>
         `;
     } else {
+      //이때는 register
       item = ` 
             <div class="sc-item" data-id="${data[i]._id}">
               <div class="sc-item-slo">${data[i].sympton_detail}</div>

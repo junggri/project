@@ -279,7 +279,6 @@
 .si-accept-btn {
   border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 20px 40px;
-  display: inline-block;
   cursor: pointer;
   border-radius: 3px;
   float: right;
@@ -333,8 +332,31 @@
   font-size: 15px;
 }
 .accept-item {
-  border: 2px solid #f58320;
+  box-shadow: 0 4px 0px #f58320;
 }
+.sc-item-accept-slo {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  word-break: break-all;
+  padding: 0 14px;
+  margin-top: 60px;
+}
+.sc-accept-provider-data-box {
+  font-size: 14px;
+  margin-top: 50px;
+  padding: 20px 20px;
+}
+.sapd-data {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.sapd-data :nth-child(1) {
+  width: 80px;
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.6);
+}
+
 /*  */
 .show-providerAndsympton-dataBox {
   border: 1px solid black;
@@ -342,9 +364,6 @@
   width: 800px;
   height: 300px;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background-color: white;
   display: none;
   padding: 20px 15px;
@@ -352,7 +371,73 @@
 .spd-slo {
   font-size: 25px;
   font-weight: 600;
+  display: inline-block;
 }
+.spd-payment {
+  float: right;
+  font-size: 0;
+}
+.spd-payment span {
+  font-size: 14px;
+}
+.spd-payment :nth-child(1) {
+  border-right: 1px solid rgba(0, 0, 0, 0.4);
+  padding-right: 10px;
+  font-weight: 600;
+}
+.spd-payment :nth-child(2) {
+  padding-left: 10px;
+  color: #ff6666;
+  font-weight: 600;
+}
+.submit-data {
+  margin-top: 20px;
+}
+.submit-data-content {
+  font-size: 20px;
+}
+.spd-footer {
+  position: absolute;
+  width: 20%;
+  height: 90%;
+  right: 15px;
+  bottom: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+  padding-left: 15px;
+}
+
+.spd-price-box {
+  text-align: right;
+}
+.spd-price-box :nth-child(1) {
+  margin-bottom: 20px;
+  text-align: left;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 10px;
+  font-weight: 600;
+}
+.spd-price-box :nth-child(2) {
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #f58320;
+}
+.spd-footer-btn {
+  height: 40px;
+  margin-right: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  background-color: transparent;
+  width: 100%;
+  font-size: 15px;
+  cursor: pointer;
+}
+/*  */
+
 /* .sc-item-createdAt {
   font-size: 15px;
   text-align: center;

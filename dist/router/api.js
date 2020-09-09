@@ -377,11 +377,11 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
     var _time = moment_1.default().format("YYYY-MM-DD");
     var detailAddress = sanitize_html_1.default(req.body.detailAddress);
     try {
-        var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        var inputdata = {
-            user_name: decoded.username,
-            user_object_id: decoded.user_objectId,
-            email: decoded.email,
+        var decoded_1 = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        var inputdata_1 = {
+            user_name: decoded_1.username,
+            user_object_id: decoded_1.user_objectId,
+            email: decoded_1.email,
             code: code,
             sympton_detail: sanitize_html_1.default(sympton_detail),
             img: img,
@@ -394,9 +394,11 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
         req.session.img = [];
         req.session.code = [];
         req.session.price = "";
-        registerSymContoller_1.default.save(req, res, inputdata, decoded.email, decoded.user_objectId);
-        deleteImg_1.default(decoded.email, decoded.user_objectId);
-        res.redirect("/api/mypage");
+        req.session.save(function () {
+            registerSymContoller_1.default.save(req, res, inputdata_1, decoded_1.email, decoded_1.user_objectId);
+            deleteImg_1.default(decoded_1.email, decoded_1.user_objectId);
+            res.redirect("/api/mypage");
+        });
     }
     catch (error) {
         console.error(error);
@@ -473,7 +475,16 @@ router.post("/find_submit", csrfProtection, jwtverify_1.verify, jwtverify_1.isNo
             case 0: return [4 /*yield*/, submitController_1.default.findSubmit(req.body.submit_id)];
             case 1:
                 result = _a.sent();
-                result === null ? res.json({ state: false }) : res.json({ state: true, data: result });
+                console.log(result);
+                if (result === null) {
+                    return [2 /*return*/, res.json({ state: false })];
+                }
+                else {
+                    if (result.state !== "submit") {
+                        return [2 /*return*/, res.json({ state: "Not_common" })];
+                    }
+                    res.json({ state: true, data: result });
+                }
                 return [2 /*return*/];
         }
     });
@@ -482,13 +493,13 @@ router.post("/get_data_accepted", csrfProtection, jwtverify_1.verify, jwtverify_
     var acceptData, symptonData;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, submitController_1.default.findSubmit(req.body.submit_id)];
+            case 0: return [4 /*yield*/, submitController_1.default.getProviderData(req.body.submit_id)];
             case 1:
                 acceptData = _a.sent();
                 return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: acceptData.symptonId })];
             case 2:
                 symptonData = _a.sent();
-                acceptData === null ? res.json({ state: false }) : res.json({ state: true, data: acceptData, data2: symptonData });
+                acceptData === null ? res.json({ state: false }) : res.json({ state: true, submit: acceptData, register: symptonData });
                 return [2 /*return*/];
         }
     });

@@ -54,6 +54,7 @@ var p_index_1 = __importDefault(require("./p_index"));
 var p_findAllRegister_1 = __importDefault(require("./p_findAllRegister"));
 var p_showBeforeEstimate_1 = __importDefault(require("./p_showBeforeEstimate"));
 var p_showGotEstimate_1 = __importDefault(require("./p_showGotEstimate"));
+var p_mypage_1 = __importDefault(require("./p_mypage"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
 var mainName = document.querySelector(".nb-left-name");
 var path = window.location.pathname;
@@ -77,6 +78,9 @@ if (path === "/provide/showGotEstimate") {
 }
 if (path.split("/")[3] === "estimateDetail") {
     mypageEstimate_1.default();
+}
+if (path === "/provide/mypage") {
+    p_mypage_1.default();
 }
 if (path === "/api/oauth_register") {
     oauth_1.default();

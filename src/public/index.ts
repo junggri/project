@@ -13,6 +13,8 @@ import P_index from "./p_index";
 import p_findAllRegister from "./p_findAllRegister";
 import p_showBeforeEstimate from "./p_showBeforeEstimate";
 import p_showGotEstimate from "./p_showGotEstimate";
+import p_mypage from "./p_mypage";
+
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
 let mainName = document.querySelector(".nb-left-name");
 let path = window.location.pathname;
@@ -38,6 +40,9 @@ if (path === "/provide/showGotEstimate") {
 }
 if (path.split("/")[3] === "estimateDetail") {
   mypageEstimate();
+}
+if (path === "/provide/mypage") {
+  p_mypage();
 }
 if (path === "/api/oauth_register") {
   oauth();

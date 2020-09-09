@@ -21,27 +21,21 @@
           <%- authUI %>
         </ul>
       </nav>
-      <div class="showEstimate-container">
-        <div class="sc-slo">받은견적 보기</div>
-        <div class="sc-item-box"><%- list %></div>
-      </div>
-    </div>
-    <div class="show-providerAndsympton-dataBox">
-      <div class="spd-slo">진행상태를 확인해주세요.</div>
-      <div class="spd-payment">
-        <span>상태</span>
-        <span class="spd-payment-state"></span>
-      </div>
-      <div class="submit-data">
-        <div class="submit-data-content"></div>
-      </div>
-      <div class="spd-footer">
-        <div class="spd-price-box">
-          <div>견적금액</div>
-          <div class="spd-price-value"></div>
+      <section class="provider-mypage-state">
+        <div class="pms-slo">마이페이지</div>
+        <div class="pms-user-data-box">
+          <div class="pms-user-img"></div>
+          <div class="pms-user-detail">
+            <div class="psd-name">이정수</div>
+            <div class="psd-email">jjuu6933@naver,doi</div>
+          </div>
         </div>
-        <input type="button" class="spd-footer-btn" value="확인" />
-      </div>
+        <div class="show-submitEstimate">
+          <div class="show-submitEstimate-slo">견적서</div>
+          <a href="/provide/showsubmit"><div class="show-submitEstimate-detail">견적서 보러가기</div></a>
+        </div>
+        <div class="ms-otherBox">알림이나 결제내역, 공지사항등</div>
+      </section>
     </div>
   </body>
   <script src="/bundle.js"></script>

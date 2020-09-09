@@ -18,6 +18,8 @@ var compression_1 = __importDefault(require("compression"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var passport_1 = __importDefault(require("passport"));
 var connect_flash_1 = __importDefault(require("connect-flash"));
+var cors_1 = __importDefault(require("cors"));
+var socket_io_1 = __importDefault(require("socket.io"));
 dotenv_1.default.config();
 var RedisStore = connect_redis_1.default(express_session_1.default);
 var _client = redis_1.default.createClient({});
@@ -48,6 +50,7 @@ if (app.get("env") === "production") {
     app.set("trust proxy", 1); // trust first proxy
     sess.cookie.secure = true; // serve secure cookies
 }
+app.use(cors_1.default());
 app.use(cookie_parser_1.default(session_json_1.default.secret));
 app.use(express_session_1.default(sess));
 // app.use(logger("prod", { stream })); //prod combined
@@ -79,7 +82,6 @@ app.use("/", index_1.default);
 app.use("/api", api_1.default);
 app.use("/provide", provide_1.default);
 app.set("port", process.env.PORT || 3000);
-app.set("port2", process.env.PORT || 3001);
 app.use(logError);
 app.use(function (req, res, next) {
     res.status(404).send("Sorry cant find that!");
@@ -96,11 +98,11 @@ app.use(function (err, req, res, next) {
     res.render("error");
 });
 //배포 할떄에에는 에러처리도 ㅏ꾸엉한다 사용자에게 에러 내용을 보여주면 안된다
-app.listen(app.get("port"), function () {
+var server = app.listen(app.get("port"), function () {
     console.log("Express server listening on port " + app.get("port"));
 });
-// app.listen(app.get("port2"), function () {
-//   console.log("Express server listening on port " + app.get("port2"));
-// });
+var io = socket_io_1.default(server);
+// server에 socket.io 연결 , 클라이언트가 연결되면 io.on("connection" ) 이벤트가 발생
+io.on("connection", function (socket) { return console.log("연결"); });
 module.exports = app;
 //# sourceMappingURL=index.js.map

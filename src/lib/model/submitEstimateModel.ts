@@ -23,7 +23,7 @@ const submitSympton = new mongoose.Schema({
     default: "submit",
   },
   payment: {
-    type: String,
+    type: Boolean,
     default: false,
   },
 });

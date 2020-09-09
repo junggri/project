@@ -15,10 +15,13 @@ import createError from "http-errors";
 import dotenv from "dotenv";
 import passport from "passport";
 import flash from "connect-flash";
-
+import cors from "cors";
+import socketIO from "socket.io";
 dotenv.config();
+
 const RedisStore = connectRedis(session);
 const _client = redis.createClient({});
+
 const app = express();
 
 mongoServer();
@@ -52,6 +55,8 @@ if (app.get("env") === "production") {
   app.set("trust proxy", 1); // trust first proxy
   sess.cookie.secure = true; // serve secure cookies
 }
+
+app.use(cors());
 
 app.use(cookieParser(configSession.secret));
 app.use(session(sess));
@@ -93,7 +98,6 @@ app.use("/api", apiRouter);
 app.use("/provide", provierRouter);
 
 app.set("port", process.env.PORT || 3000);
-app.set("port2", process.env.PORT || 3001);
 
 app.use(logError);
 
@@ -114,12 +118,13 @@ app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
   res.render("error");
 });
 //배포 할떄에에는 에러처리도 ㅏ꾸엉한다 사용자에게 에러 내용을 보여주면 안된다
-app.listen(app.get("port"), function () {
+const server = app.listen(app.get("port"), () => {
   console.log("Express server listening on port " + app.get("port"));
 });
 
-// app.listen(app.get("port2"), function () {
-//   console.log("Express server listening on port " + app.get("port2"));
-// });
+const io = socketIO(server);
+
+// server에 socket.io 연결 , 클라이언트가 연결되면 io.on("connection" ) 이벤트가 발생
+io.on("connection", (socket) => console.log("연결"));
 
 module.exports = app;

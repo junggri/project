@@ -72,6 +72,10 @@ function mypageEstimate() {
                                     return [4 /*yield*/, result.json()];
                                 case 3:
                                     response = _a.sent();
+                                    if (response.state === "Not_common") {
+                                        alert("잘못된 접근입니다.");
+                                        return [2 /*return*/, (window.location.href = "/api/mypage/showestimate")];
+                                    }
                                     if (response.state === false)
                                         return [2 /*return*/, alert("견적이 삭제되었거나, 존재하지 않습니다.")];
                                     hiddenInput.value = response.data._id;
@@ -85,6 +89,8 @@ function mypageEstimate() {
                                 case 5:
                                     error_1 = _a.sent();
                                     console.error(error_1);
+                                    alert(4);
+                                    alert(error_1);
                                     return [3 /*break*/, 6];
                                 case 6: return [2 /*return*/];
                             }

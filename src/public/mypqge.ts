@@ -3,6 +3,11 @@ export default function mypage() {
   let deleteBtn = document.querySelectorAll(".sc-item-cancel");
   let showBtn = document.querySelectorAll(".sc-item-showBtn");
   let showAccept = document.querySelectorAll(".show-accept-data-btn");
+  let showStatebox = document.querySelector(".show-providerAndsympton-dataBox") as HTMLDivElement;
+  let priceValue = document.querySelector(".spd-price-value") as HTMLDivElement;
+  let contentValue = document.querySelector(".submit-data-content") as HTMLDivElement;
+  let statePayment = document.querySelector(".spd-payment-state") as HTMLSpanElement;
+  let checkBtn = document.querySelector(".spd-footer-btn") as HTMLInputElement;
 
   for (let i = 0; i < modifiedBtn.length; i++) {
     modifiedBtn[i].addEventListener("click", () => {
@@ -32,6 +37,8 @@ export default function mypage() {
           let response = await result.json();
         } catch (error) {
           console.error(error);
+          alert(1);
+          alert(error);
         }
       }
     });
@@ -63,6 +70,8 @@ export default function mypage() {
         }
       } catch (error) {
         console.error(error);
+        alert(2);
+        alert(error);
       }
     });
   }
@@ -85,9 +94,26 @@ export default function mypage() {
           if (result.status === 200 || 201) {
             let response = await result.json();
             console.log(response);
+            let payment;
+            console.log(response.submit.payment);
+            response.submit.payment === false ? (payment = "결제전") : (payment = "결제 완료");
+            showStatebox.style.display = "block";
+            $(".show-providerAndsympton-dataBox").css({
+              top: ($(window).height() - $(".show-providerAndsympton-dataBox").outerHeight()) / 2 + $(window).scrollTop() + "px",
+              left: ($(window).width() - $(".show-providerAndsympton-dataBox").outerWidth()) / 2 + $(window).scrollLeft() + "px",
+            });
+            priceValue.textContent = `${response.submit.submit_price} 원`;
+            contentValue.textContent = response.submit.content;
+            statePayment.textContent = payment;
           }
+
+          checkBtn.addEventListener("click", (e) => {
+            showStatebox.style.display = "none";
+          });
         } catch (error) {
           console.error(error);
+          alert(3);
+          alert(error);
         }
       });
     }

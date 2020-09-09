@@ -1,3 +1,5 @@
+import { isRegExp } from "util";
+
 declare global {
   interface Window {
     makePrice: any;
@@ -22,8 +24,8 @@ export default function p_showBeforeEsimate() {
   let registrantId = document.querySelector(".registrant_id") as HTMLInputElement;
   let symptonId = document.querySelector(".sympton_id") as HTMLInputElement;
   let userId = document.querySelector(".user_id") as HTMLInputElement;
-
   let deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn") as HTMLInputElement;
+
   async function getDataSymtonsData() {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();
@@ -42,6 +44,7 @@ export default function p_showBeforeEsimate() {
           alert("존재하지 않는 자료입니다.");
           window.location.href = "/provide/findAllRegister";
         }
+
         mainImg.style.backgroundImage = `url("/${response.data.user_object_id}/${response.data.img[0]}")`;
         username.textContent = response.data.user_name;
         createdAt.textContent = response.data.createdAt;
@@ -104,6 +107,10 @@ export default function p_showBeforeEsimate() {
       try {
         if (result.status === 200 || 201) {
           let response = await result.json();
+
+          if (response.state === false) {
+            return alert("더이상 견적을 제시할 수 없습니다.");
+          }
           if (response.state) {
             showEstimateBox.style.display = "none";
             alert("견적제출이 완료되었습니다.");
@@ -119,23 +126,32 @@ export default function p_showBeforeEsimate() {
 
   if (deleteEstimateBtn !== null) {
     deleteEstimateBtn.addEventListener("click", async (e) => {
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("CSRF-Token", token);
-      let result = await fetch("http://localhost:3000/provide/delete_submit", {
-        method: "post",
-        credentials: "same-origin",
-        headers: myHeaders,
-        body: JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }),
-      });
-      try {
-        if (result.status === 200 || 201) {
-          let response = await result.json();
-          alert("취소가 완료되었습다.");
-          window.location.href = `/provide/sympton_estimate?${response.url}`;
+      let flag = confirm("정말로 취소하시겠습니까?");
+      if (flag === true) {
+        let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("CSRF-Token", token);
+        let result = await fetch("http://localhost:3000/provide/delete_submit", {
+          method: "post",
+          credentials: "same-origin",
+          headers: myHeaders,
+          body: JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }),
+        });
+        try {
+          if (result.status === 200 || 201) {
+            let response = await result.json();
+            if (response.state === false) {
+              alert("견적이 성사되어 취소가 불가능합니다.");
+              return (window.location.href = "/provide/sympton_estimate");
+            }
+            alert("취소가 완료되었습니다.");
+            window.location.href = `/provide/sympton_estimate?${response.url}`;
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {}
+      }
     });
   }
 }

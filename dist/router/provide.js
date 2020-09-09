@@ -217,6 +217,7 @@ router.post("/before_getData", csrfProtection, p_verify_1.verify, p_verify_1.isN
             case 0: return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body._id)];
             case 1:
                 result = _a.sent();
+                console.log(result);
                 if (result === null) {
                     return [2 /*return*/, res.json({ state: false })];
                 }
@@ -274,13 +275,38 @@ router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
     });
 }); });
 router.post("/submit_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, decoded, submitLength, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = req.cookies.pjwttoken;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+                return [4 /*yield*/, registerSymContoller_1.default.isFullSubmit(req.body)];
+            case 2:
+                submitLength = _a.sent();
+                if (submitLength.provider.length >= 20)
+                    return [2 /*return*/, res.json({ state: false })];
+                submitController_1.default.save(req.body.sympton_id, decoded.user_objectId, req.body);
+                res.json({ url: req.body.sympton_id, state: true });
+                return [3 /*break*/, 4];
+            case 3:
+                error_2 = _a.sent();
+                console.error(error_2);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/delete_submit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var token, decoded;
     return __generator(this, function (_a) {
         token = req.cookies.pjwttoken;
         try {
             decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-            submitController_1.default.save(req.body.sympton_id, decoded.user_objectId, req.body);
-            res.json({ url: req.body.sympton_id, state: true });
+            submitController_1.default.delete_submit(req, res, req.body.symptonId, decoded.user_objectId);
         }
         catch (error) {
             console.error(error);
@@ -288,20 +314,13 @@ router.post("/submit_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
         return [2 /*return*/];
     });
 }); });
-router.post("/delete_submit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
-    var token = req.cookies.pjwttoken;
-    try {
-        var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        submitController_1.default.delete_submit(req.body.symptonId, decoded.user_objectId);
-        res.json({ url: req.body.symptonId });
-    }
-    catch (error) {
-        console.error(error);
-    }
-});
 router.get("/showGotEstimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
     var authUI = p_authStatus_1.default.status(req, res);
     res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken() });
+});
+router.get("/mypage", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
+    var authUI = p_authStatus_1.default.status(req, res);
+    res.render("providers/p_mypage", { authUI: authUI, csrfToken: req.csrfToken() });
 });
 router.post("/logout_process", p_verify_1.isNotLogined, function (req, res) {
     res.clearCookie("pjwttoken");

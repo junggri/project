@@ -383,12 +383,21 @@ registerSymController.modified = function (req, res, data) { return __awaiter(vo
         return [2 /*return*/];
     });
 }); };
-registerSymController.deleteSympton = function (req, res, email, id) { return __awaiter(void 0, void 0, void 0, function () {
-    var arr;
+registerSymController.isFullSubmit = function (data) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
     return __generator(this, function (_a) {
-        arr = [];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: data.sympton_id })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
+registerSymController.deleteSympton = function (req, res, email, id) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
         registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function () { return __awaiter(void 0, void 0, void 0, function () {
-            var submit, i, provider, idx, result, i, s1;
+            var submit, i, provider, idx, result, s1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, submitEstimateModel_1.default.find({ symptonId: req.body.id }).populate("provider")];
@@ -418,10 +427,7 @@ registerSymController.deleteSympton = function (req, res, email, id) { return __
                     case 7: return [4 /*yield*/, usermodel_1.default.findOne({ _id: id }).populate("register_sympton")];
                     case 8:
                         result = _a.sent();
-                        for (i = 0; i < result.register_sympton.length; i++) {
-                            arr.push(result.register_sympton[i]._id);
-                        }
-                        return [4 /*yield*/, usermodel_1.default.updateOne({ _id: id }, { $set: { register_sympton: arr } })];
+                        return [4 /*yield*/, usermodel_1.default.updateOne({ _id: id }, { $set: { register_sympton: result.register_sympton } })];
                     case 9:
                         s1 = _a.sent();
                         return [2 /*return*/];

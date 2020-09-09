@@ -44,6 +44,7 @@ var provideModel_1 = __importDefault(require("../model/provideModel"));
 var submitEstimateModel_1 = __importDefault(require("../model/submitEstimateModel"));
 var usermodel_1 = __importDefault(require("../model/usermodel"));
 var moment_1 = __importDefault(require("moment"));
+var sanitize_html_1 = __importDefault(require("sanitize-html"));
 var submitController = {};
 submitController.findAllProvider = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
     var arr, result;
@@ -66,7 +67,7 @@ submitController.showProvider = function (symptonId) { return __awaiter(void 0, 
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, submitEstimateModel_1.default.findOne({ symptonId: symptonId }).populate("provider")];
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.findOne({ symptonId: symptonId }).where("state").equals("accept").populate("provider")];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];
@@ -107,39 +108,32 @@ submitController.getProviderData = function (submitId) { return __awaiter(void 0
     });
 }); };
 submitController.acceptSubmit = function (submitId, symptonId) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, data, i, provider, idx;
+    var submits, i;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submitId }, { $set: { state: "accept" } })];
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.find({ symptonId: symptonId })];
             case 1:
-                result = _a.sent();
+                submits = _a.sent();
                 return [4 /*yield*/, registerSymModel_1.default.updateOne({ _id: symptonId }, { $set: { state: "accept" } })];
             case 2:
                 _a.sent();
-                return [4 /*yield*/, submitEstimateModel_1.default.find({ symptonId: symptonId }).populate("provider")];
-            case 3:
-                data = _a.sent();
                 i = 0;
-                _a.label = 4;
+                _a.label = 3;
+            case 3:
+                if (!(i < submits.length)) return [3 /*break*/, 8];
+                if (!(submitId === submits[i].id)) return [3 /*break*/, 5];
+                return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submits[i].id }, { $set: { state: "accept" } })];
             case 4:
-                if (!(i < data.length)) return [3 /*break*/, 9];
-                if (!(String(data[i]._id) !== submitId)) return [3 /*break*/, 8];
-                return [4 /*yield*/, provideModel_1.default.findOne({ _id: data[i].provider[0]._id })];
-            case 5:
-                provider = _a.sent();
-                idx = provider.submit_register.indexOf(data[i].symptonId);
-                provider.submit_register.splice(idx, 1);
-                return [4 /*yield*/, provideModel_1.default.updateOne({ _id: data[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } })];
+                _a.sent();
+                return [3 /*break*/, 7];
+            case 5: return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submits[i].id }, { $set: { state: "reject" } })];
             case 6:
                 _a.sent();
-                return [4 /*yield*/, submitEstimateModel_1.default.deleteOne({ _id: submitId })];
+                _a.label = 7;
             case 7:
-                _a.sent();
-                _a.label = 8;
-            case 8:
                 i++;
-                return [3 /*break*/, 4];
-            case 9: return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 8: return [2 /*return*/];
         }
     });
 }); };
@@ -161,8 +155,8 @@ submitController.save = function (symptonId, providerId, data) { return __awaite
                     register_user: User,
                     symptonId: data.sympton_id,
                     provider: Provider,
-                    content: data.content,
-                    submit_price: data.priceValue,
+                    content: sanitize_html_1.default(data.content),
+                    submit_price: sanitize_html_1.default(data.priceValue),
                     createdAt: time,
                 };
                 Sumbit = new submitEstimateModel_1.default(saveData);
@@ -196,35 +190,42 @@ submitController.isSubmited = function (symptonId) { return __awaiter(void 0, vo
         }
     });
 }); };
-submitController.delete_submit = function (symptonId, providerId) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, provider, idx, idx2;
+submitController.delete_submit = function (req, res, symptonId, providerId) { return __awaiter(void 0, void 0, void 0, function () {
+    var submit, result, provider, idx, idx2;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: symptonId })];
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.findOne().where("provider").equals(providerId).where("symptonId").equals(symptonId)];
             case 1:
+                submit = _a.sent();
+                if (!(submit.state === "accept")) return [3 /*break*/, 2];
+                return [2 /*return*/, res.json({ state: false })];
+            case 2: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: symptonId })];
+            case 3:
                 result = _a.sent();
                 return [4 /*yield*/, provideModel_1.default.findOne({ _id: providerId })];
-            case 2:
+            case 4:
                 provider = _a.sent();
                 idx = result.provider.indexOf(providerId);
                 idx2 = provider.submit_register.indexOf(symptonId);
                 result.provider.splice(idx, 1);
                 provider.submit_register.splice(idx2, 1);
-                return [4 /*yield*/, submitEstimateModel_1.default.deleteOne({ provider: providerId })];
-            case 3:
-                _a.sent();
-                return [4 /*yield*/, registerSymModel_1.default.updateOne({ _id: symptonId }, { $set: { provider: result.provider } })];
-            case 4:
-                _a.sent();
-                return [4 /*yield*/, provideModel_1.default.updateOne({ _id: providerId }, { $set: { submit_register: provider.submit_register } })];
+                return [4 /*yield*/, submitEstimateModel_1.default.deleteOne({ _id: submit._id })];
             case 5:
                 _a.sent();
-                return [2 /*return*/];
+                return [4 /*yield*/, registerSymModel_1.default.updateOne({ _id: symptonId }, { $set: { provider: result.provider } })];
+            case 6:
+                _a.sent();
+                return [4 /*yield*/, provideModel_1.default.updateOne({ _id: providerId }, { $set: { submit_register: provider.submit_register } })];
+            case 7:
+                _a.sent();
+                res.json({ url: req.body.symptonId, state: true });
+                _a.label = 8;
+            case 8: return [2 /*return*/];
         }
     });
 }); };
 submitController.reset = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var User, i;
+    var User, i, User2, i;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, provideModel_1.default.find()];
@@ -241,7 +242,21 @@ submitController.reset = function () { return __awaiter(void 0, void 0, void 0, 
             case 4:
                 i++;
                 return [3 /*break*/, 2];
-            case 5: return [2 /*return*/];
+            case 5: return [4 /*yield*/, usermodel_1.default.find()];
+            case 6:
+                User2 = _a.sent();
+                i = 0;
+                _a.label = 7;
+            case 7:
+                if (!(i < User2.length)) return [3 /*break*/, 10];
+                return [4 /*yield*/, usermodel_1.default.updateOne({ _id: User2[i]._id }, { $set: { register_sympton: [] } })];
+            case 8:
+                _a.sent();
+                _a.label = 9;
+            case 9:
+                i++;
+                return [3 /*break*/, 7];
+            case 10: return [2 /*return*/];
         }
     });
 }); };
