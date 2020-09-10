@@ -320,8 +320,37 @@ router.get("/showGotEstimate", csrfProtection, p_verify_1.verify, p_verify_1.isN
 });
 router.get("/mypage", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
     var authUI = p_authStatus_1.default.status(req, res);
-    res.render("providers/p_mypage", { authUI: authUI, csrfToken: req.csrfToken() });
+    var token = req.cookies.pjwttoken;
+    var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+    try {
+        res.render("providers/p_mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: decoded.username, useremail: decoded.email });
+    }
+    catch (error) { }
 });
+router.get("/showsubmit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, authUI, decoded, data, list, error_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = req.cookies.pjwttoken;
+                authUI = p_authStatus_1.default.status(req, res);
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+                return [4 /*yield*/, submitController_1.default.getDataFromProviderId(decoded.user_objectId)];
+            case 2:
+                data = _a.sent();
+                list = p_MakeSymptonList_1.showSubmitList(data);
+                res.render("providers/showsubmit", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _a.sent();
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
 router.post("/logout_process", p_verify_1.isNotLogined, function (req, res) {
     res.clearCookie("pjwttoken");
     return res.redirect(req.get("Referrer"));

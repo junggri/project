@@ -1,3 +1,5 @@
+import { captureRejectionSymbol } from "events";
+
 export default function mypage() {
   let modifiedBtn = document.querySelectorAll(".sc-item-modifiedBtn");
   let deleteBtn = document.querySelectorAll(".sc-item-cancel");
@@ -37,8 +39,6 @@ export default function mypage() {
           let response = await result.json();
         } catch (error) {
           console.error(error);
-          alert(1);
-          alert(error);
         }
       }
     });
@@ -70,8 +70,6 @@ export default function mypage() {
         }
       } catch (error) {
         console.error(error);
-        alert(2);
-        alert(error);
       }
     });
   }
@@ -112,8 +110,6 @@ export default function mypage() {
           });
         } catch (error) {
           console.error(error);
-          alert(3);
-          alert(error);
         }
       });
     }
@@ -122,11 +118,9 @@ export default function mypage() {
   // document.onreadystatechange = function () {
   //   var state = document.readyState;
   //   if (state == "interactive") {
-  //     $(".ddd").css("display", "block");
+  //     console.log(1);
   //   } else if (state == "complete") {
-  //     setTimeout(function () {
-  //       $(".ddd").css("display", "none");
-  //     }, 1000);
+  //     console.log(2);
   //   }
   // };
 }

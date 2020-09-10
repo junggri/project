@@ -15,6 +15,7 @@ router.get("/", csrfProtection, verify, (req, res, next) => {
 
 router.get("/estimate", verify, csrfProtection, (req, res, next) => {
   let authUI = auth.status(req, res);
+  if (req.session.code !== undefined) delete req.session.code;
   symptonList().then((result) => {
     res.render("estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result });
   });

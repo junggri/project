@@ -44,7 +44,6 @@ var refreshtoken_1 = __importDefault(require("../lib/refreshtoken"));
 var crypto_1 = __importDefault(require("crypto"));
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
-var url_1 = __importDefault(require("url"));
 var moment_1 = __importDefault(require("moment"));
 var mongo_sanitize_1 = __importDefault(require("mongo-sanitize"));
 var crypto_json_1 = __importDefault(require("../config/crypto.json"));
@@ -84,6 +83,11 @@ var router = express_1.default.Router();
 // router.use("/", verify);
 //모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
+function makeStorage(decoded) {
+    var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.user_objectId))));
+    if (!fs_1.default.existsSync(_dir))
+        fs_1.default.mkdirSync(_dir);
+}
 router.post("/setUserEmailCookie", csrfProtection, jwtverify_1.verify, function (req, res) {
     if (req.body.state === "set") {
         var encryptResult = setAndGetCookie_1.encrypt(req.body.email);
@@ -326,20 +330,18 @@ router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
     }
 });
 router.get("/get_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
-    if (url_1.default.parse(req.url).query === null || req.session.code.length === 0 || req.session.code === null) {
-        res.redirect("/");
-    }
-    if (req.session.img) {
-        req.session.img = [];
-    }
+    var decoded = getDataFromToken_1.default(req, res);
+    // if (req.session.img) {
+    //   req.session.img = [];
+    // }
     var authUI = authStatus_1.default.status(req, res);
     var code = req.session.code;
     symptonList_1.selcted_sympton(code).then(function (result) {
         res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result, price: req.session.price });
     });
 });
-router.post("/delete_session_img", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
-    req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+router.post("/delete_img", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
+    req.session.img.splice(req.session.img.indexOf(req.body._data), 1);
     res.json(req.session.img);
 });
 router.post("/fetch_session", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
@@ -352,8 +354,6 @@ router.post("/fetch_upload_image", jwtverify_1.verify, function (req, res, next)
     multer_1.upload(req, res, function (err) {
         if (err) {
             console.error(err);
-            req.session.img = [];
-            res.json({ state: false });
             return;
         }
         res.json({ img: req.session.img, email: decoded });
@@ -408,18 +408,11 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
 router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var token = req.cookies.jwttoken;
     var authUI = authStatus_1.default.status(req, res);
-    try {
-        var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.user_objectId))));
-        // let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
-        if (!fs_1.default.existsSync(_dir))
-            fs_1.default.mkdirSync(_dir);
-        // if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
-        res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: decoded.username, useremail: decoded.email });
-    }
-    catch (error) {
-        console.error(error, "로그인이 되지 않았습니다.");
-    }
+    var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+    makeStorage(decoded);
+    // let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
+    // if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
+    res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: decoded.username, useremail: decoded.email });
 });
 router.get("/mypage/showestimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var token = req.cookies.jwttoken;
@@ -571,8 +564,6 @@ router.post("/modified_upload_image", jwtverify_1.verify, function (req, res, ne
     multer_1.modifiedUpload(req, res, function (err) {
         if (err) {
             console.error(err);
-            req.session.img = [];
-            res.json({ state: false });
             return;
         }
         res.json({ img: req.session.img, email: decoded });

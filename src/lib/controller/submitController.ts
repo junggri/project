@@ -4,6 +4,8 @@ import submitModel from "../model/submitEstimateModel";
 import usermodel from "../model/usermodel";
 import moment from "moment";
 import sanitizeHtml from "sanitize-html";
+import compression from "compression";
+import submitEstimateModel from "../model/submitEstimateModel";
 
 let submitController: any = {};
 
@@ -99,6 +101,11 @@ submitController.delete_submit = async (req: any, res: any, symptonId: string, p
     await providerModel.updateOne({ _id: providerId }, { $set: { submit_register: provider.submit_register } });
     res.json({ url: req.body.symptonId, state: true });
   }
+};
+
+submitController.getDataFromProviderId = async (providerId: string) => {
+  let result = await submitModel.find({ provider: providerId });
+  return result;
 };
 
 submitController.reset = async () => {

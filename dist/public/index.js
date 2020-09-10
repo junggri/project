@@ -55,6 +55,7 @@ var p_findAllRegister_1 = __importDefault(require("./p_findAllRegister"));
 var p_showBeforeEstimate_1 = __importDefault(require("./p_showBeforeEstimate"));
 var p_showGotEstimate_1 = __importDefault(require("./p_showGotEstimate"));
 var p_mypage_1 = __importDefault(require("./p_mypage"));
+var p_showsubmit_1 = __importDefault(require("./p_showsubmit"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
 var mainName = document.querySelector(".nb-left-name");
 var path = window.location.pathname;
@@ -75,6 +76,9 @@ if (path === "/provide/sympton_estimate") {
 }
 if (path === "/provide/showGotEstimate") {
     p_showGotEstimate_1.default();
+}
+if (path === "/provide/showsubmit") {
+    p_showsubmit_1.default();
 }
 if (path.split("/")[3] === "estimateDetail") {
     mypageEstimate_1.default();
@@ -129,7 +133,7 @@ if (LoginmyBtn !== null) {
 }
 if (mainName !== null) {
     mainName.addEventListener("click", function () {
-        if (path.split("/")[1] === "api") {
+        if (path.split("/")[0] === "") {
             location.href = "/";
         }
         else if (path.split("/")[1] === "provide") {
@@ -140,7 +144,7 @@ if (mainName !== null) {
 if (logout !== null) {
     logout.addEventListener("click", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[1] === "") {
+            if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[0] === "") {
                 if (confirm("로그아웃 하시겠습니까?")) {
                     logoutForm.action = "/api/logout_process";
                     return [2 /*return*/, logoutForm.submit()];

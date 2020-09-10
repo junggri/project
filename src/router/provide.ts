@@ -14,7 +14,7 @@ import submitModel from "../lib/model/submitEstimateModel";
 import provideController from "../lib/controller/provideController";
 import registerSymController from "../lib/controller/registerSymContoller";
 import submitController from "../lib/controller/submitController";
-import { MakeAllSymptonList, MakePagination } from "../lib/p_MakeSymptonList";
+import { MakeAllSymptonList, MakePagination, showSubmitList } from "../lib/p_MakeSymptonList";
 import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
 import qs from "querystring";
@@ -219,7 +219,22 @@ router.get("/showGotEstimate", csrfProtection, verify, isNotLogined, (req, res) 
 
 router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
   let authUI = auth.status(req, res);
-  res.render("providers/p_mypage", { authUI: authUI, csrfToken: req.csrfToken() });
+  const token = req.cookies.pjwttoken;
+  let decoded = jwt.verify(token, process.env.JWT_SECRET);
+  try {
+    res.render("providers/p_mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: (decoded as Decoded).username, useremail: (decoded as Decoded).email });
+  } catch (error) {}
+});
+
+router.get("/showsubmit", csrfProtection, verify, isNotLogined, async (req, res) => {
+  const token = req.cookies.pjwttoken;
+  let authUI = auth.status(req, res);
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let data = await submitController.getDataFromProviderId((decoded as Decoded).user_objectId);
+    let list = showSubmitList(data);
+    res.render("providers/showsubmit", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
+  } catch (error) {}
 });
 
 router.post("/logout_process", isNotLogined, (req, res) => {

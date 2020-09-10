@@ -18,6 +18,8 @@ router.get("/", csrfProtection, jwtverify_1.verify, function (req, res, next) {
 });
 router.get("/estimate", jwtverify_1.verify, csrfProtection, function (req, res, next) {
     var authUI = authStatus_1.default.status(req, res);
+    if (req.session.code !== undefined)
+        delete req.session.code;
     symptonList_1.symptonList().then(function (result) {
         res.render("estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result });
     });

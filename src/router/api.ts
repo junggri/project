@@ -2,8 +2,8 @@ import express, { Request, Response, NextFunction } from "express";
 import refreshToken from "../lib/refreshtoken";
 import crypto from "crypto";
 import fs from "fs";
+import qs from "querystring";
 import path from "path";
-import url from "url";
 import moment from "moment";
 import mongoSanitize from "mongo-sanitize";
 import crypto_cre from "../config/crypto.json";
@@ -65,6 +65,11 @@ interface UserData {
 // router.use("/", verify);
 //모든 라우트 마다 로그인//로그인 안했을때 처리
 //토큰값은 쿠키ㅔㅇ 저장한다
+
+function makeStorage(decoded: any) {
+  let _dir = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}`)));
+  if (!fs.existsSync(_dir)) fs.mkdirSync(_dir);
+}
 
 router.post("/setUserEmailCookie", csrfProtection, verify, (req, res) => {
   if (req.body.state === "set") {
@@ -269,12 +274,11 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
 });
 
 router.get("/get_estimate", csrfProtection, verify, isNotLogined, (req, res) => {
-  if (url.parse(req.url).query === null || req.session.code.length === 0 || req.session.code === null) {
-    res.redirect("/");
-  }
-  if (req.session.img) {
-    req.session.img = [];
-  }
+  let decoded = getDataFromToken(req, res);
+
+  // if (req.session.img) {
+  //   req.session.img = [];
+  // }
   let authUI = auth.status(req, res);
   let { code } = req.session;
   selcted_sympton(code).then((result) => {
@@ -282,8 +286,8 @@ router.get("/get_estimate", csrfProtection, verify, isNotLogined, (req, res) => 
   });
 });
 
-router.post("/delete_session_img", parseForm, csrfProtection, verify, (req, res) => {
-  req.session.img.splice(req.session.img.indexOf(req.body.data), 1);
+router.post("/delete_img", parseForm, csrfProtection, verify, (req, res) => {
+  req.session.img.splice(req.session.img.indexOf(req.body._data), 1);
   res.json(req.session.img);
 });
 
@@ -298,8 +302,6 @@ router.post("/fetch_upload_image", verify, (req: any, res, next) => {
   upload(req, res, (err: any) => {
     if (err) {
       console.error(err);
-      req.session.img = [];
-      res.json({ state: false });
       return;
     }
     res.json({ img: req.session.img, email: decoded });
@@ -356,16 +358,11 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
 router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
   const token = req.cookies.jwttoken;
   let authUI = auth.status(req, res);
-  try {
-    let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    let _dir = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}`)));
-    // let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
-    if (!fs.existsSync(_dir)) fs.mkdirSync(_dir);
-    // if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
-    res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: (decoded as Decoded).username, useremail: (decoded as Decoded).email });
-  } catch (error) {
-    console.error(error, "로그인이 되지 않았습니다.");
-  }
+  let decoded = jwt.verify(token, process.env.JWT_SECRET);
+  makeStorage(decoded);
+  // let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
+  // if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
+  res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: (decoded as Decoded).username, useremail: (decoded as Decoded).email });
 });
 
 router.get("/mypage/showestimate", csrfProtection, verify, isNotLogined, (req, res) => {
@@ -459,8 +456,6 @@ router.post("/modified_upload_image", verify, (req: any, res, next) => {
   modifiedUpload(req, res, (err: any) => {
     if (err) {
       console.error(err);
-      req.session.img = [];
-      res.json({ state: false });
       return;
     }
     res.json({ img: req.session.img, email: decoded });

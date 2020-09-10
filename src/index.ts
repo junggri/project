@@ -55,8 +55,12 @@ if (app.get("env") === "production") {
   app.set("trust proxy", 1); // trust first proxy
   sess.cookie.secure = true; // serve secure cookies
 }
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(cookieParser(configSession.secret));
 app.use(session(sess));

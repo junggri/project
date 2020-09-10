@@ -89,8 +89,6 @@ function mypage() {
                     case 4:
                         error_1 = _a.sent();
                         console.error(error_1);
-                        alert(1);
-                        alert(error_1);
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
                 }
@@ -139,8 +137,6 @@ function mypage() {
                     case 5:
                         error_2 = _a.sent();
                         console.error(error_2);
-                        alert(2);
-                        alert(error_2);
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
                 }
@@ -202,8 +198,6 @@ function mypage() {
                                 case 5:
                                     error_3 = _a.sent();
                                     console.error(error_3);
-                                    alert(3);
-                                    alert(error_3);
                                     return [3 /*break*/, 6];
                                 case 6: return [2 /*return*/];
                             }
@@ -221,11 +215,9 @@ function mypage() {
     // document.onreadystatechange = function () {
     //   var state = document.readyState;
     //   if (state == "interactive") {
-    //     $(".ddd").css("display", "block");
+    //     console.log(1);
     //   } else if (state == "complete") {
-    //     setTimeout(function () {
-    //       $(".ddd").css("display", "none");
-    //     }, 1000);
+    //     console.log(2);
     //   }
     // };
 }

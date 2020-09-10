@@ -14,7 +14,7 @@ import p_findAllRegister from "./p_findAllRegister";
 import p_showBeforeEstimate from "./p_showBeforeEstimate";
 import p_showGotEstimate from "./p_showGotEstimate";
 import p_mypage from "./p_mypage";
-
+import p_showsubmit from "./p_showsubmit";
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
 let mainName = document.querySelector(".nb-left-name");
 let path = window.location.pathname;
@@ -37,6 +37,9 @@ if (path === "/provide/sympton_estimate") {
 }
 if (path === "/provide/showGotEstimate") {
   p_showGotEstimate();
+}
+if (path === "/provide/showsubmit") {
+  p_showsubmit();
 }
 if (path.split("/")[3] === "estimateDetail") {
   mypageEstimate();
@@ -93,7 +96,7 @@ if (LoginmyBtn !== null) {
 
 if (mainName !== null) {
   mainName.addEventListener("click", () => {
-    if (path.split("/")[1] === "api") {
+    if (path.split("/")[0] === "") {
       location.href = "/";
     } else if (path.split("/")[1] === "provide") {
       location.href = "/provide/index";
@@ -103,7 +106,7 @@ if (mainName !== null) {
 
 if (logout !== null) {
   logout.addEventListener("click", async () => {
-    if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[1] === "") {
+    if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[0] === "") {
       if (confirm("로그아웃 하시겠습니까?")) {
         logoutForm.action = "/api/logout_process";
         return logoutForm.submit();

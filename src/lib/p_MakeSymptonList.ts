@@ -45,3 +45,22 @@ export const MakePagination = (req: any, res: any, data: any, divided_num: numbe
   `;
   return list;
 };
+
+export const showSubmitList = (data: any) => {
+  let list = "";
+
+  for (let i = 0; i < data.length; i++) {
+    console.log(data[i]);
+    let state: string;
+    data[i].state === "accept" ? (state = "수락됨") : (state = "수락실패");
+    let item = `
+        <div class="sbc-item" data-submitId="${data[i].symptonId}">
+          <span class="sbc-item-content">${data[i].content}</span>
+          <span class="sbc-item-price">${data[i].submit_price} 원</span>
+          <span class="sbc-item-state">${state}</span>
+        </div>
+    `;
+    list += item;
+  }
+  return list;
+};

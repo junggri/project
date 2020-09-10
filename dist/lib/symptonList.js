@@ -62,9 +62,10 @@ exports.selcted_sympton = function (code) { return __awaiter(void 0, void 0, voi
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                console.log(code);
                 list = "";
                 data = [];
-                if (code === undefined)
+                if (code === undefined || code.length === 0)
                     return [2 /*return*/, (list = " <div class=\"show-user-selected-item\">\uC120\uD0DD\uD558\uC2E0 \uC99D\uC0C1\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.</div>")];
                 i = 0;
                 _a.label = 1;

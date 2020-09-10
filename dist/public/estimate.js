@@ -42,6 +42,7 @@ function default_1() {
     var estimate_price = document.querySelector(".estimate-pre-price");
     var estimate_num = document.querySelector(".estimate-pre-num");
     var estimateForm = document.querySelector(".estimateForm");
+    var estimateBtn = document.querySelector(".estimate-btn");
     var fetchData = {};
     var estimate_item;
     var added_item;
@@ -120,19 +121,27 @@ function default_1() {
             });
         });
     }
-    $(".estimate-btn").on("click", function () {
-        if (estimate_item === undefined) {
-            return;
-        }
+    estimateBtn.addEventListener("click", function (e) {
         var data = [];
-        for (var i = 0; i < estimate_item.length; i++) {
-            data.push(estimate_item[i].dataset.code);
+        try {
+            if (estimate_item === undefined || estimate_item.length === 0) {
+                var err = new Error("간편견적서를 작성하시겠습니까?");
+                err.name = "DONT_SELECTED";
+                throw err;
+            }
+            for (var i = 0; i < estimate_item.length; i++) {
+                data.push(estimate_item[i].dataset.code);
+            }
+            fetchData = {
+                code: data,
+                price: price,
+            };
+            isLogined("http://localhost:3000/api/pre_estimate", fetchData);
         }
-        fetchData = {
-            code: data,
-            price: price,
-        };
-        isLogined("http://localhost:3000/api/pre_estimate", fetchData);
+        catch (error) {
+            console.error(error, error.name);
+            estimateForm.submit();
+        }
     });
     //input submit으로 바꾸고 실핼하기
 }

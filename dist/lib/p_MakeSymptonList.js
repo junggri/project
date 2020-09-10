@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MakePagination = exports.MakeAllSymptonList = void 0;
+exports.showSubmitList = exports.MakePagination = exports.MakeAllSymptonList = void 0;
 exports.MakeAllSymptonList = function (data, pageNum, divided_num) {
     var list = "";
     if (data.length === 0) {
@@ -24,6 +24,17 @@ exports.MakePagination = function (req, res, data, divided_num) {
         data.length % divided_num === 0 ? (dividedPageNum = Math.floor(data.length / divided_num)) : (dividedPageNum = Math.floor(data.length / divided_num) + 1);
     }
     var list = "\n      <div class=\"frr-pagination\">\n        <input type=\"button\" class=\"frr-pagination-previous\" value=\"\uC774\uC804\uD398\uC774\uC9C0\" onclick=\"pagination_pre()\"/>\n          <div class=\"frr-pagination-page\">\n            <input type=\"text\" class=\"frr-pagination-pageNum\" value=\"\" name=\"page\" />\n            /\n            <span class=\"frr-pagination-allPage\">" + dividedPageNum + "</span>\n          </div>\n        <input type=\"button\" class=\"frr-pagination-next\" value=\"\uB2E4\uC74C\uD398\uC774\uC9C0\" onclick=\"pagination_next()\"/>\n     </div>\n  ";
+    return list;
+};
+exports.showSubmitList = function (data) {
+    var list = "";
+    for (var i = 0; i < data.length; i++) {
+        console.log(data[i]);
+        var state = void 0;
+        data[i].state === "accept" ? (state = "수락됨") : (state = "수락실패");
+        var item = "\n        <div class=\"sbc-item\" data-submitId=\"" + data[i].symptonId + "\">\n          <span class=\"sbc-item-content\">" + data[i].content + "</span>\n          <span class=\"sbc-item-price\">" + data[i].submit_price + " \uC6D0</span>\n          <span class=\"sbc-item-state\">" + state + "</span>\n        </div>\n    ";
+        list += item;
+    }
     return list;
 };
 //# sourceMappingURL=p_MakeSymptonList.js.map

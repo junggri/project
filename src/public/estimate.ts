@@ -12,6 +12,7 @@ export default function () {
   const estimate_price = document.querySelector(".estimate-pre-price") as HTMLDivElement;
   const estimate_num = document.querySelector(".estimate-pre-num");
   const estimateForm = document.querySelector(".estimateForm") as HTMLFormElement;
+  const estimateBtn = document.querySelector(".estimate-btn") as HTMLDivElement;
   let fetchData = {};
   let estimate_item: any;
   let added_item: any;
@@ -50,7 +51,6 @@ export default function () {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("CSRF-Token", token);
-    // console.log(data);
     try {
       let result = await fetch(url, {
         method: "POST",
@@ -76,20 +76,28 @@ export default function () {
     }
   }
 
-  $(".estimate-btn").on("click", () => {
-    if (estimate_item === undefined) {
-      return;
-    }
+  estimateBtn.addEventListener("click", (e) => {
     let data = [];
-    for (let i = 0; i < estimate_item.length; i++) {
-      data.push(estimate_item[i].dataset.code);
+    try {
+      if (estimate_item === undefined || estimate_item.length === 0) {
+        let err = new Error("간편견적서를 작성하시겠습니까?");
+        err.name = "DONT_SELECTED";
+        throw err;
+      }
+      for (let i = 0; i < estimate_item.length; i++) {
+        data.push(estimate_item[i].dataset.code);
+      }
+      fetchData = {
+        code: data,
+        price: price,
+      };
+      isLogined("http://localhost:3000/api/pre_estimate", fetchData);
+    } catch (error) {
+      console.error(error, error.name);
+      estimateForm.submit();
     }
-    fetchData = {
-      code: data,
-      price: price,
-    };
-    isLogined("http://localhost:3000/api/pre_estimate", fetchData);
   });
+
   //input submit으로 바꾸고 실핼하기
 }
 //그냥 위에서 리턴값?모르겠다

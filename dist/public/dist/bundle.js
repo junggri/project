@@ -138,6 +138,7 @@ function default_1() {
     var estimate_price = document.querySelector(".estimate-pre-price");
     var estimate_num = document.querySelector(".estimate-pre-num");
     var estimateForm = document.querySelector(".estimateForm");
+    var estimateBtn = document.querySelector(".estimate-btn");
     var fetchData = {};
     var estimate_item;
     var added_item;
@@ -216,19 +217,27 @@ function default_1() {
             });
         });
     }
-    $(".estimate-btn").on("click", function () {
-        if (estimate_item === undefined) {
-            return;
-        }
+    estimateBtn.addEventListener("click", function (e) {
         var data = [];
-        for (var i = 0; i < estimate_item.length; i++) {
-            data.push(estimate_item[i].dataset.code);
+        try {
+            if (estimate_item === undefined || estimate_item.length === 0) {
+                var err = new Error("간편견적서를 작성하시겠습니까?");
+                err.name = "DONT_SELECTED";
+                throw err;
+            }
+            for (var i = 0; i < estimate_item.length; i++) {
+                data.push(estimate_item[i].dataset.code);
+            }
+            fetchData = {
+                code: data,
+                price: price,
+            };
+            isLogined("http://localhost:3000/api/pre_estimate", fetchData);
         }
-        fetchData = {
-            code: data,
-            price: price,
-        };
-        isLogined("http://localhost:3000/api/pre_estimate", fetchData);
+        catch (error) {
+            console.error(error, error.name);
+            estimateForm.submit();
+        }
     });
     //input submit으로 바꾸고 실핼하기
 }
@@ -414,10 +423,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 function get_estimate() {
-    window.history.forward();
-    window.noBack = function () {
-        window.history.forward();
-    };
+    // window.history.forward();
+    // window.noBack = () => {
+    //   window.history.forward();
+    // };
     var width = 500;
     var height = 500;
     var daum = window["daum"];
@@ -437,7 +446,6 @@ function get_estimate() {
     var addFileBtn = document.querySelector(".add_new_image_btn");
     var lat = document.querySelector("#lat");
     var lon = document.querySelector("#lon");
-    var registerFrom = document.querySelector(".register_sympton_form");
     var lengthFlag = true;
     function clickNextBtn() {
         page_1.style.display = "none";
@@ -488,33 +496,77 @@ function get_estimate() {
         }
     }
     function commonMakeImg(data) {
-        var imgBox = document.querySelector(".si-img-itemBox");
-        var addImgBox = document.createElement("div");
-        for (var i = 0; i < data.img.length; i++) {
-            var imgItem = document.createElement("div");
-            var cancelIcon = document.createElement("div");
-            cancelIcon.classList.add("img-box-cancel");
-            imgItem.classList.add("img-item");
-            imgItem.style.backgroundImage = "url(\"/" + data.email.user_objectId + "/" + data.img[i] + "\")";
-            imgItem.dataset.img = data.img[i];
-            imgItem.appendChild(cancelIcon);
-            imgBox.insertBefore(imgItem, imgBox.firstChild);
-            cancelIcon.addEventListener("click", function (e) {
-                var targetData = e.target.parentNode.dataset.img;
-                fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
-                imgBox.removeChild(e.target.parentNode);
+        return __awaiter(this, void 0, void 0, function () {
+            var imgBox, addImgBox, _loop_1, i;
+            var _this = this;
+            return __generator(this, function (_a) {
+                imgBox = document.querySelector(".si-img-itemBox");
+                addImgBox = document.createElement("div");
+                _loop_1 = function (i) {
+                    var imgItem = document.createElement("div");
+                    var cancelIcon = document.createElement("div");
+                    cancelIcon.classList.add("img-box-cancel");
+                    imgItem.classList.add("img-item");
+                    imgItem.style.backgroundImage = "url(\"/" + data.email.user_objectId + "/" + data.img[i] + "\")";
+                    imgItem.dataset.img = data.img[i];
+                    imgItem.appendChild(cancelIcon);
+                    imgBox.insertBefore(imgItem, imgBox.firstChild);
+                    setTimeout(function () {
+                        cancelIcon.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+                            var token, myHeaders, result, response, error_1;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                                        myHeaders = new Headers();
+                                        myHeaders.append("Content-Type", "application/json");
+                                        myHeaders.append("CSRF-Token", token);
+                                        _a.label = 1;
+                                    case 1:
+                                        _a.trys.push([1, 5, , 6]);
+                                        return [4 /*yield*/, fetch("http://localhost:3000/api/delete_img", {
+                                                method: "post",
+                                                credentials: "same-origin",
+                                                headers: myHeaders,
+                                                body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
+                                            })];
+                                    case 2:
+                                        result = _a.sent();
+                                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                                        return [4 /*yield*/, result.json()];
+                                    case 3:
+                                        response = _a.sent();
+                                        lengthOfImg(response);
+                                        _a.label = 4;
+                                    case 4: return [3 /*break*/, 6];
+                                    case 5:
+                                        error_1 = _a.sent();
+                                        console.error(error_1);
+                                        return [2 /*return*/];
+                                    case 6:
+                                        $(e.target.parentNode).remove();
+                                        return [2 /*return*/];
+                                }
+                            });
+                        }); });
+                    }, 1000);
+                };
+                for (i = 0; i < data.img.length; i++) {
+                    _loop_1(i);
+                }
+                addImgBox.classList.add("img-item-addBox");
+                addImgBox.addEventListener("click", function (e) {
+                    if (!lengthFlag) {
+                        alert("등록가능한 사진을 초과하셨습니다.");
+                        return;
+                    }
+                    addFileBtn.click();
+                });
+                imgBox.appendChild(addImgBox);
+                lengthOfImg(data.img);
+                return [2 /*return*/];
             });
-        }
-        addImgBox.classList.add("img-item-addBox");
-        addImgBox.addEventListener("click", function (e) {
-            if (!lengthFlag) {
-                alert("등록가능한 사진을 초과하셨습니다.");
-                return;
-            }
-            addFileBtn.click();
         });
-        imgBox.appendChild(addImgBox);
-        lengthOfImg(data.img);
     }
     function makeSymptonImg(data) {
         if (data.img === undefined) {
@@ -535,7 +587,7 @@ function get_estimate() {
     }
     (function reloadGetSessionData() {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_1;
+            var token, myHeaders, result, response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -560,46 +612,8 @@ function get_estimate() {
                         if (response.state === false) {
                             return [2 /*return*/];
                         }
-                        //if session.img isnt defineded runtun
+                        //if session.img isnt defineded
                         makeSymptonImg(response);
-                        return [3 /*break*/, 5];
-                    case 4: throw new Error("reload fetch failed");
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_1 = _a.sent();
-                        console.error(error_1);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
-                }
-            });
-        });
-    })();
-    function fetchDeleteImg(url, data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch(url, {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ data: data }),
-                            })];
-                    case 2:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
-                    case 3:
-                        response = _a.sent();
-                        lengthOfImg(response);
                         return [3 /*break*/, 5];
                     case 4: throw new Error("reload fetch failed");
                     case 5: return [3 /*break*/, 7];
@@ -611,7 +625,7 @@ function get_estimate() {
                 }
             });
         });
-    }
+    })();
     function fetchImage(url, data) {
         return __awaiter(this, void 0, void 0, function () {
             var formData, i, result, response, error_3;
@@ -635,10 +649,6 @@ function get_estimate() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        if (response.state === false) {
-                            alert("최대 10장까지 등록가능합니다");
-                            return [2 /*return*/];
-                        }
                         if (url === "http://localhost:3000/api/fetch_upload_image") {
                             makeSymptonImg(response);
                         }
@@ -659,7 +669,14 @@ function get_estimate() {
     }
     //리로드시 세션에 있는 정보로 자신을 등록하는 용도
     window.add_fileUpload = function (e) {
+        if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
+            return alert("최대 10장까지 등록가능합니다.");
         fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
+    };
+    window.previous_fileUpload = function (e) {
+        if (e.target.files.length > 10)
+            return alert("최대 10장까지 등록가능합니다.");
+        fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
     };
     window.formAndBlockBack = function () {
         var check = confirm("간편견적을 받아보시겠습니까?");
@@ -670,9 +687,6 @@ function get_estimate() {
             alert("필수사항을 입력해주시길 바랍니다.");
             return false;
         }
-    };
-    window.previous_fileUpload = function (e) {
-        fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
     };
     window.openAddresss = function () {
         new daum.Postcode({
@@ -796,6 +810,7 @@ var p_findAllRegister_1 = __importDefault(__webpack_require__(/*! ./p_findAllReg
 var p_showBeforeEstimate_1 = __importDefault(__webpack_require__(/*! ./p_showBeforeEstimate */ "./dist/public/p_showBeforeEstimate.js"));
 var p_showGotEstimate_1 = __importDefault(__webpack_require__(/*! ./p_showGotEstimate */ "./dist/public/p_showGotEstimate.js"));
 var p_mypage_1 = __importDefault(__webpack_require__(/*! ./p_mypage */ "./dist/public/p_mypage.js"));
+var p_showsubmit_1 = __importDefault(__webpack_require__(/*! ./p_showsubmit */ "./dist/public/p_showsubmit.js"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
 var mainName = document.querySelector(".nb-left-name");
 var path = window.location.pathname;
@@ -816,6 +831,9 @@ if (path === "/provide/sympton_estimate") {
 }
 if (path === "/provide/showGotEstimate") {
     p_showGotEstimate_1.default();
+}
+if (path === "/provide/showsubmit") {
+    p_showsubmit_1.default();
 }
 if (path.split("/")[3] === "estimateDetail") {
     mypageEstimate_1.default();
@@ -870,7 +888,7 @@ if (LoginmyBtn !== null) {
 }
 if (mainName !== null) {
     mainName.addEventListener("click", function () {
-        if (path.split("/")[1] === "api") {
+        if (path.split("/")[0] === "") {
             location.href = "/";
         }
         else if (path.split("/")[1] === "provide") {
@@ -881,7 +899,7 @@ if (mainName !== null) {
 if (logout !== null) {
     logout.addEventListener("click", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[1] === "") {
+            if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[0] === "") {
                 if (confirm("로그아웃 하시겠습니까?")) {
                     logoutForm.action = "/api/logout_process";
                     return [2 /*return*/, logoutForm.submit()];
@@ -1716,8 +1734,6 @@ function mypage() {
                     case 4:
                         error_1 = _a.sent();
                         console.error(error_1);
-                        alert(1);
-                        alert(error_1);
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
                 }
@@ -1766,8 +1782,6 @@ function mypage() {
                     case 5:
                         error_2 = _a.sent();
                         console.error(error_2);
-                        alert(2);
-                        alert(error_2);
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
                 }
@@ -1829,8 +1843,6 @@ function mypage() {
                                 case 5:
                                     error_3 = _a.sent();
                                     console.error(error_3);
-                                    alert(3);
-                                    alert(error_3);
                                     return [3 /*break*/, 6];
                                 case 6: return [2 /*return*/];
                             }
@@ -1848,11 +1860,9 @@ function mypage() {
     // document.onreadystatechange = function () {
     //   var state = document.readyState;
     //   if (state == "interactive") {
-    //     $(".ddd").css("display", "block");
+    //     console.log(1);
     //   } else if (state == "complete") {
-    //     setTimeout(function () {
-    //       $(".ddd").css("display", "none");
-    //     }, 1000);
+    //     console.log(2);
     //   }
     // };
 }
@@ -2770,6 +2780,68 @@ function showGotEstimate() {
 }
 exports.default = showGotEstimate;
 //# sourceMappingURL=p_showGotEstimate.js.map
+
+/***/ }),
+
+/***/ "./dist/public/p_showsubmit.js":
+/*!*************************************!*\
+  !*** ./dist/public/p_showsubmit.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+function showsubmit() {
+    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("CSRF-Token", token);
+    function getSubmitData() {
+        return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
+            return [2 /*return*/];
+        }); });
+    }
+}
+exports.default = showsubmit;
+//# sourceMappingURL=p_showsubmit.js.map
 
 /***/ }),
 

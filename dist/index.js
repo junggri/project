@@ -50,7 +50,11 @@ if (app.get("env") === "production") {
     app.set("trust proxy", 1); // trust first proxy
     sess.cookie.secure = true; // serve secure cookies
 }
-app.use(cors_1.default());
+var corsOptions = {
+    origin: "http://localhost:3000",
+    credentials: true,
+};
+app.use(cors_1.default(corsOptions));
 app.use(cookie_parser_1.default(session_json_1.default.secret));
 app.use(express_session_1.default(sess));
 // app.use(logger("prod", { stream })); //prod combined

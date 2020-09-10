@@ -37,10 +37,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 function get_estimate() {
-    window.history.forward();
-    window.noBack = function () {
-        window.history.forward();
-    };
+    // window.history.forward();
+    // window.noBack = () => {
+    //   window.history.forward();
+    // };
     var width = 500;
     var height = 500;
     var daum = window["daum"];
@@ -60,7 +60,6 @@ function get_estimate() {
     var addFileBtn = document.querySelector(".add_new_image_btn");
     var lat = document.querySelector("#lat");
     var lon = document.querySelector("#lon");
-    var registerFrom = document.querySelector(".register_sympton_form");
     var lengthFlag = true;
     function clickNextBtn() {
         page_1.style.display = "none";
@@ -111,33 +110,77 @@ function get_estimate() {
         }
     }
     function commonMakeImg(data) {
-        var imgBox = document.querySelector(".si-img-itemBox");
-        var addImgBox = document.createElement("div");
-        for (var i = 0; i < data.img.length; i++) {
-            var imgItem = document.createElement("div");
-            var cancelIcon = document.createElement("div");
-            cancelIcon.classList.add("img-box-cancel");
-            imgItem.classList.add("img-item");
-            imgItem.style.backgroundImage = "url(\"/" + data.email.user_objectId + "/" + data.img[i] + "\")";
-            imgItem.dataset.img = data.img[i];
-            imgItem.appendChild(cancelIcon);
-            imgBox.insertBefore(imgItem, imgBox.firstChild);
-            cancelIcon.addEventListener("click", function (e) {
-                var targetData = e.target.parentNode.dataset.img;
-                fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
-                imgBox.removeChild(e.target.parentNode);
+        return __awaiter(this, void 0, void 0, function () {
+            var imgBox, addImgBox, _loop_1, i;
+            var _this = this;
+            return __generator(this, function (_a) {
+                imgBox = document.querySelector(".si-img-itemBox");
+                addImgBox = document.createElement("div");
+                _loop_1 = function (i) {
+                    var imgItem = document.createElement("div");
+                    var cancelIcon = document.createElement("div");
+                    cancelIcon.classList.add("img-box-cancel");
+                    imgItem.classList.add("img-item");
+                    imgItem.style.backgroundImage = "url(\"/" + data.email.user_objectId + "/" + data.img[i] + "\")";
+                    imgItem.dataset.img = data.img[i];
+                    imgItem.appendChild(cancelIcon);
+                    imgBox.insertBefore(imgItem, imgBox.firstChild);
+                    setTimeout(function () {
+                        cancelIcon.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+                            var token, myHeaders, result, response, error_1;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                                        myHeaders = new Headers();
+                                        myHeaders.append("Content-Type", "application/json");
+                                        myHeaders.append("CSRF-Token", token);
+                                        _a.label = 1;
+                                    case 1:
+                                        _a.trys.push([1, 5, , 6]);
+                                        return [4 /*yield*/, fetch("http://localhost:3000/api/delete_img", {
+                                                method: "post",
+                                                credentials: "same-origin",
+                                                headers: myHeaders,
+                                                body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
+                                            })];
+                                    case 2:
+                                        result = _a.sent();
+                                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                                        return [4 /*yield*/, result.json()];
+                                    case 3:
+                                        response = _a.sent();
+                                        lengthOfImg(response);
+                                        _a.label = 4;
+                                    case 4: return [3 /*break*/, 6];
+                                    case 5:
+                                        error_1 = _a.sent();
+                                        console.error(error_1);
+                                        return [2 /*return*/];
+                                    case 6:
+                                        $(e.target.parentNode).remove();
+                                        return [2 /*return*/];
+                                }
+                            });
+                        }); });
+                    }, 1000);
+                };
+                for (i = 0; i < data.img.length; i++) {
+                    _loop_1(i);
+                }
+                addImgBox.classList.add("img-item-addBox");
+                addImgBox.addEventListener("click", function (e) {
+                    if (!lengthFlag) {
+                        alert("등록가능한 사진을 초과하셨습니다.");
+                        return;
+                    }
+                    addFileBtn.click();
+                });
+                imgBox.appendChild(addImgBox);
+                lengthOfImg(data.img);
+                return [2 /*return*/];
             });
-        }
-        addImgBox.classList.add("img-item-addBox");
-        addImgBox.addEventListener("click", function (e) {
-            if (!lengthFlag) {
-                alert("등록가능한 사진을 초과하셨습니다.");
-                return;
-            }
-            addFileBtn.click();
         });
-        imgBox.appendChild(addImgBox);
-        lengthOfImg(data.img);
     }
     function makeSymptonImg(data) {
         if (data.img === undefined) {
@@ -158,7 +201,7 @@ function get_estimate() {
     }
     (function reloadGetSessionData() {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_1;
+            var token, myHeaders, result, response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -183,46 +226,8 @@ function get_estimate() {
                         if (response.state === false) {
                             return [2 /*return*/];
                         }
-                        //if session.img isnt defineded runtun
+                        //if session.img isnt defineded
                         makeSymptonImg(response);
-                        return [3 /*break*/, 5];
-                    case 4: throw new Error("reload fetch failed");
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_1 = _a.sent();
-                        console.error(error_1);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
-                }
-            });
-        });
-    })();
-    function fetchDeleteImg(url, data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch(url, {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ data: data }),
-                            })];
-                    case 2:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
-                    case 3:
-                        response = _a.sent();
-                        lengthOfImg(response);
                         return [3 /*break*/, 5];
                     case 4: throw new Error("reload fetch failed");
                     case 5: return [3 /*break*/, 7];
@@ -234,7 +239,7 @@ function get_estimate() {
                 }
             });
         });
-    }
+    })();
     function fetchImage(url, data) {
         return __awaiter(this, void 0, void 0, function () {
             var formData, i, result, response, error_3;
@@ -258,10 +263,6 @@ function get_estimate() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        if (response.state === false) {
-                            alert("최대 10장까지 등록가능합니다");
-                            return [2 /*return*/];
-                        }
                         if (url === "http://localhost:3000/api/fetch_upload_image") {
                             makeSymptonImg(response);
                         }
@@ -282,7 +283,14 @@ function get_estimate() {
     }
     //리로드시 세션에 있는 정보로 자신을 등록하는 용도
     window.add_fileUpload = function (e) {
+        if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
+            return alert("최대 10장까지 등록가능합니다.");
         fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
+    };
+    window.previous_fileUpload = function (e) {
+        if (e.target.files.length > 10)
+            return alert("최대 10장까지 등록가능합니다.");
+        fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
     };
     window.formAndBlockBack = function () {
         var check = confirm("간편견적을 받아보시겠습니까?");
@@ -293,9 +301,6 @@ function get_estimate() {
             alert("필수사항을 입력해주시길 바랍니다.");
             return false;
         }
-    };
-    window.previous_fileUpload = function (e) {
-        fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
     };
     window.openAddresss = function () {
         new daum.Postcode({
