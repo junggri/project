@@ -84,6 +84,7 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
             case 0:
                 _email = mongo_sanitize_1.default(req.body.email);
                 _pwd = mongo_sanitize_1.default(req.body.pwd);
+                console.log(_email);
                 return [4 /*yield*/, provideModel_1.default.findOne({ email: { $in: [_email] } })];
             case 1:
                 result = _a.sent();
@@ -210,14 +211,13 @@ router.post("/get_sejong", csrfProtection, p_verify_1.verify, p_verify_1.isNotLo
         res.json({ sido: Array.from(new Set(data1)).sort() });
     });
 });
-router.post("/before_getData", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/before_check_getData", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body._id)];
             case 1:
                 result = _a.sent();
-                console.log(result);
                 if (result === null) {
                     return [2 /*return*/, res.json({ state: false })];
                 }

@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from "express";
 import refreshToken from "../lib/refreshtoken";
 import crypto from "crypto";
 import fs from "fs";
-import qs from "querystring";
 import path from "path";
 import moment from "moment";
 import mongoSanitize from "mongo-sanitize";
@@ -274,13 +273,10 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
 });
 
 router.get("/get_estimate", csrfProtection, verify, isNotLogined, (req, res) => {
-  let decoded = getDataFromToken(req, res);
-
-  // if (req.session.img) {
-  //   req.session.img = [];
-  // }
-  let authUI = auth.status(req, res);
   let { code } = req.session;
+  let authUI = auth.status(req, res);
+  let decoded = getDataFromToken(req, res);
+  makeStorage(decoded);
   selcted_sympton(code).then((result) => {
     res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result, price: req.session.price });
   });
@@ -297,8 +293,8 @@ router.post("/fetch_session", parseForm, csrfProtection, verify, (req, res) => {
 });
 
 router.post("/fetch_upload_image", verify, (req: any, res, next) => {
-  req.session.img = [];
   let decoded = getDataFromToken(req, res);
+  req.session.img = [];
   upload(req, res, (err: any) => {
     if (err) {
       console.error(err);
@@ -341,9 +337,9 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
       predict_price: price,
       createdAt: _time,
     };
-    req.session.img = [];
-    req.session.code = [];
-    req.session.price = "";
+    delete req.session.img;
+    delete req.session.code;
+    delete req.session.price;
     req.session.save(() => {
       registerSymController.save(req, res, inputdata, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
       deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
@@ -390,9 +386,7 @@ router.post("/find_provider", csrfProtection, verify, isNotLogined, async (req, 
   } else {
     //견적이 존재하는데 ui가 변경되지 않았을경우를 위함.
     let isSubmited = await submitController.isSubmited(req.body.sympton_id);
-    if (isSubmited.state === "accept") {
-      return res.json({ state: "accept" });
-    }
+    if (isSubmited.state === "accept") return res.json({ state: "accept" });
     return res.json({ data: result, state: true });
   }
 });
@@ -423,22 +417,28 @@ router.post("/accept_estimate", csrfProtection, verify, isNotLogined, async (req
   sendPhone(req, res, "alert", provide_phone_number);
 });
 
-router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async (req, res) => {
-  let authUI = auth.status(req, res);
-  let response = await registerSymController.findCodeBeforeModified(req, res);
-  if (response === null) {
-    return res.redirect("/api/mypage");
-  }
-  let codeList = await selcted_sympton(response.code);
-  req.session._id = req.url.split("/")[2];
-  ///증상 objectid 저장
-  res.render("modified_estimate", { authUI: authUI, csrfToken: req.csrfToken(), register_symptons: codeList });
+router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async (req, res, next) => {
+  try {
+    let response = await registerSymController.findBeforeModified(req, res);
+    // if (response === null) {
+    //   let err = new Error("잘못된 접근입니다.");
+    //   next(err);
+    //   return;
+    // }
+    //modified_get_data 로드되면 아래 실행 없으면 바로알러트 하기떄문에 굳이 없어도 되지 않을까싶다.
+    let authUI = auth.status(req, res);
+    let codeList = await selcted_sympton(response.code);
+    req.session._id = req.url.split("/")[2];
+    ///증상 objectid 저장
+    res.render("modified_estimate", { authUI: authUI, csrfToken: req.csrfToken(), register_symptons: codeList });
+  } catch (error) {}
 });
 
-router.post("/modified_get_image", verify, isNotLogined, async (req, res) => {
+router.post("/modified_get_data", verify, isNotLogined, async (req, res) => {
   req.session.img = [];
   let decoded = getDataFromToken(req, res);
   let response = await registerSymController.findImageBeforeModified(req, res);
+  if (response === null) return res.json({ state: false });
   if (response.img === null) return;
   for (let i = 0; i < response.img.length; i++) {
     req.session.img.push(response.img[i]);
@@ -495,9 +495,13 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     userwant_content: sanitizeHtml(userwant_content),
   };
   registerSymController.modified(req, res, data);
-  req.session.img = [];
-  req.session.code = [];
-  deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
+  delete req.session.img;
+  delete req.session.code;
+  delete req.session._id;
+  req.session.save(() => {
+    deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
+    return res.redirect("/api/mypage");
+  });
 });
 
 router.post("/delete_register_sympton", parseForm, csrfProtection, isNotLogined, async (req, res) => {

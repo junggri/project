@@ -19,6 +19,7 @@ import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
 import qs from "querystring";
 import { makeJuso } from "../lib/p_makeJuso";
+import { reupload } from "src/lib/multer";
 
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
@@ -49,6 +50,7 @@ router.get("/index", csrfProtection, verify, isLogined, (req, res) => {
 router.post("/login_process", parseForm, csrfProtection, async (req, res) => {
   let _email = mongoSanitize(req.body.email);
   let _pwd = mongoSanitize(req.body.pwd);
+  console.log(_email);
   let result: any = await providers.findOne({ email: { $in: [_email] } });
   //보안이라는데;;흠;;;
   // let result: any = await providers.findOne({ email: _email });
@@ -152,10 +154,8 @@ router.post("/get_sejong", csrfProtection, verify, isNotLogined, (req, res) => {
   });
 });
 
-router.post("/before_getData", csrfProtection, verify, isNotLogined, async (req, res) => {
+router.post("/before_check_getData", csrfProtection, verify, isNotLogined, async (req, res) => {
   let result = await registerSymController.showBeforeEstimate(req.body._id);
-  console.log(result);
-
   if (result === null) {
     return res.json({ state: false });
   }

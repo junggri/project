@@ -44,7 +44,6 @@ export default function p_showBeforeEsimate() {
           alert("존재하지 않는 자료입니다.");
           window.location.href = "/provide/findAllRegister";
         }
-
         mainImg.style.backgroundImage = `url("/${response.data.user_object_id}/${response.data.img[0]}")`;
         username.textContent = response.data.user_name;
         createdAt.textContent = response.data.createdAt;

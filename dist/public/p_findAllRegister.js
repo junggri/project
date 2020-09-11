@@ -97,7 +97,7 @@ function p_findAllRegister() {
                                 myHeaders = new Headers();
                                 myHeaders.append("Content-Type", "application/json");
                                 myHeaders.append("CSRF-Token", token);
-                                return [4 /*yield*/, fetch("http://localhost:3000/provide/before_getData", {
+                                return [4 /*yield*/, fetch("http://localhost:3000/provide/before_check_getData", {
                                         method: "post",
                                         credentials: "same-origin",
                                         headers: myHeaders,

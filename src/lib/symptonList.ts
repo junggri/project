@@ -15,16 +15,13 @@ export let symptonList = async () => {
 };
 
 export let selcted_sympton = async (code: any) => {
-  console.log(code);
   let list = "";
   let data: string[] = [];
   if (code === undefined || code.length === 0) return (list = ` <div class="show-user-selected-item">선택하신 증상이 없습니다.</div>`);
-
   for (let i = 0; i < code.length; i++) {
     let result: any = await symptonModel.find({ code: code[i] });
     data.push(result[0].content);
   }
-
   for (let i = 0; i < data.length; i++) {
     list += ` <div class="show-user-selected-item">${data[i]}</div>`;
   }

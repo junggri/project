@@ -54,7 +54,6 @@ function default_1(email, id) {
                     return [4 /*yield*/, registerSymContoller_1.default.getAllImage(id)];
                 case 1:
                     result = _a.sent();
-                    // let users: any = await user.findOne({ email: email }).populate("register_sympton");
                     for (i = 0; i < result.length; i++) {
                         savedImg = arrImg.concat(savedImg, result[i].img);
                     }

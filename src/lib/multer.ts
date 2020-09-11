@@ -3,16 +3,17 @@ import multer from "multer";
 import path from "path";
 import jwt from "jsonwebtoken";
 
+function getDecoded(req: Request) {
+  const token = req.cookies.jwttoken;
+  let decoded: any = jwt.verify(token, process.env.JWT_SECRET);
+  return decoded;
+}
+
 export const upload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      const token = req.cookies.jwttoken;
-      try {
-        let decoded: any = jwt.verify(token, process.env.JWT_SECRET);
-        cb(null, `upload/${decoded.user_objectId}`);
-      } catch (error) {
-        console.error(error);
-      }
+      let decoded = getDecoded(req);
+      cb(null, `upload/${decoded.user_objectId}`);
     },
     filename: function (req, file: any, cb) {
       let filename: string = new Date().valueOf() + path.extname(file.originalname);
@@ -26,13 +27,8 @@ export const upload = multer({
 export const reupload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      const token = req.cookies.jwttoken;
-      try {
-        let decoded: any = jwt.verify(token, process.env.JWT_SECRET);
-        cb(null, `upload/${decoded.user_objectId}`);
-      } catch (error) {
-        console.error(error);
-      }
+      let decoded = getDecoded(req);
+      cb(null, `upload/${decoded.user_objectId}`);
     },
     filename: function (req, file: any, cb) {
       let filename: string = new Date().valueOf() + path.extname(file.originalname);
@@ -48,13 +44,8 @@ export const reupload = multer({
 export const modifiedUpload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      const token = req.cookies.jwttoken;
-      try {
-        let decoded: any = jwt.verify(token, process.env.JWT_SECRET);
-        cb(null, `upload/${decoded.user_objectId}`);
-      } catch (error) {
-        console.error(error);
-      }
+      let decoded = getDecoded(req);
+      cb(null, `upload/${decoded.user_objectId}`);
     },
     filename: async function (req: Request, file: any, cb) {
       let filename: string = new Date().valueOf() + path.extname(file.originalname);
@@ -68,13 +59,8 @@ export const modifiedUpload = multer({
 export const modifiedReupload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
-      const token = req.cookies.jwttoken;
-      try {
-        let decoded: any = jwt.verify(token, process.env.JWT_SECRET);
-        cb(null, `upload/${decoded.user_objectId}`);
-      } catch (error) {
-        console.error(error);
-      }
+      let decoded = getDecoded(req);
+      cb(null, `upload/${decoded.user_objectId}`);
     },
     filename: function (req, file: any, cb) {
       let filename: string = new Date().valueOf() + path.extname(file.originalname);

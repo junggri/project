@@ -20,6 +20,9 @@ router.get("/estimate", jwtverify_1.verify, csrfProtection, function (req, res, 
     var authUI = authStatus_1.default.status(req, res);
     if (req.session.code !== undefined)
         delete req.session.code;
+    if (req.session.img !== undefined)
+        delete req.session.img;
+    console.log(req.session);
     symptonList_1.symptonList().then(function (result) {
         res.render("estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result });
     });

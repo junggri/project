@@ -21,16 +21,16 @@ export default function mypage() {
   let cancelBtn = document.querySelector(".modified-cancel-btn");
   let modifiedBtn = document.querySelector(".modified-estimate-btn") as HTMLInputElement;
   let modifiedForm = document.querySelector(".modified_estimate_form") as HTMLFormElement;
-
+  let imgBox = document.querySelector(".si-img-itemBox");
   let lengthFlag: boolean = true;
-
-  imgBtn.addEventListener("click", () => {
-    fileBtn.click();
-  });
 
   interface Time {
     userwant_time: { time: number; minute: number };
   }
+
+  imgBtn.addEventListener("click", () => {
+    fileBtn.click();
+  });
 
   modifiedBtn.addEventListener("click", (e) => {
     if (confirm("입력하신 정보를 수정하시겠습니까?")) {
@@ -59,19 +59,20 @@ export default function mypage() {
     }
   }
 
-  (async function reloadGetSessionData() {
+  (async () => {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("CSRF-Token", token);
     try {
-      let result = await fetch("http://localhost:3000/api/modified_get_image", {
+      let result: any = await fetch("http://localhost:3000/api/modified_get_data", {
         method: "post",
         credentials: "same-origin",
         headers: myHeaders,
         body: JSON.stringify({ url: window.location.pathname.split("/")[3] }),
       });
       if (result.status === 200 || 201) {
+        if (result.state === false) return alert("자료가 존재하지 않습니다.");
         let response = await result.json();
         sigungu.value = response.response.address.sigungu;
         bname.value = response.response.address.bname;
@@ -114,7 +115,6 @@ export default function mypage() {
   }
 
   function commonMakeImg(data: any) {
-    let imgBox = document.querySelector(".si-img-itemBox");
     let addImgBox = document.createElement("div");
     for (let i = 0; i < data.img.length; i++) {
       let imgItem = document.createElement("div");
@@ -125,18 +125,13 @@ export default function mypage() {
       imgItem.dataset.img = data.img[i];
       imgItem.appendChild(cancelIcon);
       imgBox.insertBefore(imgItem, imgBox.firstChild);
-      cancelIcon.addEventListener("click", (e: any) => {
-        let targetData = e.target.parentNode.dataset.img;
-        fetchDeleteImg("http://localhost:3000/api/delete_session_img", targetData);
-        imgBox.removeChild(e.target.parentNode);
+      cancelIcon.addEventListener("click", async (e: any) => {
+        await fetchDeleteImg(e);
       });
     }
     addImgBox.classList.add("img-item-addBox");
     addImgBox.addEventListener("click", (e) => {
-      if (!lengthFlag) {
-        alert("등록가능한 사진을 초과하셨습니다.");
-        return;
-      }
+      if (!lengthFlag) return alert("등록가능한 사진을 초과하셨습니다.");
       addFileBtn.click();
     });
     imgBox.appendChild(addImgBox);
@@ -144,9 +139,7 @@ export default function mypage() {
   }
 
   function makeSymptonImg(data: any) {
-    if (data.img === undefined) {
-      return;
-    }
+    if (data.img === undefined) return;
     imgBtn.style.display = "none";
     commonMakeImg(data);
   }
@@ -162,21 +155,22 @@ export default function mypage() {
     commonMakeImg(data);
   }
 
-  async function fetchDeleteImg(url: string, data: string) {
+  async function fetchDeleteImg(e: any) {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("CSRF-Token", token);
     try {
-      let result = await fetch(url, {
+      let result = await fetch("http://localhost:3000/api/modified_delete_session_img", {
         method: "post",
         credentials: "same-origin",
         headers: myHeaders,
-        body: JSON.stringify({ data: data }),
+        body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
         lengthOfImg(response);
+        if (response.length !== 0) imgBox.removeChild(e.target.parentNode);
       } else {
         throw new Error("reload fetch failed");
       }
@@ -197,15 +191,7 @@ export default function mypage() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
-        if (response.state === false) {
-          alert("최대 10장까지 등록가능합니다");
-          return;
-        }
-        if (url === "http://localhost:3000/api/modified_upload_image") {
-          makeSymptonImg(response);
-        } else {
-          removeAndMakeNewImage(response);
-        }
+        url === "http://localhost:3000/api/modified_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
       } else {
         throw new Error("fetch_image failed");
       }
@@ -216,10 +202,12 @@ export default function mypage() {
   //리로드시 세션에 있는 정보로 자신을 등록하는 용도
 
   window.add_fileUpload = (e: any) => {
+    if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10) return alert("최대 10장까지 등록가능합니다.");
     fetchImage("http://localhost:3000/api/modified_add_upload_image", e.target.files);
   };
 
   window.previous_fileUpload = (e: any) => {
+    if (e.target.files.length > 10) return alert("최대 10장까지 등록가능합니다.");
     fetchImage("http://localhost:3000/api/modified_upload_image", e.target.files);
   };
 
@@ -252,7 +240,6 @@ export default function mypage() {
             });
           })
           .then((result: any) => {
-            console.log(result);
             postcode.value = data.zonecode;
             roadAddress.value = roadAddr;
             sigunguCode.value = data.sigunguCode;

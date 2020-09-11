@@ -330,12 +330,10 @@ router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
     }
 });
 router.get("/get_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
-    var decoded = getDataFromToken_1.default(req, res);
-    // if (req.session.img) {
-    //   req.session.img = [];
-    // }
-    var authUI = authStatus_1.default.status(req, res);
     var code = req.session.code;
+    var authUI = authStatus_1.default.status(req, res);
+    var decoded = getDataFromToken_1.default(req, res);
+    makeStorage(decoded);
     symptonList_1.selcted_sympton(code).then(function (result) {
         res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result, price: req.session.price });
     });
@@ -349,8 +347,8 @@ router.post("/fetch_session", parseForm, csrfProtection, jwtverify_1.verify, fun
     req.session.img === undefined || req.session.img.length === 0 ? res.json({ state: false }) : res.json({ img: req.session.img, email: decoded });
 });
 router.post("/fetch_upload_image", jwtverify_1.verify, function (req, res, next) {
-    req.session.img = [];
     var decoded = getDataFromToken_1.default(req, res);
+    req.session.img = [];
     multer_1.upload(req, res, function (err) {
         if (err) {
             console.error(err);
@@ -391,9 +389,9 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
             predict_price: price,
             createdAt: _time,
         };
-        req.session.img = [];
-        req.session.code = [];
-        req.session.price = "";
+        delete req.session.img;
+        delete req.session.code;
+        delete req.session.price;
         req.session.save(function () {
             registerSymContoller_1.default.save(req, res, inputdata_1, decoded_1.email, decoded_1.user_objectId);
             deleteImg_1.default(decoded_1.email, decoded_1.user_objectId);
@@ -454,9 +452,8 @@ router.post("/find_provider", csrfProtection, jwtverify_1.verify, jwtverify_1.is
             case 2: return [4 /*yield*/, submitController_1.default.isSubmited(req.body.sympton_id)];
             case 3:
                 isSubmited = _a.sent();
-                if (isSubmited.state === "accept") {
+                if (isSubmited.state === "accept")
                     return [2 /*return*/, res.json({ state: "accept" })];
-                }
                 return [2 /*return*/, res.json({ data: result, state: true })];
         }
     });
@@ -513,29 +510,31 @@ router.post("/accept_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.
         }
     });
 }); });
-router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var authUI, response, codeList;
+router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var response, authUI, codeList, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                authUI = authStatus_1.default.status(req, res);
-                return [4 /*yield*/, registerSymContoller_1.default.findCodeBeforeModified(req, res)];
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, registerSymContoller_1.default.findBeforeModified(req, res)];
             case 1:
                 response = _a.sent();
-                if (response === null) {
-                    return [2 /*return*/, res.redirect("/api/mypage")];
-                }
+                authUI = authStatus_1.default.status(req, res);
                 return [4 /*yield*/, symptonList_1.selcted_sympton(response.code)];
             case 2:
                 codeList = _a.sent();
                 req.session._id = req.url.split("/")[2];
                 ///증상 objectid 저장
                 res.render("modified_estimate", { authUI: authUI, csrfToken: req.csrfToken(), register_symptons: codeList });
-                return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _a.sent();
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
-router.post("/modified_get_image", jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/modified_get_data", jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var decoded, response, i;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -545,6 +544,8 @@ router.post("/modified_get_image", jwtverify_1.verify, jwtverify_1.isNotLogined,
                 return [4 /*yield*/, registerSymContoller_1.default.findImageBeforeModified(req, res)];
             case 1:
                 response = _a.sent();
+                if (response === null)
+                    return [2 /*return*/, res.json({ state: false })];
                 if (response.img === null)
                     return [2 /*return*/];
                 for (i = 0; i < response.img.length; i++) {
@@ -601,12 +602,16 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
         userwant_content: sanitize_html_1.default(userwant_content),
     };
     registerSymContoller_1.default.modified(req, res, data);
-    req.session.img = [];
-    req.session.code = [];
-    deleteImg_1.default(decoded.email, decoded.user_objectId);
+    delete req.session.img;
+    delete req.session.code;
+    delete req.session._id;
+    req.session.save(function () {
+        deleteImg_1.default(decoded.email, decoded.user_objectId);
+        return res.redirect("/api/mypage");
+    });
 });
 router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var token, decoded, result, error_3;
+    var token, decoded, result, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -622,8 +627,8 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.i
                 res.json(result);
                 return [3 /*break*/, 4];
             case 3:
-                error_3 = _a.sent();
-                console.error(error_3, "로그인이 되지 않았습니다.");
+                error_4 = _a.sent();
+                console.error(error_4, "로그인이 되지 않았습니다.");
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }

@@ -62,7 +62,6 @@ exports.selcted_sympton = function (code) { return __awaiter(void 0, void 0, voi
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log(code);
                 list = "";
                 data = [];
                 if (code === undefined || code.length === 0)

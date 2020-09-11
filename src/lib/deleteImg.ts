@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import user from "../lib/model/usermodel";
 import registerController from "../lib/controller/registerSymContoller";
 let savedImg: string[] = [];
 let arrImg: string[] = [];
@@ -8,7 +7,6 @@ let arrImg: string[] = [];
 export default async function (email: string, id: string) {
   let imgPath = path.join(__dirname, `../../upload/${id}`);
   let result = await registerController.getAllImage(id);
-  // let users: any = await user.findOne({ email: email }).populate("register_sympton");
 
   for (let i = 0; i < result.length; i++) {
     savedImg = arrImg.concat(savedImg, result[i].img);

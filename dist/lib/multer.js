@@ -43,17 +43,16 @@ exports.modifiedReupload = exports.modifiedUpload = exports.reupload = exports.u
 var multer_1 = __importDefault(require("multer"));
 var path_1 = __importDefault(require("path"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+function getDecoded(req) {
+    var token = req.cookies.jwttoken;
+    var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+    return decoded;
+}
 exports.upload = multer_1.default({
     storage: multer_1.default.diskStorage({
         destination: function (req, file, cb) {
-            var token = req.cookies.jwttoken;
-            try {
-                var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                cb(null, "upload/" + decoded.user_objectId);
-            }
-            catch (error) {
-                console.error(error);
-            }
+            var decoded = getDecoded(req);
+            cb(null, "upload/" + decoded.user_objectId);
         },
         filename: function (req, file, cb) {
             var filename = new Date().valueOf() + path_1.default.extname(file.originalname);
@@ -66,14 +65,8 @@ exports.upload = multer_1.default({
 exports.reupload = multer_1.default({
     storage: multer_1.default.diskStorage({
         destination: function (req, file, cb) {
-            var token = req.cookies.jwttoken;
-            try {
-                var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                cb(null, "upload/" + decoded.user_objectId);
-            }
-            catch (error) {
-                console.error(error);
-            }
+            var decoded = getDecoded(req);
+            cb(null, "upload/" + decoded.user_objectId);
         },
         filename: function (req, file, cb) {
             var filename = new Date().valueOf() + path_1.default.extname(file.originalname);
@@ -88,14 +81,8 @@ exports.reupload = multer_1.default({
 exports.modifiedUpload = multer_1.default({
     storage: multer_1.default.diskStorage({
         destination: function (req, file, cb) {
-            var token = req.cookies.jwttoken;
-            try {
-                var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                cb(null, "upload/" + decoded.user_objectId);
-            }
-            catch (error) {
-                console.error(error);
-            }
+            var decoded = getDecoded(req);
+            cb(null, "upload/" + decoded.user_objectId);
         },
         filename: function (req, file, cb) {
             return __awaiter(this, void 0, void 0, function () {
@@ -114,14 +101,8 @@ exports.modifiedUpload = multer_1.default({
 exports.modifiedReupload = multer_1.default({
     storage: multer_1.default.diskStorage({
         destination: function (req, file, cb) {
-            var token = req.cookies.jwttoken;
-            try {
-                var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                cb(null, "upload/" + decoded.user_objectId);
-            }
-            catch (error) {
-                console.error(error);
-            }
+            var decoded = getDecoded(req);
+            cb(null, "upload/" + decoded.user_objectId);
         },
         filename: function (req, file, cb) {
             var filename = new Date().valueOf() + path_1.default.extname(file.originalname);

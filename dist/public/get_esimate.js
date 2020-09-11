@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 function get_estimate() {
+    var _this = this;
     // window.history.forward();
     // window.noBack = () => {
     //   window.history.forward();
@@ -60,6 +61,12 @@ function get_estimate() {
     var addFileBtn = document.querySelector(".add_new_image_btn");
     var lat = document.querySelector("#lat");
     var lon = document.querySelector("#lon");
+    var submitForm = document.querySelector(".register_sympton_form");
+    var symptonDetailBox = document.querySelector("#sympton-detail");
+    var timeBox = document.querySelector("#st-time");
+    var minuteBox = document.querySelector("#st-minute");
+    var userWantContent = document.querySelector("#userwant-box");
+    var imgBox = document.querySelector(".si-img-itemBox");
     var lengthFlag = true;
     function clickNextBtn() {
         page_1.style.display = "none";
@@ -93,12 +100,13 @@ function get_estimate() {
         var imgLength = document.querySelector(".si-img-length");
         imgLength.textContent = data.length + " / 10\uAC1C \uB4F1\uB85D";
         if (data.length === 0) {
-            var imgBox = document.querySelector(".si-img-itemBox");
-            while (imgBox.hasChildNodes) {
-                if (imgBox.firstChild === null) {
+            //delete add-fetch-btn-img
+            var imgBox_1 = document.querySelector(".si-img-itemBox");
+            while (imgBox_1.hasChildNodes) {
+                if (imgBox_1.firstChild === null) {
                     break;
                 }
-                imgBox.removeChild(imgBox.firstChild);
+                imgBox_1.removeChild(imgBox_1.firstChild);
             }
             imgBtn.style.display = "block";
         }
@@ -111,69 +119,34 @@ function get_estimate() {
     }
     function commonMakeImg(data) {
         return __awaiter(this, void 0, void 0, function () {
-            var imgBox, addImgBox, _loop_1, i;
+            var addImgBox, i, imgItem, cancelIcon;
             var _this = this;
             return __generator(this, function (_a) {
-                imgBox = document.querySelector(".si-img-itemBox");
                 addImgBox = document.createElement("div");
-                _loop_1 = function (i) {
-                    var imgItem = document.createElement("div");
-                    var cancelIcon = document.createElement("div");
+                for (i = 0; i < data.img.length; i++) {
+                    imgItem = document.createElement("div");
+                    cancelIcon = document.createElement("div");
                     cancelIcon.classList.add("img-box-cancel");
                     imgItem.classList.add("img-item");
                     imgItem.style.backgroundImage = "url(\"/" + data.email.user_objectId + "/" + data.img[i] + "\")";
                     imgItem.dataset.img = data.img[i];
                     imgItem.appendChild(cancelIcon);
                     imgBox.insertBefore(imgItem, imgBox.firstChild);
-                    setTimeout(function () {
-                        cancelIcon.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                            var token, myHeaders, result, response, error_1;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                                        myHeaders = new Headers();
-                                        myHeaders.append("Content-Type", "application/json");
-                                        myHeaders.append("CSRF-Token", token);
-                                        _a.label = 1;
-                                    case 1:
-                                        _a.trys.push([1, 5, , 6]);
-                                        return [4 /*yield*/, fetch("http://localhost:3000/api/delete_img", {
-                                                method: "post",
-                                                credentials: "same-origin",
-                                                headers: myHeaders,
-                                                body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
-                                            })];
-                                    case 2:
-                                        result = _a.sent();
-                                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                                        return [4 /*yield*/, result.json()];
-                                    case 3:
-                                        response = _a.sent();
-                                        lengthOfImg(response);
-                                        _a.label = 4;
-                                    case 4: return [3 /*break*/, 6];
-                                    case 5:
-                                        error_1 = _a.sent();
-                                        console.error(error_1);
-                                        return [2 /*return*/];
-                                    case 6:
-                                        $(e.target.parentNode).remove();
-                                        return [2 /*return*/];
-                                }
-                            });
-                        }); });
-                    }, 1000);
-                };
-                for (i = 0; i < data.img.length; i++) {
-                    _loop_1(i);
+                    cancelIcon.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, delete_img_session(e)];
+                                case 1:
+                                    _a.sent();
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); });
                 }
                 addImgBox.classList.add("img-item-addBox");
                 addImgBox.addEventListener("click", function (e) {
-                    if (!lengthFlag) {
-                        alert("등록가능한 사진을 초과하셨습니다.");
-                        return;
-                    }
+                    if (!lengthFlag)
+                        return alert("등록가능한 사진을 초과하셨습니다.");
                     addFileBtn.click();
                 });
                 imgBox.appendChild(addImgBox);
@@ -182,26 +155,9 @@ function get_estimate() {
             });
         });
     }
-    function makeSymptonImg(data) {
-        if (data.img === undefined) {
-            return;
-        }
-        imgBtn.style.display = "none";
-        commonMakeImg(data);
-    }
-    function removeAndMakeNewImage(data) {
-        var imgBox = document.querySelector(".si-img-itemBox");
-        while (imgBox.hasChildNodes) {
-            if (imgBox.firstChild === null) {
-                break;
-            }
-            imgBox.removeChild(imgBox.firstChild);
-        }
-        commonMakeImg(data);
-    }
-    (function reloadGetSessionData() {
+    function delete_img_session(e) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_2;
+            var token, myHeaders, result, response, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -211,11 +167,12 @@ function get_estimate() {
                         myHeaders.append("CSRF-Token", token);
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/fetch_session", {
+                        _a.trys.push([1, 5, , 6]);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/delete_img", {
                                 method: "post",
                                 credentials: "same-origin",
                                 headers: myHeaders,
+                                body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
                             })];
                     case 2:
                         result = _a.sent();
@@ -223,26 +180,78 @@ function get_estimate() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        if (response.state === false) {
-                            return [2 /*return*/];
-                        }
-                        //if session.img isnt defineded
-                        makeSymptonImg(response);
-                        return [3 /*break*/, 5];
-                    case 4: throw new Error("reload fetch failed");
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_2 = _a.sent();
-                        console.error(error_2);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        lengthOfImg(response);
+                        if (response.length !== 0)
+                            imgBox.removeChild(e.target.parentNode);
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_1 = _a.sent();
+                        console.error(error_1);
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
-    })();
+    }
+    (function () { return __awaiter(_this, void 0, void 0, function () {
+        var token, myHeaders, result, response, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                    myHeaders = new Headers();
+                    myHeaders.append("Content-Type", "application/json");
+                    myHeaders.append("CSRF-Token", token);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 6, , 7]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/fetch_session", {
+                            method: "post",
+                            credentials: "same-origin",
+                            headers: myHeaders,
+                        })];
+                case 2:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, result.json()];
+                case 3:
+                    response = _a.sent();
+                    //if session.img isnt defineded
+                    if (response.state === false)
+                        return [2 /*return*/];
+                    makeSymptonImg(response);
+                    return [3 /*break*/, 5];
+                case 4: throw new Error("reload fetch failed");
+                case 5: return [3 /*break*/, 7];
+                case 6:
+                    error_2 = _a.sent();
+                    console.error(error_2);
+                    return [3 /*break*/, 7];
+                case 7: return [2 /*return*/];
+            }
+        });
+    }); })();
+    function makeSymptonImg(data) {
+        if (data.img === undefined)
+            return;
+        imgBtn.style.display = "none";
+        commonMakeImg(data);
+    }
+    function removeAndMakeNewImage(data) {
+        var imgBox = document.querySelector(".si-img-itemBox");
+        //remove img-item which is already made item
+        while (imgBox.hasChildNodes) {
+            if (imgBox.firstChild === null) {
+                break;
+            }
+            imgBox.removeChild(imgBox.firstChild);
+        }
+        commonMakeImg(data);
+    }
     function fetchImage(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var formData, i, result, response, error_3;
+            var formData, i, result, response, err, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -255,6 +264,7 @@ function get_estimate() {
                         _a.trys.push([1, 6, , 7]);
                         return [4 /*yield*/, fetch(url, {
                                 method: "POST",
+                                credentials: "same-origin",
                                 body: formData,
                             })];
                     case 2:
@@ -263,25 +273,22 @@ function get_estimate() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        if (url === "http://localhost:3000/api/fetch_upload_image") {
-                            makeSymptonImg(response);
-                        }
-                        else {
-                            removeAndMakeNewImage(response);
-                        }
+                        url === "http://localhost:3000/api/fetch_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
                         return [3 /*break*/, 5];
-                    case 4: throw new Error("fetch_image failed");
+                    case 4:
+                        err = new Error("fetch 실패(사진등록)");
+                        err.name = "FAIL_SAVE_IMG_INSESSION";
+                        throw err;
                     case 5: return [3 /*break*/, 7];
                     case 6:
                         error_3 = _a.sent();
-                        console.error(error_3);
+                        console.error(1, error_3);
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];
                 }
             });
         });
     }
-    //리로드시 세션에 있는 정보로 자신을 등록하는 용도
     window.add_fileUpload = function (e) {
         if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
@@ -295,10 +302,14 @@ function get_estimate() {
     window.formAndBlockBack = function () {
         var check = confirm("간편견적을 받아보시겠습니까?");
         if (check) {
-            return true;
+            if (symptonDetailBox.value === "" || timeBox.value === "" || minuteBox.value === "" || userWantContent.value === "") {
+                return alert("필수사항을 입력해주시길 바랍니다.");
+            }
+            else {
+                submitForm.submit();
+            }
         }
         else {
-            alert("필수사항을 입력해주시길 바랍니다.");
             return false;
         }
     };

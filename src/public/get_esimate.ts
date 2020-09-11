@@ -13,7 +13,6 @@ export default function get_estimate() {
   // window.noBack = () => {
   //   window.history.forward();
   // };
-
   let width = 500;
   let height = 500;
   let daum: any = window["daum"];
@@ -33,6 +32,12 @@ export default function get_estimate() {
   let addFileBtn = document.querySelector(".add_new_image_btn") as HTMLElement;
   let lat = document.querySelector("#lat") as HTMLInputElement;
   let lon = document.querySelector("#lon") as HTMLInputElement;
+  let submitForm = document.querySelector(".register_sympton_form") as HTMLFormElement;
+  let symptonDetailBox = document.querySelector("#sympton-detail") as HTMLTextAreaElement;
+  let timeBox = document.querySelector("#st-time") as HTMLInputElement;
+  let minuteBox = document.querySelector("#st-minute") as HTMLInputElement;
+  let userWantContent = document.querySelector("#userwant-box") as HTMLTextAreaElement;
+  let imgBox = document.querySelector(".si-img-itemBox");
   let lengthFlag: boolean = true;
 
   function clickNextBtn() {
@@ -59,6 +64,7 @@ export default function get_estimate() {
     clickNextBtn();
     moveTop();
   });
+
   previousBtn.addEventListener("click", (): void => {
     clickPreviousBtn();
     moveTop();
@@ -72,6 +78,7 @@ export default function get_estimate() {
     let imgLength = document.querySelector(".si-img-length");
     imgLength.textContent = `${data.length} / 10개 등록`;
     if (data.length === 0) {
+      //delete add-fetch-btn-img
       let imgBox = document.querySelector(".si-img-itemBox");
       while (imgBox.hasChildNodes) {
         if (imgBox.firstChild === null) {
@@ -88,7 +95,6 @@ export default function get_estimate() {
   }
 
   async function commonMakeImg(data: any) {
-    let imgBox = document.querySelector(".si-img-itemBox");
     let addImgBox = document.createElement("div");
     for (let i = 0; i < data.img.length; i++) {
       let imgItem = document.createElement("div");
@@ -99,66 +105,42 @@ export default function get_estimate() {
       imgItem.dataset.img = data.img[i];
       imgItem.appendChild(cancelIcon);
       imgBox.insertBefore(imgItem, imgBox.firstChild);
-
-      setTimeout(() => {
-        cancelIcon.addEventListener("click", async (e: any) => {
-          let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-          let myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-          myHeaders.append("CSRF-Token", token);
-          try {
-            let result = await fetch("http://localhost:3000/api/delete_img", {
-              method: "post",
-              credentials: "same-origin",
-              headers: myHeaders,
-              body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
-            });
-            if (result.status === 200 || 201) {
-              let response = await result.json();
-              lengthOfImg(response);
-            }
-          } catch (error) {
-            console.error(error);
-            return;
-          }
-          $(e.target.parentNode).remove();
-        });
-      }, 1000);
+      cancelIcon.addEventListener("click", async (e: any) => {
+        await delete_img_session(e);
+      });
     }
-
     addImgBox.classList.add("img-item-addBox");
-
     addImgBox.addEventListener("click", (e) => {
-      if (!lengthFlag) {
-        alert("등록가능한 사진을 초과하셨습니다.");
-        return;
-      }
+      if (!lengthFlag) return alert("등록가능한 사진을 초과하셨습니다.");
       addFileBtn.click();
     });
     imgBox.appendChild(addImgBox);
     lengthOfImg(data.img);
   }
 
-  function makeSymptonImg(data: any) {
-    if (data.img === undefined) {
-      return;
-    }
-    imgBtn.style.display = "none";
-    commonMakeImg(data);
-  }
-
-  function removeAndMakeNewImage(data: any) {
-    let imgBox = document.querySelector(".si-img-itemBox");
-    while (imgBox.hasChildNodes) {
-      if (imgBox.firstChild === null) {
-        break;
+  async function delete_img_session(e: any) {
+    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("CSRF-Token", token);
+    try {
+      let result = await fetch("http://localhost:3000/api/delete_img", {
+        method: "post",
+        credentials: "same-origin",
+        headers: myHeaders,
+        body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
+      });
+      if (result.status === 200 || 201) {
+        let response = await result.json();
+        lengthOfImg(response);
+        if (response.length !== 0) imgBox.removeChild(e.target.parentNode);
       }
-      imgBox.removeChild(imgBox.firstChild);
+    } catch (error) {
+      console.error(error);
     }
-    commonMakeImg(data);
   }
 
-  (async function reloadGetSessionData() {
+  (async () => {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -171,10 +153,8 @@ export default function get_estimate() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
-        if (response.state === false) {
-          return;
-        }
         //if session.img isnt defineded
+        if (response.state === false) return;
         makeSymptonImg(response);
       } else {
         throw new Error("reload fetch failed");
@@ -184,6 +164,24 @@ export default function get_estimate() {
     }
   })();
 
+  function makeSymptonImg(data: any) {
+    if (data.img === undefined) return;
+    imgBtn.style.display = "none";
+    commonMakeImg(data);
+  }
+
+  function removeAndMakeNewImage(data: any) {
+    let imgBox = document.querySelector(".si-img-itemBox");
+    //remove img-item which is already made item
+    while (imgBox.hasChildNodes) {
+      if (imgBox.firstChild === null) {
+        break;
+      }
+      imgBox.removeChild(imgBox.firstChild);
+    }
+    commonMakeImg(data);
+  }
+
   async function fetchImage(url: string, data: any) {
     let formData = new FormData();
     for (let i = 0; i < data.length; i++) {
@@ -192,23 +190,21 @@ export default function get_estimate() {
     try {
       let result = await fetch(url, {
         method: "POST",
+        credentials: "same-origin",
         body: formData,
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
-        if (url === "http://localhost:3000/api/fetch_upload_image") {
-          makeSymptonImg(response);
-        } else {
-          removeAndMakeNewImage(response);
-        }
+        url === "http://localhost:3000/api/fetch_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
       } else {
-        throw new Error("fetch_image failed");
+        let err = new Error("fetch 실패(사진등록)");
+        err.name = "FAIL_SAVE_IMG_INSESSION";
+        throw err;
       }
     } catch (error) {
-      console.error(error);
+      console.error(1, error);
     }
   }
-  //리로드시 세션에 있는 정보로 자신을 등록하는 용도
 
   window.add_fileUpload = (e: any) => {
     if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10) return alert("최대 10장까지 등록가능합니다.");
@@ -223,9 +219,12 @@ export default function get_estimate() {
   window.formAndBlockBack = () => {
     let check = confirm("간편견적을 받아보시겠습니까?");
     if (check) {
-      return true;
+      if (symptonDetailBox.value === "" || timeBox.value === "" || minuteBox.value === "" || userWantContent.value === "") {
+        return alert("필수사항을 입력해주시길 바랍니다.");
+      } else {
+        submitForm.submit();
+      }
     } else {
-      alert("필수사항을 입력해주시길 바랍니다.");
       return false;
     }
   };

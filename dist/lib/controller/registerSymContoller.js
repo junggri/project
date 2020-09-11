@@ -340,7 +340,7 @@ registerSymController.getAllImage = function (id) { return __awaiter(void 0, voi
         }
     });
 }); };
-registerSymController.findCodeBeforeModified = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+registerSymController.findBeforeModified = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -363,24 +363,32 @@ registerSymController.findImageBeforeModified = function (req, res) { return __a
     });
 }); };
 registerSymController.modified = function (req, res, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content, sigunguCode, sigungu, bname, bname1, lat, lon;
+    var sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content, sigunguCode, sigungu, bname, bname1, lat, lon, error_1;
     return __generator(this, function (_a) {
-        sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content, sigunguCode = data.sigunguCode, sigungu = data.sigungu, bname = data.bname, bname1 = data.bname1, lat = data.lat, lon = data.lon;
-        registerSymModel_1.default
-            .updateOne({ _id: req.session._id }, {
-            $set: {
-                sympton_detail: sympton_detail,
-                img: img,
-                userwant_time: { time: time, minute: minute },
-                address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress, lat: lat, lon: lon },
-                userwant_content: userwant_content,
-            },
-        })
-            .then(function () {
-            req.session._id = "";
-            return res.redirect("/api/mypage");
-        });
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                sympton_detail = data.sympton_detail, time = data.time, minute = data.minute, img = data.img, postcode = data.postcode, roadAddress = data.roadAddress, detailAddress = data.detailAddress, userwant_content = data.userwant_content, sigunguCode = data.sigunguCode, sigungu = data.sigungu, bname = data.bname, bname1 = data.bname1, lat = data.lat, lon = data.lon;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, registerSymModel_1.default.updateOne({ _id: req.session._id }, {
+                        $set: {
+                            sympton_detail: sympton_detail,
+                            img: img,
+                            userwant_time: { time: time, minute: minute },
+                            address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress, lat: lat, lon: lon },
+                            userwant_content: userwant_content,
+                        },
+                    })];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                error_1 = _a.sent();
+                console.error(error_1);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
     });
 }); };
 registerSymController.isFullSubmit = function (data) { return __awaiter(void 0, void 0, void 0, function () {

@@ -36,7 +36,6 @@ export default function mypage() {
             headers: myHeaders,
             body: JSON.stringify({ id: target.dataset.id }),
           });
-          let response = await result.json();
         } catch (error) {
           console.error(error);
         }
@@ -62,11 +61,16 @@ export default function mypage() {
           let response = await result.json();
           if (response.state === false) return alert("받은 견적이 존재하지 않습니다.");
           if (response.state === "accept") {
+            //혹시나 ui가 렌더링 되지 않았을 경우를 위
             alert("이미 진행중인 견적입니다.");
             window.location.reload();
             return;
           }
           window.location.href = `estimateDetail/${target.dataset.id}`;
+        } else {
+          let error = new Error("에러발생");
+          error.name = "error";
+          throw error;
         }
       } catch (error) {
         console.error(error);
@@ -91,9 +95,7 @@ export default function mypage() {
         try {
           if (result.status === 200 || 201) {
             let response = await result.json();
-            console.log(response);
             let payment;
-            console.log(response.submit.payment);
             response.submit.payment === false ? (payment = "결제전") : (payment = "결제 완료");
             showStatebox.style.display = "block";
             $(".show-providerAndsympton-dataBox").css({
@@ -103,24 +105,28 @@ export default function mypage() {
             priceValue.textContent = `${response.submit.submit_price} 원`;
             contentValue.textContent = response.submit.content;
             statePayment.textContent = payment;
+            checkBtn.addEventListener("click", (e) => {
+              showStatebox.style.display = "none";
+            });
+          } else {
+            let error = new Error("에러발생");
+            error.name = "error";
+            throw error;
           }
-
-          checkBtn.addEventListener("click", (e) => {
-            showStatebox.style.display = "none";
-          });
         } catch (error) {
           console.error(error);
         }
       });
     }
   }
+
   addEventOnShowAcceptBtn(showAccept);
-  // document.onreadystatechange = function () {
-  //   var state = document.readyState;
-  //   if (state == "interactive") {
-  //     console.log(1);
-  //   } else if (state == "complete") {
-  //     console.log(2);
-  //   }
-  // };
+  document.onreadystatechange = () => {
+    let state = document.readyState;
+    if (state == "interactive") {
+      console.log(1);
+    } else if (state == "complete") {
+      console.log(2);
+    }
+  };
 }

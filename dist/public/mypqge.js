@@ -59,13 +59,13 @@ function mypage() {
     }
     var _loop_2 = function (i) {
         deleteBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var deleteConfirm, target, token, myHeaders, result, response, error_1;
+            var deleteConfirm, target, token, myHeaders, result, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         deleteConfirm = confirm("정말로 등록을 삭제하시겠습니까?");
                         target = deleteBtn[i].parentNode.parentNode.parentNode;
-                        if (!deleteConfirm) return [3 /*break*/, 5];
+                        if (!deleteConfirm) return [3 /*break*/, 4];
                         target.parentNode.removeChild(target);
                         token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
                         myHeaders = new Headers();
@@ -73,7 +73,7 @@ function mypage() {
                         myHeaders.append("CSRF-Token", token);
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
+                        _a.trys.push([1, 3, , 4]);
                         return [4 /*yield*/, fetch("http://localhost:3000/api/delete_register_sympton", {
                                 method: "post",
                                 credentials: "same-origin",
@@ -82,15 +82,12 @@ function mypage() {
                             })];
                     case 2:
                         result = _a.sent();
-                        return [4 /*yield*/, result.json()];
+                        return [3 /*break*/, 4];
                     case 3:
-                        response = _a.sent();
-                        return [3 /*break*/, 5];
-                    case 4:
                         error_1 = _a.sent();
                         console.error(error_1);
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         }); });
@@ -100,7 +97,7 @@ function mypage() {
     }
     var _loop_3 = function (i) {
         showBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var target, token, myHeaders, result, response, error_2;
+            var target, token, myHeaders, result, response, error, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -119,7 +116,7 @@ function mypage() {
                         result = _a.sent();
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 5, , 6]);
+                        _a.trys.push([2, 6, , 7]);
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                         return [4 /*yield*/, result.json()];
                     case 3:
@@ -127,18 +124,23 @@ function mypage() {
                         if (response.state === false)
                             return [2 /*return*/, alert("받은 견적이 존재하지 않습니다.")];
                         if (response.state === "accept") {
+                            //혹시나 ui가 렌더링 되지 않았을 경우를 위
                             alert("이미 진행중인 견적입니다.");
                             window.location.reload();
                             return [2 /*return*/];
                         }
                         window.location.href = "estimateDetail/" + target.dataset.id;
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                        return [3 /*break*/, 5];
+                    case 4:
+                        error = new Error("에러발생");
+                        error.name = "error";
+                        throw error;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         error_2 = _a.sent();
                         console.error(error_2);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         }); });
@@ -153,7 +155,7 @@ function mypage() {
             return __generator(this, function (_a) {
                 _loop_4 = function (i) {
                     showAccept[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                        var target, token, myHeaders, result, response, payment, error_3;
+                        var target, token, myHeaders, result, response, payment, error, error_3;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -172,14 +174,12 @@ function mypage() {
                                     result = _a.sent();
                                     _a.label = 2;
                                 case 2:
-                                    _a.trys.push([2, 5, , 6]);
+                                    _a.trys.push([2, 6, , 7]);
                                     if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                                     return [4 /*yield*/, result.json()];
                                 case 3:
                                     response = _a.sent();
-                                    console.log(response);
                                     payment = void 0;
-                                    console.log(response.submit.payment);
                                     response.submit.payment === false ? (payment = "결제전") : (payment = "결제 완료");
                                     showStatebox.style.display = "block";
                                     $(".show-providerAndsympton-dataBox").css({
@@ -189,17 +189,20 @@ function mypage() {
                                     priceValue.textContent = response.submit.submit_price + " \uC6D0";
                                     contentValue.textContent = response.submit.content;
                                     statePayment.textContent = payment;
-                                    _a.label = 4;
-                                case 4:
                                     checkBtn.addEventListener("click", function (e) {
                                         showStatebox.style.display = "none";
                                     });
-                                    return [3 /*break*/, 6];
-                                case 5:
+                                    return [3 /*break*/, 5];
+                                case 4:
+                                    error = new Error("에러발생");
+                                    error.name = "error";
+                                    throw error;
+                                case 5: return [3 /*break*/, 7];
+                                case 6:
                                     error_3 = _a.sent();
                                     console.error(error_3);
-                                    return [3 /*break*/, 6];
-                                case 6: return [2 /*return*/];
+                                    return [3 /*break*/, 7];
+                                case 7: return [2 /*return*/];
                             }
                         });
                     }); });
@@ -212,14 +215,15 @@ function mypage() {
         });
     }
     addEventOnShowAcceptBtn(showAccept);
-    // document.onreadystatechange = function () {
-    //   var state = document.readyState;
-    //   if (state == "interactive") {
-    //     console.log(1);
-    //   } else if (state == "complete") {
-    //     console.log(2);
-    //   }
-    // };
+    document.onreadystatechange = function () {
+        var state = document.readyState;
+        if (state == "interactive") {
+            console.log(1);
+        }
+        else if (state == "complete") {
+            console.log(2);
+        }
+    };
 }
 exports.default = mypage;
 //# sourceMappingURL=mypqge.js.map

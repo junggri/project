@@ -19,7 +19,6 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var passport_1 = __importDefault(require("passport"));
 var connect_flash_1 = __importDefault(require("connect-flash"));
 var cors_1 = __importDefault(require("cors"));
-var socket_io_1 = __importDefault(require("socket.io"));
 dotenv_1.default.config();
 var RedisStore = connect_redis_1.default(express_session_1.default);
 var _client = redis_1.default.createClient({});
@@ -54,7 +53,6 @@ var corsOptions = {
     origin: "http://localhost:3000",
     credentials: true,
 };
-app.use(cors_1.default(corsOptions));
 app.use(cookie_parser_1.default(session_json_1.default.secret));
 app.use(express_session_1.default(sess));
 // app.use(logger("prod", { stream })); //prod combined
@@ -65,8 +63,8 @@ app.use(connect_flash_1.default());
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/image")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../upload")));
-app.use(body_parser_1.default.json());
-app.use(body_parser_1.default.urlencoded({ extended: false }));
+app.use(body_parser_1.default.json({ limit: "50mb" }));
+app.use(body_parser_1.default.urlencoded({ limit: "50mb", parameterLimit: 100000, extended: false }));
 app.use(helmet_1.default.frameguard({ action: "deny" }));
 app.use(helmet_1.default.xssFilter());
 app.use(helmet_1.default.noSniff());
@@ -85,6 +83,7 @@ app.use("/", index_1.default);
 // app.use("/auth", authRouter);
 app.use("/api", api_1.default);
 app.use("/provide", provide_1.default);
+app.use(cors_1.default(corsOptions));
 app.set("port", process.env.PORT || 3000);
 app.use(logError);
 app.use(function (req, res, next) {
@@ -105,8 +104,8 @@ app.use(function (err, req, res, next) {
 var server = app.listen(app.get("port"), function () {
     console.log("Express server listening on port " + app.get("port"));
 });
-var io = socket_io_1.default(server);
+// const io = socketIO(server);
 // server에 socket.io 연결 , 클라이언트가 연결되면 io.on("connection" ) 이벤트가 발생
-io.on("connection", function (socket) { return console.log("연결"); });
+// io.on("connection", (socket) => console.log("연결"));
 module.exports = app;
 //# sourceMappingURL=index.js.map

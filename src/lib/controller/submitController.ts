@@ -4,7 +4,6 @@ import submitModel from "../model/submitEstimateModel";
 import usermodel from "../model/usermodel";
 import moment from "moment";
 import sanitizeHtml from "sanitize-html";
-import compression from "compression";
 import submitEstimateModel from "../model/submitEstimateModel";
 
 let submitController: any = {};

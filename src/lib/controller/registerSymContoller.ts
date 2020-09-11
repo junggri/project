@@ -208,7 +208,7 @@ registerSymController.getAllImage = async (id: string) => {
   return result;
 };
 
-registerSymController.findCodeBeforeModified = async (req: Request, res: Response) => {
+registerSymController.findBeforeModified = async (req: Request, res: Response) => {
   let result = await registerSym.findOne({ _id: req.url.split("/")[2] });
   return result;
 };
@@ -220,8 +220,8 @@ registerSymController.findImageBeforeModified = async (req: Request, res: Respon
 
 registerSymController.modified = async (req: Request, res: Response, data: any) => {
   let { sympton_detail, time, minute, img, postcode, roadAddress, detailAddress, userwant_content, sigunguCode, sigungu, bname, bname1, lat, lon } = data;
-  registerSym
-    .updateOne(
+  try {
+    await registerSym.updateOne(
       { _id: req.session._id },
       {
         $set: {
@@ -232,11 +232,10 @@ registerSymController.modified = async (req: Request, res: Response, data: any) 
           userwant_content: userwant_content,
         },
       }
-    )
-    .then(() => {
-      req.session._id = "";
-      return res.redirect("/api/mypage");
-    });
+    );
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 registerSymController.isFullSubmit = async (data: any) => {

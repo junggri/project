@@ -17,6 +17,7 @@ import passport from "passport";
 import flash from "connect-flash";
 import cors from "cors";
 import socketIO from "socket.io";
+
 dotenv.config();
 
 const RedisStore = connectRedis(session);
@@ -60,8 +61,6 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(cors(corsOptions));
-
 app.use(cookieParser(configSession.secret));
 app.use(session(sess));
 
@@ -75,8 +74,8 @@ app.use(express.static(path.join(__dirname, "../static/css")));
 app.use(express.static(path.join(__dirname, "../static/image")));
 app.use(express.static(path.join(__dirname, "../upload")));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", parameterLimit: 100000, extended: false }));
 
 app.use(helmet.frameguard({ action: "deny" }));
 app.use(helmet.xssFilter());
@@ -100,6 +99,8 @@ app.use("/", indexRouter);
 // app.use("/auth", authRouter);
 app.use("/api", apiRouter);
 app.use("/provide", provierRouter);
+
+app.use(cors(corsOptions));
 
 app.set("port", process.env.PORT || 3000);
 
@@ -126,9 +127,9 @@ const server = app.listen(app.get("port"), () => {
   console.log("Express server listening on port " + app.get("port"));
 });
 
-const io = socketIO(server);
+// const io = socketIO(server);
 
 // server에 socket.io 연결 , 클라이언트가 연결되면 io.on("connection" ) 이벤트가 발생
-io.on("connection", (socket) => console.log("연결"));
+// io.on("connection", (socket) => console.log("연결"));
 
 module.exports = app;

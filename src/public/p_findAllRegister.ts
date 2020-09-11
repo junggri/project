@@ -64,7 +64,7 @@ export default function p_findAllRegister() {
           let myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
           myHeaders.append("CSRF-Token", token);
-          let result = await fetch("http://localhost:3000/provide/before_getData", {
+          let result = await fetch("http://localhost:3000/provide/before_check_getData", {
             method: "post",
             credentials: "same-origin",
             headers: myHeaders,
