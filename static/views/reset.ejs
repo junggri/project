@@ -11,7 +11,7 @@
   </head>
   <body>
     <div id="app">
-      <form action="/api/reset_process" id="reset-form" method="POST">
+      <form action="/v1/reset_process" id="reset-form" method="POST">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <input type="hidden" name="email" value="<%= email %>" />
         <div class="reset-slo">비밀번호 변경</div>

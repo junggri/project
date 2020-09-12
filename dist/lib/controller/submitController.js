@@ -198,7 +198,7 @@ submitController.delete_submit = function (req, res, symptonId, providerId) { re
             case 1:
                 submit = _a.sent();
                 if (!(submit.state === "accept")) return [3 /*break*/, 2];
-                return [2 /*return*/, res.json({ state: false })];
+                return [2 /*return*/, res.json({ state: "accept" })];
             case 2: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: symptonId })];
             case 3:
                 result = _a.sent();

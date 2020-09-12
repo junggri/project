@@ -10,16 +10,15 @@ import mongoSanitize from "mongo-sanitize";
 import crypto from "crypto";
 import crypto_cre from "../config/crypto.json";
 import providers from "../lib/model/provideModel";
-import submitModel from "../lib/model/submitEstimateModel";
 import provideController from "../lib/controller/provideController";
 import registerSymController from "../lib/controller/registerSymContoller";
 import submitController from "../lib/controller/submitController";
 import { MakeAllSymptonList, MakePagination, showSubmitList } from "../lib/p_MakeSymptonList";
 import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
+import { encrypt, decrypt } from "../lib/setAndGetCookie";
 import qs from "querystring";
 import { makeJuso } from "../lib/p_makeJuso";
-import { reupload } from "src/lib/multer";
 
 const parseForm = bodyParser.urlencoded({ extended: false });
 const router = express.Router();
@@ -35,6 +34,16 @@ interface Decoded {
   user_objectId: string;
   username: string;
 }
+
+router.post("/v1/setProviderEmailCookie", csrfProtection, verify, (req, res) => {
+  if (req.body.state === "set") {
+    const encryptResult = encrypt(req.body.email);
+    res.json({ email: encryptResult });
+  } else {
+    const decryptResult = decrypt(req.body.email);
+    res.json({ decrypt: decryptResult });
+  }
+});
 
 router.get("/index", csrfProtection, verify, isLogined, (req, res) => {
   if (req.headers.referer === undefined) {
@@ -112,12 +121,6 @@ router.get("/findAllRegister", csrfProtection, verify, isNotLogined, async (req,
   }
 });
 
-// router.get("/selected_and_find", csrfProtection, verify, isNotLogined, (req, res) => {
-//   let authUI = auth.status(req, res);
-//   console.log(23123123123123123);
-//   res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken() });
-// });
-
 router.post("/get_sigungu", csrfProtection, verify, isNotLogined, (req, res) => {
   if (req.body.data === "") return;
   mysql.query(`select 시군구명 from ${req.body.data}`, (err: any, data: any) => {
@@ -154,30 +157,30 @@ router.post("/get_sejong", csrfProtection, verify, isNotLogined, (req, res) => {
   });
 });
 
-router.post("/before_check_getData", csrfProtection, verify, isNotLogined, async (req, res) => {
+router.post("/before_check_getRegisterData", csrfProtection, verify, isNotLogined, async (req, res) => {
   let result = await registerSymController.showBeforeEstimate(req.body._id);
   if (result === null) {
     return res.json({ state: false });
+  } else if (result.state === "accept") {
+    return res.json({ state: "accept" });
+  } else {
+    res.json({ data: result, state: true });
   }
-  res.json({ data: result });
 });
 
-router.post("/get_registerData", csrfProtection, verify, isNotLogined, async (req, res) => {
-  let result = await registerSymController.showBeforeEstimate(req.body._id);
-  if (result === null) {
-    return res.json({ state: false });
-  }
-  res.json({ data: result });
-});
-
-router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
+router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req, res, next) => {
   let authUI = auth.status(req, res);
   const token = req.cookies.pjwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     let result: any = await registerSymController.showBeforeEstimate(req.url.split("?")[1]);
     if (result === null) {
-      return res.redirect("/provide/findAllRegister");
+      let err: any = new Error("error");
+      err.message = "error";
+      err.status = 404;
+      err.stack = "404";
+      next(err);
+      throw err;
     }
     let isEstimated: any = await provideController.isEstimated((decoded as Decoded).user_objectId);
     let location = makeLocation(result);
@@ -189,32 +192,37 @@ router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req
   }
 });
 
+router.post("/get_registerData", csrfProtection, verify, isNotLogined, async (req, res) => {
+  console.log(2);
+  let result = await registerSymController.showBeforeEstimate(req.body.sympton_id);
+  if (result === null) return res.json({ state: false });
+  res.json({ state: true, data: result });
+});
+
 router.post("/submit_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
   const token = req.cookies.pjwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    let submitLength = await registerSymController.isFullSubmit(req.body);
-    if (submitLength.provider.length >= 20) return res.json({ state: false });
+    let submit = await registerSymController.isFullSubmit(req.body);
+    if (submit === null) return res.json({ state: null });
+    if (submit.provider.length >= 20) return res.json({ state: false });
     submitController.save(req.body.sympton_id, (decoded as Decoded).user_objectId, req.body);
-    res.json({ url: req.body.sympton_id, state: true });
+    res.json({ state: true, url: req.body.sympton_id });
   } catch (error) {
     console.error(error);
   }
 });
 
-router.post("/delete_submit", csrfProtection, verify, isNotLogined, async (req, res) => {
+router.post("/delete_submit", csrfProtection, verify, isNotLogined, async (req, res, next) => {
   const token = req.cookies.pjwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let result: any = await registerSymController.showBeforeEstimate(req.body.symptonId);
+    if (result === null) return res.json({ state: null });
     submitController.delete_submit(req, res, req.body.symptonId, (decoded as Decoded).user_objectId);
   } catch (error) {
     console.error(error);
   }
-});
-
-router.get("/showGotEstimate", csrfProtection, verify, isNotLogined, (req, res) => {
-  let authUI = auth.status(req, res);
-  res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken() });
 });
 
 router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
@@ -238,7 +246,7 @@ router.get("/showsubmit", csrfProtection, verify, isNotLogined, async (req, res)
 });
 
 router.post("/logout_process", isNotLogined, (req, res) => {
-  res.clearCookie("pjwttoken");
+  res.clearCookie("pjwttoken", { path: "/provide" });
   return res.redirect(req.get("Referrer"));
 });
 

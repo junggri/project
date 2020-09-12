@@ -166,8 +166,8 @@ registerSymController.makeSpecificPagination = async (pageNum: number, sigunguCo
   }
 };
 
-registerSymController.find = async (req: Request, res: Response, email: string, id: string) => {
-  let result = await registerSym.find({ user_object_id: id });
+registerSymController.find = async (register_id: string) => {
+  let result = await registerSym.findOne({ _id: register_id });
   return result;
 };
 
@@ -244,20 +244,19 @@ registerSymController.isFullSubmit = async (data: any) => {
 };
 
 registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
-  registerSym.deleteOne({ _id: req.body.id }).then(async () => {
+  await registerSym.deleteOne({ _id: req.body.id }).then(async () => {
     let submit: any = await submitModel.find({ symptonId: req.body.id }).populate("provider");
     if (submit.length !== 0) {
       for (let i = 0; i < submit.length; i++) {
         let provider: any = await provideModel.findOne({ _id: submit[i].provider[0]._id });
         let idx = provider.submit_register.indexOf(req.body.id);
         provider.submit_register.splice(idx, 1);
-        console.log(provider.submit_register);
         await provideModel.updateOne({ _id: submit[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } });
         await submitModel.deleteOne({ symptonId: req.body.id });
       }
     }
     let result: any = await users.findOne({ _id: id }).populate("register_sympton");
-    let s1 = await users.updateOne({ _id: id }, { $set: { register_sympton: result.register_sympton } });
+    await users.updateOne({ _id: id }, { $set: { register_sympton: result.register_sympton } });
   });
 };
 

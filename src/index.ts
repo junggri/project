@@ -90,13 +90,11 @@ app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
-import indexRouter from "./router/index";
-// import authRouter from "./router/auth";
+import CommonRouter from "./router/v1";
 import apiRouter from "./router/api";
 import provierRouter from "./router/provide";
 
-app.use("/", indexRouter);
-// app.use("/auth", authRouter);
+app.use("/v1", CommonRouter);
 app.use("/api", apiRouter);
 app.use("/provide", provierRouter);
 
@@ -127,9 +125,9 @@ const server = app.listen(app.get("port"), () => {
   console.log("Express server listening on port " + app.get("port"));
 });
 
-// const io = socketIO(server);
+const io = socketIO(server);
 
 // server에 socket.io 연결 , 클라이언트가 연결되면 io.on("connection" ) 이벤트가 발생
-// io.on("connection", (socket) => console.log("연결"));
+io.on("connection", (socket) => console.log("연결"));
 
 module.exports = app;

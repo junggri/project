@@ -14,6 +14,6 @@ export function createToken(req: any, res: any, email: string, name: string, Id:
       subject: "userinfo",
     }
   );
-  res.cookie("pjwttoken", token, { httpOnly: true });
+  res.cookie("pjwttoken", token, { httpOnly: true, path: "/provide" });
   //secure
 }

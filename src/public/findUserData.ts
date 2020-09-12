@@ -18,7 +18,7 @@ export default function () {
   let loginBoxRegisterBtn = document.querySelector(".findUserResultBox-btnBox-register") as HTMLDivElement;
   let loginBoxConfirmBtn = document.querySelector(".findUserResultBox-btnBox-confirm") as HTMLDivElement;
   let userEmail = document.querySelector(".findEmail") as HTMLDivElement;
-  window.location.pathname === "/api/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
+  window.location.pathname === "/v1/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
 
   async function findUserData(url: string, data: string) {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
@@ -60,10 +60,10 @@ export default function () {
   // });
   findResultBtn.addEventListener("click", () => {
     if (userInputData.value === "") return;
-    if (window.location.pathname === "/api/find_user_email") {
-      findUserData("http://localhost:3000/api/check_user_email", userInputData.value);
+    if (window.location.pathname === "/v1/find_user_email") {
+      findUserData("http://localhost:3000/v1/check_user_email", userInputData.value);
     } else {
-      findUserData("http://localhost:3000/api/check_user_and_sendEmail", userInputData.value);
+      findUserData("http://localhost:3000/v1/check_user_and_sendEmail", userInputData.value);
     }
   });
 }

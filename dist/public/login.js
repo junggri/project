@@ -42,48 +42,52 @@ function login() {
         var checkBox = document.querySelector("#checkbox_id");
         var loginBoxValue = document.querySelector("#login_email");
         var pwdValue = document.querySelector("#login_pwd");
-        var userInputEmail = getCookie("userInputEmail");
+        var userInputEmail = getCookie("uie");
         var loginBtn = document.querySelector(".login-btn");
         var state = document.querySelector(".condition-login");
         loginBoxValue.focus();
+        function FetchSet() {
+            var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("CSRF-Token", token);
+            return myHeaders;
+        }
         function loginProcess(data) {
             return __awaiter(this, void 0, void 0, function () {
-                var token, myHeaders, reuslt, response, error_1;
+                var header, result, response, err, error_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                            myHeaders = new Headers();
-                            myHeaders.append("Content-Type", "application/json");
-                            myHeaders.append("CSRF-Token", token);
+                            header = FetchSet();
+                            _a.label = 1;
+                        case 1:
+                            _a.trys.push([1, 6, , 7]);
                             return [4 /*yield*/, fetch("http://localhost:3000/api/login_process", {
                                     method: "POST",
                                     credentials: "same-origin",
-                                    headers: myHeaders,
+                                    headers: header,
                                     body: JSON.stringify(data),
                                 })];
-                        case 1:
-                            reuslt = _a.sent();
-                            _a.label = 2;
                         case 2:
-                            _a.trys.push([2, 5, , 6]);
-                            if (!(reuslt.status === 200 || 201)) return [3 /*break*/, 4];
-                            return [4 /*yield*/, reuslt.json()];
+                            result = _a.sent();
+                            if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                            return [4 /*yield*/, result.json()];
                         case 3:
                             response = _a.sent();
-                            if (response.state) {
-                                window.location.href = response.url;
-                            }
-                            else {
-                                state.textContent = response.msg;
-                            }
-                            _a.label = 4;
-                        case 4: return [3 /*break*/, 6];
-                        case 5:
+                            response.state === true ? (window.location.href = response.url) : (state.textContent = response.msg);
+                            return [3 /*break*/, 5];
+                        case 4:
+                            console.log(result.status);
+                            err = new Error("NET_ERROR");
+                            err.name = "NETWORK_ERROR";
+                            throw err;
+                        case 5: return [3 /*break*/, 7];
+                        case 6:
                             error_1 = _a.sent();
                             console.error(error_1);
-                            return [3 /*break*/, 6];
-                        case 6: return [2 /*return*/];
+                            return [3 /*break*/, 7];
+                        case 7: return [2 /*return*/];
                     }
                 });
             });
@@ -134,19 +138,19 @@ function login() {
                     return [2 /*return*/];
                 if (checkBox.checked) {
                     getEmailFromCookie(loginBoxValue.value, "set").then(function (result) {
-                        setCookie("userInputEmail", result.email, 7);
+                        setCookie("uie", result.email, 7);
                     });
                 }
                 else {
-                    deleteCookie("userInputEmail");
+                    deleteCookie("uie");
                 }
                 return [2 /*return*/];
             });
         }); });
-        loginBoxValue.addEventListener("input", function () {
+        loginBoxValue.addEventListener("blur", function () {
             if (checkBox.checked) {
                 getEmailFromCookie(loginBoxValue.value, "set").then(function (result) {
-                    setCookie("userInputEmail", result.email, 7);
+                    setCookie("uie", result.email, 7);
                 });
             }
         });

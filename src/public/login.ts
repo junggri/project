@@ -8,7 +8,7 @@ export default function login() {
     let checkBox = document.querySelector("#checkbox_id") as HTMLInputElement;
     let loginBoxValue = document.querySelector("#login_email") as HTMLInputElement;
     let pwdValue = document.querySelector("#login_pwd") as HTMLInputElement;
-    let userInputEmail: string = getCookie("userInputEmail");
+    let userInputEmail: string = getCookie("uie");
     let loginBtn = document.querySelector(".login-btn") as HTMLDivElement;
     let state = document.querySelector(".condition-login") as HTMLDivElement;
     loginBoxValue.focus();
@@ -18,25 +18,31 @@ export default function login() {
       pwd: string;
     }
 
-    async function loginProcess(data: Data) {
+    function FetchSet() {
       let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("CSRF-Token", token);
-      let reuslt = await fetch("http://localhost:3000/api/login_process", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: myHeaders,
-        body: JSON.stringify(data),
-      });
+      return myHeaders;
+    }
+
+    async function loginProcess(data: Data) {
+      let header = FetchSet();
       try {
-        if (reuslt.status === 200 || 201) {
-          let response = await reuslt.json();
-          if (response.state) {
-            window.location.href = response.url;
-          } else {
-            state.textContent = response.msg;
-          }
+        let result = await fetch("http://localhost:3000/api/login_process", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: header,
+          body: JSON.stringify(data),
+        });
+        if (result.status === 200 || 201) {
+          let response = await result.json();
+          response.state === true ? (window.location.href = response.url) : (state.textContent = response.msg);
+        } else {
+          console.log(result.status);
+          let err = new Error("NET_ERROR");
+          err.name = "NETWORK_ERROR";
+          throw err;
         }
       } catch (error) {
         console.error(error);
@@ -76,17 +82,17 @@ export default function login() {
       if (loginBoxValue.value === "") return;
       if (checkBox.checked) {
         getEmailFromCookie(loginBoxValue.value, "set").then((result) => {
-          setCookie("userInputEmail", result.email, 7);
+          setCookie("uie", result.email, 7);
         });
       } else {
-        deleteCookie("userInputEmail");
+        deleteCookie("uie");
       }
     });
 
-    loginBoxValue.addEventListener("input", () => {
+    loginBoxValue.addEventListener("blur", () => {
       if (checkBox.checked) {
         getEmailFromCookie(loginBoxValue.value, "set").then((result) => {
-          setCookie("userInputEmail", result.email, 7);
+          setCookie("uie", result.email, 7);
         });
       }
     });

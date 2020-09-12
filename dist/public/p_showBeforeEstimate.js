@@ -57,57 +57,62 @@ function p_showBeforeEsimate() {
     var symptonId = document.querySelector(".sympton_id");
     var userId = document.querySelector(".user_id");
     var deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn");
-    function getDataSymtonsData() {
-        return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch("http://localhost:3000/provide/get_registerData", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ _id: document.location.search.substring(1, document.location.search.length) }),
-                            })];
-                    case 1:
-                        result = _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 5, , 6]);
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
-                    case 3:
-                        response = _a.sent();
-                        if (response.state === false) {
-                            alert("존재하지 않는 자료입니다.");
-                            window.location.href = "/provide/findAllRegister";
-                        }
-                        mainImg.style.backgroundImage = "url(\"/" + response.data.user_object_id + "/" + response.data.img[0] + "\")";
-                        username.textContent = response.data.user_name;
-                        createdAt.textContent = response.data.createdAt;
-                        contentName.textContent = response.data.sympton_detail;
-                        subContentName.textContent = response.data.sympton_detail;
-                        userwant_time.textContent = response.data.userwant_time.time + "\uC2DC " + response.data.userwant_time.minute + "\uBD84";
-                        userwant_detail.textContent = response.data.userwant_content;
-                        registrantId.value = response.data.user_object_id;
-                        symptonId.value = response.data._id;
-                        userId.value = response.data.user_object_id;
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_1 = _a.sent();
-                        console.error(error_1);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
-                }
-            });
-        });
+    function FetchSet() {
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("CSRF-Token", token);
+        return myHeaders;
     }
-    getDataSymtonsData();
+    (function () { return __awaiter(_this, void 0, void 0, function () {
+        var header, result, response, err, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    header = FetchSet();
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 6, , 7]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/get_registerData", {
+                            method: "post",
+                            credentials: "same-origin",
+                            headers: header,
+                            body: JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }),
+                        })];
+                case 2:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, result.json()];
+                case 3:
+                    response = _a.sent();
+                    if (response.state === false) {
+                        window.location.href = "/provide/findAllRegister";
+                        return [2 /*return*/];
+                    }
+                    mainImg.style.backgroundImage = "url(\"/" + response.data.user_object_id + "/" + response.data.img[0] + "\")";
+                    username.textContent = response.data.user_name;
+                    createdAt.textContent = response.data.createdAt;
+                    contentName.textContent = response.data.sympton_detail;
+                    subContentName.textContent = response.data.sympton_detail;
+                    userwant_time.textContent = response.data.userwant_time.time + "\uC2DC " + response.data.userwant_time.minute + "\uBD84";
+                    userwant_detail.textContent = response.data.userwant_content;
+                    registrantId.value = response.data.user_object_id;
+                    symptonId.value = response.data._id;
+                    userId.value = response.data.user_object_id;
+                    return [3 /*break*/, 5];
+                case 4:
+                    err = new Error("NET_ERROR");
+                    err.name = "NETWORK_ERROR";
+                    throw err;
+                case 5: return [3 /*break*/, 7];
+                case 6:
+                    error_1 = _a.sent();
+                    console.error(error_1);
+                    return [3 /*break*/, 7];
+                case 7: return [2 /*return*/];
+            }
+        });
+    }); })();
     function numberFormat(inputNumber) {
         return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
@@ -127,22 +132,20 @@ function p_showBeforeEsimate() {
         estimateBtn.style.pointerEvents = "all";
     });
     sumbitEstimate.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var token, myHeaders, result, response, error_2;
+        var header, result, response, state, err, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (!(estimate_detail_value.value === "" || priceValue.value === "")) return [3 /*break*/, 1];
-                    alert("입력사항을 기제해주시길 바랍니다");
-                    return [2 /*return*/];
+                    if (estimate_detail_value.value === "" || priceValue.value === "")
+                        return [2 /*return*/, alert("입력사항을 기제해주시길 바랍니다")];
+                    header = FetchSet();
+                    _a.label = 1;
                 case 1:
-                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("CSRF-Token", token);
+                    _a.trys.push([1, 6, , 7]);
                     return [4 /*yield*/, fetch("http://localhost:3000/provide/submit_estimate", {
                             method: "post",
                             credentials: "same-origin",
-                            headers: myHeaders,
+                            headers: header,
                             body: JSON.stringify({
                                 sympton_id: document.location.search.substring(1, document.location.search.length),
                                 content: estimate_detail_value.value,
@@ -152,23 +155,31 @@ function p_showBeforeEsimate() {
                         })];
                 case 2:
                     result = _a.sent();
-                    _a.label = 3;
-                case 3:
-                    _a.trys.push([3, 6, , 7]);
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                     return [4 /*yield*/, result.json()];
-                case 4:
+                case 3:
                     response = _a.sent();
-                    if (response.state === false) {
+                    state = response.state;
+                    if (state === null) {
+                        alert("삭제된 증상입니다. 견적을 제시할 수 없습니다.");
+                        window.location.href = "/provide/findAllRegister";
+                        return [2 /*return*/];
+                    }
+                    else if (!state) {
                         return [2 /*return*/, alert("더이상 견적을 제시할 수 없습니다.")];
                     }
-                    if (response.state) {
+                    else {
                         showEstimateBox.style.display = "none";
                         alert("견적제출이 완료되었습니다.");
                         submitForm.reset();
                         window.location.href = "/provide/sympton_estimate?" + response.url;
+                        return [2 /*return*/];
                     }
-                    _a.label = 5;
+                    return [3 /*break*/, 5];
+                case 4:
+                    err = new Error("NET_ERROR");
+                    err.name = "NETWORK_ERROR";
+                    throw err;
                 case 5: return [3 /*break*/, 7];
                 case 6:
                     error_2 = _a.sent();
@@ -180,44 +191,55 @@ function p_showBeforeEsimate() {
     }); });
     if (deleteEstimateBtn !== null) {
         deleteEstimateBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var flag, token, myHeaders, result, response, error_3;
+            var flag, header, result, response, state, err, err, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         flag = confirm("정말로 취소하시겠습니까?");
-                        if (!(flag === true)) return [3 /*break*/, 6];
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
+                        if (!(flag === true)) return [3 /*break*/, 7];
+                        header = FetchSet();
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
                         return [4 /*yield*/, fetch("http://localhost:3000/provide/delete_submit", {
                                 method: "post",
                                 credentials: "same-origin",
-                                headers: myHeaders,
+                                headers: header,
                                 body: JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }),
                             })];
-                    case 1:
-                        result = _a.sent();
-                        _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 5, , 6]);
+                        result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        if (response.state === false) {
+                        state = response.state;
+                        if (state === "accept") {
                             alert("견적이 성사되어 취소가 불가능합니다.");
                             return [2 /*return*/, (window.location.href = "/provide/sympton_estimate")];
                         }
-                        alert("취소가 완료되었습니다.");
-                        window.location.href = "/provide/sympton_estimate?" + response.url;
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                        else if (state == null) {
+                            err = new Error("error");
+                            err.message = "error22";
+                            err.status = 404;
+                            err.stack = "404";
+                            return [2 /*return*/, (window.location.href = "/provide/sympton_estimate")];
+                        }
+                        else {
+                            alert("취소가 완료되었습니다.");
+                            window.location.href = "/provide/sympton_estimate?" + response.url;
+                        }
+                        return [3 /*break*/, 5];
+                    case 4:
+                        err = new Error("NET_ERROR");
+                        err.name = "NETWORK_ERROR";
+                        throw err;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         error_3 = _a.sent();
                         console.error(error_3);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         }); });

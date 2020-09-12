@@ -57,6 +57,7 @@ var submitController_1 = __importDefault(require("../lib/controller/submitContro
 var p_MakeSymptonList_1 = require("../lib/p_MakeSymptonList");
 var p_makeShowData_1 = require("../lib/p_makeShowData");
 var mysql_1 = __importDefault(require("../lib/mysql"));
+var setAndGetCookie_1 = require("../lib/setAndGetCookie");
 var querystring_1 = __importDefault(require("querystring"));
 var p_makeJuso_1 = require("../lib/p_makeJuso");
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
@@ -65,6 +66,16 @@ var csrfProtection = csurf_1.default({
     cookie: {
         httpOnly: true,
     },
+});
+router.post("/v1/setProviderEmailCookie", csrfProtection, p_verify_1.verify, function (req, res) {
+    if (req.body.state === "set") {
+        var encryptResult = setAndGetCookie_1.encrypt(req.body.email);
+        res.json({ email: encryptResult });
+    }
+    else {
+        var decryptResult = setAndGetCookie_1.decrypt(req.body.email);
+        res.json({ decrypt: decryptResult });
+    }
 });
 router.get("/index", csrfProtection, p_verify_1.verify, p_verify_1.isLogined, function (req, res) {
     if (req.headers.referer === undefined) {
@@ -167,11 +178,6 @@ router.get("/findAllRegister", csrfProtection, p_verify_1.verify, p_verify_1.isN
         }
     });
 }); });
-// router.get("/selected_and_find", csrfProtection, verify, isNotLogined, (req, res) => {
-//   let authUI = auth.status(req, res);
-//   console.log(23123123123123123);
-//   res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken() });
-// });
 router.post("/get_sigungu", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
     if (req.body.data === "")
         return;
@@ -211,7 +217,7 @@ router.post("/get_sejong", csrfProtection, p_verify_1.verify, p_verify_1.isNotLo
         res.json({ sido: Array.from(new Set(data1)).sort() });
     });
 });
-router.post("/before_check_getData", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/before_check_getRegisterData", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -221,28 +227,18 @@ router.post("/before_check_getData", csrfProtection, p_verify_1.verify, p_verify
                 if (result === null) {
                     return [2 /*return*/, res.json({ state: false })];
                 }
-                res.json({ data: result });
-                return [2 /*return*/];
-        }
-    });
-}); });
-router.post("/get_registerData", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body._id)];
-            case 1:
-                result = _a.sent();
-                if (result === null) {
-                    return [2 /*return*/, res.json({ state: false })];
+                else if (result.state === "accept") {
+                    return [2 /*return*/, res.json({ state: "accept" })];
                 }
-                res.json({ data: result });
+                else {
+                    res.json({ data: result, state: true });
+                }
                 return [2 /*return*/];
         }
     });
 }); });
-router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var authUI, token, decoded, result, isEstimated, location_1, imgs, btn, error_1;
+router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var authUI, token, decoded, result, err, isEstimated, location_1, imgs, btn, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -256,7 +252,12 @@ router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
             case 2:
                 result = _a.sent();
                 if (result === null) {
-                    return [2 /*return*/, res.redirect("/provide/findAllRegister")];
+                    err = new Error("error");
+                    err.message = "error";
+                    err.status = 404;
+                    err.stack = "404";
+                    next(err);
+                    throw err;
                 }
                 return [4 /*yield*/, provideController_1.default.isEstimated(decoded.user_objectId)];
             case 3:
@@ -274,8 +275,24 @@ router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
         }
     });
 }); });
+router.post("/get_registerData", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log(2);
+                return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body.sympton_id)];
+            case 1:
+                result = _a.sent();
+                if (result === null)
+                    return [2 /*return*/, res.json({ state: false })];
+                res.json({ state: true, data: result });
+                return [2 /*return*/];
+        }
+    });
+}); });
 router.post("/submit_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var token, decoded, submitLength, error_2;
+    var token, decoded, submit, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -286,11 +303,13 @@ router.post("/submit_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
                 return [4 /*yield*/, registerSymContoller_1.default.isFullSubmit(req.body)];
             case 2:
-                submitLength = _a.sent();
-                if (submitLength.provider.length >= 20)
+                submit = _a.sent();
+                if (submit === null)
+                    return [2 /*return*/, res.json({ state: null })];
+                if (submit.provider.length >= 20)
                     return [2 /*return*/, res.json({ state: false })];
                 submitController_1.default.save(req.body.sympton_id, decoded.user_objectId, req.body);
-                res.json({ url: req.body.sympton_id, state: true });
+                res.json({ state: true, url: req.body.sympton_id });
                 return [3 /*break*/, 4];
             case 3:
                 error_2 = _a.sent();
@@ -300,24 +319,31 @@ router.post("/submit_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
         }
     });
 }); });
-router.post("/delete_submit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var token, decoded;
+router.post("/delete_submit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, decoded, result, error_3;
     return __generator(this, function (_a) {
-        token = req.cookies.pjwttoken;
-        try {
-            decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-            submitController_1.default.delete_submit(req, res, req.body.symptonId, decoded.user_objectId);
+        switch (_a.label) {
+            case 0:
+                token = req.cookies.pjwttoken;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+                return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body.symptonId)];
+            case 2:
+                result = _a.sent();
+                if (result === null)
+                    return [2 /*return*/, res.json({ state: null })];
+                submitController_1.default.delete_submit(req, res, req.body.symptonId, decoded.user_objectId);
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _a.sent();
+                console.error(error_3);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
-        catch (error) {
-            console.error(error);
-        }
-        return [2 /*return*/];
     });
 }); });
-router.get("/showGotEstimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
-    var authUI = p_authStatus_1.default.status(req, res);
-    res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken() });
-});
 router.get("/mypage", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) {
     var authUI = p_authStatus_1.default.status(req, res);
     var token = req.cookies.pjwttoken;
@@ -328,7 +354,7 @@ router.get("/mypage", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined
     catch (error) { }
 });
 router.get("/showsubmit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var token, authUI, decoded, data, list, error_3;
+    var token, authUI, decoded, data, list, error_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -345,14 +371,14 @@ router.get("/showsubmit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLog
                 res.render("providers/showsubmit", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
                 return [3 /*break*/, 4];
             case 3:
-                error_3 = _a.sent();
+                error_4 = _a.sent();
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); });
 router.post("/logout_process", p_verify_1.isNotLogined, function (req, res) {
-    res.clearCookie("pjwttoken");
+    res.clearCookie("pjwttoken", { path: "/provide" });
     return res.redirect(req.get("Referrer"));
 });
 exports.default = router;

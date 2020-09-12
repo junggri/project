@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { createToken } from "./p_accesstoken";
 import providers from "../lib/model/provideModel";
-import { reupload } from "./multer";
+
 let email: string;
 let user_id: string;
 

@@ -38,26 +38,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 function p_index() {
     var _this = this;
+    var checkBox = document.querySelector("#checkbox_id");
     var loginBtn = document.querySelector(".pi-loginBtn");
     var provideEmail = document.querySelector("#pi-email");
     var providePwd = document.querySelector("#pi-pwd");
     var provideState = document.querySelector(".pi-state");
+    var userInputEmail = getCookie("upe");
+    function FetchSet() {
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("CSRF-Token", token);
+        return myHeaders;
+    }
     loginBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var token, myHeaders, result, response, error_1;
+        var header, result, response, err, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("CSRF-Token", token);
+                    header = FetchSet();
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 5, , 6]);
+                    _a.trys.push([1, 6, , 7]);
                     return [4 /*yield*/, fetch("http://localhost:3000/provide/login_process", {
                             method: "post",
                             credentials: "same-origin",
-                            headers: myHeaders,
+                            headers: header,
                             body: JSON.stringify({
                                 email: provideEmail.value,
                                 pwd: providePwd.value,
@@ -69,22 +75,105 @@ function p_index() {
                     return [4 /*yield*/, result.json()];
                 case 3:
                     response = _a.sent();
-                    if (response.state) {
-                        return [2 /*return*/, (window.location.href = response.url)];
-                    }
-                    else {
-                        provideState.textContent = response.msg;
-                    }
-                    _a.label = 4;
-                case 4: return [3 /*break*/, 6];
-                case 5:
+                    response.state === true ? (window.location.href = response.url) : (provideState.textContent = response.msg);
+                    return [3 /*break*/, 5];
+                case 4:
+                    console.log(result.status);
+                    err = new Error("NET_ERROR");
+                    err.name = "NETWORK_ERROR";
+                    throw err;
+                case 5: return [3 /*break*/, 7];
+                case 6:
                     error_1 = _a.sent();
                     console.error(error_1);
-                    return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    return [3 /*break*/, 7];
+                case 7: return [2 /*return*/];
             }
         });
     }); });
+    function getEmailFromCookie(email, state) {
+        return __awaiter(this, void 0, void 0, function () {
+            var token, myHeaders, response, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (email === "")
+                            return [2 /*return*/];
+                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+                        myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        myHeaders.append("CSRF-Token", token);
+                        return [4 /*yield*/, fetch("http://localhost:3000/provide/v1/setProviderEmailCookie", {
+                                method: "POST",
+                                credentials: "same-origin",
+                                headers: myHeaders,
+                                body: JSON.stringify({ email: email, state: state }),
+                            })];
+                    case 1:
+                        response = _a.sent();
+                        if (!(response.status === 200 || 201)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, response.json()];
+                    case 2:
+                        result = _a.sent();
+                        return [2 /*return*/, result];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    }
+    getEmailFromCookie(userInputEmail, "get").then(function (result) {
+        if (result === undefined)
+            return;
+        provideEmail.value = result.decrypt;
+        checkBox.checked = true;
+    });
+    checkBox.addEventListener("change", function () { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            if (provideEmail.value === "")
+                return [2 /*return*/];
+            if (checkBox.checked) {
+                getEmailFromCookie(provideEmail.value, "set").then(function (result) {
+                    setCookie("upe", result.email, 7);
+                });
+            }
+            else {
+                deleteCookie("upe");
+            }
+            return [2 /*return*/];
+        });
+    }); });
+    provideEmail.addEventListener("blur", function () {
+        if (checkBox.checked) {
+            getEmailFromCookie(provideEmail.value, "set").then(function (result) {
+                setCookie("upe", result.email, 7);
+            });
+        }
+    });
+    function setCookie(cookieName, value, exdays) {
+        var exdate = new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var cookieValue = value + (exdays == null ? "" : "; expires=" + exdate.toUTCString());
+        document.cookie = cookieName + "=" + cookieValue;
+    }
+    function deleteCookie(cookieName) {
+        var expireDate = new Date();
+        expireDate.setDate(expireDate.getDate() - 1);
+        document.cookie = cookieName + "= " + "; expires=" + expireDate.toUTCString();
+    }
+    function getCookie(cookieName) {
+        cookieName = cookieName + "=";
+        var cookieData = document.cookie;
+        var start = cookieData.indexOf(cookieName);
+        var cookieValue = "";
+        if (start !== -1) {
+            start += cookieName.length;
+            var end = cookieData.indexOf(";", start);
+            if (end === -1)
+                end = cookieData.length;
+            cookieValue = cookieData.substring(start, end);
+        }
+        return unescape(cookieValue);
+    }
 }
 exports.default = p_index;
 //# sourceMappingURL=p_index.js.map

@@ -50,10 +50,13 @@ function p_findAllRegister() {
         var findForm = document.querySelector(".findForm");
         var changeFromSelect = false;
         var symptonItems = document.querySelectorAll(".frr-item-content");
-        // let optionSelect = document.querySelector("#sigunguSelected");
-        // let previousBtn = document.querySelector(".frr-pagination-previous") as HTMLInputElement;
-        // let nextBtn = document.querySelector(".frr-pagination-next") as HTMLInputElement;
-        makeSymptonPage(symptonItems);
+        function FetchSet() {
+            var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("CSRF-Token", token);
+            return myHeaders;
+        }
         if (location.search !== "") {
             for (var i = 0; i < decodedUrl.split("&").length; i++) {
                 if (decodedUrl.split("&")[i].split("=")[0] === "sigunguCode")
@@ -89,54 +92,55 @@ function p_findAllRegister() {
             var _this = this;
             for (var i = 0; i < symptonItems.length; i++) {
                 symptonItems[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                    var token, myHeaders, result, response, err, error_1;
+                    var header, result, response, state, err, err, err, error_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
-                                token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                                myHeaders = new Headers();
-                                myHeaders.append("Content-Type", "application/json");
-                                myHeaders.append("CSRF-Token", token);
-                                return [4 /*yield*/, fetch("http://localhost:3000/provide/before_check_getData", {
+                                header = FetchSet();
+                                _a.label = 1;
+                            case 1:
+                                _a.trys.push([1, 6, , 7]);
+                                return [4 /*yield*/, fetch("http://localhost:3000/provide/before_check_getRegisterData", {
                                         method: "post",
                                         credentials: "same-origin",
-                                        headers: myHeaders,
+                                        headers: header,
                                         body: JSON.stringify({ _id: e.target.parentNode.dataset.registerid }),
                                     })];
-                            case 1:
-                                result = _a.sent();
-                                _a.label = 2;
                             case 2:
-                                _a.trys.push([2, 5, , 6]);
+                                result = _a.sent();
                                 if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                                 return [4 /*yield*/, result.json()];
                             case 3:
                                 response = _a.sent();
-                                if (response.state === false) {
+                                state = response.state;
+                                if (state === false) {
                                     err = new Error("삭제된 증상입니다.");
                                     err.name = "Delete_data";
                                     throw err;
                                 }
-                                if (response.data.state === "accept") {
-                                    return [2 /*return*/, alert("진행중인 견적입니다.")];
+                                else if (state === "accept") {
+                                    err = new Error("진행중인 증상입니다.");
+                                    err.name = "IS_SUBMITED";
+                                    throw err;
                                 }
-                                if (response.data.provider.length >= 20) {
-                                    return [2 /*return*/, alert("견적을 초과하였습니다.")];
-                                }
-                                window.location.href = "/provide/sympton_estimate?" + e.target.parentNode.dataset.registerid;
-                                _a.label = 4;
-                            case 4: return [3 /*break*/, 6];
-                            case 5:
+                                return [2 /*return*/, (window.location.href = "/provide/sympton_estimate?" + e.target.parentNode.dataset.registerid)];
+                            case 4:
+                                err = new Error("NETWORK_ERROR");
+                                err.name = "NET";
+                                throw err;
+                            case 5: return [3 /*break*/, 7];
+                            case 6:
                                 error_1 = _a.sent();
                                 console.error(error_1, error_1.name);
                                 alert(error_1);
                                 return [2 /*return*/, window.location.reload()];
-                            case 6: return [2 /*return*/];
+                            case 7: return [2 /*return*/];
                         }
                     });
                 }); });
             }
         }
+        makeSymptonPage(symptonItems);
         findBtn.addEventListener("click", function (e) {
             if (changeFromSelect) {
                 pageValue.value = "1";
@@ -185,23 +189,20 @@ function p_findAllRegister() {
         //////////////////////////////////////////////////////////////////////////////////
         function commonFunction(text, target, data, url) {
             return __awaiter(this, void 0, void 0, function () {
-                var token, myHeaders, result, response, i, option, error_2;
+                var header, result, response, i, option, error_2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0: return [4 /*yield*/, reset(target, text)];
                         case 1:
                             _a.sent();
-                            token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                            myHeaders = new Headers();
-                            myHeaders.append("Content-Type", "application/json");
-                            myHeaders.append("CSRF-Token", token);
+                            header = FetchSet();
                             _a.label = 2;
                         case 2:
                             _a.trys.push([2, 6, , 7]);
                             return [4 /*yield*/, fetch(url, {
                                     method: "post",
                                     credentials: "same-origin",
-                                    headers: myHeaders,
+                                    headers: header,
                                     body: JSON.stringify({ data: data }),
                                 })];
                         case 3:

@@ -1,14 +1,12 @@
-import { resolvePtr } from "dns";
-
 declare global {
   interface Window {
-    // login_verify: any;
     pagination_pre: any;
     pagination_next: any;
     makepage: any;
     get_change: any;
   }
 }
+
 export default function p_findAllRegister() {
   $(document).ready(() => {
     let sigunguCode = document.querySelector("#sigunguCode") as HTMLSelectElement;
@@ -22,11 +20,14 @@ export default function p_findAllRegister() {
     let findForm = document.querySelector(".findForm") as HTMLFormElement;
     let changeFromSelect = false;
     let symptonItems = document.querySelectorAll(".frr-item-content");
-    // let optionSelect = document.querySelector("#sigunguSelected");
-    // let previousBtn = document.querySelector(".frr-pagination-previous") as HTMLInputElement;
-    // let nextBtn = document.querySelector(".frr-pagination-next") as HTMLInputElement;
 
-    makeSymptonPage(symptonItems);
+    function FetchSet() {
+      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("CSRF-Token", token);
+      return myHeaders;
+    }
 
     if (location.search !== "") {
       for (let i = 0; i < decodedUrl.split("&").length; i++) {
@@ -60,31 +61,31 @@ export default function p_findAllRegister() {
     function makeSymptonPage(symptonItems: any) {
       for (let i = 0; i < symptonItems.length; i++) {
         symptonItems[i].addEventListener("click", async (e: any) => {
-          let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-          let myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-          myHeaders.append("CSRF-Token", token);
-          let result = await fetch("http://localhost:3000/provide/before_check_getData", {
-            method: "post",
-            credentials: "same-origin",
-            headers: myHeaders,
-            body: JSON.stringify({ _id: e.target.parentNode.dataset.registerid }),
-          });
+          let header = FetchSet();
           try {
+            let result = await fetch("http://localhost:3000/provide/before_check_getRegisterData", {
+              method: "post",
+              credentials: "same-origin",
+              headers: header,
+              body: JSON.stringify({ _id: e.target.parentNode.dataset.registerid }),
+            });
             if (result.status === 200 || 201) {
               let response = await result.json();
-              if (response.state === false) {
+              let { state } = response;
+              if (state === false) {
                 let err = new Error("삭제된 증상입니다.");
                 err.name = "Delete_data";
                 throw err;
+              } else if (state === "accept") {
+                let err = new Error("진행중인 증상입니다.");
+                err.name = "IS_SUBMITED";
+                throw err;
               }
-              if (response.data.state === "accept") {
-                return alert("진행중인 견적입니다.");
-              }
-              if (response.data.provider.length >= 20) {
-                return alert("견적을 초과하였습니다.");
-              }
-              window.location.href = `/provide/sympton_estimate?${e.target.parentNode.dataset.registerid}`;
+              return (window.location.href = `/provide/sympton_estimate?${e.target.parentNode.dataset.registerid}`);
+            } else {
+              let err = new Error("NETWORK_ERROR");
+              err.name = "NET";
+              throw err;
             }
           } catch (error) {
             console.error(error, error.name);
@@ -94,6 +95,7 @@ export default function p_findAllRegister() {
         });
       }
     }
+    makeSymptonPage(symptonItems);
 
     findBtn.addEventListener("click", (e) => {
       if (changeFromSelect) {
@@ -140,15 +142,12 @@ export default function p_findAllRegister() {
 
     async function commonFunction(text: string, target: any, data: any, url: string) {
       await reset(target, text);
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("CSRF-Token", token);
+      let header = FetchSet();
       try {
         let result = await fetch(url, {
           method: "post",
           credentials: "same-origin",
-          headers: myHeaders,
+          headers: header,
           body: JSON.stringify({ data: data }),
         });
         if (result.status === 200 || 201) {

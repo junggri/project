@@ -48,7 +48,7 @@ function default_1() {
     var loginBoxRegisterBtn = document.querySelector(".findUserResultBox-btnBox-register");
     var loginBoxConfirmBtn = document.querySelector(".findUserResultBox-btnBox-confirm");
     var userEmail = document.querySelector(".findEmail");
-    window.location.pathname === "/api/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
+    window.location.pathname === "/v1/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
     function findUserData(url, data) {
         return __awaiter(this, void 0, void 0, function () {
             var token, myHeaders, response, result;
@@ -105,11 +105,11 @@ function default_1() {
     findResultBtn.addEventListener("click", function () {
         if (userInputData.value === "")
             return;
-        if (window.location.pathname === "/api/find_user_email") {
-            findUserData("http://localhost:3000/api/check_user_email", userInputData.value);
+        if (window.location.pathname === "/v1/find_user_email") {
+            findUserData("http://localhost:3000/v1/check_user_email", userInputData.value);
         }
         else {
-            findUserData("http://localhost:3000/api/check_user_and_sendEmail", userInputData.value);
+            findUserData("http://localhost:3000/v1/check_user_and_sendEmail", userInputData.value);
         }
     });
 }

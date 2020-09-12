@@ -67,7 +67,7 @@ function isLogined(req, res, next) {
     var token = req.cookies.jwttoken;
     try {
         jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        return res.redirect("/");
+        return res.redirect("/api/index");
     }
     catch (error) {
         // console.error(error);

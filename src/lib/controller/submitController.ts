@@ -87,7 +87,7 @@ submitController.isSubmited = async (symptonId: string) => {
 submitController.delete_submit = async (req: any, res: any, symptonId: string, providerId: string) => {
   let submit: any = await submitModel.findOne().where("provider").equals(providerId).where("symptonId").equals(symptonId);
   if (submit.state === "accept") {
-    return res.json({ state: false });
+    return res.json({ state: "accept" });
   } else {
     let result: any = await symptonModel.findOne({ _id: symptonId });
     let provider: any = await providerModel.findOne({ _id: providerId });

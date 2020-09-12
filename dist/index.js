@@ -19,6 +19,7 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var passport_1 = __importDefault(require("passport"));
 var connect_flash_1 = __importDefault(require("connect-flash"));
 var cors_1 = __importDefault(require("cors"));
+var socket_io_1 = __importDefault(require("socket.io"));
 dotenv_1.default.config();
 var RedisStore = connect_redis_1.default(express_session_1.default);
 var _client = redis_1.default.createClient({});
@@ -75,12 +76,10 @@ app.use(passport_1.default.session());
 app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
-var index_1 = __importDefault(require("./router/index"));
-// import authRouter from "./router/auth";
+var v1_1 = __importDefault(require("./router/v1"));
 var api_1 = __importDefault(require("./router/api"));
 var provide_1 = __importDefault(require("./router/provide"));
-app.use("/", index_1.default);
-// app.use("/auth", authRouter);
+app.use("/v1", v1_1.default);
 app.use("/api", api_1.default);
 app.use("/provide", provide_1.default);
 app.use(cors_1.default(corsOptions));
@@ -104,8 +103,8 @@ app.use(function (err, req, res, next) {
 var server = app.listen(app.get("port"), function () {
     console.log("Express server listening on port " + app.get("port"));
 });
-// const io = socketIO(server);
+var io = socket_io_1.default(server);
 // server에 socket.io 연결 , 클라이언트가 연결되면 io.on("connection" ) 이벤트가 발생
-// io.on("connection", (socket) => console.log("연결"));
+io.on("connection", function (socket) { return console.log("연결"); });
 module.exports = app;
 //# sourceMappingURL=index.js.map

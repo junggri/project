@@ -17,9 +17,7 @@
         </div>
       </div>
       <div class="login-box">
-        <div class="login-slo">
-          로그인
-        </div>
+        <div class="login-slo">로그인</div>
         <form method="POST" action="/api/login_process" class="login_form">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="lb-registerbox lb-email">
@@ -35,26 +33,12 @@
               <label for="checkbox_id">아이디 저장</label>
             </section>
             <section class="login-for-user-right">
-              <a href="/api/find_user_email"><span>아이디 </span></a>
-              <a href="/api/find_user_pwd"><span> / 비밀번호 찾기</span></a>
+              <a href="/v1/find_user_email"><span>아이디 </span></a>
+              <a href="/v2/find_user_pwd"><span> / 비밀번호 찾기</span></a>
             </section>
           </div>
           <input type="button" class="login-btn" value="로그인" />
         </form>
-        <!-- <div class="lb-line">
-          <span>또는</span>
-        </div> -->
-        <!-- <div class="lb-oauthbox">
-          <div class="google login_oauth">
-            <span><a href="/auth/google">구글</a></span>
-          </div>
-          <div class="naver login_oauth">
-            <span><a href="/auth/naver">네이버</a></span>
-          </div>
-          <div class="kakao login_oauth">
-            <span><a href="/auth/kakao">카카오</a></span>
-          </div>
-        </div> -->
       </div>
     </div>
     <script src="/bundle.js"></script>

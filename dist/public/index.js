@@ -50,6 +50,7 @@ var reset_1 = __importDefault(require("./reset"));
 var oauth_1 = __importDefault(require("./oauth"));
 var provide_1 = __importDefault(require("./provide"));
 var mypageEstimate_1 = __importDefault(require("./mypageEstimate"));
+var mypageShowEstimate_1 = __importDefault(require("./mypageShowEstimate"));
 var p_index_1 = __importDefault(require("./p_index"));
 var p_findAllRegister_1 = __importDefault(require("./p_findAllRegister"));
 var p_showBeforeEstimate_1 = __importDefault(require("./p_showBeforeEstimate"));
@@ -93,10 +94,10 @@ if (path === "/api/oauth_register") {
 if (path.split("/")[2] === "reset") {
     reset_1.default();
 }
-if (path === "/api/find_user_email") {
+if (path === "/v1/find_user_email") {
     findUserData_1.default();
 }
-if (path === "/api/find_user_pwd") {
+if (path === "/v1/find_user_pwd") {
     findUserData_1.default();
 }
 if (path === "/api/login") {
@@ -111,11 +112,14 @@ if (path === "/api/register/common") {
 if (path === "/api/register/provide") {
     provide_1.default();
 }
-if (path === "/estimate") {
+if (path === "/api/estimate") {
     estimate_1.default();
 }
-if (path === "/api/mypage" || path === "/api/mypage/showestimate") {
+if (path === "/api/mypage") {
     mypqge_1.default();
+}
+if (path === "/api/mypage/showestimate") {
+    mypageShowEstimate_1.default();
 }
 if (path.split("/")[2] === "modified_estimate") {
     modified_estimate_1.default();
@@ -123,7 +127,7 @@ if (path.split("/")[2] === "modified_estimate") {
 if (path === "/api/get_estimate") {
     get_esimate_1.default();
 }
-if (path === "/") {
+if (path === "/api/index") {
     index();
 }
 if (LoginmyBtn !== null) {
@@ -134,7 +138,7 @@ if (LoginmyBtn !== null) {
 if (mainName !== null) {
     mainName.addEventListener("click", function () {
         if (path.split("/")[0] === "") {
-            location.href = "/";
+            location.href = "/api/index";
         }
         else if (path.split("/")[1] === "provide") {
             location.href = "/provide/index";
@@ -146,7 +150,6 @@ if (logout !== null) {
         return __generator(this, function (_a) {
             if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[0] === "") {
                 if (confirm("로그아웃 하시겠습니까?")) {
-                    logoutForm.action = "/api/logout_process";
                     return [2 /*return*/, logoutForm.submit()];
                 }
                 else {
@@ -155,7 +158,6 @@ if (logout !== null) {
             }
             else if (location.pathname.split("/")[1] === "provide") {
                 if (confirm("로그아웃 하시겠습니까?")) {
-                    logoutForm.action = "/provide/logout_process";
                     return [2 /*return*/, logoutForm.submit()];
                 }
                 else {
@@ -169,7 +171,7 @@ if (logout !== null) {
 function index() {
     var estimateBtn = document.querySelector(".mp-btn_estimate");
     estimateBtn.addEventListener("click", function (e) {
-        location.href = "/estimate";
+        location.href = "/api/estimate";
     });
 }
 //# sourceMappingURL=index.js.map

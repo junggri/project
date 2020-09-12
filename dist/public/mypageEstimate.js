@@ -37,72 +37,105 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 function mypageEstimate() {
+    var _this = this;
     var acceptBtn = document.querySelectorAll(".si-accept-btn");
     var previousAccept = document.querySelector(".previous-accept-box");
     var confirmBtn = document.querySelector(".pab-confirmBtn");
     var cancelBtn = document.querySelector(".pab-cancelBtn");
     var hiddenInput = document.querySelector(".pab-hidden");
-    function addEventOnAcceptBtn(acceptBtn) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _loop_1, i;
-            var _this = this;
-            return __generator(this, function (_a) {
-                _loop_1 = function (i) {
-                    acceptBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                        var token, myHeaders, result, response, error_1;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                                    myHeaders = new Headers();
-                                    myHeaders.append("Content-Type", "application/json");
-                                    myHeaders.append("CSRF-Token", token);
-                                    return [4 /*yield*/, fetch("http://localhost:3000/api/find_submit", {
-                                            method: "post",
-                                            credentials: "same-origin",
-                                            headers: myHeaders,
-                                            body: JSON.stringify({ submit_id: acceptBtn[i].parentNode.parentNode.dataset.submitid }),
-                                        })];
-                                case 1:
-                                    result = _a.sent();
-                                    _a.label = 2;
-                                case 2:
-                                    _a.trys.push([2, 5, , 6]);
-                                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                                    return [4 /*yield*/, result.json()];
-                                case 3:
-                                    response = _a.sent();
-                                    if (response.state === "Not_common") {
-                                        alert("잘못된 접근입니다.");
-                                        return [2 /*return*/, (window.location.href = "/api/mypage/showestimate")];
-                                    }
-                                    if (response.state === false)
-                                        return [2 /*return*/, alert("견적이 삭제되었거나, 존재하지 않습니다.")];
-                                    hiddenInput.value = response.data._id;
-                                    previousAccept.style.display = "block";
-                                    $(".previous-accept-box").css({
-                                        top: ($(window).height() - $(".previous-accept-box").outerHeight()) / 2 + $(window).scrollTop() + "px",
-                                        left: ($(window).width() - $(".previous-accept-box").outerWidth()) / 2 + $(window).scrollLeft() + "px",
-                                    });
-                                    _a.label = 4;
-                                case 4: return [3 /*break*/, 6];
-                                case 5:
-                                    error_1 = _a.sent();
-                                    console.error(error_1);
-                                    alert(4);
-                                    alert(error_1);
-                                    return [3 /*break*/, 6];
-                                case 6: return [2 /*return*/];
-                            }
-                        });
-                    }); });
-                };
-                for (i = 0; i < acceptBtn.length; i++) {
-                    _loop_1(i);
-                }
-                return [2 /*return*/];
-            });
+    function FetchSet() {
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("CSRF-Token", token);
+        return myHeaders;
+    }
+    (function () { return __awaiter(_this, void 0, void 0, function () {
+        var length, header, result, response, error, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    length = window.location.href.split("/").length;
+                    header = FetchSet();
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 6, , 7]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/check_reigister_state", {
+                            method: "post",
+                            credentials: "same-origin",
+                            headers: header,
+                            body: JSON.stringify({ register_id: window.location.href.split("/")[length - 1] }),
+                        })];
+                case 2:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, result.json()];
+                case 3:
+                    response = _a.sent();
+                    if (!response.state) {
+                        alert("잘못된 접근입니다");
+                        return [2 /*return*/, (window.location.href = "/api/mypage/showestimate")];
+                    }
+                    return [3 /*break*/, 5];
+                case 4:
+                    error = new Error("오류");
+                    error.name = "error";
+                    throw error;
+                case 5: return [3 /*break*/, 7];
+                case 6:
+                    error_1 = _a.sent();
+                    console.error(error_1);
+                    return [3 /*break*/, 7];
+                case 7: return [2 /*return*/];
+            }
         });
+    }); })();
+    function addEventOnAcceptBtn(acceptBtn) {
+        var _this = this;
+        var _loop_1 = function (i) {
+            acceptBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+                var header, result, response, error_2;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            header = FetchSet();
+                            return [4 /*yield*/, fetch("http://localhost:3000/api/find_submit", {
+                                    method: "post",
+                                    credentials: "same-origin",
+                                    headers: header,
+                                    body: JSON.stringify({ submit_id: acceptBtn[i].parentNode.parentNode.dataset.submitid }),
+                                })];
+                        case 1:
+                            result = _a.sent();
+                            _a.label = 2;
+                        case 2:
+                            _a.trys.push([2, 5, , 6]);
+                            if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                            return [4 /*yield*/, result.json()];
+                        case 3:
+                            response = _a.sent();
+                            if (response.state === false)
+                                return [2 /*return*/, alert("견적이 삭제되었거나, 존재하지 않습니다.")];
+                            hiddenInput.value = response.data._id;
+                            previousAccept.style.display = "block";
+                            $(".previous-accept-box").css({
+                                top: ($(window).height() - $(".previous-accept-box").outerHeight()) / 2 + $(window).scrollTop() + "px",
+                                left: ($(window).width() - $(".previous-accept-box").outerWidth()) / 2 + $(window).scrollLeft() + "px",
+                            });
+                            _a.label = 4;
+                        case 4: return [3 /*break*/, 6];
+                        case 5:
+                            error_2 = _a.sent();
+                            console.error(error_2);
+                            return [3 /*break*/, 6];
+                        case 6: return [2 /*return*/];
+                    }
+                });
+            }); });
+        };
+        for (var i = 0; i < acceptBtn.length; i++) {
+            _loop_1(i);
+        }
     }
     addEventOnAcceptBtn(acceptBtn);
     cancelBtn.addEventListener("click", function (e) {
@@ -114,29 +147,36 @@ function mypageEstimate() {
     });
     function acceptSubmit(submitId) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response;
+            var header, result, error, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
+                        header = FetchSet();
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
                         return [4 /*yield*/, fetch("http://localhost:3000/api/accept_estimate", {
                                 method: "post",
                                 credentials: "same-origin",
-                                headers: myHeaders,
+                                headers: header,
                                 body: JSON.stringify({ submit_id: submitId }),
                             })];
-                    case 1:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, result.json()];
                     case 2:
-                        response = _a.sent();
-                        window.location.href = "/api/mypage/showestimate";
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        result = _a.sent();
+                        if (result.status === 200 || 201) {
+                            window.location.href = "/api/mypage/showestimate";
+                        }
+                        else {
+                            error = new Error("젼적받기 실패");
+                            error.name = "fail to accept";
+                            throw error;
+                        }
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_3 = _a.sent();
+                        console.error(error_3);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

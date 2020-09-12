@@ -9,6 +9,7 @@ import reset from "./reset";
 import oauth from "./oauth";
 import provide from "./provide";
 import mypageEstimate from "./mypageEstimate";
+import mypageShowEstimate from "./mypageShowEstimate";
 import P_index from "./p_index";
 import p_findAllRegister from "./p_findAllRegister";
 import p_showBeforeEstimate from "./p_showBeforeEstimate";
@@ -54,10 +55,10 @@ if (path === "/api/oauth_register") {
 if (path.split("/")[2] === "reset") {
   reset();
 }
-if (path === "/api/find_user_email") {
+if (path === "/v1/find_user_email") {
   findUserData();
 }
-if (path === "/api/find_user_pwd") {
+if (path === "/v1/find_user_pwd") {
   findUserData();
 }
 if (path === "/api/login") {
@@ -72,11 +73,14 @@ if (path === "/api/register/common") {
 if (path === "/api/register/provide") {
   provide();
 }
-if (path === "/estimate") {
+if (path === "/api/estimate") {
   estimate();
 }
-if (path === "/api/mypage" || path === "/api/mypage/showestimate") {
+if (path === "/api/mypage") {
   mypage();
+}
+if (path === "/api/mypage/showestimate") {
+  mypageShowEstimate();
 }
 if (path.split("/")[2] === "modified_estimate") {
   modified_estimate();
@@ -84,7 +88,7 @@ if (path.split("/")[2] === "modified_estimate") {
 if (path === "/api/get_estimate") {
   getEstimate();
 }
-if (path === "/") {
+if (path === "/api/index") {
   index();
 }
 
@@ -97,7 +101,7 @@ if (LoginmyBtn !== null) {
 if (mainName !== null) {
   mainName.addEventListener("click", () => {
     if (path.split("/")[0] === "") {
-      location.href = "/";
+      location.href = "/api/index";
     } else if (path.split("/")[1] === "provide") {
       location.href = "/provide/index";
     }
@@ -108,14 +112,12 @@ if (logout !== null) {
   logout.addEventListener("click", async () => {
     if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[0] === "") {
       if (confirm("로그아웃 하시겠습니까?")) {
-        logoutForm.action = "/api/logout_process";
         return logoutForm.submit();
       } else {
         return false;
       }
     } else if (location.pathname.split("/")[1] === "provide") {
       if (confirm("로그아웃 하시겠습니까?")) {
-        logoutForm.action = "/provide/logout_process";
         return logoutForm.submit();
       } else {
         return false;
@@ -127,6 +129,6 @@ if (logout !== null) {
 function index() {
   let estimateBtn = document.querySelector(".mp-btn_estimate");
   estimateBtn.addEventListener("click", (e) => {
-    location.href = "/estimate";
+    location.href = "/api/estimate";
   });
 }
