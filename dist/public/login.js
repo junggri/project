@@ -35,7 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function login() {
     $(document).ready(function () {
         var _this = this;
@@ -46,29 +50,17 @@ function login() {
         var loginBtn = document.querySelector(".login-btn");
         var state = document.querySelector(".condition-login");
         loginBoxValue.focus();
-        function FetchSet() {
-            var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("CSRF-Token", token);
-            return myHeaders;
-        }
         function loginProcess(data) {
             return __awaiter(this, void 0, void 0, function () {
-                var header, result, response, err, error_1;
+                var fetchObj, result, response, err, error_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            header = FetchSet();
-                            _a.label = 1;
+                            _a.trys.push([0, 6, , 7]);
+                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify(data))];
                         case 1:
-                            _a.trys.push([1, 6, , 7]);
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/login_process", {
-                                    method: "POST",
-                                    credentials: "same-origin",
-                                    headers: header,
-                                    body: JSON.stringify(data),
-                                })];
+                            fetchObj = _a.sent();
+                            return [4 /*yield*/, fetch("http://localhost:3000/api/login_process", fetchObj)];
                         case 2:
                             result = _a.sent();
                             if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -78,7 +70,6 @@ function login() {
                             response.state === true ? (window.location.href = response.url) : (state.textContent = response.msg);
                             return [3 /*break*/, 5];
                         case 4:
-                            console.log(result.status);
                             err = new Error("NET_ERROR");
                             err.name = "NETWORK_ERROR";
                             throw err;
@@ -98,30 +89,36 @@ function login() {
         });
         function getEmailFromCookie(email, state) {
             return __awaiter(this, void 0, void 0, function () {
-                var token, myHeaders, response, result;
+                var fetchObj, response, result, err, error_2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             if (email === "")
                                 return [2 /*return*/];
-                            token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                            myHeaders = new Headers();
-                            myHeaders.append("Content-Type", "application/json");
-                            myHeaders.append("CSRF-Token", token);
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/setUserEmailCookie", {
-                                    method: "POST",
-                                    credentials: "same-origin",
-                                    headers: myHeaders,
-                                    body: JSON.stringify({ email: email, state: state }),
-                                })];
+                            _a.label = 1;
                         case 1:
-                            response = _a.sent();
-                            if (!(response.status === 200 || 201)) return [3 /*break*/, 3];
-                            return [4 /*yield*/, response.json()];
+                            _a.trys.push([1, 7, , 8]);
+                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: email, state: state }))];
                         case 2:
+                            fetchObj = _a.sent();
+                            return [4 /*yield*/, fetch("http://localhost:3000/api/setUserEmailCookie", fetchObj)];
+                        case 3:
+                            response = _a.sent();
+                            if (!(response.status === 200 || 201)) return [3 /*break*/, 5];
+                            return [4 /*yield*/, response.json()];
+                        case 4:
                             result = _a.sent();
                             return [2 /*return*/, result];
-                        case 3: return [2 /*return*/];
+                        case 5:
+                            err = new Error("NET_ERROR");
+                            err.name = "NETWORK_ERROR";
+                            throw err;
+                        case 6: return [3 /*break*/, 8];
+                        case 7:
+                            error_2 = _a.sent();
+                            console.error(error_2);
+                            return [3 /*break*/, 8];
+                        case 8: return [2 /*return*/];
                     }
                 });
             });

@@ -114,8 +114,10 @@ function mypageEstimate() {
                             return [4 /*yield*/, result.json()];
                         case 3:
                             response = _a.sent();
-                            if (response.state === false)
-                                return [2 /*return*/, alert("견적이 삭제되었거나, 존재하지 않습니다.")];
+                            if (response.state === false) {
+                                alert("견적이 삭제되었거나, 존재하지 않습니다.");
+                                return [2 /*return*/, window.location.reload()];
+                            }
                             hiddenInput.value = response.data._id;
                             previousAccept.style.display = "block";
                             $(".previous-accept-box").css({

@@ -1,18 +1,15 @@
+import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     openAddresss: any;
     previous_fileUpload: any;
     add_fileUpload: any;
     formAndBlockBack: any;
-    // noBack: any;
+    noBack: any;
   }
 }
 
 export default function get_estimate() {
-  // window.history.forward();
-  // window.noBack = () => {
-  //   window.history.forward();
-  // };
   let width = 500;
   let height = 500;
   let daum: any = window["daum"];
@@ -22,6 +19,7 @@ export default function get_estimate() {
   let postcode = document.getElementById("postcode") as HTMLInputElement;
   let sigunguCode = document.querySelector("#sigunguCode") as HTMLInputElement;
   let roadAddress = document.getElementById("roadAddress") as HTMLInputElement;
+  let detailAddress = document.querySelector("#detailAddress") as HTMLInputElement;
   let nextBtn = document.querySelector(".estimate-btn-box-next") as HTMLDivElement;
   let previousBtn = document.querySelector(".estimate-btn-box-previous") as HTMLDivElement;
   let submitBtn = document.querySelector(".estimate-btn-box-submit") as HTMLDivElement;
@@ -40,39 +38,28 @@ export default function get_estimate() {
   let imgBox = document.querySelector(".si-img-itemBox");
   let lengthFlag: boolean = true;
 
-  function clickNextBtn() {
-    page_1.style.display = "none";
-    page_2.style.display = "block";
-    previousBtn.style.display = "block";
-    nextBtn.style.display = "none";
-    submitBtn.style.display = "block";
-  }
-
-  function clickPreviousBtn() {
-    page_1.style.display = "block";
-    page_2.style.display = "none";
-    previousBtn.style.display = "none";
-    nextBtn.style.display = "block";
-    submitBtn.style.display = "none";
-  }
-
-  function moveTop(): void {
-    $("html,body").animate({ scrollTop: 0 }, 300);
-  }
-
-  nextBtn.addEventListener("click", (): void => {
-    clickNextBtn();
-    moveTop();
-  });
-
-  previousBtn.addEventListener("click", (): void => {
-    clickPreviousBtn();
-    moveTop();
-  });
-
-  imgBtn.addEventListener("click", () => {
-    fileBtn.click();
-  });
+  window.onpageshow = function (event: any) {
+    if (event.persisted || (window.performance && window.performance.navigation.type == 2)) {
+      //페이지가 백버튼으로 들어왔을때 실행되는 부분
+    } else {
+      (async () => {
+        try {
+          let fetchObj: any = await FetchFunction("post", "same-origin", null);
+          let result = await fetch("http://localhost:3000/api/fetch_session", fetchObj);
+          if (result.status === 200 || 201) {
+            let response = await result.json();
+            //if session.img isnt defineded
+            if (response.state === false) return;
+            makeSymptonImg(response);
+          } else {
+            throw new Error("reload fetch failed");
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      })();
+    }
+  };
 
   function lengthOfImg(data: string[]) {
     let imgLength = document.querySelector(".si-img-length");
@@ -92,6 +79,24 @@ export default function get_estimate() {
     } else {
       lengthFlag = true;
     }
+  }
+
+  function makeSymptonImg(data: any) {
+    if (data.img === undefined) return;
+    imgBtn.style.display = "none";
+    commonMakeImg(data);
+  }
+
+  function removeAndMakeNewImage(data: any) {
+    let imgBox = document.querySelector(".si-img-itemBox");
+    //remove img-item which is already made item
+    while (imgBox.hasChildNodes) {
+      if (imgBox.firstChild === null) {
+        break;
+      }
+      imgBox.removeChild(imgBox.firstChild);
+    }
+    commonMakeImg(data);
   }
 
   async function commonMakeImg(data: any) {
@@ -119,17 +124,9 @@ export default function get_estimate() {
   }
 
   async function delete_img_session(e: any) {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
     try {
-      let result = await fetch("http://localhost:3000/api/delete_img", {
-        method: "post",
-        credentials: "same-origin",
-        headers: myHeaders,
-        body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
-      });
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }));
+      let result = await fetch("http://localhost:3000/api/delete_img", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         lengthOfImg(response);
@@ -138,48 +135,6 @@ export default function get_estimate() {
     } catch (error) {
       console.error(error);
     }
-  }
-
-  (async () => {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    try {
-      let result = await fetch("http://localhost:3000/api/fetch_session", {
-        method: "post",
-        credentials: "same-origin",
-        headers: myHeaders,
-      });
-      if (result.status === 200 || 201) {
-        let response = await result.json();
-        //if session.img isnt defineded
-        if (response.state === false) return;
-        makeSymptonImg(response);
-      } else {
-        throw new Error("reload fetch failed");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  })();
-
-  function makeSymptonImg(data: any) {
-    if (data.img === undefined) return;
-    imgBtn.style.display = "none";
-    commonMakeImg(data);
-  }
-
-  function removeAndMakeNewImage(data: any) {
-    let imgBox = document.querySelector(".si-img-itemBox");
-    //remove img-item which is already made item
-    while (imgBox.hasChildNodes) {
-      if (imgBox.firstChild === null) {
-        break;
-      }
-      imgBox.removeChild(imgBox.firstChild);
-    }
-    commonMakeImg(data);
   }
 
   async function fetchImage(url: string, data: any) {
@@ -219,15 +174,58 @@ export default function get_estimate() {
   window.formAndBlockBack = () => {
     let check = confirm("간편견적을 받아보시겠습니까?");
     if (check) {
-      if (symptonDetailBox.value === "" || timeBox.value === "" || minuteBox.value === "" || userWantContent.value === "") {
+      if (
+        symptonDetailBox.value === "" ||
+        timeBox.value === "" ||
+        minuteBox.value === "" ||
+        userWantContent.value === "" ||
+        roadAddress.value === "" ||
+        postcode.value === "" ||
+        detailAddress.value === ""
+      ) {
         return alert("필수사항을 입력해주시길 바랍니다.");
       } else {
         submitForm.submit();
+        submitForm.reset();
       }
     } else {
       return false;
     }
   };
+
+  function clickNextBtn() {
+    page_1.style.display = "none";
+    page_2.style.display = "block";
+    previousBtn.style.display = "block";
+    nextBtn.style.display = "none";
+    submitBtn.style.display = "block";
+  }
+
+  function clickPreviousBtn() {
+    page_1.style.display = "block";
+    page_2.style.display = "none";
+    previousBtn.style.display = "none";
+    nextBtn.style.display = "block";
+    submitBtn.style.display = "none";
+  }
+
+  function moveTop(): void {
+    $("html,body").animate({ scrollTop: 0 }, 300);
+  }
+
+  nextBtn.addEventListener("click", (): void => {
+    clickNextBtn();
+    moveTop();
+  });
+
+  previousBtn.addEventListener("click", (): void => {
+    clickPreviousBtn();
+    moveTop();
+  });
+
+  imgBtn.addEventListener("click", () => {
+    fileBtn.click();
+  });
 
   window.openAddresss = () => {
     new daum.Postcode({

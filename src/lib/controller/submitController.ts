@@ -103,7 +103,7 @@ submitController.delete_submit = async (req: any, res: any, symptonId: string, p
 };
 
 submitController.getDataFromProviderId = async (providerId: string) => {
-  let result = await submitModel.find({ provider: providerId });
+  let result = await submitModel.find({ provider: providerId }).sort({ create: -1 });
   return result;
 };
 

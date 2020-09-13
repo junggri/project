@@ -52,7 +52,10 @@ export default function mypageEstimate() {
         try {
           if (result.status === 200 || 201) {
             let response = await result.json();
-            if (response.state === false) return alert("견적이 삭제되었거나, 존재하지 않습니다.");
+            if (response.state === false) {
+              alert("견적이 삭제되었거나, 존재하지 않습니다.");
+              return window.location.reload();
+            }
             hiddenInput.value = response.data._id;
             previousAccept.style.display = "block";
             $(".previous-accept-box").css({

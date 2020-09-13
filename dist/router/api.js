@@ -335,26 +335,35 @@ router.post("/pre_estimate", parseForm, csrfProtection, function (req, res) {
     });
     req.session.code = sympton_code;
     req.session.price = req.body.price;
-    try {
-        jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        res.json({ state: true });
-    }
-    catch (error) {
-        res.json({ state: false });
-    }
-});
-router.get("/get_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
-    var code = req.session.code;
-    var authUI = authStatus_1.default.status(req, res);
-    var decoded = getDataFromToken_1.default(req, res);
-    makeStorage(decoded);
-    symptonList_1.selcted_sympton(code).then(function (result) {
-        res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result, price: req.session.price });
+    req.session.save(function () {
+        try {
+            jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+            return res.json({ state: true });
+        }
+        catch (error) {
+            return res.json({ state: false });
+        }
     });
 });
+router.get("/get_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var code, authUI, decoded, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                code = req.session.code;
+                authUI = authStatus_1.default.status(req, res);
+                decoded = getDataFromToken_1.default(req, res);
+                makeStorage(decoded);
+                return [4 /*yield*/, symptonList_1.selcted_sympton(code)];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result, price: req.session.price })];
+        }
+    });
+}); });
 router.post("/delete_img", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
     req.session.img.splice(req.session.img.indexOf(req.body._data), 1);
-    res.json(req.session.img);
+    return res.json(req.session.img);
 });
 router.post("/fetch_session", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
     var decoded = getDataFromToken_1.default(req, res);
@@ -445,6 +454,7 @@ router.post("/check_reigister_state", csrfProtection, jwtverify_1.verify, jwtver
 }); });
 router.get("/mypage/showestimate", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var token = req.cookies.jwttoken;
+    // res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         registerSymContoller_1.default.findAllRegister(req, res, decoded.email, decoded.user_objectId);
@@ -538,7 +548,7 @@ router.post("/accept_estimate", csrfProtection, jwtverify_1.verify, jwtverify_1.
     });
 }); });
 router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var response, authUI, codeList, error_3;
+    var response, err, authUI, codeList, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -546,6 +556,14 @@ router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtveri
                 return [4 /*yield*/, registerSymContoller_1.default.findBeforeModified(req, res)];
             case 1:
                 response = _a.sent();
+                if (response === null) {
+                    err = new Error("잘못된 접근입니다");
+                    err.message = "잘못된 접근입니다.";
+                    err.stack = "삭제된 증상입니다";
+                    err.status = 404;
+                    next(err);
+                    return [2 /*return*/];
+                }
                 authUI = authStatus_1.default.status(req, res);
                 return [4 /*yield*/, symptonList_1.selcted_sympton(response.code)];
             case 2:
@@ -556,6 +574,7 @@ router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtveri
                 return [3 /*break*/, 4];
             case 3:
                 error_3 = _a.sent();
+                console.log(error_3);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }

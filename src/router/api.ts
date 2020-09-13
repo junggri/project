@@ -278,27 +278,28 @@ router.post("/pre_estimate", parseForm, csrfProtection, (req, res) => {
   });
   req.session.code = sympton_code;
   req.session.price = req.body.price;
-  try {
-    jwt.verify(token, process.env.JWT_SECRET);
-    res.json({ state: true });
-  } catch (error) {
-    res.json({ state: false });
-  }
+  req.session.save(() => {
+    try {
+      jwt.verify(token, process.env.JWT_SECRET);
+      return res.json({ state: true });
+    } catch (error) {
+      return res.json({ state: false });
+    }
+  });
 });
 
-router.get("/get_estimate", csrfProtection, verify, isNotLogined, (req, res) => {
+router.get("/get_estimate", csrfProtection, verify, isNotLogined, async (req, res) => {
   let { code } = req.session;
   let authUI = auth.status(req, res);
   let decoded = getDataFromToken(req, res);
   makeStorage(decoded);
-  selcted_sympton(code).then((result) => {
-    res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result, price: req.session.price });
-  });
+  let result = await selcted_sympton(code);
+  return res.render("get_estimate", { authUI: authUI, csrfToken: req.csrfToken(), list: result, price: req.session.price });
 });
 
 router.post("/delete_img", parseForm, csrfProtection, verify, (req, res) => {
   req.session.img.splice(req.session.img.indexOf(req.body._data), 1);
-  res.json(req.session.img);
+  return res.json(req.session.img);
 });
 
 router.post("/fetch_session", parseForm, csrfProtection, verify, (req, res) => {
@@ -386,6 +387,7 @@ router.post("/check_reigister_state", csrfProtection, verify, isNotLogined, asyn
 
 router.get("/mypage/showestimate", csrfProtection, verify, isNotLogined, (req, res) => {
   const token = req.cookies.jwttoken;
+  // res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     registerSymController.findAllRegister(req, res, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
@@ -436,21 +438,30 @@ router.post("/accept_estimate", csrfProtection, verify, isNotLogined, async (req
   sendPhone(req, res, "alert", provide_phone_number);
 });
 
+interface Err {
+  status: number;
+}
+
 router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async (req, res, next) => {
   try {
     let response = await registerSymController.findBeforeModified(req, res);
-    // if (response === null) {
-    //   let err = new Error("잘못된 접근입니다.");
-    //   next(err);
-    //   return;
-    // }
+    if (response === null) {
+      let err: any = new Error("잘못된 접근입니다");
+      err.message = "잘못된 접근입니다.";
+      err.stack = "삭제된 증상입니다";
+      err.status = 404;
+      next(err);
+      return;
+    }
     //modified_get_data 로드되면 아래 실행 없으면 바로알러트 하기떄문에 굳이 없어도 되지 않을까싶다.
     let authUI = auth.status(req, res);
     let codeList = await selcted_sympton(response.code);
     req.session._id = req.url.split("/")[2];
     ///증상 objectid 저장
     res.render("modified_estimate", { authUI: authUI, csrfToken: req.csrfToken(), register_symptons: codeList });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.post("/modified_get_data", verify, isNotLogined, async (req, res) => {

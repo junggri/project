@@ -49,22 +49,31 @@ function default_1() {
     var loginBoxConfirmBtn = document.querySelector(".findUserResultBox-btnBox-confirm");
     var userEmail = document.querySelector(".findEmail");
     window.location.pathname === "/v1/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
+    function FetchSet() {
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("CSRF-Token", token);
+        return myHeaders;
+    }
+    var Fetch = /** @class */ (function () {
+        function Fetch(method, credentials, body) {
+            this.method = method;
+            this.credentials = credentials;
+            this.headers = FetchSet();
+            this.body = body;
+        }
+        return Fetch;
+    }());
     function findUserData(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, response, result;
+            var FetchObj, response, result, err, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch(url, {
-                                method: "POST",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ email: data }),
-                            })];
+                        _a.trys.push([0, 5, , 6]);
+                        FetchObj = new Fetch("post", "same-origin", JSON.stringify({ email: data }));
+                        return [4 /*yield*/, fetch(url, FetchObj)];
                     case 1:
                         response = _a.sent();
                         if (!(response.status === 200 || 201)) return [3 /*break*/, 3];
@@ -93,8 +102,17 @@ function default_1() {
                             loginBoxRegisterBtn.style.display = "none";
                             loginBoxLoginBtn.style.display = "block";
                         }
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err = new Error("NET_ERROR");
+                        err.name = "NET_ERROR";
+                        throw err;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_1 = _a.sent();
+                        console.log(error_1);
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -106,10 +124,10 @@ function default_1() {
         if (userInputData.value === "")
             return;
         if (window.location.pathname === "/v1/find_user_email") {
-            findUserData("http://localhost:3000/v1/check_user_email", userInputData.value);
+            return findUserData("http://localhost:3000/v1/check_user_email", userInputData.value);
         }
         else {
-            findUserData("http://localhost:3000/v1/check_user_and_sendEmail", userInputData.value);
+            return findUserData("http://localhost:3000/v1/check_user_and_sendEmail", userInputData.value);
         }
     });
 }

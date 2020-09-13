@@ -15,6 +15,7 @@ var connect_redis_1 = __importDefault(require("connect-redis"));
 var session_json_1 = __importDefault(require("./config/session.json"));
 var server_1 = __importDefault(require("./lib/server"));
 var compression_1 = __importDefault(require("compression"));
+var nocache_1 = __importDefault(require("nocache"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var passport_1 = __importDefault(require("passport"));
 var connect_flash_1 = __importDefault(require("connect-flash"));
@@ -69,6 +70,7 @@ app.use(body_parser_1.default.urlencoded({ limit: "50mb", parameterLimit: 100000
 app.use(helmet_1.default.frameguard({ action: "deny" }));
 app.use(helmet_1.default.xssFilter());
 app.use(helmet_1.default.noSniff());
+app.use(nocache_1.default());
 app.use(compression_1.default());
 app.disable("x-powered-by");
 app.use(passport_1.default.initialize());

@@ -1,7 +1,6 @@
 import symptonModel from "./model/symptonModel";
 
 export let symptonList = async () => {
-  //인덱서블로 바꿔보기
   let symptons: any = await symptonModel.find().sort({ price: 1 }).limit(10);
   let container = "";
   for (let i = 0; i < symptons.length; i++) {

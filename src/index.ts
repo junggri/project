@@ -12,6 +12,7 @@ import mongoServer from "./lib/server";
 import compression from "compression";
 import { stream } from "./lib/winston";
 import createError from "http-errors";
+import noCache from "nocache";
 import dotenv from "dotenv";
 import passport from "passport";
 import flash from "connect-flash";
@@ -80,6 +81,7 @@ app.use(bodyParser.urlencoded({ limit: "50mb", parameterLimit: 100000, extended:
 app.use(helmet.frameguard({ action: "deny" }));
 app.use(helmet.xssFilter());
 app.use(helmet.noSniff());
+app.use(noCache());
 app.use(compression());
 app.disable("x-powered-by");
 

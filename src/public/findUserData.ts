@@ -20,39 +20,60 @@ export default function () {
   let userEmail = document.querySelector(".findEmail") as HTMLDivElement;
   window.location.pathname === "/v1/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
 
-  async function findUserData(url: string, data: string) {
+  function FetchSet() {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("CSRF-Token", token);
-    let response = await fetch(url, {
-      method: "POST",
-      credentials: "same-origin",
-      headers: myHeaders,
-      body: JSON.stringify({ email: data }),
-    });
-    if (response.status === 200 || 201) {
-      let result = await response.json();
-      if (!result.state) {
-        userEmail.textContent = result.inputdata;
-        resultBox.textContent = "회원정보가 존재하지 않습니다.";
-        showResultBox.style.display = "block";
-        loginBoxLoginBtn.style.display = "none";
-        loginBoxRegisterBtn.style.display = "block";
-      } else if (result.state === "can-reset") {
-        showResultBox.style.display = "block";
-        resultBox.textContent = "비밀번호 재설정 링크를 보냈습니다.";
-        userEmail.style.display = "none";
-        loginBoxLoginBtn.style.display = "none";
-        loginBoxRegisterBtn.style.display = "none";
-        // loginBoxConfirmBtn.style.display = "none";
+    return myHeaders;
+  }
+
+  class Fetch {
+    method: string;
+    credentials: string;
+    headers: any;
+    body: any;
+    constructor(method: string, credentials: string, body: any) {
+      this.method = method;
+      this.credentials = credentials;
+      this.headers = FetchSet();
+      this.body = body;
+    }
+  }
+
+  async function findUserData(url: string, data: string) {
+    try {
+      let FetchObj: any = new Fetch("post", "same-origin", JSON.stringify({ email: data }));
+      let response = await fetch(url, FetchObj);
+      if (response.status === 200 || 201) {
+        let result = await response.json();
+        if (!result.state) {
+          userEmail.textContent = result.inputdata;
+          resultBox.textContent = "회원정보가 존재하지 않습니다.";
+          showResultBox.style.display = "block";
+          loginBoxLoginBtn.style.display = "none";
+          loginBoxRegisterBtn.style.display = "block";
+        } else if (result.state === "can-reset") {
+          showResultBox.style.display = "block";
+          resultBox.textContent = "비밀번호 재설정 링크를 보냈습니다.";
+          userEmail.style.display = "none";
+          loginBoxLoginBtn.style.display = "none";
+          loginBoxRegisterBtn.style.display = "none";
+          // loginBoxConfirmBtn.style.display = "none";
+        } else {
+          userEmail.textContent = result.email;
+          resultBox.textContent = "이미 회원가입을 진행하셨습니다. 로그인 후 서비스를 이용해보세요.";
+          showResultBox.style.display = "block";
+          loginBoxRegisterBtn.style.display = "none";
+          loginBoxLoginBtn.style.display = "block";
+        }
       } else {
-        userEmail.textContent = result.email;
-        resultBox.textContent = "이미 회원가입을 진행하셨습니다. 로그인 후 서비스를 이용해보세요.";
-        showResultBox.style.display = "block";
-        loginBoxRegisterBtn.style.display = "none";
-        loginBoxLoginBtn.style.display = "block";
+        let err = new Error("NET_ERROR");
+        err.name = "NET_ERROR";
+        throw err;
       }
+    } catch (error) {
+      console.log(error);
     }
   }
   // loginBoxConfirmBtn.addEventListener("click", () => {
@@ -61,9 +82,9 @@ export default function () {
   findResultBtn.addEventListener("click", () => {
     if (userInputData.value === "") return;
     if (window.location.pathname === "/v1/find_user_email") {
-      findUserData("http://localhost:3000/v1/check_user_email", userInputData.value);
+      return findUserData("http://localhost:3000/v1/check_user_email", userInputData.value);
     } else {
-      findUserData("http://localhost:3000/v1/check_user_and_sendEmail", userInputData.value);
+      return findUserData("http://localhost:3000/v1/check_user_and_sendEmail", userInputData.value);
     }
   });
 }

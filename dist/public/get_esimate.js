@@ -35,13 +35,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function get_estimate() {
-    var _this = this;
-    // window.history.forward();
-    // window.noBack = () => {
-    //   window.history.forward();
-    // };
     var width = 500;
     var height = 500;
     var daum = window["daum"];
@@ -51,6 +50,7 @@ function get_estimate() {
     var postcode = document.getElementById("postcode");
     var sigunguCode = document.querySelector("#sigunguCode");
     var roadAddress = document.getElementById("roadAddress");
+    var detailAddress = document.querySelector("#detailAddress");
     var nextBtn = document.querySelector(".estimate-btn-box-next");
     var previousBtn = document.querySelector(".estimate-btn-box-previous");
     var submitBtn = document.querySelector(".estimate-btn-box-submit");
@@ -68,34 +68,45 @@ function get_estimate() {
     var userWantContent = document.querySelector("#userwant-box");
     var imgBox = document.querySelector(".si-img-itemBox");
     var lengthFlag = true;
-    function clickNextBtn() {
-        page_1.style.display = "none";
-        page_2.style.display = "block";
-        previousBtn.style.display = "block";
-        nextBtn.style.display = "none";
-        submitBtn.style.display = "block";
-    }
-    function clickPreviousBtn() {
-        page_1.style.display = "block";
-        page_2.style.display = "none";
-        previousBtn.style.display = "none";
-        nextBtn.style.display = "block";
-        submitBtn.style.display = "none";
-    }
-    function moveTop() {
-        $("html,body").animate({ scrollTop: 0 }, 300);
-    }
-    nextBtn.addEventListener("click", function () {
-        clickNextBtn();
-        moveTop();
-    });
-    previousBtn.addEventListener("click", function () {
-        clickPreviousBtn();
-        moveTop();
-    });
-    imgBtn.addEventListener("click", function () {
-        fileBtn.click();
-    });
+    window.onpageshow = function (event) {
+        var _this = this;
+        if (event.persisted || (window.performance && window.performance.navigation.type == 2)) {
+            //페이지가 백버튼으로 들어왔을때 실행되는 부분
+        }
+        else {
+            (function () { return __awaiter(_this, void 0, void 0, function () {
+                var fetchObj, result, response, error_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 6, , 7]);
+                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", null)];
+                        case 1:
+                            fetchObj = _a.sent();
+                            return [4 /*yield*/, fetch("http://localhost:3000/api/fetch_session", fetchObj)];
+                        case 2:
+                            result = _a.sent();
+                            if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                            return [4 /*yield*/, result.json()];
+                        case 3:
+                            response = _a.sent();
+                            //if session.img isnt defineded
+                            if (response.state === false)
+                                return [2 /*return*/];
+                            makeSymptonImg(response);
+                            return [3 /*break*/, 5];
+                        case 4: throw new Error("reload fetch failed");
+                        case 5: return [3 /*break*/, 7];
+                        case 6:
+                            error_1 = _a.sent();
+                            console.error(error_1);
+                            return [3 /*break*/, 7];
+                        case 7: return [2 /*return*/];
+                    }
+                });
+            }); })();
+        }
+    };
     function lengthOfImg(data) {
         var imgLength = document.querySelector(".si-img-length");
         imgLength.textContent = data.length + " / 10\uAC1C \uB4F1\uB85D";
@@ -116,6 +127,23 @@ function get_estimate() {
         else {
             lengthFlag = true;
         }
+    }
+    function makeSymptonImg(data) {
+        if (data.img === undefined)
+            return;
+        imgBtn.style.display = "none";
+        commonMakeImg(data);
+    }
+    function removeAndMakeNewImage(data) {
+        var imgBox = document.querySelector(".si-img-itemBox");
+        //remove img-item which is already made item
+        while (imgBox.hasChildNodes) {
+            if (imgBox.firstChild === null) {
+                break;
+            }
+            imgBox.removeChild(imgBox.firstChild);
+        }
+        commonMakeImg(data);
     }
     function commonMakeImg(data) {
         return __awaiter(this, void 0, void 0, function () {
@@ -157,23 +185,15 @@ function get_estimate() {
     }
     function delete_img_session(e) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_1;
+            var fetchObj, result, response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        _a.label = 1;
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }))];
                     case 1:
-                        _a.trys.push([1, 5, , 6]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/delete_img", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
-                            })];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/delete_img", fetchObj)];
                     case 2:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -186,68 +206,13 @@ function get_estimate() {
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
-                        error_1 = _a.sent();
-                        console.error(error_1);
+                        error_2 = _a.sent();
+                        console.error(error_2);
                         return [3 /*break*/, 6];
                     case 6: return [2 /*return*/];
                 }
             });
         });
-    }
-    (function () { return __awaiter(_this, void 0, void 0, function () {
-        var token, myHeaders, result, response, error_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("CSRF-Token", token);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/fetch_session", {
-                            method: "post",
-                            credentials: "same-origin",
-                            headers: myHeaders,
-                        })];
-                case 2:
-                    result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, result.json()];
-                case 3:
-                    response = _a.sent();
-                    //if session.img isnt defineded
-                    if (response.state === false)
-                        return [2 /*return*/];
-                    makeSymptonImg(response);
-                    return [3 /*break*/, 5];
-                case 4: throw new Error("reload fetch failed");
-                case 5: return [3 /*break*/, 7];
-                case 6:
-                    error_2 = _a.sent();
-                    console.error(error_2);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
-            }
-        });
-    }); })();
-    function makeSymptonImg(data) {
-        if (data.img === undefined)
-            return;
-        imgBtn.style.display = "none";
-        commonMakeImg(data);
-    }
-    function removeAndMakeNewImage(data) {
-        var imgBox = document.querySelector(".si-img-itemBox");
-        //remove img-item which is already made item
-        while (imgBox.hasChildNodes) {
-            if (imgBox.firstChild === null) {
-                break;
-            }
-            imgBox.removeChild(imgBox.firstChild);
-        }
-        commonMakeImg(data);
     }
     function fetchImage(url, data) {
         return __awaiter(this, void 0, void 0, function () {
@@ -302,17 +267,52 @@ function get_estimate() {
     window.formAndBlockBack = function () {
         var check = confirm("간편견적을 받아보시겠습니까?");
         if (check) {
-            if (symptonDetailBox.value === "" || timeBox.value === "" || minuteBox.value === "" || userWantContent.value === "") {
+            if (symptonDetailBox.value === "" ||
+                timeBox.value === "" ||
+                minuteBox.value === "" ||
+                userWantContent.value === "" ||
+                roadAddress.value === "" ||
+                postcode.value === "" ||
+                detailAddress.value === "") {
                 return alert("필수사항을 입력해주시길 바랍니다.");
             }
             else {
                 submitForm.submit();
+                submitForm.reset();
             }
         }
         else {
             return false;
         }
     };
+    function clickNextBtn() {
+        page_1.style.display = "none";
+        page_2.style.display = "block";
+        previousBtn.style.display = "block";
+        nextBtn.style.display = "none";
+        submitBtn.style.display = "block";
+    }
+    function clickPreviousBtn() {
+        page_1.style.display = "block";
+        page_2.style.display = "none";
+        previousBtn.style.display = "none";
+        nextBtn.style.display = "block";
+        submitBtn.style.display = "none";
+    }
+    function moveTop() {
+        $("html,body").animate({ scrollTop: 0 }, 300);
+    }
+    nextBtn.addEventListener("click", function () {
+        clickNextBtn();
+        moveTop();
+    });
+    previousBtn.addEventListener("click", function () {
+        clickPreviousBtn();
+        moveTop();
+    });
+    imgBtn.addEventListener("click", function () {
+        fileBtn.click();
+    });
     window.openAddresss = function () {
         new daum.Postcode({
             width: width,

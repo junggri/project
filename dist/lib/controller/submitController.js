@@ -228,7 +228,7 @@ submitController.getDataFromProviderId = function (providerId) { return __awaite
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, submitEstimateModel_1.default.find({ provider: providerId })];
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.find({ provider: providerId }).sort({ create: -1 })];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];

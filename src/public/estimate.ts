@@ -6,6 +6,27 @@ declare global {
   }
 }
 
+function FetchSet() {
+  let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("CSRF-Token", token);
+  return myHeaders;
+}
+
+class Fetch {
+  method: string;
+  credentials: string;
+  headers: any;
+  body: any;
+  constructor(method: string, credentials: string, body: any) {
+    this.method = method;
+    this.credentials = credentials;
+    this.headers = FetchSet();
+    this.body = body;
+  }
+}
+
 export default function () {
   const estimate_container = document.querySelector(".estimate-pre-result-itembox") as HTMLDivElement;
   const estimate_list = document.querySelector(".estimate-pre-result-item");
@@ -13,7 +34,7 @@ export default function () {
   const estimate_num = document.querySelector(".estimate-pre-num");
   const estimateForm = document.querySelector(".estimateForm") as HTMLFormElement;
   const estimateBtn = document.querySelector(".estimate-btn") as HTMLDivElement;
-  let fetchData = {};
+  let data: string[] = [];
   let estimate_item: any;
   let added_item: any;
   let lists_height: number = 0;
@@ -40,24 +61,15 @@ export default function () {
       price -= Number(e.parentNode.dataset.price);
       estimate_item = document.querySelectorAll(".estimate-item");
     }
-    // console.log(estimate_item);
     estimate_price.textContent = `${String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
     estimate_num.textContent = `${estimate_item.length}개 선택`;
     estimate_container.scrollTop = estimate_container.scrollHeight;
   };
 
   async function isLogined(url: string, data: any) {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
     try {
-      let result = await fetch(url, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: myHeaders,
-        body: JSON.stringify(data),
-      });
+      let FetchObj: any = new Fetch("post", "same-origin", JSON.stringify(data));
+      let result = await fetch(url, FetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         if (response.state === true) {
@@ -77,24 +89,17 @@ export default function () {
   }
 
   estimateBtn.addEventListener("click", (e) => {
-    let data = [];
     try {
       if (estimate_item === undefined || estimate_item.length === 0) {
-        let err = new Error("간편견적서를 작성하시겠습니까?");
-        err.name = "DONT_SELECTED";
-        throw err;
+        return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
+      } else {
+        for (let i = 0; i < estimate_item.length; i++) {
+          data.push(estimate_item[i].dataset.code);
+        }
+        return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
       }
-      for (let i = 0; i < estimate_item.length; i++) {
-        data.push(estimate_item[i].dataset.code);
-      }
-      fetchData = {
-        code: data,
-        price: price,
-      };
-      isLogined("http://localhost:3000/api/pre_estimate", fetchData);
     } catch (error) {
-      console.error(error, error.name);
-      estimateForm.submit();
+      console.error(error);
     }
   });
 

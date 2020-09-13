@@ -1,8 +1,11 @@
+import FetchFunction from "./fetchFunction";
+import { REFUSED } from "dns";
 declare global {
   interface Window {
     // login_verify: any;
   }
 }
+
 export default function login() {
   $(document).ready(function () {
     let checkBox = document.querySelector("#checkbox_id") as HTMLInputElement;
@@ -18,28 +21,14 @@ export default function login() {
       pwd: string;
     }
 
-    function FetchSet() {
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("CSRF-Token", token);
-      return myHeaders;
-    }
-
     async function loginProcess(data: Data) {
-      let header = FetchSet();
       try {
-        let result = await fetch("http://localhost:3000/api/login_process", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: header,
-          body: JSON.stringify(data),
-        });
+        let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify(data));
+        let result = await fetch("http://localhost:3000/api/login_process", fetchObj);
         if (result.status === 200 || 201) {
           let response = await result.json();
           response.state === true ? (window.location.href = response.url) : (state.textContent = response.msg);
         } else {
-          console.log(result.status);
           let err = new Error("NET_ERROR");
           err.name = "NETWORK_ERROR";
           throw err;
@@ -56,19 +45,19 @@ export default function login() {
 
     async function getEmailFromCookie(email: string, state: string) {
       if (email === "") return;
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("CSRF-Token", token);
-      let response = await fetch("http://localhost:3000/api/setUserEmailCookie", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: myHeaders,
-        body: JSON.stringify({ email: email, state: state }),
-      });
-      if (response.status === 200 || 201) {
-        let result = await response.json();
-        return result;
+      try {
+        let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: email, state: state }));
+        let response = await fetch("http://localhost:3000/api/setUserEmailCookie", fetchObj);
+        if (response.status === 200 || 201) {
+          let result = await response.json();
+          return result;
+        } else {
+          let err = new Error("NET_ERROR");
+          err.name = "NETWORK_ERROR";
+          throw err;
+        }
+      } catch (error) {
+        console.error(error);
       }
     }
 

@@ -36,6 +36,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+function FetchSet() {
+    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("CSRF-Token", token);
+    return myHeaders;
+}
+var Fetch = /** @class */ (function () {
+    function Fetch(method, credentials, body) {
+        this.method = method;
+        this.credentials = credentials;
+        this.headers = FetchSet();
+        this.body = body;
+    }
+    return Fetch;
+}());
 function default_1() {
     var estimate_container = document.querySelector(".estimate-pre-result-itembox");
     var estimate_list = document.querySelector(".estimate-pre-result-item");
@@ -43,7 +59,7 @@ function default_1() {
     var estimate_num = document.querySelector(".estimate-pre-num");
     var estimateForm = document.querySelector(".estimateForm");
     var estimateBtn = document.querySelector(".estimate-btn");
-    var fetchData = {};
+    var data = [];
     var estimate_item;
     var added_item;
     var lists_height = 0;
@@ -70,35 +86,24 @@ function default_1() {
             price -= Number(e.parentNode.dataset.price);
             estimate_item = document.querySelectorAll(".estimate-item");
         }
-        // console.log(estimate_item);
         estimate_price.textContent = String(price).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "\uC6D0";
         estimate_num.textContent = estimate_item.length + "\uAC1C \uC120\uD0DD";
         estimate_container.scrollTop = estimate_container.scrollHeight;
     };
     function isLogined(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_1;
+            var FetchObj, result, response, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        _a.label = 1;
+                        _a.trys.push([0, 5, , 6]);
+                        FetchObj = new Fetch("post", "same-origin", JSON.stringify(data));
+                        return [4 /*yield*/, fetch(url, FetchObj)];
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch(url, {
-                                method: "POST",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify(data),
-                            })];
-                    case 2:
                         result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
                         return [4 /*yield*/, result.json()];
-                    case 3:
+                    case 2:
                         response = _a.sent();
                         if (response.state === true) {
                             estimateForm.submit();
@@ -109,38 +114,32 @@ function default_1() {
                                 location.href = "/api/login";
                             }
                         }
-                        return [3 /*break*/, 5];
-                    case 4: throw new Error("로그인유무 확인 실패");
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                        return [3 /*break*/, 4];
+                    case 3: throw new Error("로그인유무 확인 실패");
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
                         error_1 = _a.sent();
                         console.error(error_1);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
     }
     estimateBtn.addEventListener("click", function (e) {
-        var data = [];
         try {
             if (estimate_item === undefined || estimate_item.length === 0) {
-                var err = new Error("간편견적서를 작성하시겠습니까?");
-                err.name = "DONT_SELECTED";
-                throw err;
+                return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
             }
-            for (var i = 0; i < estimate_item.length; i++) {
-                data.push(estimate_item[i].dataset.code);
+            else {
+                for (var i = 0; i < estimate_item.length; i++) {
+                    data.push(estimate_item[i].dataset.code);
+                }
+                return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
             }
-            fetchData = {
-                code: data,
-                price: price,
-            };
-            isLogined("http://localhost:3000/api/pre_estimate", fetchData);
         }
         catch (error) {
-            console.error(error, error.name);
-            estimateForm.submit();
+            console.error(error);
         }
     });
     //input submit으로 바꾸고 실핼하기
