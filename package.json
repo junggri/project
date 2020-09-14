@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "pm2 start dist/index.js --watch -i 2",
+    "start": "nodemon dist/index.js",
     "dev": "nodemon src/index.ts",
     "build": "tsc -w",
     "webpack": "webpack -w"

@@ -97,7 +97,7 @@ router.get("/estimate", verify, csrfProtection, (req, res, next) => {
 
 router.get("/login", csrfProtection, verify, isLogined, (req: any, res, next) => {
   if (req.headers.referer === undefined) {
-    req.session.referer = "http://localhost:3000";
+    req.session.referer = "http://localhost:3000/web/index";
   } else {
     req.session.referer = req.headers.referer;
   }
@@ -205,7 +205,7 @@ router.post("/register_common_process", parseForm, csrfProtection, verify, isLog
       let Users: any = new users(inputdata);
       try {
         await Users.save();
-        res.redirect("/api/index");
+        res.redirect("/web/index");
       } catch (error) {
         // let err = new Error("등록오류 입니다.");
         // next(err);
@@ -268,6 +268,17 @@ router.post("/check_email", parseForm, csrfProtection, verify, isLogined, async 
     res.json(responseData);
   } catch (error) {
     console.error(error);
+  }
+});
+
+router.post("/check_provide_email", parseForm, csrfProtection, verify, isLogined, async (req, res) => {
+  let userResult = await userController.find(req.body.email);
+  let provideResult = await provideController.find(req.body.email);
+  if (userResult.length === 0 && provideResult.length === 0) {
+    //중복된 이메일이 존재하지 않는다는 것
+    return res.json({ state: true });
+  } else {
+    return res.json({ state: false });
   }
 });
 
@@ -358,7 +369,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
     req.session.save(() => {
       registerSymController.save(req, res, inputdata, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
       deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
-      res.redirect("/api/mypage");
+      res.redirect("/web/mypage");
     });
   } catch (error) {
     console.error(error);
@@ -530,7 +541,7 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
   delete req.session._id;
   req.session.save(() => {
     deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
-    return res.redirect("/api/mypage");
+    return res.redirect("/web/mypage");
   });
 });
 
@@ -545,7 +556,7 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, isNotLogined,
 });
 
 router.post("/logout_process", isNotLogined, (req, res) => {
-  res.clearCookie("jwttoken", { path: "/api" });
+  res.clearCookie("jwttoken", { path: "/web" });
   return res.redirect(req.get("Referrer"));
 });
 

@@ -115,7 +115,7 @@ router.get("/estimate", jwtverify_1.verify, csrfProtection, function (req, res, 
 });
 router.get("/login", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res, next) {
     if (req.headers.referer === undefined) {
-        req.session.referer = "http://localhost:3000/api/index";
+        req.session.referer = "http://localhost:3000/web/index";
     }
     else {
         req.session.referer = req.headers.referer;
@@ -236,7 +236,7 @@ router.post("/register_common_process", parseForm, csrfProtection, jwtverify_1.v
                         return [4 /*yield*/, Users.save()];
                     case 2:
                         _a.sent();
-                        res.redirect("/api/index");
+                        res.redirect("/web/index");
                         return [3 /*break*/, 4];
                     case 3:
                         error_1 = _a.sent();
@@ -325,6 +325,27 @@ router.post("/check_email", parseForm, csrfProtection, jwtverify_1.verify, jwtve
                 console.error(error_2);
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/check_provide_email", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var userResult, provideResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, userContoller_1.default.find(req.body.email)];
+            case 1:
+                userResult = _a.sent();
+                return [4 /*yield*/, provideController_1.default.find(req.body.email)];
+            case 2:
+                provideResult = _a.sent();
+                if (userResult.length === 0 && provideResult.length === 0) {
+                    //중복된 이메일이 존재하지 않는다는 것
+                    return [2 /*return*/, res.json({ state: true })];
+                }
+                else {
+                    return [2 /*return*/, res.json({ state: false })];
+                }
+                return [2 /*return*/];
         }
     });
 }); });
@@ -418,7 +439,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
         req.session.save(function () {
             registerSymContoller_1.default.save(req, res, inputdata_1, decoded_1.email, decoded_1.user_objectId);
             deleteImg_1.default(decoded_1.email, decoded_1.user_objectId);
-            res.redirect("/api/mypage");
+            res.redirect("/web/mypage");
         });
     }
     catch (error) {
@@ -653,7 +674,7 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
     delete req.session._id;
     req.session.save(function () {
         deleteImg_1.default(decoded.email, decoded.user_objectId);
-        return res.redirect("/api/mypage");
+        return res.redirect("/web/mypage");
     });
 });
 router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -679,11 +700,11 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.i
     });
 }); });
 router.post("/logout_process", jwtverify_1.isNotLogined, function (req, res) {
-    res.clearCookie("jwttoken", { path: "/api" });
+    res.clearCookie("jwttoken", { path: "/web" });
     return res.redirect(req.get("Referrer"));
 });
 router.post("/verify_phone_number", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) {
     sendPhone_1.default(req, res, "authorization", req.body.user_phone_number);
 });
 exports.default = router;
-//# sourceMappingURL=api.js.map
+//# sourceMappingURL=web.js.map

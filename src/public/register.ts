@@ -1,3 +1,4 @@
+import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     verify: any;
@@ -36,17 +37,9 @@ export default function register() {
   // });
   ///animation of reigster_preivious page///
   async function checkEmail(url: string, data: any) {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     try {
-      let fetchResult = await fetch(url, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "CSRF-Token": token,
-        },
-        body: JSON.stringify({ email: data }),
-      });
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: data }));
+      let fetchResult = await fetch(url, fetchObj);
       if (fetchResult.status === 200 || 201) {
         let result = await fetchResult.json();
         console.log(result);
@@ -84,7 +77,7 @@ export default function register() {
       alert("새로운 인증번호를 발송하였습니다.");
     }
     let inputdata = $("#common_email").val();
-    checkEmail("http://localhost:3000/api/check_email", inputdata);
+    checkEmail("http://localhost:3000/web/check_email", inputdata);
   });
   //send send ajax request
 

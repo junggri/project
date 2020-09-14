@@ -15,7 +15,7 @@ function createToken(req, res, email, name, Id) {
         issuer: "localhost",
         subject: "userinfo",
     });
-    res.cookie("jwttoken", token, { httpOnly: true, path: "/api" });
+    res.cookie("jwttoken", token, { httpOnly: true, path: "/web" });
     //secure
 }
 exports.createToken = createToken;

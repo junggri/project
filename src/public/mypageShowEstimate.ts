@@ -1,3 +1,4 @@
+import FetchFunction from "./fetchFunction";
 export default function showEstimate() {
   let modifiedBtn = document.querySelectorAll(".sc-item-modifiedBtn");
   let deleteBtn = document.querySelectorAll(".sc-item-cancel");
@@ -13,7 +14,7 @@ export default function showEstimate() {
     modifiedBtn[i].addEventListener("click", () => {
       let userNode: any = modifiedBtn[i].parentNode.parentNode.parentNode;
       let id: string = userNode.dataset.id;
-      location.href = `/api/modified_estimate/${id}`;
+      location.href = `/web/modified_estimate/${id}`;
     });
   }
 
@@ -23,17 +24,9 @@ export default function showEstimate() {
       let target: any = deleteBtn[i].parentNode.parentNode.parentNode;
       if (deleteConfirm) {
         target.parentNode.removeChild(target);
-        let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("CSRF-Token", token);
         try {
-          let result = await fetch("http://localhost:3000/api/delete_register_sympton", {
-            method: "post",
-            credentials: "same-origin",
-            headers: myHeaders,
-            body: JSON.stringify({ id: target.dataset.id }),
-          });
+          let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ id: target.dataset.id }));
+          let result = await fetch("http://localhost:3000/web/delete_register_sympton", fetchObj);
           if (result.status === 200 || 201) {
             let response = await result.json();
             console.log(response);
@@ -48,17 +41,9 @@ export default function showEstimate() {
   for (let i = 0; i < showBtn.length; i++) {
     showBtn[i].addEventListener("click", async (e: any) => {
       let target: any = showBtn[i].parentNode.parentNode;
-      let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-      let myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("CSRF-Token", token);
-      let result = await fetch("http://localhost:3000/api/find_provider", {
-        method: "post",
-        credentials: "same-origin",
-        headers: myHeaders,
-        body: JSON.stringify({ sympton_id: target.dataset.id }),
-      });
       try {
+        let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ sympton_id: target.dataset.id }));
+        let result = await fetch("http://localhost:3000/web/find_provider", fetchObj);
         if (result.status === 200 || 201) {
           let response = await result.json();
           if (response.state === false) return alert("받은 견적이 존재하지 않습니다.");
@@ -84,17 +69,9 @@ export default function showEstimate() {
     for (let i = 0; i < showAccept.length; i++) {
       showAccept[i].addEventListener("click", async (e: any) => {
         let target: any = showAccept[i].parentNode;
-        let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("CSRF-Token", token);
-        let result = await fetch("http://localhost:3000/api/get_data_accepted", {
-          method: "post",
-          credentials: "same-origin",
-          headers: myHeaders,
-          body: JSON.stringify({ submit_id: target.dataset.id }),
-        });
         try {
+          let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ submit_id: target.dataset.id }));
+          let result = await fetch("http://localhost:3000/web/get_data_accepted", fetchObj);
           if (result.status === 200 || 201) {
             let response = await result.json();
             let payment;

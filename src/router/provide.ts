@@ -16,7 +16,6 @@ import submitController from "../lib/controller/submitController";
 import { MakeAllSymptonList, MakePagination, showSubmitList } from "../lib/p_MakeSymptonList";
 import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
-import { encrypt, decrypt } from "../lib/setAndGetCookie";
 import qs from "querystring";
 import { makeJuso } from "../lib/p_makeJuso";
 
@@ -35,16 +34,6 @@ interface Decoded {
   username: string;
 }
 
-router.post("/v1/setProviderEmailCookie", csrfProtection, verify, (req, res) => {
-  if (req.body.state === "set") {
-    const encryptResult = encrypt(req.body.email);
-    res.json({ email: encryptResult });
-  } else {
-    const decryptResult = decrypt(req.body.email);
-    res.json({ decrypt: decryptResult });
-  }
-});
-
 router.get("/index", csrfProtection, verify, isLogined, (req, res) => {
   if (req.headers.referer === undefined) {
     req.session.referer = "http://localhost:3000/provide/index";
@@ -59,7 +48,6 @@ router.get("/index", csrfProtection, verify, isLogined, (req, res) => {
 router.post("/login_process", parseForm, csrfProtection, async (req, res) => {
   let _email = mongoSanitize(req.body.email);
   let _pwd = mongoSanitize(req.body.pwd);
-  console.log(_email);
   let result: any = await providers.findOne({ email: { $in: [_email] } });
   //보안이라는데;;흠;;;
   // let result: any = await providers.findOne({ email: _email });
@@ -174,14 +162,6 @@ router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     let result: any = await registerSymController.showBeforeEstimate(req.url.split("?")[1]);
-    if (result === null) {
-      let err: any = new Error("error");
-      err.message = "error";
-      err.status = 404;
-      err.stack = "404";
-      next(err);
-      throw err;
-    }
     let isEstimated: any = await provideController.isEstimated((decoded as Decoded).user_objectId);
     let location = makeLocation(result);
     let imgs = makeImg(result);
@@ -193,7 +173,6 @@ router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req
 });
 
 router.post("/get_registerData", csrfProtection, verify, isNotLogined, async (req, res) => {
-  console.log(2);
   let result = await registerSymController.showBeforeEstimate(req.body.sympton_id);
   if (result === null) return res.json({ state: false });
   res.json({ state: true, data: result });

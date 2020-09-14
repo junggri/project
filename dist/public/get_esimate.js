@@ -83,7 +83,7 @@ function get_estimate() {
                             return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", null)];
                         case 1:
                             fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/fetch_session", fetchObj)];
+                            return [4 /*yield*/, fetch("http://localhost:3000/web/fetch_session", fetchObj)];
                         case 2:
                             result = _a.sent();
                             if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -193,7 +193,7 @@ function get_estimate() {
                         return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }))];
                     case 1:
                         fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/delete_img", fetchObj)];
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/delete_img", fetchObj)];
                     case 2:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -202,7 +202,7 @@ function get_estimate() {
                         response = _a.sent();
                         lengthOfImg(response);
                         if (response.length !== 0)
-                            imgBox.removeChild(e.target.parentNode);
+                            return [2 /*return*/, imgBox.removeChild(e.target.parentNode)];
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -238,7 +238,7 @@ function get_estimate() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        url === "http://localhost:3000/api/fetch_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
+                        url === "http://localhost:3000/web/fetch_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
                         return [3 /*break*/, 5];
                     case 4:
                         err = new Error("fetch 실패(사진등록)");
@@ -257,12 +257,12 @@ function get_estimate() {
     window.add_fileUpload = function (e) {
         if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/fetch_add_upload_image", e.target.files);
     };
     window.previous_fileUpload = function (e) {
         if (e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/fetch_upload_image", e.target.files);
     };
     window.formAndBlockBack = function () {
         var check = confirm("간편견적을 받아보시겠습니까?");

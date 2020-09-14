@@ -1,3 +1,4 @@
+import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     makePrice: any;
@@ -24,23 +25,10 @@ export default function p_showBeforeEsimate() {
   let userId = document.querySelector(".user_id") as HTMLInputElement;
   let deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn") as HTMLInputElement;
 
-  function FetchSet() {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    return myHeaders;
-  }
-
   (async () => {
-    let header = FetchSet();
     try {
-      let result = await fetch("http://localhost:3000/provide/get_registerData", {
-        method: "post",
-        credentials: "same-origin",
-        headers: header,
-        body: JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }),
-      });
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }));
+      let result = await fetch("http://localhost:3000/provide/get_registerData", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         if (response.state === false) {
@@ -91,19 +79,18 @@ export default function p_showBeforeEsimate() {
 
   sumbitEstimate.addEventListener("click", async (e) => {
     if (estimate_detail_value.value === "" || priceValue.value === "") return alert("입력사항을 기제해주시길 바랍니다");
-    let header = FetchSet();
     try {
-      let result = await fetch("http://localhost:3000/provide/submit_estimate", {
-        method: "post",
-        credentials: "same-origin",
-        headers: header,
-        body: JSON.stringify({
+      let fetchObj: any = await FetchFunction(
+        "post",
+        "same-origin",
+        JSON.stringify({
           sympton_id: document.location.search.substring(1, document.location.search.length),
           content: estimate_detail_value.value,
           priceValue: priceValue.value,
           user_id: userId.value,
-        }),
-      });
+        })
+      );
+      let result = await fetch("http://localhost:3000/provide/submit_estimate", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         let { state } = response;
@@ -134,26 +121,20 @@ export default function p_showBeforeEsimate() {
     deleteEstimateBtn.addEventListener("click", async (e) => {
       let flag = confirm("정말로 취소하시겠습니까?");
       if (flag === true) {
-        let header = FetchSet();
         try {
-          let result = await fetch("http://localhost:3000/provide/delete_submit", {
-            method: "post",
-            credentials: "same-origin",
-            headers: header,
-            body: JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }),
-          });
+          let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }));
+          let result = await fetch("http://localhost:3000/provide/delete_submit", fetchObj);
           if (result.status === 200 || 201) {
             let response = await result.json();
             let { state } = response;
             if (state === "accept") {
               alert("견적이 성사되어 취소가 불가능합니다.");
-              return (window.location.href = "/provide/sympton_estimate");
+              return (window.location.href = "/provide/findAllRegister");
             } else if (state == null) {
               let err: any = new Error("error");
-              err.message = "error22";
-              err.status = 404;
-              err.stack = "404";
-              return (window.location.href = "/provide/sympton_estimate");
+              err.name = "DELETE_DATA";
+              alert("삭제된 게시글이라 자동 취소 되었습니다.");
+              return (window.location.href = "/provide/findAllRegister");
             } else {
               alert("취소가 완료되었습니다.");
               window.location.href = `/provide/sympton_estimate?${response.url}`;

@@ -1,3 +1,4 @@
+import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     // login_verify: any;
@@ -11,26 +12,17 @@ export default function p_index() {
   let provideState = document.querySelector(".pi-state") as HTMLDivElement;
   let userInputEmail: string = getCookie("upe");
 
-  function FetchSet() {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    return myHeaders;
-  }
-
   loginBtn.addEventListener("click", async (e) => {
-    let header = FetchSet();
     try {
-      let result = await fetch("http://localhost:3000/provide/login_process", {
-        method: "post",
-        credentials: "same-origin",
-        headers: header,
-        body: JSON.stringify({
+      let fetchObj: any = await FetchFunction(
+        "post",
+        "same-origin",
+        JSON.stringify({
           email: provideEmail.value,
           pwd: providePwd.value,
-        }),
-      });
+        })
+      );
+      let result = await fetch("http://localhost:3000/provide/login_process", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         response.state === true ? (window.location.href = response.url) : (provideState.textContent = response.msg);
@@ -47,19 +39,15 @@ export default function p_index() {
 
   async function getEmailFromCookie(email: string, state: string) {
     if (email === "") return;
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    let response = await fetch("http://localhost:3000/provide/v1/setProviderEmailCookie", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: myHeaders,
-      body: JSON.stringify({ email: email, state: state }),
-    });
-    if (response.status === 200 || 201) {
-      let result = await response.json();
-      return result;
+    try {
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: email, state: state }));
+      let response = await fetch("http://localhost:3000/v1/setUserEmailCookie", fetchObj);
+      if (response.status === 200 || 201) {
+        let result = await response.json();
+        return result;
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 

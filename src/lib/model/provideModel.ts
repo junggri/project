@@ -24,7 +24,6 @@ const providers = new mongoose.Schema({
     type: String,
     required: true,
   },
-
   refresh_token: {
     type: String,
   },

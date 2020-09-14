@@ -44,7 +44,6 @@ var jwtverify_1 = require("../lib/jwtverify");
 var csurf_1 = __importDefault(require("csurf"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
-var provideController_1 = __importDefault(require("../lib/controller/provideController"));
 var setAndGetCookie_1 = require("../lib/setAndGetCookie");
 var body_parser_1 = __importDefault(require("body-parser"));
 var nodeMailer_1 = __importDefault(require("../lib/nodeMailer"));
@@ -74,27 +73,6 @@ router.post("/check_user_email", parseForm, csrfProtection, jwtverify_1.verify, 
                 }
                 else {
                     return [2 /*return*/, res.json({ state: true, email: result[0].email })];
-                }
-                return [2 /*return*/];
-        }
-    });
-}); });
-router.post("/check_provide_email", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var userResult, provideResult;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, userContoller_1.default.find(req.body.email)];
-            case 1:
-                userResult = _a.sent();
-                return [4 /*yield*/, provideController_1.default.find(req.body.email)];
-            case 2:
-                provideResult = _a.sent();
-                if (userResult.length === 0 && provideResult.length === 0) {
-                    //중복된 이메일이 존재하지 않는다는 것
-                    return [2 /*return*/, res.json({ state: true })];
-                }
-                else {
-                    return [2 /*return*/, res.json({ state: false })];
                 }
                 return [2 /*return*/];
         }
@@ -153,5 +131,15 @@ router.post("/reset_process", csrfProtection, jwtverify_1.verify, jwtverify_1.is
         }
     });
 }); });
+router.post("/setUserEmailCookie", csrfProtection, jwtverify_1.verify, function (req, res) {
+    if (req.body.state === "set") {
+        var encryptResult = setAndGetCookie_1.encrypt(req.body.email);
+        res.json({ email: encryptResult });
+    }
+    else {
+        var decryptResult = setAndGetCookie_1.decrypt(req.body.email);
+        res.json({ decrypt: decryptResult });
+    }
+});
 exports.default = router;
 //# sourceMappingURL=v1.js.map

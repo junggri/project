@@ -17,13 +17,9 @@
         </div>
       </nav>
       <div class="oauth-register-box">
-        <div class="or-slo">
-          일반회원가입
-        </div>
-        <span class="or-detail">
-          간편회원가입을 통하여 다양한 해택을 누려보세요.
-        </span>
-        <form action="/api/oauth_register_process" class="oauth-form" method="POST">
+        <div class="or-slo">일반회원가입</div>
+        <span class="or-detail"> 간편회원가입을 통하여 다양한 해택을 누려보세요. </span>
+        <form action="/web/oauth_register_process" class="oauth-form" method="POST">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <input type="hidden" name="id" value="<%= id %>" />
           <div class="cb-registerbox cb-email">
@@ -35,9 +31,7 @@
               <span>변경하기</span>
             </div>
           </div>
-          <div class="condition-register">
-            위의 이메일로 인증번호를 발송합니다.
-          </div>
+          <div class="condition-register">위의 이메일로 인증번호를 발송합니다.</div>
           <div class="state-email state-register"></div>
           <div class="cb-registerbox cb-email-validation">
             <input id="validation_email" type="text" maxlength="6" placeholder="인증번호를 입력하세요." autocomplete="off" />

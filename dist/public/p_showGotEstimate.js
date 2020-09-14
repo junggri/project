@@ -47,7 +47,7 @@ function showGotEstimate() {
                         myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
                         myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/find_submit", {
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/find_submit", {
                                 method: "post",
                                 credentials: "same-origin",
                                 headers: myHeaders,

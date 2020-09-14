@@ -35,28 +35,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function p_mypage() {
     function getProviderData() {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_1;
+            var fetchObj, result, response, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch("http://localhost:3000/provide/get_mypage_data", {
-                                method: "POST",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                            })];
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", null)];
                     case 1:
-                        result = _a.sent();
-                        _a.label = 2;
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/provide/get_mypage_data", fetchObj)];
                     case 2:
-                        _a.trys.push([2, 5, , 6]);
+                        result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                         return [4 /*yield*/, result.json()];
                     case 3:

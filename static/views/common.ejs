@@ -17,10 +17,8 @@
         </div>
       </nav>
       <div class="common-box">
-        <div class="cb-slo">
-          일반회원가입
-        </div>
-        <form method="POST" action="/api/register_common_process" class="common_form" onsubmit="return verify()">
+        <div class="cb-slo">일반회원가입</div>
+        <form method="POST" action="/web/register_common_process" class="common_form" onsubmit="return verify()">
           <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <div class="cb-registerbox cb-email">
             <input id="common_email" type="text" placeholder="이메일을 입력하세요." name="common_email" autocomplete="off" />
@@ -31,9 +29,7 @@
               <span>변경하기</span>
             </div>
           </div>
-          <div class="condition-register">
-            위의 이메일로 인증번호를 발송합니다.
-          </div>
+          <div class="condition-register">위의 이메일로 인증번호를 발송합니다.</div>
           <div class="state-email state-register"></div>
           <div class="cb-registerbox cb-email-validation">
             <input id="validation_email" type="text" maxlength="6" placeholder="인증번호를 입력하세요." autocomplete="off" />
@@ -51,9 +47,7 @@
           <div class="cb-registerbox cb-checkpwd">
             <input id="common_checkpwd" name="common_pwd" type="password" placeholder="비밀번호 확인해주세요." autocomplete="off" required="true" />
           </div>
-          <div class="condition-register">
-            숫자, 영문, 특수문자 (!@#$%^&*+=-)를 조합한 8자 이상
-          </div>
+          <div class="condition-register">숫자, 영문, 특수문자 (!@#$%^&*+=-)를 조합한 8자 이상</div>
           <div class="state-pwd state-register"></div>
           <input type="submit" class="register-btn" value="가입" />
         </form>

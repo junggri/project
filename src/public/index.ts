@@ -48,7 +48,7 @@ if (path.split("/")[3] === "estimateDetail") {
 if (path === "/provide/mypage") {
   p_mypage();
 }
-if (path === "/api/oauth_register") {
+if (path === "/web/oauth_register") {
   oauth();
   reigster();
 }
@@ -61,34 +61,34 @@ if (path === "/v1/find_user_email") {
 if (path === "/v1/find_user_pwd") {
   findUserData();
 }
-if (path === "/api/login") {
+if (path === "/web/login") {
   login();
 }
-if (path === "/api/register_previous") {
+if (path === "/web/register_previous") {
   reigster();
 }
-if (path === "/api/register/common") {
+if (path === "/web/register/common") {
   reigster();
 }
-if (path === "/api/register/provide") {
+if (path === "/web/register/provide") {
   provide();
 }
-if (path === "/api/estimate") {
+if (path === "/web/estimate") {
   estimate();
 }
-if (path === "/api/mypage") {
+if (path === "/web/mypage") {
   mypage();
 }
-if (path === "/api/mypage/showestimate") {
+if (path === "/web/mypage/showestimate") {
   mypageShowEstimate();
 }
 if (path.split("/")[2] === "modified_estimate") {
   modified_estimate();
 }
-if (path === "/api/get_estimate") {
+if (path === "/web/get_estimate") {
   getEstimate();
 }
-if (path === "/api/index") {
+if (path === "/web/index") {
   index();
 }
 
@@ -100,8 +100,8 @@ if (LoginmyBtn !== null) {
 
 if (mainName !== null) {
   mainName.addEventListener("click", () => {
-    if (path.split("/")[0] === "") {
-      location.href = "/api/index";
+    if (path.split("/")[1] === "web") {
+      location.href = "/web/index";
     } else if (path.split("/")[1] === "provide") {
       location.href = "/provide/index";
     }
@@ -110,7 +110,7 @@ if (mainName !== null) {
 
 if (logout !== null) {
   logout.addEventListener("click", async () => {
-    if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[0] === "") {
+    if (location.pathname.split("/")[1] === "web") {
       if (confirm("로그아웃 하시겠습니까?")) {
         return logoutForm.submit();
       } else {
@@ -129,6 +129,6 @@ if (logout !== null) {
 function index() {
   let estimateBtn = document.querySelector(".mp-btn_estimate");
   estimateBtn.addEventListener("click", (e) => {
-    location.href = "/api/estimate";
+    location.href = "/web/estimate";
   });
 }

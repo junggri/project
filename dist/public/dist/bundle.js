@@ -131,23 +131,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-function FetchSet() {
-    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    return myHeaders;
-}
-var Fetch = /** @class */ (function () {
-    function Fetch(method, credentials, body) {
-        this.method = method;
-        this.credentials = credentials;
-        this.headers = FetchSet();
-        this.body = body;
-    }
-    return Fetch;
-}());
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function default_1() {
     var estimate_container = document.querySelector(".estimate-pre-result-itembox");
     var estimate_list = document.querySelector(".estimate-pre-result-item");
@@ -188,18 +176,20 @@ function default_1() {
     };
     function isLogined(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var FetchObj, result, response, error_1;
+            var fetchObj, result, response, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        FetchObj = new Fetch("post", "same-origin", JSON.stringify(data));
-                        return [4 /*yield*/, fetch(url, FetchObj)];
+                        _a.trys.push([0, 6, , 7]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify(data))];
                     case 1:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, result.json()];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch(url, fetchObj)];
                     case 2:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, result.json()];
+                    case 3:
                         response = _a.sent();
                         if (response.state === true) {
                             estimateForm.submit();
@@ -210,14 +200,14 @@ function default_1() {
                                 location.href = "/api/login";
                             }
                         }
-                        return [3 /*break*/, 4];
-                    case 3: throw new Error("로그인유무 확인 실패");
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                        return [3 /*break*/, 5];
+                    case 4: throw new Error("로그인유무 확인 실패");
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         error_1 = _a.sent();
                         console.error(error_1);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -225,13 +215,13 @@ function default_1() {
     estimateBtn.addEventListener("click", function (e) {
         try {
             if (estimate_item === undefined || estimate_item.length === 0) {
-                return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
+                return isLogined("http://localhost:3000/web/pre_estimate", { code: data, price: price });
             }
             else {
                 for (var i = 0; i < estimate_item.length; i++) {
                     data.push(estimate_item[i].dataset.code);
                 }
-                return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
+                return isLogined("http://localhost:3000/web/pre_estimate", { code: data, price: price });
             }
         }
         catch (error) {
@@ -367,7 +357,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function default_1() {
     var findEmailSlo = document.querySelector(".fs-find-user-email");
     var findPwdSlo = document.querySelector(".fs-find-user-pwd");
@@ -381,36 +375,22 @@ function default_1() {
     var loginBoxConfirmBtn = document.querySelector(".findUserResultBox-btnBox-confirm");
     var userEmail = document.querySelector(".findEmail");
     window.location.pathname === "/v1/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
-    function FetchSet() {
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("CSRF-Token", token);
-        return myHeaders;
-    }
-    var Fetch = /** @class */ (function () {
-        function Fetch(method, credentials, body) {
-            this.method = method;
-            this.credentials = credentials;
-            this.headers = FetchSet();
-            this.body = body;
-        }
-        return Fetch;
-    }());
     function findUserData(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var FetchObj, response, result, err, error_1;
+            var fetchObj, response, result, err, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        FetchObj = new Fetch("post", "same-origin", JSON.stringify({ email: data }));
-                        return [4 /*yield*/, fetch(url, FetchObj)];
+                        _a.trys.push([0, 6, , 7]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: data }))];
                     case 1:
-                        response = _a.sent();
-                        if (!(response.status === 200 || 201)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, response.json()];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch(url, fetchObj)];
                     case 2:
+                        response = _a.sent();
+                        if (!(response.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, response.json()];
+                    case 3:
                         result = _a.sent();
                         if (!result.state) {
                             userEmail.textContent = result.inputdata;
@@ -434,17 +414,17 @@ function default_1() {
                             loginBoxRegisterBtn.style.display = "none";
                             loginBoxLoginBtn.style.display = "block";
                         }
-                        return [3 /*break*/, 4];
-                    case 3:
+                        return [3 /*break*/, 5];
+                    case 4:
                         err = new Error("NET_ERROR");
                         err.name = "NET_ERROR";
                         throw err;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         error_1 = _a.sent();
                         console.log(error_1);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -562,7 +542,7 @@ function get_estimate() {
                             return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", null)];
                         case 1:
                             fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/fetch_session", fetchObj)];
+                            return [4 /*yield*/, fetch("http://localhost:3000/web/fetch_session", fetchObj)];
                         case 2:
                             result = _a.sent();
                             if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -672,7 +652,7 @@ function get_estimate() {
                         return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }))];
                     case 1:
                         fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/delete_img", fetchObj)];
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/delete_img", fetchObj)];
                     case 2:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -681,7 +661,7 @@ function get_estimate() {
                         response = _a.sent();
                         lengthOfImg(response);
                         if (response.length !== 0)
-                            imgBox.removeChild(e.target.parentNode);
+                            return [2 /*return*/, imgBox.removeChild(e.target.parentNode)];
                         _a.label = 4;
                     case 4: return [3 /*break*/, 6];
                     case 5:
@@ -717,7 +697,7 @@ function get_estimate() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        url === "http://localhost:3000/api/fetch_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
+                        url === "http://localhost:3000/web/fetch_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
                         return [3 /*break*/, 5];
                     case 4:
                         err = new Error("fetch 실패(사진등록)");
@@ -736,12 +716,12 @@ function get_estimate() {
     window.add_fileUpload = function (e) {
         if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/fetch_add_upload_image", e.target.files);
     };
     window.previous_fileUpload = function (e) {
         if (e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/fetch_upload_image", e.target.files);
     };
     window.formAndBlockBack = function () {
         var check = confirm("간편견적을 받아보시겠습니까?");
@@ -946,7 +926,7 @@ if (path.split("/")[3] === "estimateDetail") {
 if (path === "/provide/mypage") {
     p_mypage_1.default();
 }
-if (path === "/api/oauth_register") {
+if (path === "/web/oauth_register") {
     oauth_1.default();
     register_1.default();
 }
@@ -959,34 +939,34 @@ if (path === "/v1/find_user_email") {
 if (path === "/v1/find_user_pwd") {
     findUserData_1.default();
 }
-if (path === "/api/login") {
+if (path === "/web/login") {
     login_1.default();
 }
-if (path === "/api/register_previous") {
+if (path === "/web/register_previous") {
     register_1.default();
 }
-if (path === "/api/register/common") {
+if (path === "/web/register/common") {
     register_1.default();
 }
-if (path === "/api/register/provide") {
+if (path === "/web/register/provide") {
     provide_1.default();
 }
-if (path === "/api/estimate") {
+if (path === "/web/estimate") {
     estimate_1.default();
 }
-if (path === "/api/mypage") {
+if (path === "/web/mypage") {
     mypqge_1.default();
 }
-if (path === "/api/mypage/showestimate") {
+if (path === "/web/mypage/showestimate") {
     mypageShowEstimate_1.default();
 }
 if (path.split("/")[2] === "modified_estimate") {
     modified_estimate_1.default();
 }
-if (path === "/api/get_estimate") {
+if (path === "/web/get_estimate") {
     get_esimate_1.default();
 }
-if (path === "/api/index") {
+if (path === "/web/index") {
     index();
 }
 if (LoginmyBtn !== null) {
@@ -996,8 +976,8 @@ if (LoginmyBtn !== null) {
 }
 if (mainName !== null) {
     mainName.addEventListener("click", function () {
-        if (path.split("/")[0] === "") {
-            location.href = "/api/index";
+        if (path.split("/")[1] === "web") {
+            location.href = "/web/index";
         }
         else if (path.split("/")[1] === "provide") {
             location.href = "/provide/index";
@@ -1007,7 +987,7 @@ if (mainName !== null) {
 if (logout !== null) {
     logout.addEventListener("click", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[0] === "") {
+            if (location.pathname.split("/")[1] === "web") {
                 if (confirm("로그아웃 하시겠습니까?")) {
                     return [2 /*return*/, logoutForm.submit()];
                 }
@@ -1030,7 +1010,7 @@ if (logout !== null) {
 function index() {
     var estimateBtn = document.querySelector(".mp-btn_estimate");
     estimateBtn.addEventListener("click", function (e) {
-        location.href = "/api/estimate";
+        location.href = "/web/estimate";
     });
 }
 //# sourceMappingURL=index.js.map
@@ -1107,7 +1087,7 @@ function login() {
                             return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify(data))];
                         case 1:
                             fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/login_process", fetchObj)];
+                            return [4 /*yield*/, fetch("http://localhost:3000/web/login_process", fetchObj)];
                         case 2:
                             result = _a.sent();
                             if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -1148,7 +1128,7 @@ function login() {
                             return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: email, state: state }))];
                         case 2:
                             fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/setUserEmailCookie", fetchObj)];
+                            return [4 /*yield*/, fetch("http://localhost:3000/v1/setUserEmailCookie", fetchObj)];
                         case 3:
                             response = _a.sent();
                             if (!(response.status === 200 || 201)) return [3 /*break*/, 5];
@@ -1275,7 +1255,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function mypage() {
     var _this = this;
     var width = 500;
@@ -1330,23 +1314,15 @@ function mypage() {
         }
     }
     (function () { return __awaiter(_this, void 0, void 0, function () {
-        var token, myHeaders, result, response, error_1;
+        var fetchObj, result, response, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("CSRF-Token", token);
-                    _a.label = 1;
+                    _a.trys.push([0, 6, , 7]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ url: window.location.pathname.split("/")[3] }))];
                 case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/modified_get_data", {
-                            method: "post",
-                            credentials: "same-origin",
-                            headers: myHeaders,
-                            body: JSON.stringify({ url: window.location.pathname.split("/")[3] }),
-                        })];
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/web/modified_get_data", fetchObj)];
                 case 2:
                     result = _a.sent();
                     if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -1449,23 +1425,15 @@ function mypage() {
     }
     function fetchDeleteImg(e) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_2;
+            var fetchObj, result, response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        _a.label = 1;
+                        _a.trys.push([0, 6, , 7]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }))];
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/modified_delete_session_img", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
-                            })];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/modified_delete_session_img", fetchObj)];
                     case 2:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -1510,7 +1478,7 @@ function mypage() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        url === "http://localhost:3000/api/modified_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
+                        url === "http://localhost:3000/web/modified_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
                         return [3 /*break*/, 5];
                     case 4: throw new Error("fetch_image failed");
                     case 5: return [3 /*break*/, 7];
@@ -1527,12 +1495,12 @@ function mypage() {
     window.add_fileUpload = function (e) {
         if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/api/modified_add_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/modified_add_upload_image", e.target.files);
     };
     window.previous_fileUpload = function (e) {
         if (e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/api/modified_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/modified_upload_image", e.target.files);
     };
     window.openAddresss = function () {
         new daum.Postcode({
@@ -1630,7 +1598,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function mypageEstimate() {
     var _this = this;
     var acceptBtn = document.querySelectorAll(".si-accept-btn");
@@ -1638,50 +1610,40 @@ function mypageEstimate() {
     var confirmBtn = document.querySelector(".pab-confirmBtn");
     var cancelBtn = document.querySelector(".pab-cancelBtn");
     var hiddenInput = document.querySelector(".pab-hidden");
-    function FetchSet() {
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("CSRF-Token", token);
-        return myHeaders;
-    }
     (function () { return __awaiter(_this, void 0, void 0, function () {
-        var length, header, result, response, error, error_1;
+        var length, fetchObj, result, response, error, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     length = window.location.href.split("/").length;
-                    header = FetchSet();
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/check_reigister_state", {
-                            method: "post",
-                            credentials: "same-origin",
-                            headers: header,
-                            body: JSON.stringify({ register_id: window.location.href.split("/")[length - 1] }),
-                        })];
+                    _a.trys.push([1, 7, , 8]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ register_id: window.location.href.split("/")[length - 1] }))];
                 case 2:
-                    result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, result.json()];
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/web/check_reigister_state", fetchObj)];
                 case 3:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, result.json()];
+                case 4:
                     response = _a.sent();
                     if (!response.state) {
                         alert("잘못된 접근입니다");
                         return [2 /*return*/, (window.location.href = "/api/mypage/showestimate")];
                     }
-                    return [3 /*break*/, 5];
-                case 4:
+                    return [3 /*break*/, 6];
+                case 5:
                     error = new Error("오류");
                     error.name = "error";
                     throw error;
-                case 5: return [3 /*break*/, 7];
-                case 6:
+                case 6: return [3 /*break*/, 8];
+                case 7:
                     error_1 = _a.sent();
                     console.error(error_1);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     }); })();
@@ -1689,22 +1651,17 @@ function mypageEstimate() {
         var _this = this;
         var _loop_1 = function (i) {
             acceptBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                var header, result, response, error_2;
+                var fetchObj, result, response, error_2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            header = FetchSet();
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/find_submit", {
-                                    method: "post",
-                                    credentials: "same-origin",
-                                    headers: header,
-                                    body: JSON.stringify({ submit_id: acceptBtn[i].parentNode.parentNode.dataset.submitid }),
-                                })];
+                            _a.trys.push([0, 5, , 6]);
+                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ submit_id: acceptBtn[i].parentNode.parentNode.dataset.submitid }))];
                         case 1:
-                            result = _a.sent();
-                            _a.label = 2;
+                            fetchObj = _a.sent();
+                            return [4 /*yield*/, fetch("http://localhost:3000/web/find_submit", fetchObj)];
                         case 2:
-                            _a.trys.push([2, 5, , 6]);
+                            result = _a.sent();
                             if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                             return [4 /*yield*/, result.json()];
                         case 3:
@@ -1744,20 +1701,15 @@ function mypageEstimate() {
     });
     function acceptSubmit(submitId) {
         return __awaiter(this, void 0, void 0, function () {
-            var header, result, error, error_3;
+            var fetchObj, result, error, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        header = FetchSet();
-                        _a.label = 1;
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ submit_id: submitId }))];
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/accept_estimate", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: header,
-                                body: JSON.stringify({ submit_id: submitId }),
-                            })];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/accept_estimate", fetchObj)];
                     case 2:
                         result = _a.sent();
                         if (result.status === 200 || 201) {
@@ -1829,7 +1781,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function showEstimate() {
     var _this = this;
     var modifiedBtn = document.querySelectorAll(".sc-item-modifiedBtn");
@@ -1845,7 +1801,7 @@ function showEstimate() {
         modifiedBtn[i].addEventListener("click", function () {
             var userNode = modifiedBtn[i].parentNode.parentNode.parentNode;
             var id = userNode.dataset.id;
-            location.href = "/api/modified_estimate/" + id;
+            location.href = "/web/modified_estimate/" + id;
         });
     };
     for (var i = 0; i < modifiedBtn.length; i++) {
@@ -1853,41 +1809,35 @@ function showEstimate() {
     }
     var _loop_2 = function (i) {
         deleteBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var deleteConfirm, target, token, myHeaders, result, response, error_1;
+            var deleteConfirm, target, fetchObj, result, response, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         deleteConfirm = confirm("정말로 등록을 삭제하시겠습니까?");
                         target = deleteBtn[i].parentNode.parentNode.parentNode;
-                        if (!deleteConfirm) return [3 /*break*/, 6];
+                        if (!deleteConfirm) return [3 /*break*/, 7];
                         target.parentNode.removeChild(target);
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 5, , 6]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/delete_register_sympton", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ id: target.dataset.id }),
-                            })];
+                        _a.trys.push([1, 6, , 7]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ id: target.dataset.id }))];
                     case 2:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/delete_register_sympton", fetchObj)];
                     case 3:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, result.json()];
+                    case 4:
                         response = _a.sent();
                         console.log(response);
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         error_1 = _a.sent();
                         console.error(error_1);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         }); });
@@ -1897,29 +1847,23 @@ function showEstimate() {
     }
     var _loop_3 = function (i) {
         showBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var target, token, myHeaders, result, response, error, error_2;
+            var target, fetchObj, result, response, error, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         target = showBtn[i].parentNode.parentNode;
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/find_provider", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ sympton_id: target.dataset.id }),
-                            })];
+                        _a.label = 1;
                     case 1:
-                        result = _a.sent();
-                        _a.label = 2;
+                        _a.trys.push([1, 7, , 8]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ sympton_id: target.dataset.id }))];
                     case 2:
-                        _a.trys.push([2, 6, , 7]);
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/find_provider", fetchObj)];
                     case 3:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, result.json()];
+                    case 4:
                         response = _a.sent();
                         if (response.state === false)
                             return [2 /*return*/, alert("받은 견적이 존재하지 않습니다.")];
@@ -1930,17 +1874,17 @@ function showEstimate() {
                             return [2 /*return*/];
                         }
                         window.location.href = "estimateDetail/" + target.dataset.id;
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 6];
+                    case 5:
                         error = new Error("에러발생");
                         error.name = "error";
                         throw error;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
                         error_2 = _a.sent();
                         console.error(error_2);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
                 }
             });
         }); });
@@ -1955,29 +1899,23 @@ function showEstimate() {
             return __generator(this, function (_a) {
                 _loop_4 = function (i) {
                     showAccept[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                        var target, token, myHeaders, result, response, payment, error, error_3;
+                        var target, fetchObj, result, response, payment, error, error_3;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
                                     target = showAccept[i].parentNode;
-                                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                                    myHeaders = new Headers();
-                                    myHeaders.append("Content-Type", "application/json");
-                                    myHeaders.append("CSRF-Token", token);
-                                    return [4 /*yield*/, fetch("http://localhost:3000/api/get_data_accepted", {
-                                            method: "post",
-                                            credentials: "same-origin",
-                                            headers: myHeaders,
-                                            body: JSON.stringify({ submit_id: target.dataset.id }),
-                                        })];
+                                    _a.label = 1;
                                 case 1:
-                                    result = _a.sent();
-                                    _a.label = 2;
+                                    _a.trys.push([1, 7, , 8]);
+                                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ submit_id: target.dataset.id }))];
                                 case 2:
-                                    _a.trys.push([2, 6, , 7]);
-                                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                                    return [4 /*yield*/, result.json()];
+                                    fetchObj = _a.sent();
+                                    return [4 /*yield*/, fetch("http://localhost:3000/web/get_data_accepted", fetchObj)];
                                 case 3:
+                                    result = _a.sent();
+                                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                                    return [4 /*yield*/, result.json()];
+                                case 4:
                                     response = _a.sent();
                                     payment = void 0;
                                     response.submit.payment === false ? (payment = "결제전") : (payment = "결제 완료");
@@ -1992,17 +1930,17 @@ function showEstimate() {
                                     checkBtn.addEventListener("click", function (e) {
                                         showStatebox.style.display = "none";
                                     });
-                                    return [3 /*break*/, 5];
-                                case 4:
+                                    return [3 /*break*/, 6];
+                                case 5:
                                     error = new Error("에러발생");
                                     error.name = "error";
                                     throw error;
-                                case 5: return [3 /*break*/, 7];
-                                case 6:
+                                case 6: return [3 /*break*/, 8];
+                                case 7:
                                     error_3 = _a.sent();
                                     console.error(error_3);
-                                    return [3 /*break*/, 7];
-                                case 7: return [2 /*return*/];
+                                    return [3 /*break*/, 8];
+                                case 8: return [2 /*return*/];
                             }
                         });
                     }); });
@@ -2194,7 +2132,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function p_findAllRegister() {
     var _this = this;
     var sigunguCode = document.querySelector("#sigunguCode");
@@ -2250,20 +2192,15 @@ function p_findAllRegister() {
         var _this = this;
         for (var i = 0; i < symptonItems.length; i++) {
             symptonItems[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                var header, result, response, state, err, err, err, error_1;
+                var fetchObj, result, response, state, err, err, err, error_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            header = FetchSet();
-                            _a.label = 1;
+                            _a.trys.push([0, 6, , 7]);
+                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ _id: e.target.parentNode.dataset.registerid }))];
                         case 1:
-                            _a.trys.push([1, 6, , 7]);
-                            return [4 /*yield*/, fetch("http://localhost:3000/provide/before_check_getRegisterData", {
-                                    method: "post",
-                                    credentials: "same-origin",
-                                    headers: header,
-                                    body: JSON.stringify({ _id: e.target.parentNode.dataset.registerid }),
-                                })];
+                            fetchObj = _a.sent();
+                            return [4 /*yield*/, fetch("http://localhost:3000/provide/before_check_getRegisterData", fetchObj)];
                         case 2:
                             result = _a.sent();
                             if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -2347,27 +2284,24 @@ function p_findAllRegister() {
     //////////////////////////////////////////////////////////////////////////////////
     function commonFunction(text, target, data, url) {
         return __awaiter(this, void 0, void 0, function () {
-            var header, result, response, i, option, error_2;
+            var fetchObj, result, response, i, option, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, reset(target, text)];
                     case 1:
                         _a.sent();
-                        header = FetchSet();
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 6, , 7]);
-                        return [4 /*yield*/, fetch(url, {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: header,
-                                body: JSON.stringify({ data: data }),
-                            })];
+                        _a.trys.push([2, 7, , 8]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: data }))];
                     case 3:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, result.json()];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch(url, fetchObj)];
                     case 4:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, result.json()];
+                    case 5:
                         response = _a.sent();
                         for (i = 0; i < response.sido.length; i++) {
                             option = document.createElement("option");
@@ -2375,13 +2309,13 @@ function p_findAllRegister() {
                             option.textContent = response.sido[i];
                             target.appendChild(option);
                         }
-                        _a.label = 5;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                        _a.label = 6;
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
                         error_2 = _a.sent();
                         console.error(error_2);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
                 }
             });
         });
@@ -2484,7 +2418,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function p_index() {
     var _this = this;
     var checkBox = document.querySelector("#checkbox_id");
@@ -2493,31 +2431,19 @@ function p_index() {
     var providePwd = document.querySelector("#pi-pwd");
     var provideState = document.querySelector(".pi-state");
     var userInputEmail = getCookie("upe");
-    function FetchSet() {
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("CSRF-Token", token);
-        return myHeaders;
-    }
     loginBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var header, result, response, err, error_1;
+        var fetchObj, result, response, err, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    header = FetchSet();
-                    _a.label = 1;
+                    _a.trys.push([0, 6, , 7]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({
+                            email: provideEmail.value,
+                            pwd: providePwd.value,
+                        }))];
                 case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/login_process", {
-                            method: "post",
-                            credentials: "same-origin",
-                            headers: header,
-                            body: JSON.stringify({
-                                email: provideEmail.value,
-                                pwd: providePwd.value,
-                            }),
-                        })];
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/login_process", fetchObj)];
                 case 2:
                     result = _a.sent();
                     if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -2542,30 +2468,32 @@ function p_index() {
     }); });
     function getEmailFromCookie(email, state) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, response, result;
+            var fetchObj, response, result, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (email === "")
                             return [2 /*return*/];
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch("http://localhost:3000/provide/v1/setProviderEmailCookie", {
-                                method: "POST",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ email: email, state: state }),
-                            })];
+                        _a.label = 1;
                     case 1:
-                        response = _a.sent();
-                        if (!(response.status === 200 || 201)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, response.json()];
+                        _a.trys.push([1, 6, , 7]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: email, state: state }))];
                     case 2:
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/v1/setUserEmailCookie", fetchObj)];
+                    case 3:
+                        response = _a.sent();
+                        if (!(response.status === 200 || 201)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, response.json()];
+                    case 4:
                         result = _a.sent();
                         return [2 /*return*/, result];
-                    case 3: return [2 /*return*/];
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_2 = _a.sent();
+                        console.error(error_2);
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -2674,28 +2602,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function p_mypage() {
     function getProviderData() {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_1;
+            var fetchObj, result, response, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch("http://localhost:3000/provide/get_mypage_data", {
-                                method: "POST",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                            })];
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", null)];
                     case 1:
-                        result = _a.sent();
-                        _a.label = 2;
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/provide/get_mypage_data", fetchObj)];
                     case 2:
-                        _a.trys.push([2, 5, , 6]);
+                        result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                         return [4 /*yield*/, result.json()];
                     case 3:
@@ -2761,7 +2686,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function p_showBeforeEsimate() {
     var _this = this;
     var username = document.querySelector(".sbe-user-name");
@@ -2783,28 +2712,16 @@ function p_showBeforeEsimate() {
     var symptonId = document.querySelector(".sympton_id");
     var userId = document.querySelector(".user_id");
     var deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn");
-    function FetchSet() {
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("CSRF-Token", token);
-        return myHeaders;
-    }
     (function () { return __awaiter(_this, void 0, void 0, function () {
-        var header, result, response, err, error_1;
+        var fetchObj, result, response, err, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    header = FetchSet();
-                    _a.label = 1;
+                    _a.trys.push([0, 6, , 7]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }))];
                 case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/get_registerData", {
-                            method: "post",
-                            credentials: "same-origin",
-                            headers: header,
-                            body: JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }),
-                        })];
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/get_registerData", fetchObj)];
                 case 2:
                     result = _a.sent();
                     if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -2858,32 +2775,29 @@ function p_showBeforeEsimate() {
         estimateBtn.style.pointerEvents = "all";
     });
     sumbitEstimate.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var header, result, response, state, err, error_2;
+        var fetchObj, result, response, state, err, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     if (estimate_detail_value.value === "" || priceValue.value === "")
                         return [2 /*return*/, alert("입력사항을 기제해주시길 바랍니다")];
-                    header = FetchSet();
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/submit_estimate", {
-                            method: "post",
-                            credentials: "same-origin",
-                            headers: header,
-                            body: JSON.stringify({
-                                sympton_id: document.location.search.substring(1, document.location.search.length),
-                                content: estimate_detail_value.value,
-                                priceValue: priceValue.value,
-                                user_id: userId.value,
-                            }),
-                        })];
+                    _a.trys.push([1, 7, , 8]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({
+                            sympton_id: document.location.search.substring(1, document.location.search.length),
+                            content: estimate_detail_value.value,
+                            priceValue: priceValue.value,
+                            user_id: userId.value,
+                        }))];
                 case 2:
-                    result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, result.json()];
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/submit_estimate", fetchObj)];
                 case 3:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, result.json()];
+                case 4:
                     response = _a.sent();
                     state = response.state;
                     if (state === null) {
@@ -2901,71 +2815,67 @@ function p_showBeforeEsimate() {
                         window.location.href = "/provide/sympton_estimate?" + response.url;
                         return [2 /*return*/];
                     }
-                    return [3 /*break*/, 5];
-                case 4:
+                    return [3 /*break*/, 6];
+                case 5:
                     err = new Error("NET_ERROR");
                     err.name = "NETWORK_ERROR";
                     throw err;
-                case 5: return [3 /*break*/, 7];
-                case 6:
+                case 6: return [3 /*break*/, 8];
+                case 7:
                     error_2 = _a.sent();
                     console.error(error_2);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     }); });
     if (deleteEstimateBtn !== null) {
         deleteEstimateBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var flag, header, result, response, state, err, err, error_3;
+            var flag, fetchObj, result, response, state, err, err, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         flag = confirm("정말로 취소하시겠습니까?");
-                        if (!(flag === true)) return [3 /*break*/, 7];
-                        header = FetchSet();
+                        if (!(flag === true)) return [3 /*break*/, 8];
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/provide/delete_submit", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: header,
-                                body: JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }),
-                            })];
+                        _a.trys.push([1, 7, , 8]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }))];
                     case 2:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/provide/delete_submit", fetchObj)];
                     case 3:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, result.json()];
+                    case 4:
                         response = _a.sent();
                         state = response.state;
                         if (state === "accept") {
                             alert("견적이 성사되어 취소가 불가능합니다.");
-                            return [2 /*return*/, (window.location.href = "/provide/sympton_estimate")];
+                            return [2 /*return*/, (window.location.href = "/provide/findAllRegister")];
                         }
                         else if (state == null) {
                             err = new Error("error");
-                            err.message = "error22";
-                            err.status = 404;
-                            err.stack = "404";
-                            return [2 /*return*/, (window.location.href = "/provide/sympton_estimate")];
+                            err.name = "DELETE_DATA";
+                            alert("삭제된 게시글이라 자동 취소 되었습니다.");
+                            return [2 /*return*/, (window.location.href = "/provide/findAllRegister")];
                         }
                         else {
                             alert("취소가 완료되었습니다.");
                             window.location.href = "/provide/sympton_estimate?" + response.url;
                         }
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 6];
+                    case 5:
                         err = new Error("NET_ERROR");
                         err.name = "NETWORK_ERROR";
                         throw err;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
                         error_3 = _a.sent();
                         console.error(error_3);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
                 }
             });
         }); });
@@ -3033,7 +2943,7 @@ function showGotEstimate() {
                         myHeaders = new Headers();
                         myHeaders.append("Content-Type", "application/json");
                         myHeaders.append("CSRF-Token", token);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/find_submit", {
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/find_submit", {
                                 method: "post",
                                 credentials: "same-origin",
                                 headers: myHeaders,
@@ -3173,7 +3083,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 function provide() {
     var _this = this;
     var email_reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -3196,7 +3110,7 @@ function provide() {
     var pwdFlag = false;
     var checkNumber;
     phoneBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var randomArray, i, randomNum, token, myHeaders, result, response;
+        var randomArray, i, randomNum, fetchObj, result, response, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -3211,26 +3125,29 @@ function provide() {
                         randomNum = Math.floor(Math.random() * 10);
                         randomArray.push(randomNum);
                     }
-                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("CSRF-Token", token);
-                    return [4 /*yield*/, fetch("/api/verify_phone_number", {
-                            method: "POST",
-                            credentials: "same-origin",
-                            headers: myHeaders,
-                            body: JSON.stringify({ user_phone_number: phoneNumber.value }),
-                        })];
+                    _a.label = 1;
                 case 1:
-                    result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, result.json()];
+                    _a.trys.push([1, 7, , 8]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ user_phone_number: phoneNumber.value }))];
                 case 2:
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("/api/verify_phone_number", fetchObj)];
+                case 3:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, result.json()];
+                case 4:
                     response = _a.sent();
                     // console.log(response.verify_num);
                     checkNumber = response.verify_num;
                     return [2 /*return*/];
-                case 3: return [2 /*return*/];
+                case 5: throw new Error("reload fetch failed");
+                case 6: return [3 /*break*/, 8];
+                case 7:
+                    error_1 = _a.sent();
+                    console.error(error_1);
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     }); });
@@ -3251,7 +3168,7 @@ function provide() {
         }
     });
     inputEmail.addEventListener("blur", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var token, myHeaders, result, response;
+        var fetchObj, result, response, err, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -3259,21 +3176,18 @@ function provide() {
                         emailFlag = false;
                         return [2 /*return*/, (stateEmail.textContent = "이메일 형식이 올바르지 않습니다.")];
                     }
-                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("CSRF-Token", token);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/check_provide_email", {
-                            method: "POST",
-                            credentials: "same-origin",
-                            headers: myHeaders,
-                            body: JSON.stringify({ email: inputEmail.value }),
-                        })];
+                    _a.label = 1;
                 case 1:
-                    result = _a.sent();
-                    if (!(result.status === 201 || 201)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, result.json()];
+                    _a.trys.push([1, 7, , 8]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: inputEmail.value }))];
                 case 2:
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/web/check_provide_email", fetchObj)];
+                case 3:
+                    result = _a.sent();
+                    if (!(result.status === 201 || 201)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, result.json()];
+                case 4:
                     response = _a.sent();
                     if (!response.state) {
                         emailFlag = false;
@@ -3283,8 +3197,17 @@ function provide() {
                         emailFlag = true;
                         stateEmail.textContent = "사용가능한 이메일입니다.";
                     }
-                    _a.label = 3;
-                case 3: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 5:
+                    err = new Error("NET_ERROR");
+                    err.name = "NET";
+                    throw err;
+                case 6: return [3 /*break*/, 8];
+                case 7:
+                    error_2 = _a.sent();
+                    console.error(error_2);
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     }); });
@@ -3363,7 +3286,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
 var pwd_reg = /^.*(?=^.{8,20}$)(?=.*d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
 var email_reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 var registerEmail = document.querySelector(".register-email");
@@ -3395,23 +3322,15 @@ function register() {
     ///animation of reigster_preivious page///
     function checkEmail(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, fetchResult, result, error_1;
+            var fetchObj, fetchResult, result, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        _a.label = 1;
+                        _a.trys.push([0, 6, , 7]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: data }))];
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch(url, {
-                                method: "POST",
-                                credentials: "same-origin",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "CSRF-Token": token,
-                                },
-                                body: JSON.stringify({ email: data }),
-                            })];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch(url, fetchObj)];
                     case 2:
                         fetchResult = _a.sent();
                         if (!(fetchResult.status === 200 || 201)) return [3 /*break*/, 4];
@@ -3458,7 +3377,7 @@ function register() {
             alert("새로운 인증번호를 발송하였습니다.");
         }
         var inputdata = $("#common_email").val();
-        checkEmail("http://localhost:3000/api/check_email", inputdata);
+        checkEmail("http://localhost:3000/web/check_email", inputdata);
     });
     //send send ajax request
     $(".email-checkBtn").on("click", function () {

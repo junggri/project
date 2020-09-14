@@ -35,7 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function p_showBeforeEsimate() {
     var _this = this;
     var username = document.querySelector(".sbe-user-name");
@@ -57,28 +61,16 @@ function p_showBeforeEsimate() {
     var symptonId = document.querySelector(".sympton_id");
     var userId = document.querySelector(".user_id");
     var deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn");
-    function FetchSet() {
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("CSRF-Token", token);
-        return myHeaders;
-    }
     (function () { return __awaiter(_this, void 0, void 0, function () {
-        var header, result, response, err, error_1;
+        var fetchObj, result, response, err, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    header = FetchSet();
-                    _a.label = 1;
+                    _a.trys.push([0, 6, , 7]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }))];
                 case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/get_registerData", {
-                            method: "post",
-                            credentials: "same-origin",
-                            headers: header,
-                            body: JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }),
-                        })];
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/get_registerData", fetchObj)];
                 case 2:
                     result = _a.sent();
                     if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -132,32 +124,29 @@ function p_showBeforeEsimate() {
         estimateBtn.style.pointerEvents = "all";
     });
     sumbitEstimate.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var header, result, response, state, err, error_2;
+        var fetchObj, result, response, state, err, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     if (estimate_detail_value.value === "" || priceValue.value === "")
                         return [2 /*return*/, alert("입력사항을 기제해주시길 바랍니다")];
-                    header = FetchSet();
                     _a.label = 1;
                 case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/submit_estimate", {
-                            method: "post",
-                            credentials: "same-origin",
-                            headers: header,
-                            body: JSON.stringify({
-                                sympton_id: document.location.search.substring(1, document.location.search.length),
-                                content: estimate_detail_value.value,
-                                priceValue: priceValue.value,
-                                user_id: userId.value,
-                            }),
-                        })];
+                    _a.trys.push([1, 7, , 8]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({
+                            sympton_id: document.location.search.substring(1, document.location.search.length),
+                            content: estimate_detail_value.value,
+                            priceValue: priceValue.value,
+                            user_id: userId.value,
+                        }))];
                 case 2:
-                    result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, result.json()];
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/submit_estimate", fetchObj)];
                 case 3:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, result.json()];
+                case 4:
                     response = _a.sent();
                     state = response.state;
                     if (state === null) {
@@ -175,71 +164,67 @@ function p_showBeforeEsimate() {
                         window.location.href = "/provide/sympton_estimate?" + response.url;
                         return [2 /*return*/];
                     }
-                    return [3 /*break*/, 5];
-                case 4:
+                    return [3 /*break*/, 6];
+                case 5:
                     err = new Error("NET_ERROR");
                     err.name = "NETWORK_ERROR";
                     throw err;
-                case 5: return [3 /*break*/, 7];
-                case 6:
+                case 6: return [3 /*break*/, 8];
+                case 7:
                     error_2 = _a.sent();
                     console.error(error_2);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     }); });
     if (deleteEstimateBtn !== null) {
         deleteEstimateBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var flag, header, result, response, state, err, err, error_3;
+            var flag, fetchObj, result, response, state, err, err, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         flag = confirm("정말로 취소하시겠습니까?");
-                        if (!(flag === true)) return [3 /*break*/, 7];
-                        header = FetchSet();
+                        if (!(flag === true)) return [3 /*break*/, 8];
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/provide/delete_submit", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: header,
-                                body: JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }),
-                            })];
+                        _a.trys.push([1, 7, , 8]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }))];
                     case 2:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/provide/delete_submit", fetchObj)];
                     case 3:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, result.json()];
+                    case 4:
                         response = _a.sent();
                         state = response.state;
                         if (state === "accept") {
                             alert("견적이 성사되어 취소가 불가능합니다.");
-                            return [2 /*return*/, (window.location.href = "/provide/sympton_estimate")];
+                            return [2 /*return*/, (window.location.href = "/provide/findAllRegister")];
                         }
                         else if (state == null) {
                             err = new Error("error");
-                            err.message = "error22";
-                            err.status = 404;
-                            err.stack = "404";
-                            return [2 /*return*/, (window.location.href = "/provide/sympton_estimate")];
+                            err.name = "DELETE_DATA";
+                            alert("삭제된 게시글이라 자동 취소 되었습니다.");
+                            return [2 /*return*/, (window.location.href = "/provide/findAllRegister")];
                         }
                         else {
                             alert("취소가 완료되었습니다.");
                             window.location.href = "/provide/sympton_estimate?" + response.url;
                         }
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 6];
+                    case 5:
                         err = new Error("NET_ERROR");
                         err.name = "NETWORK_ERROR";
                         throw err;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                    case 6: return [3 /*break*/, 8];
+                    case 7:
                         error_3 = _a.sent();
                         console.error(error_3);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
                 }
             });
         }); });

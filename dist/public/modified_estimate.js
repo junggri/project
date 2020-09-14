@@ -35,7 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function mypage() {
     var _this = this;
     var width = 500;
@@ -90,23 +94,15 @@ function mypage() {
         }
     }
     (function () { return __awaiter(_this, void 0, void 0, function () {
-        var token, myHeaders, result, response, error_1;
+        var fetchObj, result, response, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("CSRF-Token", token);
-                    _a.label = 1;
+                    _a.trys.push([0, 6, , 7]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ url: window.location.pathname.split("/")[3] }))];
                 case 1:
-                    _a.trys.push([1, 6, , 7]);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/modified_get_data", {
-                            method: "post",
-                            credentials: "same-origin",
-                            headers: myHeaders,
-                            body: JSON.stringify({ url: window.location.pathname.split("/")[3] }),
-                        })];
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/web/modified_get_data", fetchObj)];
                 case 2:
                     result = _a.sent();
                     if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -209,23 +205,15 @@ function mypage() {
     }
     function fetchDeleteImg(e) {
         return __awaiter(this, void 0, void 0, function () {
-            var token, myHeaders, result, response, error_2;
+            var fetchObj, result, response, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                        myHeaders = new Headers();
-                        myHeaders.append("Content-Type", "application/json");
-                        myHeaders.append("CSRF-Token", token);
-                        _a.label = 1;
+                        _a.trys.push([0, 6, , 7]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }))];
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/modified_delete_session_img", {
-                                method: "post",
-                                credentials: "same-origin",
-                                headers: myHeaders,
-                                body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
-                            })];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/modified_delete_session_img", fetchObj)];
                     case 2:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -270,7 +258,7 @@ function mypage() {
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        url === "http://localhost:3000/api/modified_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
+                        url === "http://localhost:3000/web/modified_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
                         return [3 /*break*/, 5];
                     case 4: throw new Error("fetch_image failed");
                     case 5: return [3 /*break*/, 7];
@@ -287,12 +275,12 @@ function mypage() {
     window.add_fileUpload = function (e) {
         if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/api/modified_add_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/modified_add_upload_image", e.target.files);
     };
     window.previous_fileUpload = function (e) {
         if (e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/api/modified_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/modified_upload_image", e.target.files);
     };
     window.openAddresss = function () {
         new daum.Postcode({

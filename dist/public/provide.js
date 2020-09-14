@@ -35,7 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function provide() {
     var _this = this;
     var email_reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -58,7 +62,7 @@ function provide() {
     var pwdFlag = false;
     var checkNumber;
     phoneBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var randomArray, i, randomNum, token, myHeaders, result, response;
+        var randomArray, i, randomNum, fetchObj, result, response, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -73,26 +77,29 @@ function provide() {
                         randomNum = Math.floor(Math.random() * 10);
                         randomArray.push(randomNum);
                     }
-                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("CSRF-Token", token);
-                    return [4 /*yield*/, fetch("/api/verify_phone_number", {
-                            method: "POST",
-                            credentials: "same-origin",
-                            headers: myHeaders,
-                            body: JSON.stringify({ user_phone_number: phoneNumber.value }),
-                        })];
+                    _a.label = 1;
                 case 1:
-                    result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, result.json()];
+                    _a.trys.push([1, 7, , 8]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ user_phone_number: phoneNumber.value }))];
                 case 2:
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("/api/verify_phone_number", fetchObj)];
+                case 3:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, result.json()];
+                case 4:
                     response = _a.sent();
                     // console.log(response.verify_num);
                     checkNumber = response.verify_num;
                     return [2 /*return*/];
-                case 3: return [2 /*return*/];
+                case 5: throw new Error("reload fetch failed");
+                case 6: return [3 /*break*/, 8];
+                case 7:
+                    error_1 = _a.sent();
+                    console.error(error_1);
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     }); });
@@ -113,7 +120,7 @@ function provide() {
         }
     });
     inputEmail.addEventListener("blur", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var token, myHeaders, result, response;
+        var fetchObj, result, response, err, error_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -121,21 +128,18 @@ function provide() {
                         emailFlag = false;
                         return [2 /*return*/, (stateEmail.textContent = "이메일 형식이 올바르지 않습니다.")];
                     }
-                    token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-                    myHeaders = new Headers();
-                    myHeaders.append("Content-Type", "application/json");
-                    myHeaders.append("CSRF-Token", token);
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/check_provide_email", {
-                            method: "POST",
-                            credentials: "same-origin",
-                            headers: myHeaders,
-                            body: JSON.stringify({ email: inputEmail.value }),
-                        })];
+                    _a.label = 1;
                 case 1:
-                    result = _a.sent();
-                    if (!(result.status === 201 || 201)) return [3 /*break*/, 3];
-                    return [4 /*yield*/, result.json()];
+                    _a.trys.push([1, 7, , 8]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: inputEmail.value }))];
                 case 2:
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/web/check_provide_email", fetchObj)];
+                case 3:
+                    result = _a.sent();
+                    if (!(result.status === 201 || 201)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, result.json()];
+                case 4:
                     response = _a.sent();
                     if (!response.state) {
                         emailFlag = false;
@@ -145,8 +149,17 @@ function provide() {
                         emailFlag = true;
                         stateEmail.textContent = "사용가능한 이메일입니다.";
                     }
-                    _a.label = 3;
-                case 3: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 5:
+                    err = new Error("NET_ERROR");
+                    err.name = "NET";
+                    throw err;
+                case 6: return [3 /*break*/, 8];
+                case 7:
+                    error_2 = _a.sent();
+                    console.error(error_2);
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     }); });

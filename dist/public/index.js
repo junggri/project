@@ -87,7 +87,7 @@ if (path.split("/")[3] === "estimateDetail") {
 if (path === "/provide/mypage") {
     p_mypage_1.default();
 }
-if (path === "/api/oauth_register") {
+if (path === "/web/oauth_register") {
     oauth_1.default();
     register_1.default();
 }
@@ -100,34 +100,34 @@ if (path === "/v1/find_user_email") {
 if (path === "/v1/find_user_pwd") {
     findUserData_1.default();
 }
-if (path === "/api/login") {
+if (path === "/web/login") {
     login_1.default();
 }
-if (path === "/api/register_previous") {
+if (path === "/web/register_previous") {
     register_1.default();
 }
-if (path === "/api/register/common") {
+if (path === "/web/register/common") {
     register_1.default();
 }
-if (path === "/api/register/provide") {
+if (path === "/web/register/provide") {
     provide_1.default();
 }
-if (path === "/api/estimate") {
+if (path === "/web/estimate") {
     estimate_1.default();
 }
-if (path === "/api/mypage") {
+if (path === "/web/mypage") {
     mypqge_1.default();
 }
-if (path === "/api/mypage/showestimate") {
+if (path === "/web/mypage/showestimate") {
     mypageShowEstimate_1.default();
 }
 if (path.split("/")[2] === "modified_estimate") {
     modified_estimate_1.default();
 }
-if (path === "/api/get_estimate") {
+if (path === "/web/get_estimate") {
     get_esimate_1.default();
 }
-if (path === "/api/index") {
+if (path === "/web/index") {
     index();
 }
 if (LoginmyBtn !== null) {
@@ -137,8 +137,8 @@ if (LoginmyBtn !== null) {
 }
 if (mainName !== null) {
     mainName.addEventListener("click", function () {
-        if (path.split("/")[0] === "") {
-            location.href = "/api/index";
+        if (path.split("/")[1] === "web") {
+            location.href = "/web/index";
         }
         else if (path.split("/")[1] === "provide") {
             location.href = "/provide/index";
@@ -148,7 +148,7 @@ if (mainName !== null) {
 if (logout !== null) {
     logout.addEventListener("click", function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            if (location.pathname.split("/")[1] === "api" || location.pathname.split("/")[0] === "") {
+            if (location.pathname.split("/")[1] === "web") {
                 if (confirm("로그아웃 하시겠습니까?")) {
                     return [2 /*return*/, logoutForm.submit()];
                 }
@@ -171,7 +171,7 @@ if (logout !== null) {
 function index() {
     var estimateBtn = document.querySelector(".mp-btn_estimate");
     estimateBtn.addEventListener("click", function (e) {
-        location.href = "/api/estimate";
+        location.href = "/web/estimate";
     });
 }
 //# sourceMappingURL=index.js.map

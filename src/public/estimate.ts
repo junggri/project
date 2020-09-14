@@ -1,29 +1,9 @@
+import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     add_List: any;
     get_estimate: any;
     isLogined: any;
-  }
-}
-
-function FetchSet() {
-  let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  let myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("CSRF-Token", token);
-  return myHeaders;
-}
-
-class Fetch {
-  method: string;
-  credentials: string;
-  headers: any;
-  body: any;
-  constructor(method: string, credentials: string, body: any) {
-    this.method = method;
-    this.credentials = credentials;
-    this.headers = FetchSet();
-    this.body = body;
   }
 }
 
@@ -68,8 +48,8 @@ export default function () {
 
   async function isLogined(url: string, data: any) {
     try {
-      let FetchObj: any = new Fetch("post", "same-origin", JSON.stringify(data));
-      let result = await fetch(url, FetchObj);
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify(data));
+      let result = await fetch(url, fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         if (response.state === true) {
@@ -91,12 +71,12 @@ export default function () {
   estimateBtn.addEventListener("click", (e) => {
     try {
       if (estimate_item === undefined || estimate_item.length === 0) {
-        return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
+        return isLogined("http://localhost:3000/web/pre_estimate", { code: data, price: price });
       } else {
         for (let i = 0; i < estimate_item.length; i++) {
           data.push(estimate_item[i].dataset.code);
         }
-        return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
+        return isLogined("http://localhost:3000/web/pre_estimate", { code: data, price: price });
       }
     } catch (error) {
       console.error(error);

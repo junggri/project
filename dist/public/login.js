@@ -60,7 +60,7 @@ function login() {
                             return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify(data))];
                         case 1:
                             fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/login_process", fetchObj)];
+                            return [4 /*yield*/, fetch("http://localhost:3000/web/login_process", fetchObj)];
                         case 2:
                             result = _a.sent();
                             if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -101,7 +101,7 @@ function login() {
                             return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: email, state: state }))];
                         case 2:
                             fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/api/setUserEmailCookie", fetchObj)];
+                            return [4 /*yield*/, fetch("http://localhost:3000/v1/setUserEmailCookie", fetchObj)];
                         case 3:
                             response = _a.sent();
                             if (!(response.status === 200 || 201)) return [3 /*break*/, 5];

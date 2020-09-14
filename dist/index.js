@@ -51,12 +51,9 @@ if (app.get("env") === "production") {
     app.set("trust proxy", 1); // trust first proxy
     sess.cookie.secure = true; // serve secure cookies
 }
-var corsOptions = {
-    origin: "http://localhost:3000",
-    credentials: true,
-};
 app.use(cookie_parser_1.default(session_json_1.default.secret));
 app.use(express_session_1.default(sess));
+app.use(cors_1.default());
 // app.use(logger("prod", { stream })); //prod combined
 app.use(morgan_1.default("dev"));
 app.get("env") === "development" ? app.use(express_1.default.static(path_1.default.join(__dirname + "/../dist/public", "dist"))) : app.use(express_1.default.static(path_1.default.join(__dirname + "/public", "dist")));
@@ -79,12 +76,11 @@ app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 var v1_1 = __importDefault(require("./router/v1"));
-var api_1 = __importDefault(require("./router/api"));
+var web_1 = __importDefault(require("./router/web"));
 var provide_1 = __importDefault(require("./router/provide"));
 app.use("/v1", v1_1.default);
-app.use("/api", api_1.default);
+app.use("/web", web_1.default);
 app.use("/provide", provide_1.default);
-app.use(cors_1.default(corsOptions));
 app.set("port", process.env.PORT || 3000);
 app.use(logError);
 app.use(function (req, res, next) {

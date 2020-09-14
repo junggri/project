@@ -57,7 +57,6 @@ var submitController_1 = __importDefault(require("../lib/controller/submitContro
 var p_MakeSymptonList_1 = require("../lib/p_MakeSymptonList");
 var p_makeShowData_1 = require("../lib/p_makeShowData");
 var mysql_1 = __importDefault(require("../lib/mysql"));
-var setAndGetCookie_1 = require("../lib/setAndGetCookie");
 var querystring_1 = __importDefault(require("querystring"));
 var p_makeJuso_1 = require("../lib/p_makeJuso");
 var parseForm = body_parser_1.default.urlencoded({ extended: false });
@@ -66,16 +65,6 @@ var csrfProtection = csurf_1.default({
     cookie: {
         httpOnly: true,
     },
-});
-router.post("/v1/setProviderEmailCookie", csrfProtection, p_verify_1.verify, function (req, res) {
-    if (req.body.state === "set") {
-        var encryptResult = setAndGetCookie_1.encrypt(req.body.email);
-        res.json({ email: encryptResult });
-    }
-    else {
-        var decryptResult = setAndGetCookie_1.decrypt(req.body.email);
-        res.json({ decrypt: decryptResult });
-    }
 });
 router.get("/index", csrfProtection, p_verify_1.verify, p_verify_1.isLogined, function (req, res) {
     if (req.headers.referer === undefined) {
@@ -95,7 +84,6 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
             case 0:
                 _email = mongo_sanitize_1.default(req.body.email);
                 _pwd = mongo_sanitize_1.default(req.body.pwd);
-                console.log(_email);
                 return [4 /*yield*/, provideModel_1.default.findOne({ email: { $in: [_email] } })];
             case 1:
                 result = _a.sent();
@@ -238,7 +226,7 @@ router.post("/before_check_getRegisterData", csrfProtection, p_verify_1.verify, 
     });
 }); });
 router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var authUI, token, decoded, result, err, isEstimated, location_1, imgs, btn, error_1;
+    var authUI, token, decoded, result, isEstimated, location_1, imgs, btn, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -251,14 +239,6 @@ router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
                 return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.url.split("?")[1])];
             case 2:
                 result = _a.sent();
-                if (result === null) {
-                    err = new Error("error");
-                    err.message = "error";
-                    err.status = 404;
-                    err.stack = "404";
-                    next(err);
-                    throw err;
-                }
                 return [4 /*yield*/, provideController_1.default.isEstimated(decoded.user_objectId)];
             case 3:
                 isEstimated = _a.sent();
@@ -279,9 +259,7 @@ router.post("/get_registerData", csrfProtection, p_verify_1.verify, p_verify_1.i
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                console.log(2);
-                return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body.sympton_id)];
+            case 0: return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body.sympton_id)];
             case 1:
                 result = _a.sent();
                 if (result === null)

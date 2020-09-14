@@ -60,7 +60,7 @@ export function isLogined(req: any, res: any, next: any) {
   const token = req.cookies.jwttoken;
   try {
     jwt.verify(token, process.env.JWT_SECRET);
-    return res.redirect("/api/index");
+    return res.redirect("/web/index");
   } catch (error) {
     // console.error(error);
     return next();
@@ -74,6 +74,6 @@ export function isNotLogined(req: any, res: any, next: any) {
     return next();
   } catch (error) {
     // console.error(error);
-    return res.redirect("/api/login");
+    return res.redirect("/web/login");
   }
 }

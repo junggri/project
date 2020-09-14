@@ -1,3 +1,4 @@
+import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {}
 }
@@ -33,21 +34,19 @@ export default function provide() {
       let randomNum = Math.floor(Math.random() * 10);
       randomArray.push(randomNum);
     }
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    let result = await fetch("/api/verify_phone_number", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: myHeaders,
-      body: JSON.stringify({ user_phone_number: phoneNumber.value }),
-    });
-    if (result.status === 200 || 201) {
-      let response = await result.json();
-      // console.log(response.verify_num);
-      checkNumber = response.verify_num;
-      return;
+    try {
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ user_phone_number: phoneNumber.value }));
+      let result = await fetch("/api/verify_phone_number", fetchObj);
+      if (result.status === 200 || 201) {
+        let response = await result.json();
+        // console.log(response.verify_num);
+        checkNumber = response.verify_num;
+        return;
+      } else {
+        throw new Error("reload fetch failed");
+      }
+    } catch (error) {
+      console.error(error);
     }
   });
 
@@ -72,25 +71,25 @@ export default function provide() {
       emailFlag = false;
       return (stateEmail.textContent = "이메일 형식이 올바르지 않습니다.");
     }
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    let result = await fetch("http://localhost:3000/api/check_provide_email", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: myHeaders,
-      body: JSON.stringify({ email: inputEmail.value }),
-    });
-    if (result.status === 201 || 201) {
-      let response = await result.json();
-      if (!response.state) {
-        emailFlag = false;
-        stateEmail.textContent = "이미 사용중인이메일입니다.";
+    try {
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: inputEmail.value }));
+      let result = await fetch("http://localhost:3000/web/check_provide_email", fetchObj);
+      if (result.status === 201 || 201) {
+        let response = await result.json();
+        if (!response.state) {
+          emailFlag = false;
+          stateEmail.textContent = "이미 사용중인이메일입니다.";
+        } else {
+          emailFlag = true;
+          stateEmail.textContent = "사용가능한 이메일입니다.";
+        }
       } else {
-        emailFlag = true;
-        stateEmail.textContent = "사용가능한 이메일입니다.";
+        let err = new Error("NET_ERROR");
+        err.name = "NET";
+        throw err;
       }
+    } catch (error) {
+      console.error(error);
     }
   });
 

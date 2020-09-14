@@ -4,7 +4,7 @@ export default function showGotEstimate() {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("CSRF-Token", token);
-    let result = await fetch("http://localhost:3000/api/find_submit", {
+    let result = await fetch("http://localhost:3000/web/find_submit", {
       method: "post",
       credentials: "same-origin",
       headers: myHeaders,

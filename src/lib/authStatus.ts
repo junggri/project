@@ -25,15 +25,15 @@ let authStatus = {
           <span class="nb-profile-img"></span>
           <span class="nb-profile-modify">프로필 변경</span>
         </div>
-        <div class="nb-profile-mypage"><a href="/api/mypage">마이페이지</a></div>
-        <form method="post" action="/api/logout_process" class="logout-form">
+        <div class="nb-profile-mypage"><a href="/web/mypage">마이페이지</a></div>
+        <form method="post" action="/web/logout_process" class="logout-form">
           <div class="nb-profile-logout">로그아웃</div>
         </form>
     </div>
         `;
     } else {
-      UI = `<li class="nb-right_register nb-right_list"><a href="/api/register_previous">회원가입</a></li>
-      <li class="nb-right_login nb-right_list"><a href="/api/login">로그인</a></li>`;
+      UI = `<li class="nb-right_register nb-right_list"><a href="/web/register_previous">회원가입</a></li>
+      <li class="nb-right_login nb-right_list"><a href="/web/login">로그인</a></li>`;
     }
     return UI;
   },

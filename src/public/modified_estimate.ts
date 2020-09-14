@@ -1,3 +1,4 @@
+import FetchFunction from "./fetchFunction";
 export default function mypage() {
   let width = 500;
   let height = 500;
@@ -60,17 +61,9 @@ export default function mypage() {
   }
 
   (async () => {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
     try {
-      let result: any = await fetch("http://localhost:3000/api/modified_get_data", {
-        method: "post",
-        credentials: "same-origin",
-        headers: myHeaders,
-        body: JSON.stringify({ url: window.location.pathname.split("/")[3] }),
-      });
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ url: window.location.pathname.split("/")[3] }));
+      let result: any = await fetch("http://localhost:3000/web/modified_get_data", fetchObj);
       if (result.status === 200 || 201) {
         if (result.state === false) return alert("자료가 존재하지 않습니다.");
         let response = await result.json();
@@ -156,17 +149,9 @@ export default function mypage() {
   }
 
   async function fetchDeleteImg(e: any) {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
     try {
-      let result = await fetch("http://localhost:3000/api/modified_delete_session_img", {
-        method: "post",
-        credentials: "same-origin",
-        headers: myHeaders,
-        body: JSON.stringify({ data: e.target.parentNode.dataset.img }),
-      });
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }));
+      let result = await fetch("http://localhost:3000/web/modified_delete_session_img", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         lengthOfImg(response);
@@ -191,7 +176,7 @@ export default function mypage() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
-        url === "http://localhost:3000/api/modified_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
+        url === "http://localhost:3000/web/modified_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
       } else {
         throw new Error("fetch_image failed");
       }
@@ -203,12 +188,12 @@ export default function mypage() {
 
   window.add_fileUpload = (e: any) => {
     if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10) return alert("최대 10장까지 등록가능합니다.");
-    fetchImage("http://localhost:3000/api/modified_add_upload_image", e.target.files);
+    fetchImage("http://localhost:3000/web/modified_add_upload_image", e.target.files);
   };
 
   window.previous_fileUpload = (e: any) => {
     if (e.target.files.length > 10) return alert("최대 10장까지 등록가능합니다.");
-    fetchImage("http://localhost:3000/api/modified_upload_image", e.target.files);
+    fetchImage("http://localhost:3000/web/modified_upload_image", e.target.files);
   };
 
   window.openAddresss = () => {

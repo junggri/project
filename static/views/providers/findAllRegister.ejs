@@ -16,8 +16,8 @@
           <span class="nb-left-name">name</span>
         </div>
         <ul class="nb-right">
-          <li class="nb-right_customer nb-right_list"><a href="/customer">고객센터</a></li>
-          <li class="nb-right_usage nb-right_list"><a href="/howtouse">이용안내</a></li>
+          <li class="nb-right_customer nb-right_list"><a href="/web/customer">고객센터</a></li>
+          <li class="nb-right_usage nb-right_list"><a href="/web/howtouse">이용안내</a></li>
           <%- authUI %>
         </ul>
       </nav>
@@ -28,9 +28,7 @@
             <div class="fr-detail">무료견적서를 제출하여 문제를 해결해주세요.</div>
           </div>
           <div class="register-select-box">
-            <span>
-              지역선택
-            </span>
+            <span> 지역선택 </span>
             <input type="hidden" name="type" value="search" />
             <select name="sigunguCode" id="sigunguCode" onchange="get_change()">
               <option value="0" selected>-- 시 / 도</option>
@@ -68,9 +66,7 @@
             <span class="frr-nav-createdAt">작성일</span>
             <span class="frr-nav-estimate">견적</span>
           </div>
-          <div class="find-register-resultBox">
-            <%- AllSympton %>
-          </div>
+          <div class="find-register-resultBox"><%- AllSympton %></div>
           <%- pagination %>
         </div>
       </form>

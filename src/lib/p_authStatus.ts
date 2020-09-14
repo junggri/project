@@ -32,8 +32,8 @@ let authStatus = {
     </div>
         `;
     } else {
-      UI = `<li class="nb-right_register nb-right_list"><a href="/api/register_previous">회원가입</a></li>
-      <li class="nb-right_login nb-right_list"><a href="/api/login">로그인</a></li>`;
+      UI = `<li class="nb-right_register nb-right_list"><a href="/web/register_previous">회원가입</a></li>
+      <li class="nb-right_login nb-right_list"><a href="/web/login">로그인</a></li>`;
     }
     return UI;
   },

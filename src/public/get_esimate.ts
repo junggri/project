@@ -45,7 +45,7 @@ export default function get_estimate() {
       (async () => {
         try {
           let fetchObj: any = await FetchFunction("post", "same-origin", null);
-          let result = await fetch("http://localhost:3000/api/fetch_session", fetchObj);
+          let result = await fetch("http://localhost:3000/web/fetch_session", fetchObj);
           if (result.status === 200 || 201) {
             let response = await result.json();
             //if session.img isnt defineded
@@ -126,11 +126,11 @@ export default function get_estimate() {
   async function delete_img_session(e: any) {
     try {
       let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }));
-      let result = await fetch("http://localhost:3000/api/delete_img", fetchObj);
+      let result = await fetch("http://localhost:3000/web/delete_img", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         lengthOfImg(response);
-        if (response.length !== 0) imgBox.removeChild(e.target.parentNode);
+        if (response.length !== 0) return imgBox.removeChild(e.target.parentNode);
       }
     } catch (error) {
       console.error(error);
@@ -150,7 +150,7 @@ export default function get_estimate() {
       });
       if (result.status === 200 || 201) {
         let response = await result.json();
-        url === "http://localhost:3000/api/fetch_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
+        url === "http://localhost:3000/web/fetch_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
       } else {
         let err = new Error("fetch 실패(사진등록)");
         err.name = "FAIL_SAVE_IMG_INSESSION";
@@ -163,12 +163,12 @@ export default function get_estimate() {
 
   window.add_fileUpload = (e: any) => {
     if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10) return alert("최대 10장까지 등록가능합니다.");
-    fetchImage("http://localhost:3000/api/fetch_add_upload_image", e.target.files);
+    fetchImage("http://localhost:3000/web/fetch_add_upload_image", e.target.files);
   };
 
   window.previous_fileUpload = (e: any) => {
     if (e.target.files.length > 10) return alert("최대 10장까지 등록가능합니다.");
-    fetchImage("http://localhost:3000/api/fetch_upload_image", e.target.files);
+    fetchImage("http://localhost:3000/web/fetch_upload_image", e.target.files);
   };
 
   window.formAndBlockBack = () => {

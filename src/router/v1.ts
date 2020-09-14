@@ -35,17 +35,6 @@ router.post("/check_user_email", parseForm, csrfProtection, verify, isLogined, a
   }
 });
 
-router.post("/check_provide_email", parseForm, csrfProtection, verify, isLogined, async (req, res) => {
-  let userResult = await userController.find(req.body.email);
-  let provideResult = await provideController.find(req.body.email);
-  if (userResult.length === 0 && provideResult.length === 0) {
-    //중복된 이메일이 존재하지 않는다는 것
-    return res.json({ state: true });
-  } else {
-    return res.json({ state: false });
-  }
-});
-
 router.post("/check_user_and_sendEmail", parseForm, csrfProtection, verify, isLogined, async (req, res) => {
   const encryptResult = encrypt(req.body.email);
   let result = await userController.find(req.body.email);
@@ -79,4 +68,15 @@ router.post("/reset_process", csrfProtection, verify, isLogined, async (req, res
   res.clearCookie("rs_to");
   await userController.resetPassword(req, res);
 });
+
+router.post("/setUserEmailCookie", csrfProtection, verify, (req, res) => {
+  if (req.body.state === "set") {
+    const encryptResult = encrypt(req.body.email);
+    res.json({ email: encryptResult });
+  } else {
+    const decryptResult = decrypt(req.body.email);
+    res.json({ decrypt: decryptResult });
+  }
+});
+
 export default router;

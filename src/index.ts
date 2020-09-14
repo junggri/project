@@ -57,13 +57,11 @@ if (app.get("env") === "production") {
   app.set("trust proxy", 1); // trust first proxy
   sess.cookie.secure = true; // serve secure cookies
 }
-const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
-};
 
 app.use(cookieParser(configSession.secret));
 app.use(session(sess));
+
+app.use(cors());
 
 // app.use(logger("prod", { stream })); //prod combined
 app.use(logger("dev"));
@@ -93,14 +91,12 @@ app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
 import CommonRouter from "./router/v1";
-import apiRouter from "./router/api";
+import webRouter from "./router/web";
 import provierRouter from "./router/provide";
 
 app.use("/v1", CommonRouter);
-app.use("/api", apiRouter);
+app.use("/web", webRouter);
 app.use("/provide", provierRouter);
-
-app.use(cors(corsOptions));
 
 app.set("port", process.env.PORT || 3000);
 

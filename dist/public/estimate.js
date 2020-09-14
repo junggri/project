@@ -35,23 +35,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-function FetchSet() {
-    var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    return myHeaders;
-}
-var Fetch = /** @class */ (function () {
-    function Fetch(method, credentials, body) {
-        this.method = method;
-        this.credentials = credentials;
-        this.headers = FetchSet();
-        this.body = body;
-    }
-    return Fetch;
-}());
+var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function default_1() {
     var estimate_container = document.querySelector(".estimate-pre-result-itembox");
     var estimate_list = document.querySelector(".estimate-pre-result-item");
@@ -92,18 +80,20 @@ function default_1() {
     };
     function isLogined(url, data) {
         return __awaiter(this, void 0, void 0, function () {
-            var FetchObj, result, response, error_1;
+            var fetchObj, result, response, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        FetchObj = new Fetch("post", "same-origin", JSON.stringify(data));
-                        return [4 /*yield*/, fetch(url, FetchObj)];
+                        _a.trys.push([0, 6, , 7]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify(data))];
                     case 1:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, result.json()];
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch(url, fetchObj)];
                     case 2:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, result.json()];
+                    case 3:
                         response = _a.sent();
                         if (response.state === true) {
                             estimateForm.submit();
@@ -114,14 +104,14 @@ function default_1() {
                                 location.href = "/api/login";
                             }
                         }
-                        return [3 /*break*/, 4];
-                    case 3: throw new Error("로그인유무 확인 실패");
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
+                        return [3 /*break*/, 5];
+                    case 4: throw new Error("로그인유무 확인 실패");
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         error_1 = _a.sent();
                         console.error(error_1);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -129,13 +119,13 @@ function default_1() {
     estimateBtn.addEventListener("click", function (e) {
         try {
             if (estimate_item === undefined || estimate_item.length === 0) {
-                return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
+                return isLogined("http://localhost:3000/web/pre_estimate", { code: data, price: price });
             }
             else {
                 for (var i = 0; i < estimate_item.length; i++) {
                     data.push(estimate_item[i].dataset.code);
                 }
-                return isLogined("http://localhost:3000/api/pre_estimate", { code: data, price: price });
+                return isLogined("http://localhost:3000/web/pre_estimate", { code: data, price: price });
             }
         }
         catch (error) {

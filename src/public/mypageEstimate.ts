@@ -1,3 +1,4 @@
+import FetchFunction from "./fetchFunction";
 export default function mypageEstimate() {
   let acceptBtn = document.querySelectorAll(".si-accept-btn");
   let previousAccept = document.querySelector(".previous-accept-box") as HTMLDivElement;
@@ -5,24 +6,11 @@ export default function mypageEstimate() {
   let cancelBtn = document.querySelector(".pab-cancelBtn") as HTMLDivElement;
   let hiddenInput = document.querySelector(".pab-hidden") as HTMLInputElement;
 
-  function FetchSet() {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    return myHeaders;
-  }
-
   (async () => {
     let length = window.location.href.split("/").length;
-    let header = FetchSet();
     try {
-      let result = await fetch("http://localhost:3000/api/check_reigister_state", {
-        method: "post",
-        credentials: "same-origin",
-        headers: header,
-        body: JSON.stringify({ register_id: window.location.href.split("/")[length - 1] }),
-      });
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ register_id: window.location.href.split("/")[length - 1] }));
+      let result = await fetch("http://localhost:3000/web/check_reigister_state", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         if (!response.state) {
@@ -42,14 +30,9 @@ export default function mypageEstimate() {
   function addEventOnAcceptBtn(acceptBtn: any) {
     for (let i = 0; i < acceptBtn.length; i++) {
       acceptBtn[i].addEventListener("click", async (e: any) => {
-        let header = FetchSet();
-        let result = await fetch("http://localhost:3000/api/find_submit", {
-          method: "post",
-          credentials: "same-origin",
-          headers: header,
-          body: JSON.stringify({ submit_id: acceptBtn[i].parentNode.parentNode.dataset.submitid }),
-        });
         try {
+          let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ submit_id: acceptBtn[i].parentNode.parentNode.dataset.submitid }));
+          let result = await fetch("http://localhost:3000/web/find_submit", fetchObj);
           if (result.status === 200 || 201) {
             let response = await result.json();
             if (response.state === false) {
@@ -81,14 +64,9 @@ export default function mypageEstimate() {
   });
 
   async function acceptSubmit(submitId: string) {
-    let header = FetchSet();
     try {
-      let result = await fetch("http://localhost:3000/api/accept_estimate", {
-        method: "post",
-        credentials: "same-origin",
-        headers: header,
-        body: JSON.stringify({ submit_id: submitId }),
-      });
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ submit_id: submitId }));
+      let result = await fetch("http://localhost:3000/web/accept_estimate", fetchObj);
       if (result.status === 200 || 201) {
         window.location.href = "/api/mypage/showestimate";
       } else {

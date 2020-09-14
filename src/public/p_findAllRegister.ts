@@ -1,3 +1,4 @@
+import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     pagination_pre: any;
@@ -60,14 +61,9 @@ export default function p_findAllRegister() {
   function makeSymptonPage(symptonItems: any) {
     for (let i = 0; i < symptonItems.length; i++) {
       symptonItems[i].addEventListener("click", async (e: any) => {
-        let header = FetchSet();
         try {
-          let result = await fetch("http://localhost:3000/provide/before_check_getRegisterData", {
-            method: "post",
-            credentials: "same-origin",
-            headers: header,
-            body: JSON.stringify({ _id: e.target.parentNode.dataset.registerid }),
-          });
+          let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ _id: e.target.parentNode.dataset.registerid }));
+          let result = await fetch("http://localhost:3000/provide/before_check_getRegisterData", fetchObj);
           if (result.status === 200 || 201) {
             let response = await result.json();
             let { state } = response;
@@ -141,14 +137,9 @@ export default function p_findAllRegister() {
 
   async function commonFunction(text: string, target: any, data: any, url: string) {
     await reset(target, text);
-    let header = FetchSet();
     try {
-      let result = await fetch(url, {
-        method: "post",
-        credentials: "same-origin",
-        headers: header,
-        body: JSON.stringify({ data: data }),
-      });
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ data: data }));
+      let result = await fetch(url, fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         for (let i = 0; i < response.sido.length; i++) {

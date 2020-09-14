@@ -1,3 +1,4 @@
+import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     add_List: any;
@@ -20,31 +21,10 @@ export default function () {
   let userEmail = document.querySelector(".findEmail") as HTMLDivElement;
   window.location.pathname === "/v1/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
 
-  function FetchSet() {
-    let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("CSRF-Token", token);
-    return myHeaders;
-  }
-
-  class Fetch {
-    method: string;
-    credentials: string;
-    headers: any;
-    body: any;
-    constructor(method: string, credentials: string, body: any) {
-      this.method = method;
-      this.credentials = credentials;
-      this.headers = FetchSet();
-      this.body = body;
-    }
-  }
-
   async function findUserData(url: string, data: string) {
     try {
-      let FetchObj: any = new Fetch("post", "same-origin", JSON.stringify({ email: data }));
-      let response = await fetch(url, FetchObj);
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: data }));
+      let response = await fetch(url, fetchObj);
       if (response.status === 200 || 201) {
         let result = await response.json();
         if (!result.state) {
