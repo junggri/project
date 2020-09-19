@@ -55,7 +55,7 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var sanitize_html_1 = __importDefault(require("sanitize-html"));
 var registerSymModel_1 = __importDefault(require("../lib/model/registerSymModel"));
 var userContoller_1 = __importDefault(require("../lib/controller/userContoller"));
-var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
+var registerSymptonContoller_1 = __importDefault(require("../lib/controller/registerSymptonContoller"));
 var provideController_1 = __importDefault(require("../lib/controller/provideController"));
 var submitController_1 = __importDefault(require("../lib/controller/submitController"));
 // import oauthController from "../lib/controller/oauthController";
@@ -100,6 +100,7 @@ router.post("/setUserEmailCookie", csrfProtection, jwtverify_1.verify, function 
     }
 });
 router.get("/index", csrfProtection, jwtverify_1.verify, function (req, res, next) {
+    console.log(req.session);
     var authUI = authStatus_1.default.status(req, res);
     res.render("index", { authUI: authUI });
 });
@@ -251,10 +252,11 @@ router.post("/register_common_process", parseForm, csrfProtection, jwtverify_1.v
     });
 });
 router.post("/register_provide_process", parseForm, csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var inputdata, _a, name, gender, email, pwd, phone;
+    var inputdata, _a, name, gender, email, pwd, phone, lat1, lon1, address1, lat2, lon2, address2, lat3, lon3, address3;
     return __generator(this, function (_b) {
         inputdata = {};
-        _a = req.body, name = _a.name, gender = _a.gender, email = _a.email, pwd = _a.pwd, phone = _a.phone;
+        console.log(req.body);
+        _a = req.body, name = _a.name, gender = _a.gender, email = _a.email, pwd = _a.pwd, phone = _a.phone, lat1 = _a.lat1, lon1 = _a.lon1, address1 = _a.address1, lat2 = _a.lat2, lon2 = _a.lon2, address2 = _a.address2, lat3 = _a.lat3, lon3 = _a.lon3, address3 = _a.address3;
         crypto_1.default.randomBytes(crypto_json_1.default.len, function (err, buf) {
             var salt = buf.toString("base64");
             crypto_1.default.pbkdf2(pwd, salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(void 0, void 0, void 0, function () {
@@ -266,6 +268,7 @@ router.post("/register_provide_process", parseForm, csrfProtection, jwtverify_1.
                         gender: gender,
                         phone_number: phone,
                         salt: salt,
+                        address: { add1: { address: address1, lat: lat1, lon: lon1 }, add2: { address: address2, lat: lat2, lon: lon2 }, add3: { address: address3, lat: lat3, lon: lon3 } },
                     };
                     try {
                         provideController_1.default.save(inputdata);
@@ -411,41 +414,58 @@ router.post("/fetch_add_upload_image", jwtverify_1.verify, function (req, res, n
         res.json({ img: req.session.img, email: decoded });
     });
 });
-router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) {
-    var token = req.cookies.jwttoken;
-    var _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, price = _a.price, sigungu = _a.sigungu, bname = _a.bname, bname1 = _a.bname1, lat = _a.lat, lon = _a.lon;
-    var _b = req.session, code = _b.code, img = _b.img;
-    var sigunguCode = String(req.body.sigunguCode).substr(0, 2);
-    var _time = moment_1.default().format("YYYY-MM-DD");
-    var detailAddress = sanitize_html_1.default(req.body.detailAddress);
-    try {
-        var decoded_1 = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        var inputdata_1 = {
-            user_name: decoded_1.username,
-            user_object_id: decoded_1.user_objectId,
-            email: decoded_1.email,
-            code: code,
-            sympton_detail: sanitize_html_1.default(sympton_detail),
-            img: img,
-            userwant_time: { time: time, minute: minute },
-            address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress, lat: lat, lon: lon },
-            userwant_content: sanitize_html_1.default(userwant_content),
-            predict_price: price,
-            createdAt: _time,
-        };
-        delete req.session.img;
-        delete req.session.code;
-        delete req.session.price;
-        req.session.save(function () {
-            registerSymContoller_1.default.save(req, res, inputdata_1, decoded_1.email, decoded_1.user_objectId);
-            deleteImg_1.default(decoded_1.email, decoded_1.user_objectId);
-            res.redirect("/web/mypage");
-        });
-    }
-    catch (error) {
-        console.error(error);
-    }
-});
+router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1.verify, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, _a, sympton_detail, time, minute, postcode, roadAddress, userwant_content, price, sigungu, bname, bname1, lat, lon, _b, code, img, sigunguCode, _time, detailAddress, decoded_1, inputdata_1;
+    return __generator(this, function (_c) {
+        token = req.cookies.jwttoken;
+        _a = req.body, sympton_detail = _a.sympton_detail, time = _a.time, minute = _a.minute, postcode = _a.postcode, roadAddress = _a.roadAddress, userwant_content = _a.userwant_content, price = _a.price, sigungu = _a.sigungu, bname = _a.bname, bname1 = _a.bname1, lat = _a.lat, lon = _a.lon;
+        _b = req.session, code = _b.code, img = _b.img;
+        sigunguCode = String(req.body.sigunguCode).substr(0, 2);
+        _time = moment_1.default().format("YYYY-MM-DD");
+        detailAddress = sanitize_html_1.default(req.body.detailAddress);
+        try {
+            decoded_1 = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+            inputdata_1 = {
+                user_name: decoded_1.username,
+                user_object_id: decoded_1.user_objectId,
+                email: decoded_1.email,
+                code: code,
+                sympton_detail: sanitize_html_1.default(sympton_detail),
+                img: img,
+                userwant_time: { time: time, minute: minute },
+                address: { postcode: postcode, sigunguCode: sigunguCode, sigungu: sigungu, bname: bname, bname1: bname1, roadAddress: roadAddress, detailAddress: detailAddress, lat: lat, lon: lon },
+                userwant_content: sanitize_html_1.default(userwant_content),
+                predict_price: price,
+                createdAt: _time,
+            };
+            delete req.session.img;
+            delete req.session.code;
+            delete req.session.price;
+            req.session.save(function () { return __awaiter(void 0, void 0, void 0, function () {
+                var sentProvidersArray;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, registerSymptonContoller_1.default.sendToProvider(lat, lon)];
+                        case 1:
+                            sentProvidersArray = _a.sent();
+                            return [4 /*yield*/, registerSymptonContoller_1.default.save(req, res, inputdata_1, decoded_1.email, decoded_1.user_objectId, sentProvidersArray)];
+                        case 2:
+                            _a.sent();
+                            return [4 /*yield*/, deleteImg_1.default(decoded_1.email, decoded_1.user_objectId)];
+                        case 3:
+                            _a.sent();
+                            res.redirect("/web/mypage");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+        }
+        catch (error) {
+            console.error(error);
+        }
+        return [2 /*return*/];
+    });
+}); });
 //isnotlogined
 router.get("/mypage", csrfProtection, jwtverify_1.verify, jwtverify_1.isNotLogined, function (req, res) {
     var token = req.cookies.jwttoken;
@@ -460,7 +480,7 @@ router.post("/check_reigister_state", csrfProtection, jwtverify_1.verify, jwtver
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymContoller_1.default.find(req.body.register_id)];
+            case 0: return [4 /*yield*/, registerSymptonContoller_1.default.find(req.body.register_id)];
             case 1:
                 result = _a.sent();
                 if (result.state == "register") {
@@ -478,7 +498,7 @@ router.get("/mypage/showestimate", csrfProtection, jwtverify_1.verify, jwtverify
     // res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     try {
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-        registerSymContoller_1.default.findAllRegister(req, res, decoded.email, decoded.user_objectId);
+        registerSymptonContoller_1.default.findAllRegister(req, res, decoded.email, decoded.user_objectId);
     }
     catch (error) {
         console.error(error, "로그인이 되지 않았습니다.");
@@ -574,7 +594,7 @@ router.get("/modified_estimate/:id", csrfProtection, jwtverify_1.verify, jwtveri
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 3, , 4]);
-                return [4 /*yield*/, registerSymContoller_1.default.findBeforeModified(req, res)];
+                return [4 /*yield*/, registerSymptonContoller_1.default.findBeforeModified(req, res)];
             case 1:
                 response = _a.sent();
                 if (response === null) {
@@ -608,7 +628,7 @@ router.post("/modified_get_data", jwtverify_1.verify, jwtverify_1.isNotLogined, 
             case 0:
                 req.session.img = [];
                 decoded = getDataFromToken_1.default(req, res);
-                return [4 /*yield*/, registerSymContoller_1.default.findImageBeforeModified(req, res)];
+                return [4 /*yield*/, registerSymptonContoller_1.default.findImageBeforeModified(req, res)];
             case 1:
                 response = _a.sent();
                 if (response === null)
@@ -668,7 +688,7 @@ router.post("/modified_estimate/modified_estimate_process", parseForm, csrfProte
         lon: lon,
         userwant_content: sanitize_html_1.default(userwant_content),
     };
-    registerSymContoller_1.default.modified(req, res, data);
+    registerSymptonContoller_1.default.modified(req, res, data);
     delete req.session.img;
     delete req.session.code;
     delete req.session._id;
@@ -687,7 +707,7 @@ router.post("/delete_register_sympton", parseForm, csrfProtection, jwtverify_1.i
             case 1:
                 _a.trys.push([1, 3, , 4]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                return [4 /*yield*/, registerSymContoller_1.default.deleteSympton(req, res, decoded.email, decoded.user_objectId)];
+                return [4 /*yield*/, registerSymptonContoller_1.default.deleteSympton(req, res, decoded.email, decoded.user_objectId)];
             case 2:
                 _a.sent();
                 return [3 /*break*/, 4];

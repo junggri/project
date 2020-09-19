@@ -62,6 +62,13 @@ submitController.save = async (symptonId: string, providerId: string, data: any)
   let User: any = await usermodel.findOne({ _id: data.user_id });
   let Sympton: any = await symptonModel.findOne({ _id: symptonId });
   let Provider: any = await providerModel.findOne({ _id: providerId });
+
+  if (Sympton.send_sympton_provider_id.includes(Provider.id)) {
+    let idx = Provider.usr_sent_sympton.indexOf(Sympton.id);
+    Provider.usr_sent_sympton.splice(idx, 1);
+    await providerModel.updateOne({ _id: providerId }, { $set: { usr_sent_sympton: Provider.usr_sent_sympton } });
+  }
+
   let time = moment().format("YYYY-MM-DD");
   let saveData = {
     register_user: User,
@@ -110,7 +117,7 @@ submitController.getDataFromProviderId = async (providerId: string) => {
 submitController.reset = async () => {
   let User = await providerModel.find();
   for (let i = 0; i < User.length; i++) {
-    await providerModel.updateOne({ _id: User[i]._id }, { $set: { submit_register: [] } });
+    await providerModel.updateOne({ _id: User[i]._id }, { $set: { usr_sent_sympton: [] } });
   }
   let User2 = await usermodel.find();
   for (let i = 0; i < User2.length; i++) {

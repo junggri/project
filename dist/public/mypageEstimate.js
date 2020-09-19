@@ -150,7 +150,7 @@ function mypageEstimate() {
                     case 2:
                         result = _a.sent();
                         if (result.status === 200 || 201) {
-                            window.location.href = "/api/mypage/showestimate";
+                            window.location.href = "/web/mypage/showestimate";
                         }
                         else {
                             error = new Error("젼적받기 실패");

@@ -14,7 +14,7 @@ import jwt from "jsonwebtoken";
 import sanitizeHtml from "sanitize-html";
 import registerSymptonModel from "../lib/model/registerSymModel";
 import userController from "../lib/controller/userContoller";
-import registerSymController from "../lib/controller/registerSymContoller";
+import registerSymController from "../lib/controller/registerSymptonContoller";
 import provideController from "../lib/controller/provideController";
 import submitController from "../lib/controller/submitController";
 // import oauthController from "../lib/controller/oauthController";
@@ -33,6 +33,7 @@ import { encrypt, decrypt } from "../lib/setAndGetCookie";
 import sendPhone from "../lib/sendPhone";
 import { makeSumbitbox } from "../lib/mypageState";
 import { symptonList } from "../lib/symptonList";
+import calDistance from "../lib/calculateDistance";
 
 const csrfProtection = csrf({
   cookie: {
@@ -82,6 +83,7 @@ router.post("/setUserEmailCookie", csrfProtection, verify, (req, res) => {
 });
 
 router.get("/index", csrfProtection, verify, (req, res, next) => {
+  console.log(req.session);
   let authUI = auth.status(req, res);
   res.render("index", { authUI: authUI });
 });
@@ -217,7 +219,8 @@ router.post("/register_common_process", parseForm, csrfProtection, verify, isLog
 
 router.post("/register_provide_process", parseForm, csrfProtection, verify, isLogined, async (req, res) => {
   let inputdata = {};
-  const { name, gender, email, pwd, phone } = req.body;
+  console.log(req.body);
+  const { name, gender, email, pwd, phone, lat1, lon1, address1, lat2, lon2, address2, lat3, lon3, address3 } = req.body;
   crypto.randomBytes(crypto_cre.len, (err, buf) => {
     let salt = buf.toString("base64");
     crypto.pbkdf2(pwd, salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
@@ -228,6 +231,7 @@ router.post("/register_provide_process", parseForm, csrfProtection, verify, isLo
         gender: gender,
         phone_number: phone,
         salt: salt,
+        address: { add1: { address: address1, lat: lat1, lon: lon1 }, add2: { address: address2, lat: lat2, lon: lon2 }, add3: { address: address3, lat: lat3, lon: lon3 } },
       };
       try {
         provideController.save(inputdata);
@@ -341,7 +345,7 @@ router.post("/fetch_add_upload_image", verify, (req: any, res, next) => {
   });
 });
 
-router.post("/register_estimate_process", parseForm, csrfProtection, verify, (req, res) => {
+router.post("/register_estimate_process", parseForm, csrfProtection, verify, async (req, res) => {
   const token = req.cookies.jwttoken;
   let { sympton_detail, time, minute, postcode, roadAddress, userwant_content, price, sigungu, bname, bname1, lat, lon } = req.body;
   let { code, img } = req.session;
@@ -366,9 +370,10 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, (re
     delete req.session.img;
     delete req.session.code;
     delete req.session.price;
-    req.session.save(() => {
-      registerSymController.save(req, res, inputdata, (decoded as Decoded).email, (decoded as Decoded).user_objectId);
-      deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
+    req.session.save(async () => {
+      let sentProvidersArray: string[] = await registerSymController.sendToProvider(lat, lon);
+      await registerSymController.save(req, res, inputdata, (decoded as Decoded).email, (decoded as Decoded).user_objectId, sentProvidersArray);
+      await deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
       res.redirect("/web/mypage");
     });
   } catch (error) {
@@ -382,6 +387,7 @@ router.get("/mypage", csrfProtection, verify, isNotLogined, (req, res) => {
   let authUI = auth.status(req, res);
   let decoded = jwt.verify(token, process.env.JWT_SECRET);
   makeStorage(decoded);
+
   // let _dir2 = path.join(path.join(path.join(__dirname + `/../../upload/${(decoded as Decoded).user_objectId}/user_img`)));
   // if (!fs.existsSync(_dir2)) fs.mkdirSync(_dir2);
   res.render("mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: (decoded as Decoded).username, useremail: (decoded as Decoded).email });
@@ -450,6 +456,8 @@ router.post("/accept_estimate", csrfProtection, verify, isNotLogined, async (req
 });
 
 interface Err {
+  message: string;
+  stack: string;
   status: number;
 }
 
@@ -457,10 +465,10 @@ router.get("/modified_estimate/:id", csrfProtection, verify, isNotLogined, async
   try {
     let response = await registerSymController.findBeforeModified(req, res);
     if (response === null) {
-      let err: any = new Error("잘못된 접근입니다");
-      err.message = "잘못된 접근입니다.";
-      err.stack = "삭제된 증상입니다";
-      err.status = 404;
+      let err: unknown = new Error("잘못된 접근입니다");
+      (err as Err).message = "잘못된 접근입니다.";
+      (err as Err).stack = "삭제된 증상입니다";
+      (err as Err).status = 404;
       next(err);
       return;
     }

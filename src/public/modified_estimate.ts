@@ -42,7 +42,7 @@ export default function mypage() {
   cancelBtn.addEventListener("click", () => {
     let cancelConfirm = confirm("수정하신 정보가 저장되지 않습니다. 정말로 취소하시겠습니까?");
     if (cancelConfirm) {
-      location.href = "/api/mypage";
+      location.href = "/web/mypage";
     }
   });
 

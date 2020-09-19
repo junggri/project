@@ -137,6 +137,8 @@ function p_index() {
         });
     }); });
     provideEmail.addEventListener("blur", function () {
+        if (provideEmail.value == "")
+            return;
         if (checkBox.checked) {
             getEmailFromCookie(provideEmail.value, "set").then(function (result) {
                 setCookie("upe", result.email, 7);

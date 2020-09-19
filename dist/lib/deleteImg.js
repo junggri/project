@@ -41,7 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
-var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
+var registerSymptonContoller_1 = __importDefault(require("./controller/registerSymptonContoller"));
 var savedImg = [];
 var arrImg = [];
 function default_1(email, id) {
@@ -51,7 +51,7 @@ function default_1(email, id) {
             switch (_a.label) {
                 case 0:
                     imgPath = path_1.default.join(__dirname, "../../upload/" + id);
-                    return [4 /*yield*/, registerSymContoller_1.default.getAllImage(id)];
+                    return [4 /*yield*/, registerSymptonContoller_1.default.getAllImage(id)];
                 case 1:
                     result = _a.sent();
                     for (i = 0; i < result.length; i++) {

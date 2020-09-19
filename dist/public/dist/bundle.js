@@ -86,6 +86,98 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./dist/public/address.js":
+/*!********************************!*\
+  !*** ./dist/public/address.js ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getAddress = void 0;
+var width = 500;
+var height = 500;
+var daum = window["daum"];
+exports.getAddress = function (add, lat, lon, target) {
+    new daum.Postcode({
+        width: width,
+        height: height,
+        oncomplete: function (data) {
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    add.value = data.address;
+                    Promise.resolve(data)
+                        .then(function () {
+                        var address = data.address;
+                        return new Promise(function (resolve, reject) {
+                            var geocoder = new daum.maps.services.Geocoder();
+                            geocoder.addressSearch(address, function (result, status) {
+                                var _a;
+                                if (status === daum.maps.services.Status.OK) {
+                                    var x = (_a = result[0], _a.x), y = _a.y;
+                                    resolve({ lat: y, lon: x });
+                                }
+                                else {
+                                    reject();
+                                }
+                            });
+                        });
+                    })
+                        .then(function (result) {
+                        lat.value = result.lat;
+                        lon.value = result.lon;
+                    });
+                    return [2 /*return*/];
+                });
+            });
+        },
+    }).open({
+        left: window.screen.width / 2 - width / 2,
+        top: window.screen.height / 2 - height / 2,
+    });
+};
+//# sourceMappingURL=address.js.map
+
+/***/ }),
+
 /***/ "./dist/public/estimate.js":
 /*!*********************************!*\
   !*** ./dist/public/estimate.js ***!
@@ -1172,6 +1264,8 @@ function login() {
             });
         }); });
         loginBoxValue.addEventListener("blur", function () {
+            if (loginBoxValue.value === "")
+                return;
             if (checkBox.checked) {
                 getEmailFromCookie(loginBoxValue.value, "set").then(function (result) {
                     setCookie("uie", result.email, 7);
@@ -1297,7 +1391,7 @@ function mypage() {
     cancelBtn.addEventListener("click", function () {
         var cancelConfirm = confirm("수정하신 정보가 저장되지 않습니다. 정말로 취소하시겠습니까?");
         if (cancelConfirm) {
-            location.href = "/api/mypage";
+            location.href = "/web/mypage";
         }
     });
     function selectedTime(response) {
@@ -1713,7 +1807,7 @@ function mypageEstimate() {
                     case 2:
                         result = _a.sent();
                         if (result.status === 200 || 201) {
-                            window.location.href = "/api/mypage/showestimate";
+                            window.location.href = "/web/mypage/showestimate";
                         }
                         else {
                             error = new Error("젼적받기 실패");
@@ -2520,6 +2614,8 @@ function p_index() {
         });
     }); });
     provideEmail.addEventListener("blur", function () {
+        if (provideEmail.value == "")
+            return;
         if (checkBox.checked) {
             getEmailFromCookie(provideEmail.value, "set").then(function (result) {
                 setCookie("upe", result.email, 7);
@@ -3088,6 +3184,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/public/fetchFunction.js"));
+var address_1 = __webpack_require__(/*! ./address */ "./dist/public/address.js");
 function provide() {
     var _this = this;
     var email_reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -3105,6 +3202,16 @@ function provide() {
     var stateVerify = document.querySelector(".ps-verify");
     var stateEmail = document.querySelector(".ps-email");
     var statePwd = document.querySelector(".ps-pwd");
+    var add1 = document.querySelector("#provide-address1");
+    var add2 = document.querySelector("#provide-address2");
+    var add3 = document.querySelector("#provide-address3");
+    var lat1 = document.querySelector("#lat1");
+    var lat2 = document.querySelector("#lat2");
+    var lat3 = document.querySelector("#lat3");
+    var lon1 = document.querySelector("#lon1");
+    var lon2 = document.querySelector("#lon2");
+    var lon3 = document.querySelector("#lon3");
+    var addressBtn = document.querySelectorAll(".provide-add-btn");
     var verifyFlag = false;
     var emailFlag = false;
     var pwdFlag = false;
@@ -3131,14 +3238,14 @@ function provide() {
                     return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ user_phone_number: phoneNumber.value }))];
                 case 2:
                     fetchObj = _a.sent();
-                    return [4 /*yield*/, fetch("/api/verify_phone_number", fetchObj)];
+                    return [4 /*yield*/, fetch("/web/verify_phone_number", fetchObj)];
                 case 3:
                     result = _a.sent();
                     if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
                     return [4 /*yield*/, result.json()];
                 case 4:
                     response = _a.sent();
-                    // console.log(response.verify_num);
+                    console.log(response.verify_num);
                     checkNumber = response.verify_num;
                     return [2 /*return*/];
                 case 5: throw new Error("reload fetch failed");
@@ -3222,8 +3329,7 @@ function provide() {
         }
     });
     registerBtn.addEventListener("click", function (e) {
-        console.log(emailFlag, pwdFlag, verifyFlag);
-        if (emailFlag && pwdFlag && verifyFlag)
+        if (emailFlag && pwdFlag && verifyFlag && add1.value !== "")
             return provideForm.submit();
         else {
             if (!emailFlag)
@@ -3235,6 +3341,21 @@ function provide() {
             return;
         }
     });
+    for (var i = 0; i < addressBtn.length; i++) {
+        addressBtn[i].addEventListener("click", function (e) {
+            if (e.target.classList[1] === "addressBtn1") {
+                address_1.getAddress(add1, lat1, lon1);
+                $(".add-wrapper2").css("display", "block");
+            }
+            else if (e.target.classList[1] === "addressBtn2") {
+                address_1.getAddress(add2, lat2, lon2);
+                $(".add-wrapper3").css("display", "block");
+            }
+            else {
+                address_1.getAddress(add3, lat3, lon3);
+            }
+        });
+    }
 }
 exports.default = provide;
 //# sourceMappingURL=provide.js.map
@@ -3337,7 +3458,7 @@ function register() {
                         return [4 /*yield*/, fetchResult.json()];
                     case 3:
                         result = _a.sent();
-                        console.log(result);
+                        // console.log(result);
                         validation_num = result.validation_num;
                         $(".state-email").html(result.msg);
                         if (result.state === "true") {
@@ -3360,19 +3481,21 @@ function register() {
     $(".cb-email").on("propertychange change keyup paste input blur", function () {
         if (email_reg.test(email.value)) {
             validation_btn.style.pointerEvents = "all";
-            validation_btn.style.backgroundColor = "rgba(0,0,0,0.3)";
-            $(".email-validationBtn span").css("color", "rgba(0,0,0,0.7)");
+            validation_btn.style.backgroundColor = "#11d3b7";
+            $(".email-validationBtn span").css("color", "white");
             $(".state-email").html(" ");
         }
         else {
             validation_btn.style.pointerEvents = "none";
-            validation_btn.style.backgroundColor = "rgba(0,0,0,0.1)";
-            $(".email-validationBtn span").css("color", "rgba(0,0,0,0.3)");
+            validation_btn.style.backgroundColor = "#11d3b7";
+            $(".email-validationBtn span").css("color", "white");
             $(".state-email").html("이메일 형식이 올바르지 않습니다.");
         }
     });
     ///animation for chekc the email
     $(".email-validationBtn").on("click", function (e) {
+        if (email.value === "")
+            return;
         if (email_is_exist) {
             alert("새로운 인증번호를 발송하였습니다.");
         }
@@ -3385,7 +3508,7 @@ function register() {
             $(".state-email").html("인증번호가 일치합니다.");
             validation_emailBox.style.display = "none";
             $(".email-validationBtn").css("display", "none");
-            $(".changeEmail-Btn").css("display", "block");
+            $(".changeEmail-Btn").css("display", "flex");
             $("#common_email").css("pointerEvents", "none");
             $(".cb-email").css("backgroundColor", "rgba(0,0,0,0.05)");
             $(".condition-register").html("위의 이메일로 로그인하세요.");
@@ -3401,7 +3524,8 @@ function register() {
         var pre_changeEmail_alert = confirm("정말로 이메일을 변경하시겠어요?");
         if (pre_changeEmail_alert) {
             $("#common_email").val("");
-            $(".email-validationBtn").css("display", "block");
+            $("#validation_email").val("");
+            $(".email-validationBtn").css("display", "flex");
             $(".changeEmail-Btn").css("display", "none");
             $(".cb-email").css("backgroundColor", "rgba(0,0,0,0)");
             $("#common_email").css("pointerEvents", "all");

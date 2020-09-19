@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var fetchFunction_1 = __importDefault(require("./fetchFunction"));
+var address_1 = require("./address");
 function provide() {
     var _this = this;
     var email_reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
@@ -57,6 +58,16 @@ function provide() {
     var stateVerify = document.querySelector(".ps-verify");
     var stateEmail = document.querySelector(".ps-email");
     var statePwd = document.querySelector(".ps-pwd");
+    var add1 = document.querySelector("#provide-address1");
+    var add2 = document.querySelector("#provide-address2");
+    var add3 = document.querySelector("#provide-address3");
+    var lat1 = document.querySelector("#lat1");
+    var lat2 = document.querySelector("#lat2");
+    var lat3 = document.querySelector("#lat3");
+    var lon1 = document.querySelector("#lon1");
+    var lon2 = document.querySelector("#lon2");
+    var lon3 = document.querySelector("#lon3");
+    var addressBtn = document.querySelectorAll(".provide-add-btn");
     var verifyFlag = false;
     var emailFlag = false;
     var pwdFlag = false;
@@ -83,14 +94,14 @@ function provide() {
                     return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ user_phone_number: phoneNumber.value }))];
                 case 2:
                     fetchObj = _a.sent();
-                    return [4 /*yield*/, fetch("/api/verify_phone_number", fetchObj)];
+                    return [4 /*yield*/, fetch("/web/verify_phone_number", fetchObj)];
                 case 3:
                     result = _a.sent();
                     if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
                     return [4 /*yield*/, result.json()];
                 case 4:
                     response = _a.sent();
-                    // console.log(response.verify_num);
+                    console.log(response.verify_num);
                     checkNumber = response.verify_num;
                     return [2 /*return*/];
                 case 5: throw new Error("reload fetch failed");
@@ -174,8 +185,7 @@ function provide() {
         }
     });
     registerBtn.addEventListener("click", function (e) {
-        console.log(emailFlag, pwdFlag, verifyFlag);
-        if (emailFlag && pwdFlag && verifyFlag)
+        if (emailFlag && pwdFlag && verifyFlag && add1.value !== "")
             return provideForm.submit();
         else {
             if (!emailFlag)
@@ -187,6 +197,21 @@ function provide() {
             return;
         }
     });
+    for (var i = 0; i < addressBtn.length; i++) {
+        addressBtn[i].addEventListener("click", function (e) {
+            if (e.target.classList[1] === "addressBtn1") {
+                address_1.getAddress(add1, lat1, lon1);
+                $(".add-wrapper2").css("display", "block");
+            }
+            else if (e.target.classList[1] === "addressBtn2") {
+                address_1.getAddress(add2, lat2, lon2);
+                $(".add-wrapper3").css("display", "block");
+            }
+            else {
+                address_1.getAddress(add3, lat3, lon3);
+            }
+        });
+    }
 }
 exports.default = provide;
 //# sourceMappingURL=provide.js.map

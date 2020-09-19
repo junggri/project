@@ -69,6 +69,7 @@ export default function p_index() {
   });
 
   provideEmail.addEventListener("blur", () => {
+    if (provideEmail.value == "") return;
     if (checkBox.checked) {
       getEmailFromCookie(provideEmail.value, "set").then((result) => {
         setCookie("upe", result.email, 7);

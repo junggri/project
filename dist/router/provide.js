@@ -52,7 +52,7 @@ var crypto_1 = __importDefault(require("crypto"));
 var crypto_json_1 = __importDefault(require("../config/crypto.json"));
 var provideModel_1 = __importDefault(require("../lib/model/provideModel"));
 var provideController_1 = __importDefault(require("../lib/controller/provideController"));
-var registerSymContoller_1 = __importDefault(require("../lib/controller/registerSymContoller"));
+var registerSymptonContoller_1 = __importDefault(require("../lib/controller/registerSymptonContoller"));
 var submitController_1 = __importDefault(require("../lib/controller/submitController"));
 var p_MakeSymptonList_1 = require("../lib/p_MakeSymptonList");
 var p_makeShowData_1 = require("../lib/p_makeShowData");
@@ -142,20 +142,20 @@ router.get("/findAllRegister", csrfProtection, p_verify_1.verify, p_verify_1.isN
                 divided_num = 15;
                 querystring_1.default.parse(req.url).page === undefined ? (pageNum = 1) : (pageNum = querystring_1.default.parse(req.url).page);
                 if (!(querystring_1.default.parse(req.url).sigunguCode !== undefined && querystring_1.default.parse(req.url).sigunguCode !== "0")) return [3 /*break*/, 3];
-                return [4 /*yield*/, registerSymContoller_1.default.getSpecificData(pageNum, querystring_1.default.parse(req.url).sigunguCode, querystring_1.default.parse(req.url).sigungu, querystring_1.default.parse(req.url).bname, divided_num)];
+                return [4 /*yield*/, registerSymptonContoller_1.default.getSpecificData(pageNum, querystring_1.default.parse(req.url).sigunguCode, querystring_1.default.parse(req.url).sigungu, querystring_1.default.parse(req.url).bname, divided_num)];
             case 1:
                 data = _a.sent();
-                return [4 /*yield*/, registerSymContoller_1.default.makeSpecificPagination(pageNum, querystring_1.default.parse(req.url).sigunguCode, querystring_1.default.parse(req.url).sigungu, querystring_1.default.parse(req.url).bname, divided_num)];
+                return [4 /*yield*/, registerSymptonContoller_1.default.makeSpecificPagination(pageNum, querystring_1.default.parse(req.url).sigunguCode, querystring_1.default.parse(req.url).sigungu, querystring_1.default.parse(req.url).bname, divided_num)];
             case 2:
                 allData = _a.sent();
                 _AllSympton = p_MakeSymptonList_1.MakeAllSymptonList(data, pageNum, divided_num);
                 pagination = p_MakeSymptonList_1.MakePagination(req, res, allData, divided_num);
                 p_makeJuso_1.makeJuso(req, res, authUI, _AllSympton, pagination);
                 return [3 /*break*/, 6];
-            case 3: return [4 /*yield*/, registerSymContoller_1.default.getAllData(pageNum, divided_num)];
+            case 3: return [4 /*yield*/, registerSymptonContoller_1.default.getAllData(pageNum, divided_num)];
             case 4:
                 data = _a.sent();
-                return [4 /*yield*/, registerSymContoller_1.default.makePagination()];
+                return [4 /*yield*/, registerSymptonContoller_1.default.makePagination()];
             case 5:
                 allData = _a.sent();
                 _AllSympton = p_MakeSymptonList_1.MakeAllSymptonList(data, pageNum, divided_num);
@@ -209,7 +209,7 @@ router.post("/before_check_getRegisterData", csrfProtection, p_verify_1.verify, 
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body._id)];
+            case 0: return [4 /*yield*/, registerSymptonContoller_1.default.showBeforeEstimate(req.body._id)];
             case 1:
                 result = _a.sent();
                 if (result === null) {
@@ -236,7 +236,7 @@ router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
             case 1:
                 _a.trys.push([1, 4, , 5]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.url.split("?")[1])];
+                return [4 /*yield*/, registerSymptonContoller_1.default.showBeforeEstimate(req.url.split("?")[1])];
             case 2:
                 result = _a.sent();
                 return [4 /*yield*/, provideController_1.default.isEstimated(decoded.user_objectId)];
@@ -259,7 +259,7 @@ router.post("/get_registerData", csrfProtection, p_verify_1.verify, p_verify_1.i
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body.sympton_id)];
+            case 0: return [4 /*yield*/, registerSymptonContoller_1.default.showBeforeEstimate(req.body.sympton_id)];
             case 1:
                 result = _a.sent();
                 if (result === null)
@@ -279,7 +279,7 @@ router.post("/submit_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
             case 1:
                 _a.trys.push([1, 3, , 4]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                return [4 /*yield*/, registerSymContoller_1.default.isFullSubmit(req.body)];
+                return [4 /*yield*/, registerSymptonContoller_1.default.isFullSubmit(req.body)];
             case 2:
                 submit = _a.sent();
                 if (submit === null)
@@ -307,7 +307,7 @@ router.post("/delete_submit", csrfProtection, p_verify_1.verify, p_verify_1.isNo
             case 1:
                 _a.trys.push([1, 3, , 4]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
-                return [4 /*yield*/, registerSymContoller_1.default.showBeforeEstimate(req.body.symptonId)];
+                return [4 /*yield*/, registerSymptonContoller_1.default.showBeforeEstimate(req.body.symptonId)];
             case 2:
                 result = _a.sent();
                 if (result === null)

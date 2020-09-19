@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/style.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=aeca137ffd4efb175d1b2c5bd3fa3464&libraries=services"></script>
   </head>
   <body>
     <div id="app">
@@ -43,6 +45,28 @@
                 <input type="text" id="provide-email" class="provide-input" name="email" autocomplete="off" required />
               </div>
               <div class="provide-state ps-email"></div>
+            </div>
+            <div class="provide-address provide-item">
+              <div class="provide-slo">주소</div>
+              <div class="provide-address-detail">활동하시는 지역을 선택해주세요.(최대 3 개)</div>
+              <div class="provide-item-wrapper">
+                <input type="hidden" id="lat1" name="lat1" />
+                <input type="hidden" id="lon1" name="lon1" />
+                <input type="text" id="provide-address1" class="provide-input" name="address1" autocomplete="off" readonly required placeholder="필수" />
+                <span class="provide-add-btn addressBtn1">주소찾기</span>
+              </div>
+              <div class="provide-item-wrapper add-wrapper2">
+                <input type="hidden" id="lat2" name="lat2" />
+                <input type="hidden" id="lon2" name="lon2" />
+                <input type="text" id="provide-address2" class="provide-input" name="address2" autocomplete="off" readonly placeholder="선택사항입니다." />
+                <span class="provide-add-btn addressBtn2">주소찾기</span>
+              </div>
+              <div class="provide-item-wrapper add-wrapper3">
+                <input type="hidden" id="lat3" name="lat3" />
+                <input type="hidden" id="lon3" name="lon3" />
+                <input type="text" id="provide-address3" class="provide-input" name="address3" autocomplete="off" readonly placeholder="선택사항입니다." />
+                <span class="provide-add-btn addressBtn3">주소찾기</span>
+              </div>
             </div>
             <div class="provide-pwd provide-item">
               <div class="provide-slo">비밀번호</div>

@@ -76,6 +76,7 @@ export default function login() {
     });
 
     loginBoxValue.addEventListener("blur", () => {
+      if (loginBoxValue.value === "") return;
       if (checkBox.checked) {
         getEmailFromCookie(loginBoxValue.value, "set").then((result) => {
           setCookie("uie", result.email, 7);

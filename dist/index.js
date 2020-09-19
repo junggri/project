@@ -23,7 +23,10 @@ var cors_1 = __importDefault(require("cors"));
 var socket_io_1 = __importDefault(require("socket.io"));
 dotenv_1.default.config();
 var RedisStore = connect_redis_1.default(express_session_1.default);
-var _client = redis_1.default.createClient({});
+var _client = redis_1.default.createClient();
+_client.on("error", function (err) {
+    console.error(err);
+});
 var app = express_1.default();
 server_1.default();
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
@@ -47,7 +50,7 @@ var sess = {
 };
 // 쿠키관련괸건 req.cookie 옵션에 따로
 // 위는 sessionid 쿠키에 관련된것
-if (app.get("env") === "production") {
+if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1); // trust first proxy
     sess.cookie.secure = true; // serve secure cookies
 }
@@ -101,7 +104,7 @@ app.use(function (err, req, res, next) {
 var server = app.listen(app.get("port"), function () {
     console.log("Express server listening on port " + app.get("port"));
 });
-var io = socket_io_1.default(server);
+var io = socket_io_1.default(server, { transports: ["websocket"] });
 // server에 socket.io 연결 , 클라이언트가 연결되면 io.on("connection" ) 이벤트가 발생
 io.on("connection", function (socket) { return console.log("연결"); });
 module.exports = app;

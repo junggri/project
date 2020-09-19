@@ -145,6 +145,8 @@ function login() {
             });
         }); });
         loginBoxValue.addEventListener("blur", function () {
+            if (loginBoxValue.value === "")
+                return;
             if (checkBox.checked) {
                 getEmailFromCookie(loginBoxValue.value, "set").then(function (result) {
                     setCookie("uie", result.email, 7);

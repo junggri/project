@@ -68,7 +68,7 @@ export default function mypageEstimate() {
       let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ submit_id: submitId }));
       let result = await fetch("http://localhost:3000/web/accept_estimate", fetchObj);
       if (result.status === 200 || 201) {
-        window.location.href = "/api/mypage/showestimate";
+        window.location.href = "/web/mypage/showestimate";
       } else {
         let error = new Error("젼적받기 실패");
         error.name = "fail to accept";

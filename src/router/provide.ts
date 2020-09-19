@@ -11,7 +11,7 @@ import crypto from "crypto";
 import crypto_cre from "../config/crypto.json";
 import providers from "../lib/model/provideModel";
 import provideController from "../lib/controller/provideController";
-import registerSymController from "../lib/controller/registerSymContoller";
+import registerSymController from "../lib/controller/registerSymptonContoller";
 import submitController from "../lib/controller/submitController";
 import { MakeAllSymptonList, MakePagination, showSubmitList } from "../lib/p_MakeSymptonList";
 import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";

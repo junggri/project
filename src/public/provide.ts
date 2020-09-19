@@ -1,6 +1,9 @@
 import FetchFunction from "./fetchFunction";
+import { getAddress } from "./address";
 declare global {
-  interface Window {}
+  interface Window {
+    openAddresss: any;
+  }
 }
 
 export default function provide() {
@@ -19,6 +22,16 @@ export default function provide() {
   let stateVerify = document.querySelector(".ps-verify") as HTMLDivElement;
   let stateEmail = document.querySelector(".ps-email") as HTMLDivElement;
   let statePwd = document.querySelector(".ps-pwd") as HTMLDivElement;
+  let add1 = document.querySelector("#provide-address1") as HTMLInputElement;
+  let add2 = document.querySelector("#provide-address2") as HTMLInputElement;
+  let add3 = document.querySelector("#provide-address3") as HTMLInputElement;
+  let lat1 = document.querySelector("#lat1") as HTMLInputElement;
+  let lat2 = document.querySelector("#lat2") as HTMLInputElement;
+  let lat3 = document.querySelector("#lat3") as HTMLInputElement;
+  let lon1 = document.querySelector("#lon1") as HTMLInputElement;
+  let lon2 = document.querySelector("#lon2") as HTMLInputElement;
+  let lon3 = document.querySelector("#lon3") as HTMLInputElement;
+  let addressBtn = document.querySelectorAll(".provide-add-btn");
   let verifyFlag = false;
   let emailFlag = false;
   let pwdFlag = false;
@@ -36,10 +49,10 @@ export default function provide() {
     }
     try {
       let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ user_phone_number: phoneNumber.value }));
-      let result = await fetch("/api/verify_phone_number", fetchObj);
+      let result = await fetch("/web/verify_phone_number", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
-        // console.log(response.verify_num);
+        console.log(response.verify_num);
         checkNumber = response.verify_num;
         return;
       } else {
@@ -104,8 +117,7 @@ export default function provide() {
   });
 
   registerBtn.addEventListener("click", (e) => {
-    console.log(emailFlag, pwdFlag, verifyFlag);
-    if (emailFlag && pwdFlag && verifyFlag) return provideForm.submit();
+    if (emailFlag && pwdFlag && verifyFlag && add1.value !== "") return provideForm.submit();
     else {
       if (!emailFlag) stateEmail.textContent = "이메일을 확인해 주시길 바랍니다.";
       if (!pwdFlag) statePwd.textContent = "비밀번호를 확인해 주시실 바랍니다.";
@@ -113,4 +125,18 @@ export default function provide() {
       return;
     }
   });
+
+  for (let i = 0; i < addressBtn.length; i++) {
+    addressBtn[i].addEventListener("click", (e: any) => {
+      if (e.target.classList[1] === "addressBtn1") {
+        getAddress(add1, lat1, lon1);
+        $(".add-wrapper2").css("display", "block");
+      } else if (e.target.classList[1] === "addressBtn2") {
+        getAddress(add2, lat2, lon2);
+        $(".add-wrapper3").css("display", "block");
+      } else {
+        getAddress(add3, lat3, lon3);
+      }
+    });
+  }
 }

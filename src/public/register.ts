@@ -42,7 +42,7 @@ export default function register() {
       let fetchResult = await fetch(url, fetchObj);
       if (fetchResult.status === 200 || 201) {
         let result = await fetchResult.json();
-        console.log(result);
+        // console.log(result);
         validation_num = result.validation_num;
         $(".state-email").html(result.msg);
         if (result.state === "true") {
@@ -60,19 +60,20 @@ export default function register() {
   $(".cb-email").on("propertychange change keyup paste input blur", () => {
     if (email_reg.test(email.value)) {
       validation_btn.style.pointerEvents = "all";
-      validation_btn.style.backgroundColor = "rgba(0,0,0,0.3)";
-      $(".email-validationBtn span").css("color", "rgba(0,0,0,0.7)");
+      validation_btn.style.backgroundColor = "#11d3b7";
+      $(".email-validationBtn span").css("color", "white");
       $(".state-email").html(" ");
     } else {
       validation_btn.style.pointerEvents = "none";
-      validation_btn.style.backgroundColor = "rgba(0,0,0,0.1)";
-      $(".email-validationBtn span").css("color", "rgba(0,0,0,0.3)");
+      validation_btn.style.backgroundColor = "#11d3b7";
+      $(".email-validationBtn span").css("color", "white");
       $(".state-email").html("이메일 형식이 올바르지 않습니다.");
     }
   });
 
   ///animation for chekc the email
   $(".email-validationBtn").on("click", (e) => {
+    if (email.value === "") return;
     if (email_is_exist) {
       alert("새로운 인증번호를 발송하였습니다.");
     }
@@ -86,7 +87,7 @@ export default function register() {
       $(".state-email").html("인증번호가 일치합니다.");
       validation_emailBox.style.display = "none";
       $(".email-validationBtn").css("display", "none");
-      $(".changeEmail-Btn").css("display", "block");
+      $(".changeEmail-Btn").css("display", "flex");
       $("#common_email").css("pointerEvents", "none");
       $(".cb-email").css("backgroundColor", "rgba(0,0,0,0.05)");
       $(".condition-register").html("위의 이메일로 로그인하세요.");
@@ -102,7 +103,8 @@ export default function register() {
     let pre_changeEmail_alert = confirm("정말로 이메일을 변경하시겠어요?");
     if (pre_changeEmail_alert) {
       $("#common_email").val("");
-      $(".email-validationBtn").css("display", "block");
+      $("#validation_email").val("");
+      $(".email-validationBtn").css("display", "flex");
       $(".changeEmail-Btn").css("display", "none");
       $(".cb-email").css("backgroundColor", "rgba(0,0,0,0)");
       $("#common_email").css("pointerEvents", "all");
