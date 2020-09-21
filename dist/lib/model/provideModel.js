@@ -60,6 +60,10 @@ var providers = new mongoose_1.default.Schema({
     usr_sent_sympton: {
         type: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "RegisterSympton" }],
     },
+    create: {
+        type: Date,
+        default: Date.now,
+    },
 });
 module.exports = mongoose_1.default.model("Provider", providers);
 //# sourceMappingURL=provideModel.js.map

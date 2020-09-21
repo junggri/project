@@ -6,6 +6,7 @@ import auth from "../authStatus";
 import provideModel from "../model/provideModel";
 import submitModel from "../model/submitEstimateModel";
 import calDistance from "../calculateDistance";
+
 let registerSymController: any = {};
 
 function changeSigunguCode(sigunguCode: string) {
@@ -177,6 +178,7 @@ registerSymController.save = async (req: any, res: any, data: any, _email: strin
   let user: any = await users.findOne({ _id: id });
   await user.register_sympton.push(registerSympton._id);
   await user.save();
+
   let register: any = await registerSym.findOne({ _id: registerSympton._id });
   for (let i = 0; i < sentProvidersArray.length; i++) {
     let provider: any = await provideModel.findOne({ _id: sentProvidersArray[i] });
@@ -281,7 +283,6 @@ registerSymController.isFullSubmit = async (data: any) => {
 
 registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
   let sendProvider: any = await registerSym.findOne({ _id: req.body.id });
-
   if (sendProvider.send_sympton_provider_id.length !== 0) {
     for (let i = 0; i < sendProvider.send_sympton_provider_id.length; i++) {
       let provider: any = await provideModel.findOne({ _id: sendProvider.send_sympton_provider_id[i] });

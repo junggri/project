@@ -56,5 +56,9 @@ const providers = new mongoose.Schema({
   usr_sent_sympton: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "RegisterSympton" }],
   },
+  create: {
+    type: Date,
+    default: Date.now,
+  },
 });
 export = mongoose.model("Provider", providers);

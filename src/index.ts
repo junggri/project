@@ -18,6 +18,7 @@ import passport from "passport";
 import flash from "connect-flash";
 import cors from "cors";
 import socketIO from "socket.io";
+import debug from "debug";
 
 dotenv.config();
 

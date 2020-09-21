@@ -5,6 +5,7 @@ import usermodel from "../model/usermodel";
 import moment from "moment";
 import sanitizeHtml from "sanitize-html";
 import submitEstimateModel from "../model/submitEstimateModel";
+import registerSymModel from "../model/registerSymModel";
 
 let submitController: any = {};
 
@@ -48,6 +49,15 @@ submitController.getProviderData = async (submitId: string) => {
 
 submitController.acceptSubmit = async (submitId: string, symptonId: string) => {
   let submits = await submitModel.find({ symptonId: symptonId });
+  let register: any = await registerSymModel.findOne({ _id: symptonId });
+
+  for (let i = 0; i < register.send_sympton_provider_id.length; i++) {
+    let provider: any = await providerModel.findOne({ _id: register.send_sympton_provider_id[i] });
+    let idx = provider.usr_sent_sympton.indexOf(symptonId);
+    provider.usr_sent_sympton.splice(idx, 1);
+    await providerModel.updateOne({ _id: register.send_sympton_provider_id[i] }, { $set: { usr_sent_sympton: provider.usr_sent_sympton } });
+  }
+
   await symptonModel.updateOne({ _id: symptonId }, { $set: { state: "accept" } });
   for (let i = 0; i < submits.length; i++) {
     if (submitId === submits[i].id) {
@@ -62,12 +72,6 @@ submitController.save = async (symptonId: string, providerId: string, data: any)
   let User: any = await usermodel.findOne({ _id: data.user_id });
   let Sympton: any = await symptonModel.findOne({ _id: symptonId });
   let Provider: any = await providerModel.findOne({ _id: providerId });
-
-  if (Sympton.send_sympton_provider_id.includes(Provider.id)) {
-    let idx = Provider.usr_sent_sympton.indexOf(Sympton.id);
-    Provider.usr_sent_sympton.splice(idx, 1);
-    await providerModel.updateOne({ _id: providerId }, { $set: { usr_sent_sympton: Provider.usr_sent_sympton } });
-  }
 
   let time = moment().format("YYYY-MM-DD");
   let saveData = {
