@@ -45,21 +45,14 @@ var submitEstimateModel_1 = __importDefault(require("../model/submitEstimateMode
 var usermodel_1 = __importDefault(require("../model/usermodel"));
 var moment_1 = __importDefault(require("moment"));
 var sanitize_html_1 = __importDefault(require("sanitize-html"));
-var registerSymModel_2 = __importDefault(require("../model/registerSymModel"));
 var submitController = {};
 submitController.findAllProvider = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
-    var arr, result;
+    var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                arr = [];
-                return [4 /*yield*/, submitEstimateModel_1.default.find().where("symptonId").equals(symptonId).populate("provider")];
+            case 0: return [4 /*yield*/, submitEstimateModel_1.default.find().where("symptonId").equals(symptonId).populate("provider")];
             case 1:
                 result = _a.sent();
-                // await submitModel.updateOne({ _id: "5f4c6c7a9c243d6313ea2c99" }, { $set: { state: "submit" } });
-                // await submitModel.updateOne({ _id: "5f4c6c839c243d6313ea2c9a" }, { $set: { state: "submit" } });
-                // await submitModel.updateOne({ _id: "5f4c6c9a9c243d6313ea2c9b" }, { $set: { state: "submit" } });
-                // await submitModel.updateOne({ _id: "5f4c6cc29c243d6313ea2c9c" }, { $set: { state: "submit" } });
                 return [2 /*return*/, result];
         }
     });
@@ -109,51 +102,32 @@ submitController.getProviderData = function (submitId) { return __awaiter(void 0
     });
 }); };
 submitController.acceptSubmit = function (submitId, symptonId) { return __awaiter(void 0, void 0, void 0, function () {
-    var submits, register, i, provider, idx, i;
+    var submits, i;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, submitEstimateModel_1.default.find({ symptonId: symptonId })];
             case 1:
                 submits = _a.sent();
-                return [4 /*yield*/, registerSymModel_2.default.findOne({ _id: symptonId })];
+                return [4 /*yield*/, registerSymModel_1.default.updateOne({ _id: symptonId }, { $set: { state: "accept" } })];
             case 2:
-                register = _a.sent();
+                _a.sent();
                 i = 0;
                 _a.label = 3;
             case 3:
-                if (!(i < register.send_sympton_provider_id.length)) return [3 /*break*/, 7];
-                return [4 /*yield*/, provideModel_1.default.findOne({ _id: register.send_sympton_provider_id[i] })];
+                if (!(i < submits.length)) return [3 /*break*/, 8];
+                if (!(submitId === submits[i].id)) return [3 /*break*/, 5];
+                return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submits[i].id }, { $set: { state: "accept" } })];
             case 4:
-                provider = _a.sent();
-                idx = provider.usr_sent_sympton.indexOf(symptonId);
-                provider.usr_sent_sympton.splice(idx, 1);
-                return [4 /*yield*/, provideModel_1.default.updateOne({ _id: register.send_sympton_provider_id[i] }, { $set: { usr_sent_sympton: provider.usr_sent_sympton } })];
-            case 5:
                 _a.sent();
-                _a.label = 6;
+                return [3 /*break*/, 7];
+            case 5: return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submits[i].id }, { $set: { state: "reject" } })];
             case 6:
+                _a.sent();
+                _a.label = 7;
+            case 7:
                 i++;
                 return [3 /*break*/, 3];
-            case 7: return [4 /*yield*/, registerSymModel_1.default.updateOne({ _id: symptonId }, { $set: { state: "accept" } })];
-            case 8:
-                _a.sent();
-                i = 0;
-                _a.label = 9;
-            case 9:
-                if (!(i < submits.length)) return [3 /*break*/, 14];
-                if (!(submitId === submits[i].id)) return [3 /*break*/, 11];
-                return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submits[i].id }, { $set: { state: "accept" } })];
-            case 10:
-                _a.sent();
-                return [3 /*break*/, 13];
-            case 11: return [4 /*yield*/, submitEstimateModel_1.default.updateOne({ _id: submits[i].id }, { $set: { state: "reject" } })];
-            case 12:
-                _a.sent();
-                _a.label = 13;
-            case 13:
-                i++;
-                return [3 /*break*/, 9];
-            case 14: return [2 /*return*/];
+            case 8: return [2 /*return*/];
         }
     });
 }); };

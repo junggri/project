@@ -102,7 +102,7 @@ router.get("/findAllRegister", csrfProtection, verify, isNotLogined, async (req,
     makeJuso(req, res, authUI, _AllSympton, pagination);
   } else {
     let data = await registerSymController.getAllData(pageNum, divided_num);
-    let allData = await registerSymController.makePagination();
+    let allData = registerSymController.makePagination();
     let _AllSympton = MakeAllSymptonList(data, pageNum, divided_num);
     let pagination = MakePagination(req, res, allData, divided_num);
     res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });

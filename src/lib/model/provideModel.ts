@@ -53,9 +53,6 @@ const providers = new mongoose.Schema({
     //증상 제출이아니라 제출한견적의 증상을 보여줌
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "RegisterSympton" }],
   },
-  usr_sent_sympton: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "RegisterSympton" }],
-  },
   create: {
     type: Date,
     default: Date.now,

@@ -151,18 +151,16 @@ router.get("/findAllRegister", csrfProtection, p_verify_1.verify, p_verify_1.isN
                 _AllSympton = p_MakeSymptonList_1.MakeAllSymptonList(data, pageNum, divided_num);
                 pagination = p_MakeSymptonList_1.MakePagination(req, res, allData, divided_num);
                 p_makeJuso_1.makeJuso(req, res, authUI, _AllSympton, pagination);
-                return [3 /*break*/, 6];
+                return [3 /*break*/, 5];
             case 3: return [4 /*yield*/, registerSymptonContoller_1.default.getAllData(pageNum, divided_num)];
             case 4:
                 data = _a.sent();
-                return [4 /*yield*/, registerSymptonContoller_1.default.makePagination()];
-            case 5:
-                allData = _a.sent();
+                allData = registerSymptonContoller_1.default.makePagination();
                 _AllSympton = p_MakeSymptonList_1.MakeAllSymptonList(data, pageNum, divided_num);
                 pagination = p_MakeSymptonList_1.MakePagination(req, res, allData, divided_num);
                 res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });
-                _a.label = 6;
-            case 6: return [2 /*return*/];
+                _a.label = 5;
+            case 5: return [2 /*return*/];
         }
     });
 }); });

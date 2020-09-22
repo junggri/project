@@ -6,6 +6,7 @@ import auth from "../authStatus";
 import provideModel from "../model/provideModel";
 import submitModel from "../model/submitEstimateModel";
 import calDistance from "../calculateDistance";
+import ProviderGotController from "../controller/providerGotController";
 
 let registerSymController: any = {};
 
@@ -172,28 +173,21 @@ registerSymController.find = async (register_id: string) => {
   return result;
 };
 
-registerSymController.save = async (req: any, res: any, data: any, _email: string, id: string, sentProvidersArray: string[]) => {
+registerSymController.save = async (data: any, _email: string, id: string, sentProvidersArray: string[]) => {
   let registerSympton: any = new registerSym(data);
   await registerSympton.save();
   let user: any = await users.findOne({ _id: id });
   await user.register_sympton.push(registerSympton._id);
   await user.save();
-
-  let register: any = await registerSym.findOne({ _id: registerSympton._id });
-  for (let i = 0; i < sentProvidersArray.length; i++) {
-    let provider: any = await provideModel.findOne({ _id: sentProvidersArray[i] });
-    await provider.usr_sent_sympton.push(registerSympton._id);
-    await register.send_sympton_provider_id.push(sentProvidersArray[i]);
-    await provider.save();
+  if (sentProvidersArray.length !== 0) {
+    await ProviderGotController.save(registerSympton._id, sentProvidersArray);
   }
-  await register.save();
 };
 
 registerSymController.sendToProvider = async (lat?: string, lon?: string) => {
   let providers: any = await provideModel.find();
   let selected_num: number = 10;
   let distanceLess_providers = [];
-
   function commonMakeDistance(par1: number, par2: number, par3: number, par4: number) {
     let distance = calDistance(par1, par2, par3, par4);
     return distance;
@@ -226,20 +220,11 @@ registerSymController.sendToProvider = async (lat?: string, lon?: string) => {
 };
 
 registerSymController.findAllRegister = async (req: any, res: any, _email: string, id: string) => {
-  registerSym
-    .find({ user_object_id: id })
-    .sort({ state: 1 })
-    .then((result: any) => {
-      makeListSympton(result).then(async (_list) => {
-        let authUI = auth.status(req, res);
-        res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list });
-      });
-    })
-    .catch((err: any) => {
-      console.error(err);
-    });
+  let result = await registerSym.find({ user_object_id: id }).sort({ state: 1 });
+  let _list = await makeListSympton(result);
+  let authUI = auth.status(req, res);
+  res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list });
 };
-//수정완료
 
 registerSymController.getAllImage = async (id: string) => {
   let result = await registerSym.find({ user_object_id: id });
@@ -282,16 +267,6 @@ registerSymController.isFullSubmit = async (data: any) => {
 };
 
 registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
-  let sendProvider: any = await registerSym.findOne({ _id: req.body.id });
-  if (sendProvider.send_sympton_provider_id.length !== 0) {
-    for (let i = 0; i < sendProvider.send_sympton_provider_id.length; i++) {
-      let provider: any = await provideModel.findOne({ _id: sendProvider.send_sympton_provider_id[i] });
-      let idx = provider.usr_sent_sympton.indexOf(req.body.id);
-      provider.usr_sent_sympton.splice(idx, 1);
-      await provideModel.updateOne({ _id: sendProvider.send_sympton_provider_id[i] }, { $set: { usr_sent_sympton: provider.usr_sent_sympton } });
-    }
-  }
-
   await registerSym.deleteOne({ _id: req.body.id }).then(async () => {
     let submit: any = await submitModel.find({ symptonId: req.body.id }).populate("provider");
     if (submit.length !== 0) {

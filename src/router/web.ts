@@ -33,7 +33,6 @@ import { encrypt, decrypt } from "../lib/setAndGetCookie";
 import sendPhone from "../lib/sendPhone";
 import { makeSumbitbox } from "../lib/mypageState";
 import { symptonList } from "../lib/symptonList";
-import calDistance from "../lib/calculateDistance";
 
 const csrfProtection = csrf({
   cookie: {
@@ -372,7 +371,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, verify, asy
     delete req.session.price;
     req.session.save(async () => {
       let sentProvidersArray: string[] = await registerSymController.sendToProvider(lat, lon);
-      await registerSymController.save(req, res, inputdata, (decoded as Decoded).email, (decoded as Decoded).user_objectId, sentProvidersArray);
+      await registerSymController.save(inputdata, (decoded as Decoded).email, (decoded as Decoded).user_objectId, sentProvidersArray);
       await deleteImg((decoded as Decoded).email, (decoded as Decoded).user_objectId);
       res.redirect("/web/mypage");
     });

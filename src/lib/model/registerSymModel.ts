@@ -58,9 +58,6 @@ const registerSympton = new mongoose.Schema({
   provider: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Provider" }],
   },
-  send_sympton_provider_id: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Provider" }],
-  },
   state: {
     type: String,
     default: "register",

@@ -46,6 +46,7 @@ var authStatus_1 = __importDefault(require("../authStatus"));
 var provideModel_1 = __importDefault(require("../model/provideModel"));
 var submitEstimateModel_1 = __importDefault(require("../model/submitEstimateModel"));
 var calculateDistance_1 = __importDefault(require("../calculateDistance"));
+var providerGotController_1 = __importDefault(require("../controller/providerGotController"));
 var registerSymController = {};
 function changeSigunguCode(sigunguCode) {
     var findArea;
@@ -281,8 +282,8 @@ registerSymController.find = function (register_id) { return __awaiter(void 0, v
         }
     });
 }); };
-registerSymController.save = function (req, res, data, _email, id, sentProvidersArray) { return __awaiter(void 0, void 0, void 0, function () {
-    var registerSympton, user, register, i, provider;
+registerSymController.save = function (data, _email, id, sentProvidersArray) { return __awaiter(void 0, void 0, void 0, function () {
+    var registerSympton, user;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -299,33 +300,12 @@ registerSymController.save = function (req, res, data, _email, id, sentProviders
                 return [4 /*yield*/, user.save()];
             case 4:
                 _a.sent();
-                return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: registerSympton._id })];
+                if (!(sentProvidersArray.length !== 0)) return [3 /*break*/, 6];
+                return [4 /*yield*/, providerGotController_1.default.save(registerSympton._id, sentProvidersArray)];
             case 5:
-                register = _a.sent();
-                i = 0;
+                _a.sent();
                 _a.label = 6;
-            case 6:
-                if (!(i < sentProvidersArray.length)) return [3 /*break*/, 12];
-                return [4 /*yield*/, provideModel_1.default.findOne({ _id: sentProvidersArray[i] })];
-            case 7:
-                provider = _a.sent();
-                return [4 /*yield*/, provider.usr_sent_sympton.push(registerSympton._id)];
-            case 8:
-                _a.sent();
-                return [4 /*yield*/, register.send_sympton_provider_id.push(sentProvidersArray[i])];
-            case 9:
-                _a.sent();
-                return [4 /*yield*/, provider.save()];
-            case 10:
-                _a.sent();
-                _a.label = 11;
-            case 11:
-                i++;
-                return [3 /*break*/, 6];
-            case 12: return [4 /*yield*/, register.save()];
-            case 13:
-                _a.sent();
-                return [2 /*return*/];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
@@ -370,27 +350,21 @@ registerSymController.sendToProvider = function (lat, lon) { return __awaiter(vo
     });
 }); };
 registerSymController.findAllRegister = function (req, res, _email, id) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, _list, authUI;
     return __generator(this, function (_a) {
-        registerSymModel_1.default
-            .find({ user_object_id: id })
-            .sort({ state: 1 })
-            .then(function (result) {
-            mypageState_1.makeListSympton(result).then(function (_list) { return __awaiter(void 0, void 0, void 0, function () {
-                var authUI;
-                return __generator(this, function (_a) {
-                    authUI = authStatus_1.default.status(req, res);
-                    res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list });
-                    return [2 /*return*/];
-                });
-            }); });
-        })
-            .catch(function (err) {
-            console.error(err);
-        });
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, registerSymModel_1.default.find({ user_object_id: id }).sort({ state: 1 })];
+            case 1:
+                result = _a.sent();
+                return [4 /*yield*/, mypageState_1.makeListSympton(result)];
+            case 2:
+                _list = _a.sent();
+                authUI = authStatus_1.default.status(req, res);
+                res.render("mypageEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: _list });
+                return [2 /*return*/];
+        }
     });
 }); };
-//수정완료
 registerSymController.getAllImage = function (id) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
@@ -465,30 +439,9 @@ registerSymController.isFullSubmit = function (data) { return __awaiter(void 0, 
     });
 }); };
 registerSymController.deleteSympton = function (req, res, email, id) { return __awaiter(void 0, void 0, void 0, function () {
-    var sendProvider, i, provider, idx;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: req.body.id })];
-            case 1:
-                sendProvider = _a.sent();
-                if (!(sendProvider.send_sympton_provider_id.length !== 0)) return [3 /*break*/, 6];
-                i = 0;
-                _a.label = 2;
-            case 2:
-                if (!(i < sendProvider.send_sympton_provider_id.length)) return [3 /*break*/, 6];
-                return [4 /*yield*/, provideModel_1.default.findOne({ _id: sendProvider.send_sympton_provider_id[i] })];
-            case 3:
-                provider = _a.sent();
-                idx = provider.usr_sent_sympton.indexOf(req.body.id);
-                provider.usr_sent_sympton.splice(idx, 1);
-                return [4 /*yield*/, provideModel_1.default.updateOne({ _id: sendProvider.send_sympton_provider_id[i] }, { $set: { usr_sent_sympton: provider.usr_sent_sympton } })];
-            case 4:
-                _a.sent();
-                _a.label = 5;
-            case 5:
-                i++;
-                return [3 /*break*/, 2];
-            case 6: return [4 /*yield*/, registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function () { return __awaiter(void 0, void 0, void 0, function () {
+            case 0: return [4 /*yield*/, registerSymModel_1.default.deleteOne({ _id: req.body.id }).then(function () { return __awaiter(void 0, void 0, void 0, function () {
                     var submit, i, provider, idx, result;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -525,7 +478,7 @@ registerSymController.deleteSympton = function (req, res, email, id) { return __
                         }
                     });
                 }); })];
-            case 7:
+            case 1:
                 _a.sent();
                 return [2 /*return*/];
         }

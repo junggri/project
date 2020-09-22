@@ -41,8 +41,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeSumbitbox = exports.makeListSympton = void 0;
 var submitController_1 = __importDefault(require("./controller/submitController"));
+var providerGotController_1 = __importDefault(require("./controller/providerGotController"));
 exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, void 0, function () {
-    var list, item, list_1, i, response, result;
+    var list, item, list_1, i, response, getProvider, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -54,26 +55,29 @@ exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, voi
                 i = 0;
                 _a.label = 1;
             case 1:
-                if (!(i < data.length)) return [3 /*break*/, 6];
-                if (!(data[i].state === "accept")) return [3 /*break*/, 3];
+                if (!(i < data.length)) return [3 /*break*/, 7];
+                if (!(data[i].state === "accept")) return [3 /*break*/, 4];
                 return [4 /*yield*/, submitController_1.default.showProvider(data[i]._id)];
             case 2:
                 response = _a.sent();
+                return [4 /*yield*/, providerGotController_1.default.find(data)];
+            case 3:
+                getProvider = _a.sent();
                 result = response.provider[0];
                 // 이때의 data-id는 submitid
                 item = "\n        <div class=\"sc-item accept-item\" data-id=\"" + response._id + "\">\n        <div class=\"sc-item-accept-slo\">" + result.name + " \uB2D8\uC758</br> \uACAC\uC801\uC744 \uC218\uB77D\uD558\uC168\uC2B5\uB2C8\uB2E4.</div>\n        <div class=\"sc-accept-provider-data-box\">\n            <div class=\"sapd-data\">\n              <span>\uC774  \uB984 :</span>\n              <span>" + result.name + "</span>\n            </div>\n            <div class=\"sapd-data\">\n              <span>\uBC88  \uD638 :</span>\n              <span>" + result.phone_number + "</span>\n            </div>\n            <div class=\"sapd-data\">\n              <span>\uC774\uBA54\uC77C :</span>\n              <span>" + result.email + "</span>\n            </div>\n        </div>\n        <div class=\"show-accept-data-btn\">\n          <span>\uC790\uC138\uD788 \uBCF4\uAE30</span>\n        </div>\n    </div>\n        ";
-                return [3 /*break*/, 4];
-            case 3:
-                //이때는 register
-                item = " \n            <div class=\"sc-item\" data-id=\"" + data[i]._id + "\">\n              <div class=\"sc-item-slo\">" + data[i].sympton_detail + "</div>\n              <div class=\"sc-item-createdAt\">" + data[i].createdAt + "</div>\n              <div class=\"sc-item-btnBox\">\n              <span class=\"get-count\">\uACAC\uC801\uC11C \uC81C\uC548 : " + data[i].provider.length + " \uAC1C</span>\n              <div class=\"sc-item-showBtn\">\uC790\uC138\uD788 \uBCF4\uAE30</div>\n              <div class=\"sc-item-btnBox2\">\n                <div class=\"sc-item-modifiedBtn\">\n                  <span>\uC218\uC815</span>\n                </div>\n                <div class=\"sc-item-cancel\">\n                  <span>\uCDE8\uC18C</span>\n                </div>\n              </div>\n            </div>\n            </div>\n          ";
-                _a.label = 4;
+                return [3 /*break*/, 5];
             case 4:
-                list += item;
+                //이때는 register
+                item = " \n            <div class=\"sc-item\" data-id=\"" + data[i]._id + "\">\n              <div class=\"sc-item-slo\">" + data[i].sympton_detail + "</div>\n              <div class=\"sc-item-createdAt\">" + data[i].createdAt + "</div>\n              <div class=\"sc-item-btnBox\">\n              <span class=\"get-count\">\uACAC\uC801\uC11C \uC81C\uC548 : " + data[i].provider.length + " \uAC1C</span>\n              <div class=\"sent-sympton-length\"> : " + data[i].provider.length + " \uAC1C</div>\n              <div class=\"sc-item-showBtn\">\uC790\uC138\uD788 \uBCF4\uAE30</div>\n              <div class=\"sc-item-btnBox2\">\n                <div class=\"sc-item-modifiedBtn\">\n                  <span>\uC218\uC815</span>\n                </div>\n                <div class=\"sc-item-cancel\">\n                  <span>\uCDE8\uC18C</span>\n                </div>\n              </div>\n            </div>\n            </div>\n          ";
                 _a.label = 5;
             case 5:
+                list += item;
+                _a.label = 6;
+            case 6:
                 i++;
                 return [3 /*break*/, 1];
-            case 6: return [2 /*return*/, list];
+            case 7: return [2 /*return*/, list];
         }
     });
 }); };

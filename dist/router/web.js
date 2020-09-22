@@ -448,7 +448,7 @@ router.post("/register_estimate_process", parseForm, csrfProtection, jwtverify_1
                         case 0: return [4 /*yield*/, registerSymptonContoller_1.default.sendToProvider(lat, lon)];
                         case 1:
                             sentProvidersArray = _a.sent();
-                            return [4 /*yield*/, registerSymptonContoller_1.default.save(req, res, inputdata_1, decoded_1.email, decoded_1.user_objectId, sentProvidersArray)];
+                            return [4 /*yield*/, registerSymptonContoller_1.default.save(inputdata_1, decoded_1.email, decoded_1.user_objectId, sentProvidersArray)];
                         case 2:
                             _a.sent();
                             return [4 /*yield*/, deleteImg_1.default(decoded_1.email, decoded_1.user_objectId)];

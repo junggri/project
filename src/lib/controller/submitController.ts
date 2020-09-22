@@ -4,26 +4,11 @@ import submitModel from "../model/submitEstimateModel";
 import usermodel from "../model/usermodel";
 import moment from "moment";
 import sanitizeHtml from "sanitize-html";
-import submitEstimateModel from "../model/submitEstimateModel";
-import registerSymModel from "../model/registerSymModel";
 
 let submitController: any = {};
 
-interface Data {
-  registrant_id: string;
-  sympton_detail: string;
-  save_price: string;
-  estimate_price: string;
-  sympton_id: string;
-}
-
 submitController.findAllProvider = async (symptonId: string) => {
-  let arr: any = [];
   let result: any = await submitModel.find().where("symptonId").equals(symptonId).populate("provider");
-  // await submitModel.updateOne({ _id: "5f4c6c7a9c243d6313ea2c99" }, { $set: { state: "submit" } });
-  // await submitModel.updateOne({ _id: "5f4c6c839c243d6313ea2c9a" }, { $set: { state: "submit" } });
-  // await submitModel.updateOne({ _id: "5f4c6c9a9c243d6313ea2c9b" }, { $set: { state: "submit" } });
-  // await submitModel.updateOne({ _id: "5f4c6cc29c243d6313ea2c9c" }, { $set: { state: "submit" } });
   return result;
 };
 
@@ -49,15 +34,6 @@ submitController.getProviderData = async (submitId: string) => {
 
 submitController.acceptSubmit = async (submitId: string, symptonId: string) => {
   let submits = await submitModel.find({ symptonId: symptonId });
-  let register: any = await registerSymModel.findOne({ _id: symptonId });
-
-  for (let i = 0; i < register.send_sympton_provider_id.length; i++) {
-    let provider: any = await providerModel.findOne({ _id: register.send_sympton_provider_id[i] });
-    let idx = provider.usr_sent_sympton.indexOf(symptonId);
-    provider.usr_sent_sympton.splice(idx, 1);
-    await providerModel.updateOne({ _id: register.send_sympton_provider_id[i] }, { $set: { usr_sent_sympton: provider.usr_sent_sympton } });
-  }
-
   await symptonModel.updateOne({ _id: symptonId }, { $set: { state: "accept" } });
   for (let i = 0; i < submits.length; i++) {
     if (submitId === submits[i].id) {
