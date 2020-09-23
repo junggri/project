@@ -100,7 +100,6 @@ router.post("/setUserEmailCookie", csrfProtection, jwtverify_1.verify, function 
     }
 });
 router.get("/index", csrfProtection, jwtverify_1.verify, function (req, res, next) {
-    console.log(req.session);
     var authUI = authStatus_1.default.status(req, res);
     res.render("index", { authUI: authUI });
 });
@@ -255,7 +254,6 @@ router.post("/register_provide_process", parseForm, csrfProtection, jwtverify_1.
     var inputdata, _a, name, gender, email, pwd, phone, lat1, lon1, address1, lat2, lon2, address2, lat3, lon3, address3;
     return __generator(this, function (_b) {
         inputdata = {};
-        console.log(req.body);
         _a = req.body, name = _a.name, gender = _a.gender, email = _a.email, pwd = _a.pwd, phone = _a.phone, lat1 = _a.lat1, lon1 = _a.lon1, address1 = _a.address1, lat2 = _a.lat2, lon2 = _a.lon2, address2 = _a.address2, lat3 = _a.lat3, lon3 = _a.lon3, address3 = _a.address3;
         crypto_1.default.randomBytes(crypto_json_1.default.len, function (err, buf) {
             var salt = buf.toString("base64");

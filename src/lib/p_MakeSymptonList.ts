@@ -64,3 +64,17 @@ export const showSubmitList = (data: any) => {
   }
   return list;
 };
+
+export const showGottList = (data: any) => {
+  let list = "";
+  for (let i = 0; i < data.length; i++) {
+    let item = `
+        <div class="sg-item" data-submitId="${data[i].symptonId[0]._id}">
+          <span class="sg-item-content">${data[i].symptonId[0].sympton_detail}</span>
+          <span class="sg-item-user">${data[i].symptonId[0].user_name}님</span>
+        </div>
+    `;
+    list += item;
+  }
+  return list;
+};

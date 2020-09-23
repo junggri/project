@@ -11,9 +11,10 @@ import crypto from "crypto";
 import crypto_cre from "../config/crypto.json";
 import providers from "../lib/model/provideModel";
 import provideController from "../lib/controller/provideController";
+import providerGotController from "../lib/controller/providerGotController";
 import registerSymController from "../lib/controller/registerSymptonContoller";
 import submitController from "../lib/controller/submitController";
-import { MakeAllSymptonList, MakePagination, showSubmitList } from "../lib/p_MakeSymptonList";
+import { MakeAllSymptonList, MakePagination, showSubmitList, showGottList } from "../lib/p_MakeSymptonList";
 import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
 import qs from "querystring";
@@ -162,7 +163,7 @@ router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     let result: any = await registerSymController.showBeforeEstimate(req.url.split("?")[1]);
-    let isEstimated: any = await provideController.isEstimated((decoded as Decoded).user_objectId);
+    let isEstimated = await provideController.isEstimated((decoded as Decoded).user_objectId);
     let location = makeLocation(result);
     let imgs = makeImg(result);
     let btn = makeBtn(isEstimated, req.url.split("?")[1]);
@@ -221,6 +222,17 @@ router.get("/showsubmit", csrfProtection, verify, isNotLogined, async (req, res)
     let data = await submitController.getDataFromProviderId((decoded as Decoded).user_objectId);
     let list = showSubmitList(data);
     res.render("providers/showsubmit", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
+  } catch (error) {}
+});
+
+router.get("/showGotEstimate", csrfProtection, verify, isNotLogined, async (req, res) => {
+  const token = req.cookies.pjwttoken;
+  let authUI = auth.status(req, res);
+  try {
+    let decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let data = await providerGotController.findProvider((decoded as Decoded).user_objectId);
+    let list = showGottList(data);
+    res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
   } catch (error) {}
 });
 

@@ -33,14 +33,17 @@
   font-size: 15px;
   margin-top: 4px;
 }
-.show-submitEstimate {
+.show-submitEstimate,
+.show-gotEstimate {
   margin-top: 40px;
 }
-.show-submitEstimate-slo {
+.show-submitEstimate-slo,
+.show-gotEstimate-slo {
   font-size: 20px;
   font-weight: 600;
 }
-.show-submitEstimate-detail {
+.show-submitEstimate-detail,
+.show-got-detail {
   margin-top: 30px;
   font-size: 18px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -48,21 +51,25 @@
   font-weight: 600;
 }
 /*  */
-.showsubmit-box {
+.showsubmit-box,
+.showgot-box {
   width: 1170px;
   position: relative;
   margin: 0 auto;
   margin-bottom: 120px;
 }
-.showsubmit-box-slo {
+.showsubmit-box-slo,
+.showgot-box-slo {
   font-size: 30px;
   font-weight: 600;
   margin-top: 100px;
 }
-.showsubmit-box-container {
+.showsubmit-box-container,
+.showgot-box-container {
   margin-top: 50px;
 }
-.sbc-item-nav {
+.sbc-item-nav,
+.sg-item-nav {
   font-size: 0;
   vertical-align: middle;
   display: flex;
@@ -71,10 +78,8 @@
   background-color: rgba(0, 0, 0, 0.3);
   margin-bottom: 30px;
 }
-.sbc-nav-item-content {
-  flex-grow: 1;
-}
-.sbc-item-nav span {
+.sbc-item-nav span,
+.sg-item-nav span {
   font-size: 16px;
   box-sizing: border-box;
   vertical-align: middle;
@@ -82,13 +87,17 @@
   padding: 15px;
   text-align: center;
 }
+.sbc-nav-item-content {
+  flex-grow: 1;
+}
 .sbc-nav-item-price {
   width: 180px;
 }
 .sbc-nav-item-state {
   width: 120px;
 }
-.sbc-item {
+.sbc-item,
+.sg-item {
   font-size: 0;
   vertical-align: middle;
   display: flex;
@@ -97,16 +106,19 @@
   border-radius: 3px;
   cursor: pointer;
 }
-.sbc-item-content {
+/* .sbc-item-content,
+.sg-item-content {
   flex-grow: 1;
-}
-.sbc-item span {
+} */
+.sbc-item span,
+.sg-item span {
   box-sizing: border-box;
   vertical-align: middle;
   display: inline-block;
   padding: 15px 20px;
 }
 .sbc-item-content {
+  flex-grow: 1;
   text-align: left;
   padding-left: 20px;
   border-right: 1px solid rgba(0, 0, 0, 0.2);
@@ -126,3 +138,22 @@
   font-weight: 100;
 }
 /*  */
+.sg-nav-item-content {
+  flex-grow: 1;
+}
+.sg-nav-item-user {
+  width: 160px;
+}
+.sg-item-content {
+  flex-grow: 1;
+  text-align: left;
+  padding-left: 20px;
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+}
+.sg-item-user {
+  text-align: center;
+  width: 160px;
+  font-size: 16px;
+  font-weight: 600;
+}

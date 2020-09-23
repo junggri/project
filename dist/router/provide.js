@@ -52,6 +52,7 @@ var crypto_1 = __importDefault(require("crypto"));
 var crypto_json_1 = __importDefault(require("../config/crypto.json"));
 var provideModel_1 = __importDefault(require("../lib/model/provideModel"));
 var provideController_1 = __importDefault(require("../lib/controller/provideController"));
+var providerGotController_1 = __importDefault(require("../lib/controller/providerGotController"));
 var registerSymptonContoller_1 = __importDefault(require("../lib/controller/registerSymptonContoller"));
 var submitController_1 = __importDefault(require("../lib/controller/submitController"));
 var p_MakeSymptonList_1 = require("../lib/p_MakeSymptonList");
@@ -348,6 +349,30 @@ router.get("/showsubmit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLog
                 return [3 /*break*/, 4];
             case 3:
                 error_4 = _a.sent();
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); });
+router.get("/showGotEstimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var token, authUI, decoded, data, list, error_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                token = req.cookies.pjwttoken;
+                authUI = p_authStatus_1.default.status(req, res);
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+                return [4 /*yield*/, providerGotController_1.default.findProvider(decoded.user_objectId)];
+            case 2:
+                data = _a.sent();
+                list = p_MakeSymptonList_1.showGottList(data);
+                res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
+                return [3 /*break*/, 4];
+            case 3:
+                error_5 = _a.sent();
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }

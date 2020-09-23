@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.showSubmitList = exports.MakePagination = exports.MakeAllSymptonList = void 0;
+exports.showGottList = exports.showSubmitList = exports.MakePagination = exports.MakeAllSymptonList = void 0;
 exports.MakeAllSymptonList = function (data, pageNum, divided_num) {
     var list = "";
     if (data.length === 0) {
@@ -33,6 +33,14 @@ exports.showSubmitList = function (data) {
         var state = void 0;
         data[i].state === "accept" ? (state = "수락됨") : (state = "수락실패");
         var item = "\n        <div class=\"sbc-item\" data-submitId=\"" + data[i].symptonId + "\">\n          <span class=\"sbc-item-content\">" + data[i].content + "</span>\n          <span class=\"sbc-item-price\">" + data[i].submit_price + " \uC6D0</span>\n          <span class=\"sbc-item-state\">" + state + "</span>\n        </div>\n    ";
+        list += item;
+    }
+    return list;
+};
+exports.showGottList = function (data) {
+    var list = "";
+    for (var i = 0; i < data.length; i++) {
+        var item = "\n        <div class=\"sg-item\" data-submitId=\"" + data[i].symptonId[0]._id + "\">\n          <span class=\"sg-item-content\">" + data[i].symptonId[0].sympton_detail + "</span>\n          <span class=\"sg-item-user\">" + data[i].symptonId[0].user_name + "\uB2D8</span>\n        </div>\n    ";
         list += item;
     }
     return list;

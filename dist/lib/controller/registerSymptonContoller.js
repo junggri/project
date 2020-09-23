@@ -455,7 +455,7 @@ registerSymController.deleteSympton = function (req, res, email, id) { return __
                                 if (!(i < submit.length)) return [3 /*break*/, 7];
                                 return [4 /*yield*/, provideModel_1.default.findOne({ _id: submit[i].provider[0]._id })];
                             case 3:
-                                provider = _a.sent();
+                                provider = (_a.sent());
                                 idx = provider.submit_register.indexOf(req.body.id);
                                 provider.submit_register.splice(idx, 1);
                                 return [4 /*yield*/, provideModel_1.default.updateOne({ _id: submit[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } })];

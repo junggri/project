@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const submitSympton = new mongoose.Schema({
   register_user: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

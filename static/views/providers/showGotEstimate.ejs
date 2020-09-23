@@ -21,10 +21,17 @@
           <%- authUI %>
         </ul>
       </nav>
-      <form action="/provide/accept_submit" method="post" class="acceptForm">
-        <div class="showGotEstimate-box"></div>
-      </form>
+      <div class="showgot-box">
+        <div class="showgot-box-slo">총 7개의 견적을 제출하였습니다.</div>
+        <div class="showgot-box-container">
+          <div class="sg-item-nav">
+            <span class="sg-nav-item-content">내용</span>
+            <span class="sg-nav-item-user">보낸이</span>
+          </div>
+          <%- list %>
+        </div>
+      </div>
     </div>
-    <script src="../bundle.js"></script>
   </body>
+  <script src="/bundle.js"></script>
 </html>

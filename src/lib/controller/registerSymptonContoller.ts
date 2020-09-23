@@ -1,4 +1,6 @@
 import users from "../model/usermodel";
+import { Document } from "mongoose";
+
 import { Request, Response } from "express";
 import registerSym from "../model/registerSymModel";
 import { makeListSympton } from "../mypageState";
@@ -266,12 +268,16 @@ registerSymController.isFullSubmit = async (data: any) => {
   return result;
 };
 
+interface Provider extends Document {
+  submit_register: string[];
+}
+
 registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
   await registerSym.deleteOne({ _id: req.body.id }).then(async () => {
     let submit: any = await submitModel.find({ symptonId: req.body.id }).populate("provider");
     if (submit.length !== 0) {
       for (let i = 0; i < submit.length; i++) {
-        let provider: any = await provideModel.findOne({ _id: submit[i].provider[0]._id });
+        let provider = (await provideModel.findOne({ _id: submit[i].provider[0]._id })) as Provider;
         let idx = provider.submit_register.indexOf(req.body.id);
         provider.submit_register.splice(idx, 1);
         await provideModel.updateOne({ _id: submit[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } });

@@ -65,10 +65,26 @@ ProviderGotSympton.save = function (symptonId, sentProvidersArray) { return __aw
         }
     });
 }); };
-ProviderGotSympton.find = function (data) { return __awaiter(void 0, void 0, void 0, function () {
+ProviderGotSympton.find = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
     return __generator(this, function (_a) {
-        console.log(data);
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ProviderGotSymptonModel_1.default.find({ symptonId: symptonId })];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
+    });
+}); };
+ProviderGotSympton.findProvider = function (providerId) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ProviderGotSymptonModel_1.default.find({ providerId: providerId }).populate("symptonId")];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+        }
     });
 }); };
 exports.default = ProviderGotSympton;

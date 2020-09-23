@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const providers = new mongoose.Schema({
   email: {
     type: String,

@@ -1,5 +1,6 @@
 import submitController from "./controller/submitController";
 import ProviderGotController from "./controller/providerGotController";
+import { get } from "mongoose";
 
 export let makeListSympton = async (data: any) => {
   let list = "";
@@ -16,7 +17,6 @@ export let makeListSympton = async (data: any) => {
   for (let i = 0; i < data.length; i++) {
     if (data[i].state === "accept") {
       let response = await submitController.showProvider(data[i]._id);
-      let getProvider = await ProviderGotController.find(data);
       let result = response.provider[0];
       // 이때의 data-id는 submitid
       item = `
@@ -43,13 +43,16 @@ export let makeListSympton = async (data: any) => {
         `;
     } else {
       //이때는 register
+      let length: number;
+      let getProvider = await ProviderGotController.find(data[i]._id);
+      getProvider === null ? (length = 0) : (length = getProvider.length);
       item = ` 
             <div class="sc-item" data-id="${data[i]._id}">
               <div class="sc-item-slo">${data[i].sympton_detail}</div>
               <div class="sc-item-createdAt">${data[i].createdAt}</div>
               <div class="sc-item-btnBox">
               <span class="get-count">견적서 제안 : ${data[i].provider.length} 개</span>
-              <div class="sent-sympton-length"> : ${data[i].provider.length} 개</div>
+              <div class="sent-sympton-length">총 <span style="font-weight:600; color:black">${length}</span> 명의 OO에게 견적을 보냈습니다.</div>
               <div class="sc-item-showBtn">자세히 보기</div>
               <div class="sc-item-btnBox2">
                 <div class="sc-item-modifiedBtn">

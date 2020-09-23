@@ -11,8 +11,14 @@ ProviderGotSympton.save = async (symptonId: string, sentProvidersArray: string[]
   }
 };
 
-ProviderGotSympton.find = async (data: object[]) => {
-  console.log(data);
+ProviderGotSympton.find = async (symptonId: object) => {
+  let result = await providerGotModel.find({ symptonId: symptonId });
+  return result;
+};
+
+ProviderGotSympton.findProvider = async (providerId: string) => {
+  let result = await providerGotModel.find({ providerId: providerId }).populate("symptonId");
+  return result;
 };
 
 export default ProviderGotSympton;

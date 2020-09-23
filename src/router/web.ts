@@ -82,7 +82,6 @@ router.post("/setUserEmailCookie", csrfProtection, verify, (req, res) => {
 });
 
 router.get("/index", csrfProtection, verify, (req, res, next) => {
-  console.log(req.session);
   let authUI = auth.status(req, res);
   res.render("index", { authUI: authUI });
 });
@@ -218,7 +217,6 @@ router.post("/register_common_process", parseForm, csrfProtection, verify, isLog
 
 router.post("/register_provide_process", parseForm, csrfProtection, verify, isLogined, async (req, res) => {
   let inputdata = {};
-  console.log(req.body);
   const { name, gender, email, pwd, phone, lat1, lon1, address1, lat2, lon2, address2, lat3, lon3, address3 } = req.body;
   crypto.randomBytes(crypto_cre.len, (err, buf) => {
     let salt = buf.toString("base64");
