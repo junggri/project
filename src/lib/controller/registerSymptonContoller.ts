@@ -1,6 +1,4 @@
 import users from "../model/usermodel";
-import { Document } from "mongoose";
-
 import { Request, Response } from "express";
 import registerSym from "../model/registerSymModel";
 import { makeListSympton } from "../mypageState";
@@ -40,7 +38,7 @@ registerSymController.showBeforeEstimate = async (_id: string) => {
 
 registerSymController.getAllData = async (pageNum: number, divided_num: number) => {
   //아무것도클릭 안했을때 나오는 데이터인데 순서대로 15개만 가져온다
-  let result: any = await registerSym
+  let result = await registerSym
     .find()
     .sort({ create: -1 })
     .skip((pageNum - 1) * divided_num)
@@ -57,7 +55,7 @@ registerSymController.makePagination = async () => {
 registerSymController.getSpecificData = async (pageNum: number, sigunguCode: string, sigungu: string, bname: string, divided_num: number) => {
   //특정지역을 선택했을때 가져오는데이터
   let findArea = changeSigunguCode(sigunguCode);
-  let result: any;
+  let result;
   if (sigunguCode === "sejong") {
     result = await registerSym
       .find({ "address.sigunguCode": findArea })
@@ -176,9 +174,9 @@ registerSymController.find = async (register_id: string) => {
 };
 
 registerSymController.save = async (data: any, _email: string, id: string, sentProvidersArray: string[]) => {
-  let registerSympton: any = new registerSym(data);
+  let registerSympton = new registerSym(data);
   await registerSympton.save();
-  let user: any = await users.findOne({ _id: id });
+  let user = await users.findOne({ _id: id });
   await user.register_sympton.push(registerSympton._id);
   await user.save();
   if (sentProvidersArray.length !== 0) {
@@ -264,29 +262,28 @@ registerSymController.modified = async (req: Request, res: Response, data: any) 
 };
 
 registerSymController.isFullSubmit = async (data: any) => {
-  let result: any = await registerSym.findOne({ _id: data.sympton_id });
+  let result = await registerSym.findOne({ _id: data.sympton_id });
   return result;
 };
 
-interface Provider extends Document {
-  submit_register: string[];
-}
-
 registerSymController.deleteSympton = async (req: Request, res: Response, email: string, id: string) => {
-  await registerSym.deleteOne({ _id: req.body.id }).then(async () => {
-    let submit: any = await submitModel.find({ symptonId: req.body.id }).populate("provider");
-    if (submit.length !== 0) {
-      for (let i = 0; i < submit.length; i++) {
-        let provider = (await provideModel.findOne({ _id: submit[i].provider[0]._id })) as Provider;
-        let idx = provider.submit_register.indexOf(req.body.id);
-        provider.submit_register.splice(idx, 1);
-        await provideModel.updateOne({ _id: submit[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } });
-        await submitModel.deleteOne({ symptonId: req.body.id });
-      }
+  await registerSym.deleteOne({ _id: req.body.id });
+  await ProviderGotController.delete(req.body.id);
+
+  let submit = await submitModel.find({ symptonId: req.body.id }).populate("provider");
+
+  if (submit.length !== 0) {
+    for (let i = 0; i < submit.length; i++) {
+      let provider = await provideModel.findOne({ _id: submit[i].provider[0]._id });
+      let idx = provider.submit_register.indexOf(req.body.id);
+      provider.submit_register.splice(idx, 1);
+      await provideModel.updateOne({ _id: submit[i].provider[0]._id }, { $set: { submit_register: provider.submit_register } });
+      await submitModel.deleteOne({ symptonId: req.body.id });
     }
-    let result: any = await users.findOne({ _id: id }).populate("register_sympton");
-    await users.updateOne({ _id: id }, { $set: { register_sympton: result.register_sympton } });
-  });
+  }
+
+  let result = await users.findOne({ _id: id }).populate("register_sympton");
+  await users.updateOne({ _id: id }, { $set: { register_sympton: result.register_sympton } });
 };
 
 export default registerSymController;

@@ -1,4 +1,15 @@
 import mongoose from "mongoose";
+interface User extends mongoose.Document {
+  email: string;
+  password: string;
+  name: string;
+  slat: string;
+  createdAt: string;
+  refresh_token: string;
+  user_profile_img: string;
+  register_sympton: string[];
+  user_division: string;
+}
 const users = new mongoose.Schema({
   email: {
     type: String,
@@ -34,4 +45,4 @@ const users = new mongoose.Schema({
     required: true,
   },
 });
-export = mongoose.model("User", users);
+export = mongoose.model<User>("User", users);

@@ -1,4 +1,20 @@
 import mongoose from "mongoose";
+interface RegisterSympton extends mongoose.Document {
+  username: string;
+  user_object_id: string;
+  email: string;
+  code: [];
+  sympton_detail: string;
+  img: string[];
+  userwant_time: object;
+  address: object;
+  userwant_content: string;
+  predict_price: number;
+  createdAt: string;
+  create: Date;
+  provider: string[];
+  state: string;
+}
 const registerSympton = new mongoose.Schema({
   // registrant: {
   //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: "testuser" }],
@@ -64,4 +80,4 @@ const registerSympton = new mongoose.Schema({
   },
 });
 
-export = mongoose.model("RegisterSympton", registerSympton);
+export = mongoose.model<RegisterSympton>("RegisterSympton", registerSympton);

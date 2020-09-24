@@ -29,10 +29,17 @@ exports.MakePagination = function (req, res, data, divided_num) {
 exports.showSubmitList = function (data) {
     var list = "";
     for (var i = 0; i < data.length; i++) {
-        console.log(data[i]);
         var state = void 0;
-        data[i].state === "accept" ? (state = "수락됨") : (state = "수락실패");
-        var item = "\n        <div class=\"sbc-item\" data-submitId=\"" + data[i].symptonId + "\">\n          <span class=\"sbc-item-content\">" + data[i].content + "</span>\n          <span class=\"sbc-item-price\">" + data[i].submit_price + " \uC6D0</span>\n          <span class=\"sbc-item-state\">" + state + "</span>\n        </div>\n    ";
+        if (data[i].state === "accept") {
+            state = "수락됨";
+        }
+        else if (data[i].state === "submit") {
+            state = "견적제출";
+        }
+        else {
+            state = "수락실패";
+        }
+        var item = "\n        <div class=\"sbc-item\" data-submitId=\"" + data[i]._id + "\">\n          <span class=\"sbc-item-content\">" + data[i].content + "</span>\n          <span class=\"sbc-item-price\">" + data[i].submit_price + " \uC6D0</span>\n          <span class=\"sbc-item-state\">" + state + "</span>\n        </div>\n    ";
         list += item;
     }
     return list;

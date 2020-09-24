@@ -68,12 +68,19 @@ submitController.showProvider = function (symptonId) { return __awaiter(void 0, 
         }
     });
 }); };
-submitController.getState = function (symptonId) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
+submitController.getState = function (symptonId, providerId) { return __awaiter(void 0, void 0, void 0, function () {
+    var result_1, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, submitEstimateModel_1.default.findOne({ symptonId: symptonId })];
+            case 0:
+                console.log(providerId);
+                if (!(providerId !== undefined)) return [3 /*break*/, 2];
+                return [4 /*yield*/, submitEstimateModel_1.default.findOne({ symptonId: symptonId }).where("provider").equals(providerId)];
             case 1:
+                result_1 = _a.sent();
+                return [2 /*return*/, result_1];
+            case 2: return [4 /*yield*/, submitEstimateModel_1.default.findOne({ symptonId: symptonId })];
+            case 3:
                 result = _a.sent();
                 return [2 /*return*/, result];
         }
@@ -157,17 +164,13 @@ submitController.save = function (symptonId, providerId, data) { return __awaite
                 return [4 /*yield*/, Sumbit.save()];
             case 4:
                 _a.sent();
-                return [4 /*yield*/, Sympton.provider.push(Provider._id)];
+                Sympton.provider.push(Provider._id);
+                return [4 /*yield*/, Sympton.save()];
             case 5:
                 _a.sent();
-                return [4 /*yield*/, Sympton.save()];
-            case 6:
-                _a.sent();
-                return [4 /*yield*/, Provider.submit_register.push(Sympton._id)];
-            case 7:
-                _a.sent();
+                Provider.submit_register.push(Sympton._id);
                 return [4 /*yield*/, Provider.save()];
-            case 8:
+            case 6:
                 _a.sent();
                 return [2 /*return*/];
         }

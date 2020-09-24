@@ -21,4 +21,8 @@ ProviderGotSympton.findProvider = async (providerId: string) => {
   return result;
 };
 
+ProviderGotSympton.delete = async (symptonId: string) => {
+  await providerGotModel.deleteMany({ symptonId: symptonId });
+};
+
 export default ProviderGotSympton;

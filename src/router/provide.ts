@@ -157,12 +157,27 @@ router.post("/before_check_getRegisterData", csrfProtection, verify, isNotLogine
   }
 });
 
+interface Err {
+  message: string;
+  stack: string;
+  status: number;
+}
+
 router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req, res, next) => {
   let authUI = auth.status(req, res);
   const token = req.cookies.pjwttoken;
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
-    let result: any = await registerSymController.showBeforeEstimate(req.url.split("?")[1]);
+    let result = await registerSymController.showBeforeEstimate(req.url.split("?")[1]);
+    let submitState = await submitController.getState(req.url.split("?")[1], (decoded as Decoded).user_objectId);
+    if (result === null || submitState.state === "reject") {
+      let err: unknown = new Error("잘못된 접근입니다");
+      (err as Err).message = "잘못된 접근입니다.";
+      (err as Err).stack = "삭제된 증상입니다";
+      (err as Err).status = 404;
+      next(err);
+      return;
+    }
     let isEstimated = await provideController.isEstimated((decoded as Decoded).user_objectId);
     let location = makeLocation(result);
     let imgs = makeImg(result);
@@ -186,7 +201,7 @@ router.post("/submit_estimate", csrfProtection, verify, isNotLogined, async (req
     let submit = await registerSymController.isFullSubmit(req.body);
     if (submit === null) return res.json({ state: null });
     if (submit.provider.length >= 20) return res.json({ state: false });
-    submitController.save(req.body.sympton_id, (decoded as Decoded).user_objectId, req.body);
+    await submitController.save(req.body.sympton_id, (decoded as Decoded).user_objectId, req.body);
     res.json({ state: true, url: req.body.sympton_id });
   } catch (error) {
     console.error(error);
@@ -225,6 +240,11 @@ router.get("/showsubmit", csrfProtection, verify, isNotLogined, async (req, res)
   } catch (error) {}
 });
 
+router.post("/showSubmitFlag", csrfProtection, verify, isNotLogined, async (req, res) => {
+  let result = await submitController.findSubmit(req.body.submitId);
+  return res.json({ state: result.state, symptonId: result.symptonId });
+});
+
 router.get("/showGotEstimate", csrfProtection, verify, isNotLogined, async (req, res) => {
   const token = req.cookies.pjwttoken;
   let authUI = auth.status(req, res);
@@ -233,7 +253,9 @@ router.get("/showGotEstimate", csrfProtection, verify, isNotLogined, async (req,
     let data = await providerGotController.findProvider((decoded as Decoded).user_objectId);
     let list = showGottList(data);
     res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 router.post("/logout_process", isNotLogined, (req, res) => {

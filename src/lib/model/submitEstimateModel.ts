@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+interface Submit extends mongoose.Document {
+  register_user: string[];
+  symptonId: string;
+  provider: any[];
+  content: string;
+  submit_price: string;
+  create: Date;
+  state: string;
+  payment: boolean;
+}
+
 const submitSympton = new mongoose.Schema({
   register_user: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
@@ -29,4 +40,4 @@ const submitSympton = new mongoose.Schema({
   },
 });
 
-export = mongoose.model("submitEstimate", submitSympton);
+export = mongoose.model<Submit>("submitEstimate", submitSympton);

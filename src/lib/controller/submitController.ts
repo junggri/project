@@ -8,27 +8,32 @@ import sanitizeHtml from "sanitize-html";
 let submitController: any = {};
 
 submitController.findAllProvider = async (symptonId: string) => {
-  let result: any = await submitModel.find().where("symptonId").equals(symptonId).populate("provider");
+  let result = await submitModel.find().where("symptonId").equals(symptonId).populate("provider");
   return result;
 };
 
 submitController.showProvider = async (symptonId: string) => {
-  let result: any = await submitModel.findOne({ symptonId: symptonId }).where("state").equals("accept").populate("provider");
+  let result = await submitModel.findOne({ symptonId: symptonId }).where("state").equals("accept").populate("provider");
   return result;
 };
 
-submitController.getState = async (symptonId: string) => {
-  let result: any = await submitModel.findOne({ symptonId: symptonId });
+submitController.getState = async (symptonId: string, providerId?: string) => {
+  console.log(providerId);
+  if (providerId !== undefined) {
+    let result = await submitModel.findOne({ symptonId: symptonId }).where("provider").equals(providerId);
+    return result;
+  }
+  let result = await submitModel.findOne({ symptonId: symptonId });
   return result;
 };
 
 submitController.findSubmit = async (submitId: string) => {
-  let result: any = await submitModel.findOne({ _id: submitId });
+  let result = await submitModel.findOne({ _id: submitId });
   return result;
 };
 
 submitController.getProviderData = async (submitId: string) => {
-  let result: any = await submitModel.findOne({ _id: submitId }).populate("provider");
+  let result = await submitModel.findOne({ _id: submitId }).populate("provider");
   return result;
 };
 
@@ -45,9 +50,9 @@ submitController.acceptSubmit = async (submitId: string, symptonId: string) => {
 };
 
 submitController.save = async (symptonId: string, providerId: string, data: any) => {
-  let User: any = await usermodel.findOne({ _id: data.user_id });
-  let Sympton: any = await symptonModel.findOne({ _id: symptonId });
-  let Provider: any = await providerModel.findOne({ _id: providerId });
+  let User = await usermodel.findOne({ _id: data.user_id });
+  let Sympton = await symptonModel.findOne({ _id: symptonId });
+  let Provider = await providerModel.findOne({ _id: providerId });
 
   let time = moment().format("YYYY-MM-DD");
   let saveData = {
@@ -58,26 +63,27 @@ submitController.save = async (symptonId: string, providerId: string, data: any)
     submit_price: sanitizeHtml(data.priceValue),
     createdAt: time,
   };
+
   let Sumbit = new submitModel(saveData);
   await Sumbit.save();
-  await Sympton.provider.push(Provider._id);
+  Sympton.provider.push(Provider._id);
   await Sympton.save();
-  await Provider.submit_register.push(Sympton._id);
+  Provider.submit_register.push(Sympton._id);
   await Provider.save();
 };
 
 submitController.isSubmited = async (symptonId: string) => {
-  let result: any = await submitModel.findOne({ symptonId: symptonId });
+  let result = await submitModel.findOne({ symptonId: symptonId });
   return result;
 };
 
 submitController.delete_submit = async (req: any, res: any, symptonId: string, providerId: string) => {
-  let submit: any = await submitModel.findOne().where("provider").equals(providerId).where("symptonId").equals(symptonId);
+  let submit = await submitModel.findOne().where("provider").equals(providerId).where("symptonId").equals(symptonId);
   if (submit.state === "accept") {
     return res.json({ state: "accept" });
   } else {
-    let result: any = await symptonModel.findOne({ _id: symptonId });
-    let provider: any = await providerModel.findOne({ _id: providerId });
+    let result = await symptonModel.findOne({ _id: symptonId });
+    let provider = await providerModel.findOne({ _id: providerId });
     let idx = result.provider.indexOf(providerId);
     let idx2 = provider.submit_register.indexOf(symptonId);
     result.provider.splice(idx, 1);

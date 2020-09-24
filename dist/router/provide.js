@@ -225,7 +225,7 @@ router.post("/before_check_getRegisterData", csrfProtection, p_verify_1.verify, 
     });
 }); });
 router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var authUI, token, decoded, result, isEstimated, location_1, imgs, btn, error_1;
+    var authUI, token, decoded, result, submitState, err, isEstimated, location_1, imgs, btn, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -233,24 +233,35 @@ router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
                 token = req.cookies.pjwttoken;
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 4, , 5]);
+                _a.trys.push([1, 5, , 6]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
                 return [4 /*yield*/, registerSymptonContoller_1.default.showBeforeEstimate(req.url.split("?")[1])];
             case 2:
                 result = _a.sent();
-                return [4 /*yield*/, provideController_1.default.isEstimated(decoded.user_objectId)];
+                return [4 /*yield*/, submitController_1.default.getState(req.url.split("?")[1], decoded.user_objectId)];
             case 3:
+                submitState = _a.sent();
+                if (result === null || submitState.state === "reject") {
+                    err = new Error("잘못된 접근입니다");
+                    err.message = "잘못된 접근입니다.";
+                    err.stack = "삭제된 증상입니다";
+                    err.status = 404;
+                    next(err);
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, provideController_1.default.isEstimated(decoded.user_objectId)];
+            case 4:
                 isEstimated = _a.sent();
                 location_1 = p_makeShowData_1.makeLocation(result);
                 imgs = p_makeShowData_1.makeImg(result);
                 btn = p_makeShowData_1.makeBtn(isEstimated, req.url.split("?")[1]);
                 res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location_1, imgs: imgs, btn: btn });
-                return [3 /*break*/, 5];
-            case 4:
+                return [3 /*break*/, 6];
+            case 5:
                 error_1 = _a.sent();
                 console.error(error_1);
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); });
@@ -276,7 +287,7 @@ router.post("/submit_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
                 token = req.cookies.pjwttoken;
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 3, , 4]);
+                _a.trys.push([1, 4, , 5]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
                 return [4 /*yield*/, registerSymptonContoller_1.default.isFullSubmit(req.body)];
             case 2:
@@ -285,14 +296,16 @@ router.post("/submit_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
                     return [2 /*return*/, res.json({ state: null })];
                 if (submit.provider.length >= 20)
                     return [2 /*return*/, res.json({ state: false })];
-                submitController_1.default.save(req.body.sympton_id, decoded.user_objectId, req.body);
-                res.json({ state: true, url: req.body.sympton_id });
-                return [3 /*break*/, 4];
+                return [4 /*yield*/, submitController_1.default.save(req.body.sympton_id, decoded.user_objectId, req.body)];
             case 3:
+                _a.sent();
+                res.json({ state: true, url: req.body.sympton_id });
+                return [3 /*break*/, 5];
+            case 4:
                 error_2 = _a.sent();
                 console.error(error_2);
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); });
@@ -354,6 +367,17 @@ router.get("/showsubmit", csrfProtection, p_verify_1.verify, p_verify_1.isNotLog
         }
     });
 }); });
+router.post("/showSubmitFlag", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, submitController_1.default.findSubmit(req.body.submitId)];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, res.json({ state: result.state, symptonId: result.symptonId })];
+        }
+    });
+}); });
 router.get("/showGotEstimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var token, authUI, decoded, data, list, error_5;
     return __generator(this, function (_a) {
@@ -373,6 +397,7 @@ router.get("/showGotEstimate", csrfProtection, p_verify_1.verify, p_verify_1.isN
                 return [3 /*break*/, 4];
             case 3:
                 error_5 = _a.sent();
+                console.error(error_5);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }

@@ -1,5 +1,19 @@
 import mongoose from "mongoose";
 
+interface Provider extends mongoose.Document {
+  email: string;
+  password: string;
+  name: string;
+  gender: string;
+  phone_number: string;
+  address: object;
+  salt: string;
+  refresh_token: string;
+  user_division: string;
+  submit_register: string[];
+  create: Date;
+}
+
 const providers = new mongoose.Schema({
   email: {
     type: String,
@@ -59,4 +73,4 @@ const providers = new mongoose.Schema({
     default: Date.now,
   },
 });
-export = mongoose.model("Provider", providers);
+export = mongoose.model<Provider>("Provider", providers);

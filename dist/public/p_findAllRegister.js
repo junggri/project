@@ -53,13 +53,6 @@ function p_findAllRegister() {
     var findForm = document.querySelector(".findForm");
     var changeFromSelect = false;
     var symptonItems = document.querySelectorAll(".frr-item-content");
-    function FetchSet() {
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("CSRF-Token", token);
-        return myHeaders;
-    }
     if (location.search !== "") {
         for (var i = 0; i < decodedUrl.split("&").length; i++) {
             if (decodedUrl.split("&")[i].split("=")[0] === "sigunguCode")
@@ -117,8 +110,8 @@ function p_findAllRegister() {
                                 throw err;
                             }
                             else if (state === "accept") {
-                                err = new Error("진행중인 증상입니다.");
-                                err.name = "IS_SUBMITED";
+                                err = new Error();
+                                err.name = "진행중인 견적입니다.";
                                 throw err;
                             }
                             return [2 /*return*/, (window.location.href = "/provide/sympton_estimate?" + e.target.parentNode.dataset.registerid)];
