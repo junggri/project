@@ -59,7 +59,7 @@ app.use(express_session_1.default(sess));
 app.use(cors_1.default());
 // app.use(logger("prod", { stream })); //prod combined
 app.use(morgan_1.default("dev"));
-app.get("env") === "development" ? app.use(express_1.default.static(path_1.default.join(__dirname + "/../dist/public", "dist"))) : app.use(express_1.default.static(path_1.default.join(__dirname + "/public", "dist")));
+app.get("env") === "development" ? app.use(express_1.default.static(path_1.default.join(__dirname + "../../dist/javascript", "bundle"))) : app.use(express_1.default.static(path_1.default.join(__dirname + "/javascript", "bundle")));
 //bundel.js위치
 app.use(connect_flash_1.default());
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/css")));
@@ -78,11 +78,11 @@ app.use(passport_1.default.session());
 app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
-var v1_1 = __importDefault(require("./router/v1"));
-var web_1 = __importDefault(require("./router/web"));
-var provide_1 = __importDefault(require("./router/provide"));
-app.use("/v1", v1_1.default);
-app.use("/web", web_1.default);
+var web_1 = __importDefault(require("./controller/web"));
+var web_2 = __importDefault(require("./controller/web"));
+var provide_1 = __importDefault(require("./controller/provide"));
+app.use("/v1", web_1.default);
+app.use("/web", web_2.default);
 app.use("/provide", provide_1.default);
 app.set("port", process.env.PORT || 3000);
 app.use(logError);

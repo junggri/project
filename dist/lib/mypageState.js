@@ -40,8 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeSumbitbox = exports.makeListSympton = void 0;
-var submitController_1 = __importDefault(require("./controller/submitController"));
-var providerGotController_1 = __importDefault(require("./controller/providerGotController"));
+var submitController_1 = __importDefault(require("../model/controller/submitController"));
+var providerGotController_1 = __importDefault(require("../model/controller/providerGotController"));
 exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, void 0, function () {
     var list, item, list_1, i, response, result, length_1, getProvider;
     return __generator(this, function (_a) {

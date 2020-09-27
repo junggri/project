@@ -1,1 +1,0 @@
-{"version":3,"file":"imageModel.js","sourceRoot":"","sources":["../../../src/lib/model/imageModel.ts"],"names":[],"mappings":";;;;AAAA,sDAAgC;AAChC,IAAM,KAAK,GAAG,IAAI,kBAAQ,CAAC,MAAM,CAAC;IAChC,KAAK,EAAE;QACL,IAAI,EAAE,KAAK;QACX,QAAQ,EAAE,IAAI;KACf;CACF,CAAC,CAAC;AAEH,iBAAS,kBAAQ,CAAC,KAAK,CAAC,OAAO,EAAE,KAAK,CAAC,CAAC"}

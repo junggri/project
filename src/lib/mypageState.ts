@@ -1,6 +1,5 @@
-import submitController from "./controller/submitController";
-import ProviderGotController from "./controller/providerGotController";
-import { get } from "mongoose";
+import submitController from "../model/controller/submitController";
+import ProviderGotController from "../model/controller/providerGotController";
 
 export let makeListSympton = async (data: any) => {
   let list = "";

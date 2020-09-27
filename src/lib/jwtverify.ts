@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { createToken } from "./accesstoken";
-import users from "../lib/model/usermodel";
+import users from "../model/schema/usermodel";
 let email: string;
 let user_id: string;
 

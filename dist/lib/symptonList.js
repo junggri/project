@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.selcted_sympton = exports.symptonList = void 0;
-var symptonModel_1 = __importDefault(require("./model/symptonModel"));
+var symptonModel_1 = __importDefault(require("../model/schema/symptonModel"));
 exports.symptonList = function () { return __awaiter(void 0, void 0, void 0, function () {
     var symptons, container, i, list;
     return __generator(this, function (_a) {

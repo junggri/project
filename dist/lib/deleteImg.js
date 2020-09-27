@@ -41,7 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
-var registerSymptonContoller_1 = __importDefault(require("./controller/registerSymptonContoller"));
+var registerSymptonContoller_1 = __importDefault(require("../model/controller/registerSymptonContoller"));
 var savedImg = [];
 var arrImg = [];
 function default_1(email, id) {

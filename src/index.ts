@@ -69,7 +69,7 @@ app.use(cors());
 
 // app.use(logger("prod", { stream })); //prod combined
 app.use(logger("dev"));
-app.get("env") === "development" ? app.use(express.static(path.join(__dirname + "/../dist/public", "dist"))) : app.use(express.static(path.join(__dirname + "/public", "dist")));
+app.get("env") === "development" ? app.use(express.static(path.join(__dirname + "../../dist/javascript", "bundle"))) : app.use(express.static(path.join(__dirname + "/javascript", "bundle")));
 
 //bundel.js위치
 app.use(flash());
@@ -95,9 +95,9 @@ app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
-import CommonRouter from "./router/v1";
-import webRouter from "./router/web";
-import provierRouter from "./router/provide";
+import CommonRouter from "./controller/web";
+import webRouter from "./controller/web";
+import provierRouter from "./controller/provide";
 
 app.use("/v1", CommonRouter);
 app.use("/web", webRouter);

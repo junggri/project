@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import registerController from "./controller/registerSymptonContoller";
+import registerController from "../model/controller/registerSymptonContoller";
 let savedImg: string[] = [];
 let arrImg: string[] = [];
 
