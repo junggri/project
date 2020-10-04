@@ -27,7 +27,7 @@
           <%- authUI %>
         </ul>
       </nav>
-      <form action="register_estimate_process" method="POST" class="register_sympton_form">
+      <form action="/web/register/users/sympton" method="POST" class="register_sympton_form">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <input type="hidden" name="price" class="estimate-price" value="<%= price %>">
       <section class="get-estimate-page">

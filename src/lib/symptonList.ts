@@ -5,7 +5,7 @@ export let symptonList = async () => {
   let container = "";
   for (let i = 0; i < symptons.length; i++) {
     let list = ` <li class="problem-item" data-price="${symptons[i].avg_price}">
-      <input type="checkbox" class="estimate_btn" id="sypmtom-${symptons[i].code}" onclick="add_List(this)" name="sympton" value="${symptons[i].code}" />
+      <input type="checkbox" class="estimate_btn" id="sypmtom-${symptons[i].code}" onclick="add_List(this)" name="code" value="${symptons[i].code}" />
       <label for="sypmtom-${symptons[i].code}">${symptons[i].content}</label>
     </li>`;
     container += list;

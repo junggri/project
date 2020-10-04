@@ -48,11 +48,10 @@ export default function provide() {
       randomArray.push(randomNum);
     }
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ user_phone_number: phoneNumber.value }));
-      let result = await fetch("/web/verify_phone_number", fetchObj);
+      let result = await fetch(`/web/verify/phone/number/${phoneNumber.value}`);
       if (result.status === 200 || 201) {
         let response = await result.json();
-        console.log(response.verify_num);
+        // console.log(response.verify_num);
         checkNumber = response.verify_num;
         return;
       } else {
@@ -85,8 +84,7 @@ export default function provide() {
       return (stateEmail.textContent = "이메일 형식이 올바르지 않습니다.");
     }
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: inputEmail.value }));
-      let result = await fetch("http://localhost:3000/web/check_provide_email", fetchObj);
+      let result = await fetch(`http://localhost:3000/web/check/provider/duplicate/${inputEmail.value}`);
       if (result.status === 201 || 201) {
         let response = await result.json();
         if (!response.state) {

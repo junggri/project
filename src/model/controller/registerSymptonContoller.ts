@@ -232,12 +232,12 @@ registerSymController.getAllImage = async (id: string) => {
 };
 
 registerSymController.findBeforeModified = async (req: Request, res: Response) => {
-  let result = await registerSym.findOne({ _id: req.url.split("/")[2] });
+  let result = await registerSym.findOne({ _id: req.params.id });
   return result;
 };
 
 registerSymController.findImageBeforeModified = async (req: Request, res: Response) => {
-  let result = await registerSym.findOne({ _id: req.body.url });
+  let result = await registerSym.findOne({ _id: req.params.id });
   return result;
 };
 

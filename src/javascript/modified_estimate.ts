@@ -29,6 +29,12 @@ export default function mypage() {
     userwant_time: { time: number; minute: number };
   }
 
+  interface Data {
+    response: object;
+    email: any;
+    img: string[];
+  }
+
   imgBtn.addEventListener("click", () => {
     fileBtn.click();
   });
@@ -62,8 +68,7 @@ export default function mypage() {
 
   (async () => {
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ url: window.location.pathname.split("/")[3] }));
-      let result: any = await fetch("http://localhost:3000/web/modified_get_data", fetchObj);
+      let result: any = await fetch(`http://localhost:3000/web/data/modify/${window.location.pathname.split("/")[4]}`);
       if (result.status === 200 || 201) {
         if (result.state === false) return alert("자료가 존재하지 않습니다.");
         let response = await result.json();
@@ -94,9 +99,7 @@ export default function mypage() {
     if (data.length === 0) {
       let imgBox = document.querySelector(".si-img-itemBox");
       while (imgBox.hasChildNodes) {
-        if (imgBox.firstChild === null) {
-          break;
-        }
+        if (imgBox.firstChild === null) break;
         imgBox.removeChild(imgBox.firstChild);
       }
       imgBtn.style.display = "block";
@@ -107,7 +110,7 @@ export default function mypage() {
     }
   }
 
-  function commonMakeImg(data: any) {
+  function commonMakeImg(data: Data) {
     let addImgBox = document.createElement("div");
     for (let i = 0; i < data.img.length; i++) {
       let imgItem = document.createElement("div");
@@ -140,9 +143,7 @@ export default function mypage() {
   function removeAndMakeNewImage(data: any) {
     let imgBox = document.querySelector(".si-img-itemBox");
     while (imgBox.hasChildNodes) {
-      if (imgBox.firstChild === null) {
-        break;
-      }
+      if (imgBox.firstChild === null) break;
       imgBox.removeChild(imgBox.firstChild);
     }
     commonMakeImg(data);
@@ -151,7 +152,7 @@ export default function mypage() {
   async function fetchDeleteImg(e: any) {
     try {
       let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }));
-      let result = await fetch("http://localhost:3000/web/modified_delete_session_img", fetchObj);
+      let result = await fetch("http://localhost:3000/web/modify/delete/session/img", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         lengthOfImg(response);
@@ -170,13 +171,10 @@ export default function mypage() {
       formData.append("data", data[i]);
     }
     try {
-      let result = await fetch(url, {
-        method: "POST",
-        body: formData,
-      });
+      let result = await fetch(url, { method: "POST", body: formData });
       if (result.status === 200 || 201) {
         let response = await result.json();
-        url === "http://localhost:3000/web/modified_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
+        url === "http://localhost:3000/web/modify/session/img" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
       } else {
         throw new Error("fetch_image failed");
       }
@@ -184,16 +182,15 @@ export default function mypage() {
       console.error(error);
     }
   }
-  //리로드시 세션에 있는 정보로 자신을 등록하는 용도
 
   window.add_fileUpload = (e: any) => {
     if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10) return alert("최대 10장까지 등록가능합니다.");
-    fetchImage("http://localhost:3000/web/modified_add_upload_image", e.target.files);
+    fetchImage("http://localhost:3000/web/modify/session/img/more", e.target.files);
   };
 
   window.previous_fileUpload = (e: any) => {
     if (e.target.files.length > 10) return alert("최대 10장까지 등록가능합니다.");
-    fetchImage("http://localhost:3000/web/modified_upload_image", e.target.files);
+    fetchImage("http://localhost:3000/web/modify/session/img", e.target.files);
   };
 
   window.openAddresss = () => {

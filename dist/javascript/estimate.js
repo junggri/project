@@ -35,19 +35,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function default_1() {
+    var _this = this;
     var estimate_container = document.querySelector(".estimate-pre-result-itembox");
     var estimate_list = document.querySelector(".estimate-pre-result-item");
     var estimate_price = document.querySelector(".estimate-pre-price");
     var estimate_num = document.querySelector(".estimate-pre-num");
     var estimateForm = document.querySelector(".estimateForm");
     var estimateBtn = document.querySelector(".estimate-btn");
-    var data = [];
     var estimate_item;
     var added_item;
     var lists_height = 0;
@@ -78,62 +74,37 @@ function default_1() {
         estimate_num.textContent = estimate_item.length + "\uAC1C \uC120\uD0DD";
         estimate_container.scrollTop = estimate_container.scrollHeight;
     };
-    function isLogined(url, data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var fetchObj, result, response, error_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 6, , 7]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify(data))];
-                    case 1:
-                        fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch(url, fetchObj)];
-                    case 2:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
-                    case 3:
-                        response = _a.sent();
-                        if (response.state === true) {
-                            estimateForm.submit();
-                            estimateForm.reset();
-                        }
-                        else {
-                            if (confirm("로그인이 필요한 서비스입니다.")) {
-                                location.href = "/web/login";
-                            }
-                        }
-                        return [3 /*break*/, 5];
-                    case 4: throw new Error("로그인유무 확인 실패");
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_1 = _a.sent();
-                        console.error(error_1);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
-                }
-            });
+    estimateBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+        var result, response, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/web/user/check/login")];
+                case 1:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, result.json()];
+                case 2:
+                    response = _a.sent();
+                    if (response.state) {
+                        estimateForm.submit();
+                        estimateForm.reset();
+                    }
+                    else {
+                        if (confirm("로그인이 필요한 서비스입니다."))
+                            return [2 /*return*/, (location.href = "/web/login")];
+                    }
+                    _a.label = 3;
+                case 3: return [3 /*break*/, 5];
+                case 4:
+                    error_1 = _a.sent();
+                    console.error(error_1);
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
+            }
         });
-    }
-    estimateBtn.addEventListener("click", function (e) {
-        try {
-            if (estimate_item === undefined || estimate_item.length === 0) {
-                return isLogined("http://localhost:3000/web/user/check/login", { code: data, price: price });
-            }
-            else {
-                for (var i = 0; i < estimate_item.length; i++) {
-                    data.push(estimate_item[i].dataset.code);
-                }
-                return isLogined("http://localhost:3000/web/pre_estimate", { code: data, price: price });
-            }
-        }
-        catch (error) {
-            console.error(error);
-        }
-    });
-    //input submit으로 바꾸고 실핼하기
+    }); });
 }
 exports.default = default_1;
-//그냥 위에서 리턴값?모르겠다
 //# sourceMappingURL=estimate.js.map

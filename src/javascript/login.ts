@@ -21,7 +21,7 @@ export default function login() {
     async function loginProcess(data: Data) {
       try {
         let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify(data));
-        let result = await fetch("http://localhost:3000/web/login_process", fetchObj);
+        let result = await fetch("http://localhost:3000/web/login/process", fetchObj);
         if (result.status === 200 || 201) {
           let response = await result.json();
           response.state === true ? (window.location.href = response.url) : (state.textContent = response.msg);

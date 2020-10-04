@@ -225,7 +225,7 @@ router.post("/before_check_getRegisterData", csrfProtection, p_verify_1.verify, 
     });
 }); });
 router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.isNotLogined, function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var authUI, token, decoded, result, submitState, err, isEstimated, location_1, imgs, btn, error_1;
+    var authUI, token, decoded, result, err, isEstimated, location_1, imgs, btn, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -233,15 +233,13 @@ router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
                 token = req.cookies.pjwttoken;
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 5, , 6]);
+                _a.trys.push([1, 4, , 5]);
                 decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
                 return [4 /*yield*/, registerSymptonContoller_1.default.showBeforeEstimate(req.url.split("?")[1])];
             case 2:
                 result = _a.sent();
-                return [4 /*yield*/, submitController_1.default.getState(req.url.split("?")[1], decoded.user_objectId)];
-            case 3:
-                submitState = _a.sent();
-                if (result === null || submitState.state === "reject") {
+                // let submitState = await submitController.getState(req.url.split("?")[1], (decoded as Decoded).user_objectId);
+                if (result === null) {
                     err = new Error("잘못된 접근입니다");
                     err.message = "잘못된 접근입니다.";
                     err.stack = "삭제된 증상입니다";
@@ -250,18 +248,18 @@ router.get("/sympton_estimate", csrfProtection, p_verify_1.verify, p_verify_1.is
                     return [2 /*return*/];
                 }
                 return [4 /*yield*/, provideController_1.default.isEstimated(decoded.user_objectId)];
-            case 4:
+            case 3:
                 isEstimated = _a.sent();
                 location_1 = p_makeShowData_1.makeLocation(result);
                 imgs = p_makeShowData_1.makeImg(result);
                 btn = p_makeShowData_1.makeBtn(isEstimated, req.url.split("?")[1]);
                 res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location_1, imgs: imgs, btn: btn });
-                return [3 /*break*/, 6];
-            case 5:
+                return [3 /*break*/, 5];
+            case 4:
                 error_1 = _a.sent();
                 console.error(error_1);
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); });
@@ -403,7 +401,7 @@ router.get("/showGotEstimate", csrfProtection, p_verify_1.verify, p_verify_1.isN
         }
     });
 }); });
-router.post("/logout_process", p_verify_1.isNotLogined, function (req, res) {
+router.post("/logout", p_verify_1.isNotLogined, function (req, res) {
     res.clearCookie("pjwttoken", { path: "/provide" });
     return res.redirect(req.get("Referrer"));
 });

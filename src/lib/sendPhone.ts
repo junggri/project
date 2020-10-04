@@ -4,7 +4,7 @@ let CryptoJS = require("crypto-js");
 let resultCode: any;
 let _content: string;
 
-export default function sendVerifyNumver(req: any, res: any, state: string, phone_num: string) {
+export default function sendVerifyNumver(res: any, state: string, phone_num: string) {
   let randomArray = [];
   for (let i = 0; i < 6; i++) {
     let randomNum = Math.floor(Math.random() * 10);
@@ -36,7 +36,7 @@ export default function sendVerifyNumver(req: any, res: any, state: string, phon
   const hash = hmac.finalize();
   const signature = hash.toString(CryptoJS.enc.Base64);
 
-  if (state === "alert") {
+  if (state === "acception") {
     _content = "회원님의 견적을 수락하셨습니다.";
   } else {
     _content = `인증번호 ${user_auth_number} 입니다.`;

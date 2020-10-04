@@ -169,8 +169,8 @@ router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, async (req
   try {
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     let result = await registerSymController.showBeforeEstimate(req.url.split("?")[1]);
-    let submitState = await submitController.getState(req.url.split("?")[1], (decoded as Decoded).user_objectId);
-    if (result === null || submitState.state === "reject") {
+    // let submitState = await submitController.getState(req.url.split("?")[1], (decoded as Decoded).user_objectId);
+    if (result === null) {
       let err: unknown = new Error("잘못된 접근입니다");
       (err as Err).message = "잘못된 접근입니다.";
       (err as Err).stack = "삭제된 증상입니다";
@@ -258,7 +258,7 @@ router.get("/showGotEstimate", csrfProtection, verify, isNotLogined, async (req,
   }
 });
 
-router.post("/logout_process", isNotLogined, (req, res) => {
+router.post("/logout", isNotLogined, (req, res) => {
   res.clearCookie("pjwttoken", { path: "/provide" });
   return res.redirect(req.get("Referrer"));
 });

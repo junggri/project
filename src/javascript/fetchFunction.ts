@@ -1,4 +1,4 @@
-export default async function FetchFunction(method: string, credentials: string, body: any) {
+export default async function FetchFunction(method: string, credentials?: string, body?: any) {
   function FetchSet() {
     let token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     let myHeaders = new Headers();

@@ -10,6 +10,7 @@ var database = mysql_1.default.createConnection({
     user: msqyl_json_1.default.user,
     password: msqyl_json_1.default.password,
     database: msqyl_json_1.default.database,
+    multipleStatements: false,
 });
 database.connect();
 exports.default = database;

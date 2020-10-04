@@ -8,7 +8,7 @@ import findUserData from "./findUserData";
 import reset from "./reset";
 import oauth from "./oauth";
 import provide from "./provide";
-import mypageEstimate from "./mypageEstimate";
+import mypageShowProvider from "./mypageShowProvider";
 import mypageShowEstimate from "./mypageShowEstimate";
 import P_index from "./p_index";
 import p_findAllRegister from "./p_findAllRegister";
@@ -42,9 +42,7 @@ if (path === "/provide/showGotEstimate") {
 if (path === "/provide/showsubmit") {
   p_showsubmit();
 }
-if (path.split("/")[3] === "estimateDetail") {
-  mypageEstimate();
-}
+
 if (path === "/provide/mypage") {
   p_mypage();
 }
@@ -79,13 +77,16 @@ if (path === "/web/estimate") {
 if (path === "/web/mypage") {
   mypage();
 }
+if (path.split("/")[2] === "show" && path.split("/")[3] === "providers") {
+  mypageShowProvider();
+}
 if (path === "/web/mypage/showestimate") {
   mypageShowEstimate();
 }
-if (path.split("/")[2] === "modified_estimate") {
+if (path.split("/")[2] === "modifiment") {
   modified_estimate();
 }
-if (path === "/web/get_estimate") {
+if (path === "/web/write/sympton") {
   getEstimate();
 }
 if (path === "/web/index") {

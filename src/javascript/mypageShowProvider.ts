@@ -9,13 +9,12 @@ export default function mypageEstimate() {
   (async () => {
     let length = window.location.href.split("/").length;
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ register_id: window.location.href.split("/")[length - 1] }));
-      let result = await fetch("http://localhost:3000/web/check_reigister_state", fetchObj);
+      let result = await fetch(`http://localhost:3000/web/check/reigister/state/${window.location.href.split("/")[length - 1]}`);
       if (result.status === 200 || 201) {
         let response = await result.json();
-        if (!response.state) {
+        if (response.state === false) {
           alert("잘못된 접근입니다");
-          return (window.location.href = "/api/mypage/showestimate");
+          return (window.location.href = "/web/mypage/showestimate");
         }
       } else {
         let error = new Error("오류");
@@ -31,8 +30,7 @@ export default function mypageEstimate() {
     for (let i = 0; i < acceptBtn.length; i++) {
       acceptBtn[i].addEventListener("click", async (e: any) => {
         try {
-          let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ submit_id: acceptBtn[i].parentNode.parentNode.dataset.submitid }));
-          let result = await fetch("http://localhost:3000/web/find_submit", fetchObj);
+          let result = await fetch(`http://localhost:3000/web/find/providers/submit/${acceptBtn[i].parentNode.parentNode.dataset.submitid}`);
           if (result.status === 200 || 201) {
             let response = await result.json();
             if (response.state === false) {
@@ -66,7 +64,7 @@ export default function mypageEstimate() {
   async function acceptSubmit(submitId: string) {
     try {
       let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ submit_id: submitId }));
-      let result = await fetch("http://localhost:3000/web/accept_estimate", fetchObj);
+      let result = await fetch("http://localhost:3000/web/acception/submit", fetchObj);
       if (result.status === 200 || 201) {
         window.location.href = "/web/mypage/showestimate";
       } else {

@@ -7,7 +7,6 @@ declare global {
 }
 const pwd_reg = /^.*(?=^.{8,20}$)(?=.*d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
 const email_reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-let registerEmail = document.querySelector(".register-email") as HTMLDivElement;
 let pwd = document.querySelector("#common_pwd") as HTMLInputElement;
 let pwd2 = document.querySelector("#common_checkpwd") as HTMLInputElement;
 let email = document.querySelector("#common_email") as HTMLInputElement;
@@ -19,27 +18,9 @@ let email_is_exist = false;
 
 export default function register() {
   $("#common_email").focus();
-
-  // $(".register-email").on("click", () => {
-  //   if (registerEmail.dataset.click === "none") {
-  //     registerEmail.dataset.click = "click";
-  //     $(".arrow").html("&#8743");
-  //     $(".register-common, .register-provide")
-  //       .stop()
-  //       .animate({ bottom: "-90px" }, 350, () => {
-  //         $(".register-provide").animate({ bottom: "-165px" });
-  //       });
-  //   } else if (registerEmail.dataset.click === "click") {
-  //     registerEmail.dataset.click = "none";
-  //     $(".arrow").html("&#8744");
-  //     $(".register-common, .register-provide").stop().animate({ bottom: "0px" }, 500);
-  //   }
-  // });
-  ///animation of reigster_preivious page///
-  async function checkEmail(url: string, data: any) {
+  async function checkEmail(url: string) {
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: data }));
-      let fetchResult = await fetch(url, fetchObj);
+      let fetchResult = await fetch(url);
       if (fetchResult.status === 200 || 201) {
         let result = await fetchResult.json();
         // console.log(result);
@@ -78,7 +59,7 @@ export default function register() {
       alert("새로운 인증번호를 발송하였습니다.");
     }
     let inputdata = $("#common_email").val();
-    checkEmail("http://localhost:3000/web/check_email", inputdata);
+    checkEmail(`http://localhost:3000/web/check/duplicate/${inputdata}`);
   });
   //send send ajax request
 

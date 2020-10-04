@@ -94,22 +94,19 @@ function mypage() {
         }
     }
     (function () { return __awaiter(_this, void 0, void 0, function () {
-        var fetchObj, result, response, error_1;
+        var result, response, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 6, , 7]);
-                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ url: window.location.pathname.split("/")[3] }))];
+                    _a.trys.push([0, 5, , 6]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/web/data/modify/" + window.location.pathname.split("/")[4])];
                 case 1:
-                    fetchObj = _a.sent();
-                    return [4 /*yield*/, fetch("http://localhost:3000/web/modified_get_data", fetchObj)];
-                case 2:
                     result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
                     if (result.state === false)
                         return [2 /*return*/, alert("자료가 존재하지 않습니다.")];
                     return [4 /*yield*/, result.json()];
-                case 3:
+                case 2:
                     response = _a.sent();
                     sigungu.value = response.response.address.sigungu;
                     bname.value = response.response.address.bname;
@@ -124,14 +121,14 @@ function mypage() {
                     userwant_box.textContent = response.response.userwant_content;
                     selectedTime(response.response);
                     makeSymptonImg(response);
-                    return [3 /*break*/, 5];
-                case 4: throw new Error("reload fetch failed");
-                case 5: return [3 /*break*/, 7];
-                case 6:
+                    return [3 /*break*/, 4];
+                case 3: throw new Error("reload fetch failed");
+                case 4: return [3 /*break*/, 6];
+                case 5:
                     error_1 = _a.sent();
                     console.error(error_1);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     }); })();
@@ -141,9 +138,8 @@ function mypage() {
         if (data.length === 0) {
             var imgBox_1 = document.querySelector(".si-img-itemBox");
             while (imgBox_1.hasChildNodes) {
-                if (imgBox_1.firstChild === null) {
+                if (imgBox_1.firstChild === null)
                     break;
-                }
                 imgBox_1.removeChild(imgBox_1.firstChild);
             }
             imgBtn.style.display = "block";
@@ -196,9 +192,8 @@ function mypage() {
     function removeAndMakeNewImage(data) {
         var imgBox = document.querySelector(".si-img-itemBox");
         while (imgBox.hasChildNodes) {
-            if (imgBox.firstChild === null) {
+            if (imgBox.firstChild === null)
                 break;
-            }
             imgBox.removeChild(imgBox.firstChild);
         }
         commonMakeImg(data);
@@ -213,7 +208,7 @@ function mypage() {
                         return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }))];
                     case 1:
                         fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch("http://localhost:3000/web/modified_delete_session_img", fetchObj)];
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/modify/delete/session/img", fetchObj)];
                     case 2:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -248,17 +243,14 @@ function mypage() {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch(url, {
-                                method: "POST",
-                                body: formData,
-                            })];
+                        return [4 /*yield*/, fetch(url, { method: "POST", body: formData })];
                     case 2:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                         return [4 /*yield*/, result.json()];
                     case 3:
                         response = _a.sent();
-                        url === "http://localhost:3000/web/modified_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
+                        url === "http://localhost:3000/web/modify/session/img" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
                         return [3 /*break*/, 5];
                     case 4: throw new Error("fetch_image failed");
                     case 5: return [3 /*break*/, 7];
@@ -271,16 +263,15 @@ function mypage() {
             });
         });
     }
-    //리로드시 세션에 있는 정보로 자신을 등록하는 용도
     window.add_fileUpload = function (e) {
         if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/web/modified_add_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/modify/session/img/more", e.target.files);
     };
     window.previous_fileUpload = function (e) {
         if (e.target.files.length > 10)
             return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/web/modified_upload_image", e.target.files);
+        fetchImage("http://localhost:3000/web/modify/session/img", e.target.files);
     };
     window.openAddresss = function () {
         new daum.Postcode({

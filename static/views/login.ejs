@@ -18,27 +18,25 @@
       </div>
       <div class="login-box">
         <div class="login-slo">로그인</div>
-        <form method="POST" action="/web/login_process" class="login_form">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-          <div class="lb-registerbox lb-email">
-            <input id="login_email" type="text" placeholder="이메일을 입력하세요." name="login_email" autocomplete="off" />
-          </div>
-          <div class="lb-registerbox lb-pwd">
-            <input id="login_pwd" name="login_pwd" type="password" placeholder="비밀번호 입력해주세요." autocomplete="off" />
-          </div>
-          <span class="condition-login"></span>
-          <div class="login-for-user">
-            <section class="login-for-user-left">
-              <input type="checkbox" id="checkbox_id" />
-              <label for="checkbox_id">아이디 저장</label>
-            </section>
-            <section class="login-for-user-right">
-              <a href="/v1/find_user_email"><span>아이디 </span></a>
-              <a href="/v1/find_user_pwd"><span> / 비밀번호 찾기</span></a>
-            </section>
-          </div>
-          <input type="button" class="login-btn" value="로그인" />
-        </form>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="lb-registerbox lb-email">
+          <input id="login_email" type="text" placeholder="이메일을 입력하세요." name="login_email" autocomplete="off" />
+        </div>
+        <div class="lb-registerbox lb-pwd">
+          <input id="login_pwd" name="login_pwd" type="password" placeholder="비밀번호 입력해주세요." autocomplete="off" />
+        </div>
+        <span class="condition-login"></span>
+        <div class="login-for-user">
+          <section class="login-for-user-left">
+            <input type="checkbox" id="checkbox_id" />
+            <label for="checkbox_id">아이디 저장</label>
+          </section>
+          <section class="login-for-user-right">
+            <a href="/v1/find_user_email"><span>아이디 </span></a>
+            <a href="/v1/find_user_pwd"><span> / 비밀번호 찾기</span></a>
+          </section>
+        </div>
+        <input type="button" class="login-btn" value="로그인" />
       </div>
     </div>
     <script src="/bundle.js"></script>

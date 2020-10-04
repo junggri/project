@@ -6,6 +6,7 @@ let database: any = mysql.createConnection({
   user: mysqlCre.user,
   password: mysqlCre.password,
   database: mysqlCre.database,
+  multipleStatements: false,
 });
 database.connect();
 

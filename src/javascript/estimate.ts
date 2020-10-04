@@ -1,4 +1,3 @@
-import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     add_List: any;
@@ -14,7 +13,6 @@ export default function () {
   const estimate_num = document.querySelector(".estimate-pre-num");
   const estimateForm = document.querySelector(".estimateForm") as HTMLFormElement;
   const estimateBtn = document.querySelector(".estimate-btn") as HTMLDivElement;
-  let data: string[] = [];
   let estimate_item: any;
   let added_item: any;
   let lists_height: number = 0;
@@ -46,43 +44,21 @@ export default function () {
     estimate_container.scrollTop = estimate_container.scrollHeight;
   };
 
-  async function isLogined(url: string, data: any) {
+  estimateBtn.addEventListener("click", async (e) => {
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify(data));
-      let result = await fetch(url, fetchObj);
+      let result = await fetch("http://localhost:3000/web/user/check/login");
       if (result.status === 200 || 201) {
         let response = await result.json();
-        if (response.state === true) {
+        if (response.state) {
           estimateForm.submit();
           estimateForm.reset();
         } else {
-          if (confirm("로그인이 필요한 서비스입니다.")) {
-            location.href = "/web/login";
-          }
+          if (confirm("로그인이 필요한 서비스입니다.")) return (location.href = "/web/login");
         }
-      } else {
-        throw new Error("로그인유무 확인 실패");
       }
     } catch (error) {
       console.error(error);
-    }
-  }
-
-  estimateBtn.addEventListener("click", (e) => {
-    try {
-      if (estimate_item === undefined || estimate_item.length === 0) {
-        return isLogined("http://localhost:3000/web/user/check/login", { code: data, price: price });
-      } else {
-        for (let i = 0; i < estimate_item.length; i++) {
-          data.push(estimate_item[i].dataset.code);
-        }
-        return isLogined("http://localhost:3000/web/pre_estimate", { code: data, price: price });
-      }
-    } catch (error) {
-      console.error(error);
+      //5-- 서버에러
     }
   });
-
-  //input submit으로 바꾸고 실핼하기
 }
-//그냥 위에서 리턴값?모르겠다

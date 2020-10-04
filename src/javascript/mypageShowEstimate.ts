@@ -14,7 +14,7 @@ export default function showEstimate() {
     modifiedBtn[i].addEventListener("click", () => {
       let userNode: any = modifiedBtn[i].parentNode.parentNode.parentNode;
       let id: string = userNode.dataset.id;
-      location.href = `/web/modified_estimate/${id}`;
+      location.href = `/web/modifiment/estimate/${id}`;
     });
   }
 
@@ -26,10 +26,8 @@ export default function showEstimate() {
         target.parentNode.removeChild(target);
         try {
           let fetchObj: any = await FetchFunction("delete", "same-origin", JSON.stringify({ id: target.dataset.id }));
-          let result = await fetch("http://localhost:3000/web/delete_register_sympton", fetchObj);
+          let result = await fetch("http://localhost:3000/web/delete/sympton", fetchObj);
           if (result.status === 200 || 201) {
-            let response = await result.json();
-            console.log(response);
           }
         } catch (error) {
           console.error(error);
@@ -42,8 +40,7 @@ export default function showEstimate() {
     showBtn[i].addEventListener("click", async (e: any) => {
       let target: any = showBtn[i].parentNode.parentNode;
       try {
-        let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ sympton_id: target.dataset.id }));
-        let result = await fetch("http://localhost:3000/web/find_provider", fetchObj);
+        let result = await fetch(`http://localhost:3000/web/find/${target.dataset.id}/provider`);
         if (result.status === 200 || 201) {
           let response = await result.json();
           if (response.state === false) return alert("받은 견적이 존재하지 않습니다.");
@@ -53,7 +50,7 @@ export default function showEstimate() {
             window.location.reload();
             return;
           }
-          window.location.href = `estimateDetail/${target.dataset.id}`;
+          window.location.href = `/web/show/providers/${target.dataset.id}`;
         } else {
           let error = new Error("에러발생");
           error.name = "error";
@@ -70,8 +67,7 @@ export default function showEstimate() {
       showAccept[i].addEventListener("click", async (e: any) => {
         let target: any = showAccept[i].parentNode;
         try {
-          let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ submit_id: target.dataset.id }));
-          let result = await fetch("http://localhost:3000/web/get_data_accepted", fetchObj);
+          let result = await fetch(`http://localhost:3000/web/data/submit/${target.dataset.id}`);
           if (result.status === 200 || 201) {
             let response = await result.json();
             let payment;
@@ -100,10 +96,10 @@ export default function showEstimate() {
   }
   addEventOnShowAcceptBtn(showAccept);
 
-  document.onreadystatechange = () => {
-    let state = document.readyState;
-    if (state == "interactive") {
-    } else if (state == "complete") {
-    }
-  };
+  // document.onreadystatechange = () => {
+  //   let state = document.readyState;
+  //   if (state == "interactive") {
+  //   } else if (state == "complete") {
+  //   }
+  // };
 }

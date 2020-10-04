@@ -50,7 +50,7 @@ exports.symptonList = function () { return __awaiter(void 0, void 0, void 0, fun
                 symptons = _a.sent();
                 container = "";
                 for (i = 0; i < symptons.length; i++) {
-                    list = " <li class=\"problem-item\" data-price=\"" + symptons[i].avg_price + "\">\n      <input type=\"checkbox\" class=\"estimate_btn\" id=\"sypmtom-" + symptons[i].code + "\" onclick=\"add_List(this)\" name=\"sympton\" value=\"" + symptons[i].code + "\" />\n      <label for=\"sypmtom-" + symptons[i].code + "\">" + symptons[i].content + "</label>\n    </li>";
+                    list = " <li class=\"problem-item\" data-price=\"" + symptons[i].avg_price + "\">\n      <input type=\"checkbox\" class=\"estimate_btn\" id=\"sypmtom-" + symptons[i].code + "\" onclick=\"add_List(this)\" name=\"code\" value=\"" + symptons[i].code + "\" />\n      <label for=\"sypmtom-" + symptons[i].code + "\">" + symptons[i].content + "</label>\n    </li>";
                     container += list;
                 }
                 return [2 /*return*/, container];

@@ -380,7 +380,7 @@ registerSymController.findBeforeModified = function (req, res) { return __awaite
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: req.url.split("/")[2] })];
+            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: req.params.id })];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];
@@ -391,7 +391,7 @@ registerSymController.findImageBeforeModified = function (req, res) { return __a
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: req.body.url })];
+            case 0: return [4 /*yield*/, registerSymModel_1.default.findOne({ _id: req.params.id })];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];

@@ -20,6 +20,13 @@ import cors from "cors";
 import socketIO from "socket.io";
 import debug from "debug";
 
+const Appserver = debug("app:Appserver");
+const error = debug("error:server");
+const fail = debug("error:request");
+Appserver("sever start");
+error("404 not found");
+fail("request failure");
+
 dotenv.config();
 
 const RedisStore = connectRedis(session);
@@ -78,8 +85,8 @@ app.use(express.static(path.join(__dirname, "../static/css")));
 app.use(express.static(path.join(__dirname, "../static/image")));
 app.use(express.static(path.join(__dirname, "../upload")));
 
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(bodyParser.urlencoded({ limit: "50mb", parameterLimit: 100000, extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(helmet.frameguard({ action: "deny" }));
 app.use(helmet.xssFilter());

@@ -49,7 +49,7 @@ var findUserData_1 = __importDefault(require("./findUserData"));
 var reset_1 = __importDefault(require("./reset"));
 var oauth_1 = __importDefault(require("./oauth"));
 var provide_1 = __importDefault(require("./provide"));
-var mypageEstimate_1 = __importDefault(require("./mypageEstimate"));
+var mypageShowProvider_1 = __importDefault(require("./mypageShowProvider"));
 var mypageShowEstimate_1 = __importDefault(require("./mypageShowEstimate"));
 var p_index_1 = __importDefault(require("./p_index"));
 var p_findAllRegister_1 = __importDefault(require("./p_findAllRegister"));
@@ -80,9 +80,6 @@ if (path === "/provide/showGotEstimate") {
 }
 if (path === "/provide/showsubmit") {
     p_showsubmit_1.default();
-}
-if (path.split("/")[3] === "estimateDetail") {
-    mypageEstimate_1.default();
 }
 if (path === "/provide/mypage") {
     p_mypage_1.default();
@@ -118,13 +115,16 @@ if (path === "/web/estimate") {
 if (path === "/web/mypage") {
     mypqge_1.default();
 }
+if (path.split("/")[2] === "show" && path.split("/")[3] === "providers") {
+    mypageShowProvider_1.default();
+}
 if (path === "/web/mypage/showestimate") {
     mypageShowEstimate_1.default();
 }
-if (path.split("/")[2] === "modified_estimate") {
+if (path.split("/")[2] === "modifiment") {
     modified_estimate_1.default();
 }
-if (path === "/web/get_estimate") {
+if (path === "/web/write/sympton") {
     get_esimate_1.default();
 }
 if (path === "/web/index") {

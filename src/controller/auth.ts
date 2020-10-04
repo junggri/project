@@ -1,7 +1,6 @@
 import passport from "../lib/passport";
 import express, { Request, Response, NextFunction } from "express";
 import passportController from "../model/controller/oauthController";
-import user from "../model/schema/usermodel";
 import { createToken } from "../lib/accesstoken";
 import refreshToken from "../lib/refreshtoken";
 import jwt from "jsonwebtoken";

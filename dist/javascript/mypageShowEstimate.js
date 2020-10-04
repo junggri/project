@@ -55,7 +55,7 @@ function showEstimate() {
         modifiedBtn[i].addEventListener("click", function () {
             var userNode = modifiedBtn[i].parentNode.parentNode.parentNode;
             var id = userNode.dataset.id;
-            location.href = "/web/modified_estimate/" + id;
+            location.href = "/web/modifiment/estimate/" + id;
         });
     };
     for (var i = 0; i < modifiedBtn.length; i++) {
@@ -63,35 +63,31 @@ function showEstimate() {
     }
     var _loop_2 = function (i) {
         deleteBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var deleteConfirm, target, fetchObj, result, response, error_1;
+            var deleteConfirm, target, fetchObj, result, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         deleteConfirm = confirm("정말로 등록을 삭제하시겠습니까?");
                         target = deleteBtn[i].parentNode.parentNode.parentNode;
-                        if (!deleteConfirm) return [3 /*break*/, 7];
+                        if (!deleteConfirm) return [3 /*break*/, 5];
                         target.parentNode.removeChild(target);
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
+                        _a.trys.push([1, 4, , 5]);
                         return [4 /*yield*/, fetchFunction_1.default("delete", "same-origin", JSON.stringify({ id: target.dataset.id }))];
                     case 2:
                         fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch("http://localhost:3000/web/delete_register_sympton", fetchObj)];
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/delete/sympton", fetchObj)];
                     case 3:
                         result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, result.json()];
+                        if (result.status === 200 || 201) {
+                        }
+                        return [3 /*break*/, 5];
                     case 4:
-                        response = _a.sent();
-                        console.log(response);
-                        _a.label = 5;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
                         error_1 = _a.sent();
                         console.error(error_1);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
                 }
             });
         }); });
@@ -101,23 +97,20 @@ function showEstimate() {
     }
     var _loop_3 = function (i) {
         showBtn[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var target, fetchObj, result, response, error, error_2;
+            var target, result, response, error, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         target = showBtn[i].parentNode.parentNode;
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 7, , 8]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ sympton_id: target.dataset.id }))];
+                        _a.trys.push([1, 6, , 7]);
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/find/" + target.dataset.id + "/provider")];
                     case 2:
-                        fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch("http://localhost:3000/web/find_provider", fetchObj)];
-                    case 3:
                         result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                         return [4 /*yield*/, result.json()];
-                    case 4:
+                    case 3:
                         response = _a.sent();
                         if (response.state === false)
                             return [2 /*return*/, alert("받은 견적이 존재하지 않습니다.")];
@@ -127,18 +120,18 @@ function showEstimate() {
                             window.location.reload();
                             return [2 /*return*/];
                         }
-                        window.location.href = "estimateDetail/" + target.dataset.id;
-                        return [3 /*break*/, 6];
-                    case 5:
+                        window.location.href = "/web/show/providers/" + target.dataset.id;
+                        return [3 /*break*/, 5];
+                    case 4:
                         error = new Error("에러발생");
                         error.name = "error";
                         throw error;
-                    case 6: return [3 /*break*/, 8];
-                    case 7:
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         error_2 = _a.sent();
                         console.error(error_2);
-                        return [3 /*break*/, 8];
-                    case 8: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         }); });
@@ -153,23 +146,20 @@ function showEstimate() {
             return __generator(this, function (_a) {
                 _loop_4 = function (i) {
                     showAccept[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                        var target, fetchObj, result, response, payment, error, error_3;
+                        var target, result, response, payment, error, error_3;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
                                     target = showAccept[i].parentNode;
                                     _a.label = 1;
                                 case 1:
-                                    _a.trys.push([1, 7, , 8]);
-                                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ submit_id: target.dataset.id }))];
+                                    _a.trys.push([1, 6, , 7]);
+                                    return [4 /*yield*/, fetch("http://localhost:3000/web/data/submit/" + target.dataset.id)];
                                 case 2:
-                                    fetchObj = _a.sent();
-                                    return [4 /*yield*/, fetch("http://localhost:3000/web/get_data_accepted", fetchObj)];
-                                case 3:
                                     result = _a.sent();
-                                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                                     return [4 /*yield*/, result.json()];
-                                case 4:
+                                case 3:
                                     response = _a.sent();
                                     payment = void 0;
                                     response.submit.payment === false ? (payment = "결제전") : (payment = "결제 완료");
@@ -184,17 +174,17 @@ function showEstimate() {
                                     checkBtn.addEventListener("click", function (e) {
                                         showStatebox.style.display = "none";
                                     });
-                                    return [3 /*break*/, 6];
-                                case 5:
+                                    return [3 /*break*/, 5];
+                                case 4:
                                     error = new Error("에러발생");
                                     error.name = "error";
                                     throw error;
-                                case 6: return [3 /*break*/, 8];
-                                case 7:
+                                case 5: return [3 /*break*/, 7];
+                                case 6:
                                     error_3 = _a.sent();
                                     console.error(error_3);
-                                    return [3 /*break*/, 8];
-                                case 8: return [2 /*return*/];
+                                    return [3 /*break*/, 7];
+                                case 7: return [2 /*return*/];
                             }
                         });
                     }); });
@@ -207,13 +197,12 @@ function showEstimate() {
         });
     }
     addEventOnShowAcceptBtn(showAccept);
-    document.onreadystatechange = function () {
-        var state = document.readyState;
-        if (state == "interactive") {
-        }
-        else if (state == "complete") {
-        }
-    };
+    // document.onreadystatechange = () => {
+    //   let state = document.readyState;
+    //   if (state == "interactive") {
+    //   } else if (state == "complete") {
+    //   }
+    // };
 }
 exports.default = showEstimate;
 //# sourceMappingURL=mypageShowEstimate.js.map

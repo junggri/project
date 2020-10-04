@@ -68,223 +68,6 @@ function get_estimate() {
     var userWantContent = document.querySelector("#userwant-box");
     var imgBox = document.querySelector(".si-img-itemBox");
     var lengthFlag = true;
-    window.onpageshow = function (event) {
-        var _this = this;
-        if (event.persisted || (window.performance && window.performance.navigation.type == 2)) {
-            //페이지가 백버튼으로 들어왔을때 실행되는 부분
-        }
-        else {
-            (function () { return __awaiter(_this, void 0, void 0, function () {
-                var fetchObj, result, response, error_1;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            _a.trys.push([0, 6, , 7]);
-                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", null)];
-                        case 1:
-                            fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/web/fetch_session", fetchObj)];
-                        case 2:
-                            result = _a.sent();
-                            if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                            return [4 /*yield*/, result.json()];
-                        case 3:
-                            response = _a.sent();
-                            //if session.img isnt defineded
-                            if (response.state === false)
-                                return [2 /*return*/];
-                            makeSymptonImg(response);
-                            return [3 /*break*/, 5];
-                        case 4: throw new Error("reload fetch failed");
-                        case 5: return [3 /*break*/, 7];
-                        case 6:
-                            error_1 = _a.sent();
-                            console.error(error_1);
-                            return [3 /*break*/, 7];
-                        case 7: return [2 /*return*/];
-                    }
-                });
-            }); })();
-        }
-    };
-    function lengthOfImg(data) {
-        var imgLength = document.querySelector(".si-img-length");
-        imgLength.textContent = data.length + " / 10\uAC1C \uB4F1\uB85D";
-        if (data.length === 0) {
-            //delete add-fetch-btn-img
-            var imgBox_1 = document.querySelector(".si-img-itemBox");
-            while (imgBox_1.hasChildNodes) {
-                if (imgBox_1.firstChild === null) {
-                    break;
-                }
-                imgBox_1.removeChild(imgBox_1.firstChild);
-            }
-            imgBtn.style.display = "block";
-        }
-        else if (data.length === 10) {
-            lengthFlag = false;
-        }
-        else {
-            lengthFlag = true;
-        }
-    }
-    function makeSymptonImg(data) {
-        if (data.img === undefined)
-            return;
-        imgBtn.style.display = "none";
-        commonMakeImg(data);
-    }
-    function removeAndMakeNewImage(data) {
-        var imgBox = document.querySelector(".si-img-itemBox");
-        //remove img-item which is already made item
-        while (imgBox.hasChildNodes) {
-            if (imgBox.firstChild === null) {
-                break;
-            }
-            imgBox.removeChild(imgBox.firstChild);
-        }
-        commonMakeImg(data);
-    }
-    function commonMakeImg(data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var addImgBox, i, imgItem, cancelIcon;
-            var _this = this;
-            return __generator(this, function (_a) {
-                addImgBox = document.createElement("div");
-                for (i = 0; i < data.img.length; i++) {
-                    imgItem = document.createElement("div");
-                    cancelIcon = document.createElement("div");
-                    cancelIcon.classList.add("img-box-cancel");
-                    imgItem.classList.add("img-item");
-                    imgItem.style.backgroundImage = "url(\"/" + data.email.user_objectId + "/" + data.img[i] + "\")";
-                    imgItem.dataset.img = data.img[i];
-                    imgItem.appendChild(cancelIcon);
-                    imgBox.insertBefore(imgItem, imgBox.firstChild);
-                    cancelIcon.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0: return [4 /*yield*/, delete_img_session(e)];
-                                case 1:
-                                    _a.sent();
-                                    return [2 /*return*/];
-                            }
-                        });
-                    }); });
-                }
-                addImgBox.classList.add("img-item-addBox");
-                addImgBox.addEventListener("click", function (e) {
-                    if (!lengthFlag)
-                        return alert("등록가능한 사진을 초과하셨습니다.");
-                    addFileBtn.click();
-                });
-                imgBox.appendChild(addImgBox);
-                lengthOfImg(data.img);
-                return [2 /*return*/];
-            });
-        });
-    }
-    function delete_img_session(e) {
-        return __awaiter(this, void 0, void 0, function () {
-            var fetchObj, result, response, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }))];
-                    case 1:
-                        fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch("http://localhost:3000/web/delete_img", fetchObj)];
-                    case 2:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
-                    case 3:
-                        response = _a.sent();
-                        lengthOfImg(response);
-                        if (response.length !== 0)
-                            return [2 /*return*/, imgBox.removeChild(e.target.parentNode)];
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_2 = _a.sent();
-                        console.error(error_2);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
-                }
-            });
-        });
-    }
-    function fetchImage(url, data) {
-        return __awaiter(this, void 0, void 0, function () {
-            var formData, i, result, response, err, error_3;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        formData = new FormData();
-                        for (i = 0; i < data.length; i++) {
-                            formData.append("data", data[i]);
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch(url, {
-                                method: "POST",
-                                credentials: "same-origin",
-                                body: formData,
-                            })];
-                    case 2:
-                        result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                        return [4 /*yield*/, result.json()];
-                    case 3:
-                        response = _a.sent();
-                        url === "http://localhost:3000/web/fetch_upload_image" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
-                        return [3 /*break*/, 5];
-                    case 4:
-                        err = new Error("fetch 실패(사진등록)");
-                        err.name = "FAIL_SAVE_IMG_INSESSION";
-                        throw err;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        error_3 = _a.sent();
-                        console.error(1, error_3);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
-                }
-            });
-        });
-    }
-    window.add_fileUpload = function (e) {
-        if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
-            return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/web/fetch_add_upload_image", e.target.files);
-    };
-    window.previous_fileUpload = function (e) {
-        if (e.target.files.length > 10)
-            return alert("최대 10장까지 등록가능합니다.");
-        fetchImage("http://localhost:3000/web/fetch_upload_image", e.target.files);
-    };
-    window.formAndBlockBack = function () {
-        var check = confirm("간편견적을 받아보시겠습니까?");
-        if (check) {
-            if (symptonDetailBox.value === "" ||
-                timeBox.value === "" ||
-                minuteBox.value === "" ||
-                userWantContent.value === "" ||
-                roadAddress.value === "" ||
-                postcode.value === "" ||
-                detailAddress.value === "") {
-                return alert("필수사항을 입력해주시길 바랍니다.");
-            }
-            else {
-                submitForm.submit();
-                submitForm.reset();
-            }
-        }
-        else {
-            return false;
-        }
-    };
     function clickNextBtn() {
         page_1.style.display = "none";
         page_2.style.display = "block";
@@ -313,6 +96,199 @@ function get_estimate() {
     imgBtn.addEventListener("click", function () {
         fileBtn.click();
     });
+    function lengthOfImg(data) {
+        var imgLength = document.querySelector(".si-img-length");
+        imgLength.textContent = data.length + " / 10\uAC1C \uB4F1\uB85D";
+        //delete add-fetch-btn-img
+        if (data.length === 0) {
+            var imgBox_1 = document.querySelector(".si-img-itemBox");
+            while (imgBox_1.hasChildNodes) {
+                if (imgBox_1.firstChild === null)
+                    break;
+                imgBox_1.removeChild(imgBox_1.firstChild);
+            }
+            imgBtn.style.display = "block";
+        }
+        else if (data.length === 10) {
+            lengthFlag = false;
+        }
+        else {
+            lengthFlag = true;
+        }
+    }
+    function makeSymptonImg(data) {
+        if (data.img === undefined)
+            return;
+        imgBtn.style.display = "none";
+        commonMakeImg(data);
+    }
+    function removeAndMakeNewImage(data) {
+        var imgBox = document.querySelector(".si-img-itemBox");
+        //remove img-item which is already made item
+        while (imgBox.hasChildNodes) {
+            if (imgBox.firstChild === null)
+                break;
+            imgBox.removeChild(imgBox.firstChild);
+        }
+        commonMakeImg(data);
+    }
+    function commonMakeImg(data) {
+        var addImgBox = document.createElement("div");
+        for (var i = 0; i < data.img.length; i++) {
+            var imgItem = document.createElement("div");
+            var cancelIcon = document.createElement("div");
+            cancelIcon.classList.add("img-box-cancel");
+            imgItem.classList.add("img-item");
+            imgItem.style.backgroundImage = "url(\"/" + data.userdata.user_objectId + "/" + data.img[i] + "\")";
+            imgItem.dataset.img = data.img[i];
+            imgItem.appendChild(cancelIcon);
+            imgBox.insertBefore(imgItem, imgBox.firstChild);
+            cancelIcon.addEventListener("click", function (e) {
+                delete_img_session(e);
+            });
+        }
+        addImgBox.classList.add("img-item-addBox");
+        addImgBox.addEventListener("click", function (e) {
+            if (!lengthFlag)
+                return alert("등록가능한 사진을 초과하셨습니다.");
+            addFileBtn.click();
+        });
+        imgBox.appendChild(addImgBox);
+        lengthOfImg(data.img);
+    }
+    function delete_img_session(e) {
+        return __awaiter(this, void 0, void 0, function () {
+            var fetchObj, result, response, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: e.target.parentNode.dataset.img }))];
+                    case 1:
+                        fetchObj = _a.sent();
+                        return [4 /*yield*/, fetch("http://localhost:3000/web/delete/session/img", fetchObj)];
+                    case 2:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, result.json()];
+                    case 3:
+                        response = _a.sent();
+                        if (response.length !== 0)
+                            imgBox.removeChild(e.target.parentNode);
+                        lengthOfImg(response);
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_1 = _a.sent();
+                        console.error(error_1);
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    }
+    function fetchImage(url, data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var formData, i, result, response, err, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        formData = new FormData();
+                        for (i = 0; i < data.length; i++) {
+                            formData.append("data", data[i]);
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        return [4 /*yield*/, fetch(url, { method: "POST", credentials: "same-origin", body: formData })];
+                    case 2:
+                        result = _a.sent();
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, result.json()];
+                    case 3:
+                        response = _a.sent();
+                        url === "http://localhost:3000/web/add/session/img" ? makeSymptonImg(response) : removeAndMakeNewImage(response);
+                        return [3 /*break*/, 5];
+                    case 4:
+                        err = new Error("fetch 실패(사진등록)");
+                        err.name = "FAIL_SAVE_IMG_INSESSION";
+                        throw err;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_2 = _a.sent();
+                        console.error(1, error_2);
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    }
+    window.onpageshow = function (event) {
+        var _this = this;
+        if (event.persisted || (window.performance && window.performance.navigation.type == 2)) {
+            //페이지가 백버튼으로 들어왔을때 실행되는 부분
+        }
+        else {
+            (function () { return __awaiter(_this, void 0, void 0, function () {
+                var result, response, error_3;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 5, , 6]);
+                            return [4 /*yield*/, fetch("http://localhost:3000/web/users/session")];
+                        case 1:
+                            result = _a.sent();
+                            if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
+                            return [4 /*yield*/, result.json()];
+                        case 2:
+                            response = _a.sent();
+                            if (response.state === false)
+                                return [2 /*return*/];
+                            makeSymptonImg(response);
+                            return [3 /*break*/, 4];
+                        case 3: throw new Error("reload fetch failed");
+                        case 4: return [3 /*break*/, 6];
+                        case 5:
+                            error_3 = _a.sent();
+                            console.error(error_3);
+                            return [3 /*break*/, 6];
+                        case 6: return [2 /*return*/];
+                    }
+                });
+            }); })();
+        }
+    };
+    window.add_fileUpload = function (e) {
+        if ($(".img-item").length + e.target.files.length > 10 || e.target.files.length > 10)
+            return alert("최대 10장까지 등록가능합니다.");
+        fetchImage("http://localhost:3000/web/add/session/img/more", e.target.files);
+    };
+    window.previous_fileUpload = function (e) {
+        if (e.target.files.length > 10)
+            return alert("최대 10장까지 등록가능합니다.");
+        fetchImage("http://localhost:3000/web/add/session/img", e.target.files);
+    };
+    window.formAndBlockBack = function () {
+        var check = confirm("간편견적을 받아보시겠습니까?");
+        if (check) {
+            if (symptonDetailBox.value === "" ||
+                timeBox.value === "" ||
+                minuteBox.value === "" ||
+                userWantContent.value === "" ||
+                roadAddress.value === "" ||
+                postcode.value === "" ||
+                detailAddress.value === "") {
+                return alert("필수사항을 입력해주시길 바랍니다.");
+            }
+            else {
+                submitForm.submit();
+                submitForm.reset();
+            }
+        }
+        else {
+            return false;
+        }
+    };
     window.openAddresss = function () {
         new daum.Postcode({
             width: width,

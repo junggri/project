@@ -7,7 +7,7 @@ var request_1 = __importDefault(require("request"));
 var CryptoJS = require("crypto-js");
 var resultCode;
 var _content;
-function sendVerifyNumver(req, res, state, phone_num) {
+function sendVerifyNumver(res, state, phone_num) {
     var randomArray = [];
     for (var i = 0; i < 6; i++) {
         var randomNum = Math.floor(Math.random() * 10);
@@ -34,7 +34,7 @@ function sendVerifyNumver(req, res, state, phone_num) {
     hmac.update(accessKey);
     var hash = hmac.finalize();
     var signature = hash.toString(CryptoJS.enc.Base64);
-    if (state === "alert") {
+    if (state === "acception") {
         _content = "회원님의 견적을 수락하셨습니다.";
     }
     else {
