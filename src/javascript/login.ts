@@ -21,7 +21,7 @@ export default function login() {
     async function loginProcess(data: Data) {
       try {
         let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify(data));
-        let result = await fetch("http://localhost:3000/web/login/process", fetchObj);
+        let result = await fetch("http://localhost:3000/web/users/login", fetchObj);
         if (result.status === 200 || 201) {
           let response = await result.json();
           response.state === true ? (window.location.href = response.url) : (state.textContent = response.msg);
@@ -43,8 +43,8 @@ export default function login() {
     async function getEmailFromCookie(email: string, state: string) {
       if (email === "") return;
       try {
-        let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: email, state: state }));
-        let response = await fetch("http://localhost:3000/v1/setUserEmailCookie", fetchObj);
+        // let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: email, state: state }));
+        let response = await fetch(`http://localhost:3000/v1/users/${email}/cookie/${state}`);
         if (response.status === 200 || 201) {
           let result = await response.json();
           return result;

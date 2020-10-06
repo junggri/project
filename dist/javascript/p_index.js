@@ -60,7 +60,7 @@ function p_index() {
                         }))];
                 case 1:
                     fetchObj = _a.sent();
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/login_process", fetchObj)];
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/login/process", fetchObj)];
                 case 2:
                     result = _a.sent();
                     if (!(result.status === 200 || 201)) return [3 /*break*/, 4];

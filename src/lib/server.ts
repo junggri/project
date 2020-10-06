@@ -4,7 +4,8 @@ dotenv.config();
 
 const { MONGO_ID, MONGO_PWD } = process.env;
 
-const MONGO_URL = `mongodb://${MONGO_ID}:${MONGO_PWD}@localhost:27017/coscuz?replicaSet=rs0`;
+// const MONGO_URL = `mongodb://${MONGO_ID}:${MONGO_PWD}@localhost:27017/coscuz?replicaSet=rs0`;
+const MONGO_URL = `mongodb://localhost:27017/coscuz`;
 
 // mongoose.Promise = global.Promise;
 export default function server() {

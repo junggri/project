@@ -17,19 +17,14 @@ import userController from "../model/controller/userContoller";
 import registerSymController from "../model/controller/registerSymptonContoller";
 import provideController from "../model/controller/provideController";
 import submitController from "../model/controller/submitController";
-// import oauthController from "../lib/controller/oauthController";
 import users from "../model/schema/usermodel";
 import auth from "../lib/authStatus";
-// import oauth from "../lib/model/oauthModel";
 import getDataFromToken from "../lib/getDataFromToken";
 import { selcted_sympton } from "../lib/symptonList";
 import { upload, reupload, modifiedUpload, modifiedReupload } from "../lib/multer";
 import { verify, isLogined, isNotLogined } from "../lib/jwtverify";
-//verify는 로그인이 유지되기 위하여 이용되는 미들웨어 get에는 무조건 포함해야하
-//islogined isnotlogind도 fetch 할때 적용된다 확인하기
 import { createToken } from "../lib/accesstoken";
 import deleteImg from "../lib/deleteImg";
-import { encrypt, decrypt } from "../lib/setAndGetCookie";
 import sendPhone from "../lib/sendPhone";
 import { makeSumbitbox } from "../lib/mypageState";
 import { symptonList } from "../lib/symptonList";
@@ -62,16 +57,6 @@ interface Decoded {
   username: string;
 }
 
-router.post("/setUserEmailCookie", csrfProtection, verify, (req, res) => {
-  if (req.body.state === "set") {
-    const encryptResult = encrypt(req.body.email);
-    res.status(200).json({ email: encryptResult });
-  } else {
-    const decryptResult = decrypt(req.body.email);
-    res.status(200).json({ decrypt: decryptResult });
-  }
-});
-
 router.get("/index", csrfProtection, verify, (req, res, next) => {
   let authUI = auth.status(req, res);
   res.render("index", { authUI: authUI });
@@ -87,17 +72,13 @@ router.get("/estimate", verify, csrfProtection, (req, res, next) => {
 });
 
 router.get("/login", csrfProtection, verify, isLogined, (req: any, res, next) => {
-  if (req.headers.referer === undefined) {
-    req.session.referer = "http://localhost:3000/web/index";
-  } else {
-    req.session.referer = req.headers.referer;
-  }
+  req.headers.referer === undefined ? (req.session.referer = "http://localhost:3000/web/index") : (req.session.referer = req.headers.referer);
   req.session.save(() => {
     res.render("login", { csrfToken: req.csrfToken() });
   });
 });
 
-router.post("/login/process", parseForm, csrfProtection, async (req: any, res: any) => {
+router.post("/users/login", parseForm, csrfProtection, async (req: any, res: any) => {
   let _email = mongoSanitize(req.body.email);
   let _pwd = mongoSanitize(req.body.pwd);
   //보안이라는데;;흠;;;
@@ -109,7 +90,6 @@ router.post("/login/process", parseForm, csrfProtection, async (req: any, res: a
       let userObjectId = result._id;
       crypto.pbkdf2(_pwd, result.salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, (err, key) => {
         if (key.toString("base64") === result.password) {
-          //오케이 로그인 성공했어
           createToken(req, res, _email, result.name, result._id);
           let _refresh_token = refreshToken(req, res, _email, result.name, result._id);
           let save_token = result.refresh_token;
@@ -119,18 +99,16 @@ router.post("/login/process", parseForm, csrfProtection, async (req: any, res: a
           } else {
             try {
               jwt.verify(save_token, process.env.JWT_SECRET);
-              console.log("리프래쉬 토큰이 있어요", req.session.referer);
               return res.status(200).json({ url: req.session.referer, state: true });
             } catch (error) {
               if (error.name === "TokenExpiredError") {
-                console.log("토큰이 있는데 유효하지 않아서 재발급할겡", req.session.referer);
                 userController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
                 return res.status(200).json({ url: req.session.referer, state: true });
               }
             }
           }
         } else {
-          res.stuatus(200).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+          res.status(200).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
         }
       });
     }

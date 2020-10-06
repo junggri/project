@@ -12,7 +12,7 @@ import mongoServer from "./lib/server";
 import compression from "compression";
 import { stream } from "./lib/winston";
 import createError from "http-errors";
-import noCache from "nocache";
+// import noCache from "nocache";
 import dotenv from "dotenv";
 import passport from "passport";
 import flash from "connect-flash";
@@ -91,7 +91,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(helmet.frameguard({ action: "deny" }));
 app.use(helmet.xssFilter());
 app.use(helmet.noSniff());
-app.use(noCache());
+// app.use(noCache());
 app.use(compression());
 app.disable("x-powered-by");
 
@@ -102,7 +102,7 @@ app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
-import CommonRouter from "./controller/web";
+import CommonRouter from "./controller/v1";
 import webRouter from "./controller/web";
 import provierRouter from "./controller/provide";
 

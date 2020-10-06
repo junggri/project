@@ -1,5 +1,5 @@
 import express from "express";
-import bodyParser, { json } from "body-parser";
+import bodyParser from "body-parser";
 import csrf from "csurf";
 import auth from "../lib/p_authStatus";
 import jwt from "jsonwebtoken";
@@ -18,6 +18,7 @@ import { MakeAllSymptonList, MakePagination, showSubmitList, showGottList } from
 import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
 import mysql from "../lib/mysql";
 import qs from "querystring";
+import noCache from "nocache";
 import { makeJuso } from "../lib/p_makeJuso";
 
 const parseForm = bodyParser.urlencoded({ extended: false });
@@ -46,15 +47,13 @@ router.get("/index", csrfProtection, verify, isLogined, (req, res) => {
   });
 });
 
-router.post("/login_process", parseForm, csrfProtection, async (req, res) => {
+router.post("/login/process", parseForm, csrfProtection, async (req, res) => {
   let _email = mongoSanitize(req.body.email);
   let _pwd = mongoSanitize(req.body.pwd);
   let result: any = await providers.findOne({ email: { $in: [_email] } });
-  //보안이라는데;;흠;;;
-  // let result: any = await providers.findOne({ email: _email });
   try {
     if (result === null) {
-      res.json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+      res.status(401).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
     } else {
       let userObjectId = result._id;
       crypto.pbkdf2(_pwd, result.salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, (err, key) => {
@@ -65,22 +64,22 @@ router.post("/login_process", parseForm, csrfProtection, async (req, res) => {
           let save_token = result.refresh_token;
           if (save_token === undefined) {
             provideController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
-            return res.json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+            return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
           } else {
             try {
               console.log("리프래쉬 토큰이 있어요");
               jwt.verify(save_token, process.env.JWT_SECRET);
-              return res.json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+              return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
             } catch (error) {
               if (error.name === "TokenExpiredError") {
                 console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
                 provideController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
-                return res.json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+                return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
               }
             }
           }
         } else {
-          res.json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+          res.status(401).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
         }
       });
     }
@@ -103,7 +102,7 @@ router.get("/findAllRegister", csrfProtection, verify, isNotLogined, async (req,
     makeJuso(req, res, authUI, _AllSympton, pagination);
   } else {
     let data = await registerSymController.getAllData(pageNum, divided_num);
-    let allData = registerSymController.makePagination();
+    let allData = await registerSymController.makePagination();
     let _AllSympton = MakeAllSymptonList(data, pageNum, divided_num);
     let pagination = MakePagination(req, res, allData, divided_num);
     res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });

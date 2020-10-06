@@ -22,7 +22,7 @@ export default function p_index() {
           pwd: providePwd.value,
         })
       );
-      let result = await fetch("http://localhost:3000/provide/login_process", fetchObj);
+      let result = await fetch("http://localhost:3000/provide/login/process", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         response.state === true ? (window.location.href = response.url) : (provideState.textContent = response.msg);

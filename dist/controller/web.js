@@ -58,19 +58,14 @@ var userContoller_1 = __importDefault(require("../model/controller/userContoller
 var registerSymptonContoller_1 = __importDefault(require("../model/controller/registerSymptonContoller"));
 var provideController_1 = __importDefault(require("../model/controller/provideController"));
 var submitController_1 = __importDefault(require("../model/controller/submitController"));
-// import oauthController from "../lib/controller/oauthController";
 var usermodel_1 = __importDefault(require("../model/schema/usermodel"));
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
-// import oauth from "../lib/model/oauthModel";
 var getDataFromToken_1 = __importDefault(require("../lib/getDataFromToken"));
 var symptonList_1 = require("../lib/symptonList");
 var multer_1 = require("../lib/multer");
 var jwtverify_1 = require("../lib/jwtverify");
-//verify는 로그인이 유지되기 위하여 이용되는 미들웨어 get에는 무조건 포함해야하
-//islogined isnotlogind도 fetch 할때 적용된다 확인하기
 var accesstoken_1 = require("../lib/accesstoken");
 var deleteImg_1 = __importDefault(require("../lib/deleteImg"));
-var setAndGetCookie_1 = require("../lib/setAndGetCookie");
 var sendPhone_1 = __importDefault(require("../lib/sendPhone"));
 var mypageState_1 = require("../lib/mypageState");
 var symptonList_2 = require("../lib/symptonList");
@@ -87,16 +82,6 @@ function makeStorage(decoded) {
     if (!fs_1.default.existsSync(_dir))
         fs_1.default.mkdirSync(_dir);
 }
-router.post("/setUserEmailCookie", csrfProtection, jwtverify_1.verify, function (req, res) {
-    if (req.body.state === "set") {
-        var encryptResult = setAndGetCookie_1.encrypt(req.body.email);
-        res.status(200).json({ email: encryptResult });
-    }
-    else {
-        var decryptResult = setAndGetCookie_1.decrypt(req.body.email);
-        res.status(200).json({ decrypt: decryptResult });
-    }
-});
 router.get("/index", csrfProtection, jwtverify_1.verify, function (req, res, next) {
     var authUI = authStatus_1.default.status(req, res);
     res.render("index", { authUI: authUI });
@@ -112,17 +97,12 @@ router.get("/estimate", jwtverify_1.verify, csrfProtection, function (req, res, 
     });
 });
 router.get("/login", csrfProtection, jwtverify_1.verify, jwtverify_1.isLogined, function (req, res, next) {
-    if (req.headers.referer === undefined) {
-        req.session.referer = "http://localhost:3000/web/index";
-    }
-    else {
-        req.session.referer = req.headers.referer;
-    }
+    req.headers.referer === undefined ? (req.session.referer = "http://localhost:3000/web/index") : (req.session.referer = req.headers.referer);
     req.session.save(function () {
         res.render("login", { csrfToken: req.csrfToken() });
     });
 });
-router.post("/login/process", parseForm, csrfProtection, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/users/login", parseForm, csrfProtection, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _email, _pwd, result, userObjectId_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -140,7 +120,6 @@ router.post("/login/process", parseForm, csrfProtection, function (req, res) { r
                         userObjectId_1 = result._id;
                         crypto_1.default.pbkdf2(_pwd, result.salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) {
                             if (key.toString("base64") === result.password) {
-                                //오케이 로그인 성공했어
                                 accesstoken_1.createToken(req, res, _email, result.name, result._id);
                                 var _refresh_token = refreshtoken_1.default(req, res, _email, result.name, result._id);
                                 var save_token = result.refresh_token;
@@ -151,12 +130,10 @@ router.post("/login/process", parseForm, csrfProtection, function (req, res) { r
                                 else {
                                     try {
                                         jsonwebtoken_1.default.verify(save_token, process.env.JWT_SECRET);
-                                        console.log("리프래쉬 토큰이 있어요", req.session.referer);
                                         return res.status(200).json({ url: req.session.referer, state: true });
                                     }
                                     catch (error) {
                                         if (error.name === "TokenExpiredError") {
-                                            console.log("토큰이 있는데 유효하지 않아서 재발급할겡", req.session.referer);
                                             userContoller_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
                                             return res.status(200).json({ url: req.session.referer, state: true });
                                         }
@@ -164,7 +141,7 @@ router.post("/login/process", parseForm, csrfProtection, function (req, res) { r
                                 }
                             }
                             else {
-                                res.stuatus(200).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+                                res.status(200).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
                             }
                         });
                     }

@@ -78,7 +78,7 @@ router.get("/index", csrfProtection, p_verify_1.verify, p_verify_1.isLogined, fu
         res.render("providers/index", { csrfToken: req.csrfToken() });
     });
 });
-router.post("/login_process", parseForm, csrfProtection, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/login/process", parseForm, csrfProtection, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _email, _pwd, result, userObjectId_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -88,11 +88,9 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
                 return [4 /*yield*/, provideModel_1.default.findOne({ email: { $in: [_email] } })];
             case 1:
                 result = _a.sent();
-                //보안이라는데;;흠;;;
-                // let result: any = await providers.findOne({ email: _email });
                 try {
                     if (result === null) {
-                        res.json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+                        res.status(401).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
                     }
                     else {
                         userObjectId_1 = result._id;
@@ -104,25 +102,25 @@ router.post("/login_process", parseForm, csrfProtection, function (req, res) { r
                                 var save_token = result.refresh_token;
                                 if (save_token === undefined) {
                                     provideController_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
-                                    return res.json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+                                    return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
                                 }
                                 else {
                                     try {
                                         console.log("리프래쉬 토큰이 있어요");
                                         jsonwebtoken_1.default.verify(save_token, process.env.JWT_SECRET);
-                                        return res.json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+                                        return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
                                     }
                                     catch (error) {
                                         if (error.name === "TokenExpiredError") {
                                             console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
                                             provideController_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
-                                            return res.json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+                                            return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
                                         }
                                     }
                                 }
                             }
                             else {
-                                res.json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+                                res.status(401).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
                             }
                         });
                     }
@@ -152,16 +150,18 @@ router.get("/findAllRegister", csrfProtection, p_verify_1.verify, p_verify_1.isN
                 _AllSympton = p_MakeSymptonList_1.MakeAllSymptonList(data, pageNum, divided_num);
                 pagination = p_MakeSymptonList_1.MakePagination(req, res, allData, divided_num);
                 p_makeJuso_1.makeJuso(req, res, authUI, _AllSympton, pagination);
-                return [3 /*break*/, 5];
+                return [3 /*break*/, 6];
             case 3: return [4 /*yield*/, registerSymptonContoller_1.default.getAllData(pageNum, divided_num)];
             case 4:
                 data = _a.sent();
-                allData = registerSymptonContoller_1.default.makePagination();
+                return [4 /*yield*/, registerSymptonContoller_1.default.makePagination()];
+            case 5:
+                allData = _a.sent();
                 _AllSympton = p_MakeSymptonList_1.MakeAllSymptonList(data, pageNum, divided_num);
                 pagination = p_MakeSymptonList_1.MakePagination(req, res, allData, divided_num);
                 res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });
-                _a.label = 5;
-            case 5: return [2 /*return*/];
+                _a.label = 6;
+            case 6: return [2 /*return*/];
         }
     });
 }); });

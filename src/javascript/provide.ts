@@ -1,4 +1,3 @@
-import FetchFunction from "./fetchFunction";
 import { getAddress } from "./address";
 declare global {
   interface Window {

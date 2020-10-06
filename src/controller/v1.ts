@@ -3,8 +3,6 @@ import { verify, isLogined } from "../lib/jwtverify";
 import csrf from "csurf";
 import auth from "../lib/authStatus";
 import userController from "../model/controller/userContoller";
-import provideController from "../model/controller/provideController";
-import { symptonList } from "../lib/symptonList";
 import { encrypt, decrypt } from "../lib/setAndGetCookie";
 import bodyParser from "body-parser";
 import mail from "../lib/nodeMailer";
@@ -69,13 +67,13 @@ router.post("/reset_process", csrfProtection, verify, isLogined, async (req, res
   await userController.resetPassword(req, res);
 });
 
-router.post("/setUserEmailCookie", csrfProtection, verify, (req, res) => {
-  if (req.body.state === "set") {
-    const encryptResult = encrypt(req.body.email);
-    res.json({ email: encryptResult });
+router.get("/users/:email/cookie/:state", csrfProtection, verify, (req, res) => {
+  if (req.params.state === "set") {
+    const encryptResult = encrypt(req.params.email);
+    res.status(200).json({ email: encryptResult });
   } else {
-    const decryptResult = decrypt(req.body.email);
-    res.json({ decrypt: decryptResult });
+    const decryptResult = decrypt(req.params.email);
+    res.status(200).json({ decrypt: decryptResult });
   }
 });
 

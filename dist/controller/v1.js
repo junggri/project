@@ -131,14 +131,14 @@ router.post("/reset_process", csrfProtection, jwtverify_1.verify, jwtverify_1.is
         }
     });
 }); });
-router.post("/setUserEmailCookie", csrfProtection, jwtverify_1.verify, function (req, res) {
-    if (req.body.state === "set") {
-        var encryptResult = setAndGetCookie_1.encrypt(req.body.email);
-        res.json({ email: encryptResult });
+router.get("/users/:email/cookie/:state", csrfProtection, jwtverify_1.verify, function (req, res) {
+    if (req.params.state === "set") {
+        var encryptResult = setAndGetCookie_1.encrypt(req.params.email);
+        res.status(200).json({ email: encryptResult });
     }
     else {
-        var decryptResult = setAndGetCookie_1.decrypt(req.body.email);
-        res.json({ decrypt: decryptResult });
+        var decryptResult = setAndGetCookie_1.decrypt(req.params.email);
+        res.status(200).json({ decrypt: decryptResult });
     }
 });
 exports.default = router;

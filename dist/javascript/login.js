@@ -60,7 +60,7 @@ function login() {
                             return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify(data))];
                         case 1:
                             fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/web/login/process", fetchObj)];
+                            return [4 /*yield*/, fetch("http://localhost:3000/web/users/login", fetchObj)];
                         case 2:
                             result = _a.sent();
                             if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
@@ -89,7 +89,7 @@ function login() {
         });
         function getEmailFromCookie(email, state) {
             return __awaiter(this, void 0, void 0, function () {
-                var fetchObj, response, result, err, error_2;
+                var response, result, err, error_2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -97,28 +97,25 @@ function login() {
                                 return [2 /*return*/];
                             _a.label = 1;
                         case 1:
-                            _a.trys.push([1, 7, , 8]);
-                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: email, state: state }))];
+                            _a.trys.push([1, 6, , 7]);
+                            return [4 /*yield*/, fetch("http://localhost:3000/v1/users/" + email + "/cookie/" + state)];
                         case 2:
-                            fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/v1/setUserEmailCookie", fetchObj)];
-                        case 3:
                             response = _a.sent();
-                            if (!(response.status === 200 || 201)) return [3 /*break*/, 5];
+                            if (!(response.status === 200 || 201)) return [3 /*break*/, 4];
                             return [4 /*yield*/, response.json()];
-                        case 4:
+                        case 3:
                             result = _a.sent();
                             return [2 /*return*/, result];
-                        case 5:
+                        case 4:
                             err = new Error("NET_ERROR");
                             err.name = "NETWORK_ERROR";
                             throw err;
-                        case 6: return [3 /*break*/, 8];
-                        case 7:
+                        case 5: return [3 /*break*/, 7];
+                        case 6:
                             error_2 = _a.sent();
                             console.error(error_2);
-                            return [3 /*break*/, 8];
-                        case 8: return [2 /*return*/];
+                            return [3 /*break*/, 7];
+                        case 7: return [2 /*return*/];
                     }
                 });
             });
