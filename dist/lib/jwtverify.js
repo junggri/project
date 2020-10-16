@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isNotLogined = exports.isLogined = exports.verify = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var accesstoken_1 = require("./accesstoken");
-var usermodel_1 = __importDefault(require("../model/schema/usermodel"));
+var usermodel_1 = __importDefault(require("../db/schema/usermodel"));
 var email;
 var user_id;
 function verify(req, res, next) {
@@ -27,7 +27,7 @@ function verify(req, res, next) {
             next();
         }
         if (error.name === "TokenExpiredError") {
-            //토큰이 만료됬네? 오케이 리프레쉬 토큰확인해볼게
+            // 토큰이 만료됬네? 오케이 리프레쉬 토큰확인해볼게
             usermodel_1.default
                 .findOne({ _id: user_id })
                 .then(function (result) {

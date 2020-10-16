@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { createToken } from "./accesstoken";
-import users from "../model/schema/usermodel";
+import users from "../db/schema/usermodel";
 let email: string;
 let user_id: string;
 
@@ -21,7 +21,7 @@ export function verify(req: any, res: any, next: any) {
       next();
     }
     if (error.name === "TokenExpiredError") {
-      //토큰이 만료됬네? 오케이 리프레쉬 토큰확인해볼게
+      // 토큰이 만료됬네? 오케이 리프레쉬 토큰확인해볼게
       users
         .findOne({ _id: user_id })
         .then((result: any) => {

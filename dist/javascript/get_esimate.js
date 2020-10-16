@@ -200,7 +200,11 @@ function get_estimate() {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch(url, { method: "POST", credentials: "same-origin", body: formData })];
+                        return [4 /*yield*/, fetch(url, {
+                                method: "POST",
+                                credentials: "same-origin",
+                                body: formData,
+                            })];
                     case 2:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 4];

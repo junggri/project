@@ -1,5 +1,5 @@
-import submitController from "../model/controller/submitController";
-import ProviderGotController from "../model/controller/providerGotController";
+import submitController from "../db/model/submitModel";
+import ProviderGotController from "../db/model/providerGotModel";
 
 export let makeListSympton = async (data: any) => {
   let list = "";

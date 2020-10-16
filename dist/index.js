@@ -17,7 +17,6 @@ var server_1 = __importDefault(require("./lib/server"));
 var compression_1 = __importDefault(require("compression"));
 // import noCache from "nocache";
 var dotenv_1 = __importDefault(require("dotenv"));
-var passport_1 = __importDefault(require("passport"));
 var connect_flash_1 = __importDefault(require("connect-flash"));
 var cors_1 = __importDefault(require("cors"));
 var socket_io_1 = __importDefault(require("socket.io"));
@@ -31,9 +30,6 @@ fail("request failure");
 dotenv_1.default.config();
 var RedisStore = connect_redis_1.default(express_session_1.default);
 var _client = redis_1.default.createClient();
-_client.on("error", function (err) {
-    console.error(err);
-});
 var app = express_1.default();
 server_1.default();
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
@@ -55,8 +51,6 @@ var sess = {
         secure: false,
     },
 };
-// 쿠키관련괸건 req.cookie 옵션에 따로
-// 위는 sessionid 쿠키에 관련된것
 if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1); // trust first proxy
     sess.cookie.secure = true; // serve secure cookies
@@ -66,8 +60,7 @@ app.use(express_session_1.default(sess));
 app.use(cors_1.default());
 // app.use(logger("prod", { stream })); //prod combined
 app.use(morgan_1.default("dev"));
-app.get("env") === "development" ? app.use(express_1.default.static(path_1.default.join(__dirname + "../../dist/javascript", "bundle"))) : app.use(express_1.default.static(path_1.default.join(__dirname + "/javascript", "bundle")));
-//bundel.js위치
+app.use(express_1.default.static(path_1.default.join(__dirname + "/../webpack")));
 app.use(connect_flash_1.default());
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/css")));
 app.use(express_1.default.static(path_1.default.join(__dirname, "../static/image")));
@@ -80,14 +73,14 @@ app.use(helmet_1.default.noSniff());
 // app.use(noCache());
 app.use(compression_1.default());
 app.disable("x-powered-by");
-app.use(passport_1.default.initialize());
-app.use(passport_1.default.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
-var v1_1 = __importDefault(require("./controller/v1"));
-var web_1 = __importDefault(require("./controller/web"));
-var provide_1 = __importDefault(require("./controller/provide"));
+var v1_1 = __importDefault(require("./router/v1"));
+var web_1 = __importDefault(require("./router/web"));
+var provide_1 = __importDefault(require("./router/provide"));
 app.use("/v1", v1_1.default);
 app.use("/web", web_1.default);
 app.use("/provide", provide_1.default);

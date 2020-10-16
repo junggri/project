@@ -26,7 +26,7 @@
 .nb-right_isLogined {
   cursor: pointer;
   position: relative;
-  background-image: url("/usericon.png");
+  background-image: url("../image/usericon.png");
   width: 30px;
   height: 30px;
   background-size: contain;

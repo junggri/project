@@ -168,7 +168,11 @@ export default function get_estimate() {
     }
 
     try {
-      let result = await fetch(url, { method: "POST", credentials: "same-origin", body: formData });
+      let result = await fetch(url, {
+        method: "POST",
+        credentials: "same-origin",
+        body: formData,
+      });
       if (result.status === 200 || 201) {
         let response = await result.json();
         url === "http://localhost:3000/web/add/session/img" ? makeSymptonImg(response) : removeAndMakeNewImage(response);

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.isNotLogined = exports.isLogined = exports.verify = void 0;
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var p_accesstoken_1 = require("./p_accesstoken");
-var provideModel_1 = __importDefault(require("../model/schema/provideModel"));
+var provideModel_1 = __importDefault(require("../db/schema/provideModel"));
 var email;
 var user_id;
 function verify(req, res, next) {

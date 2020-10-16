@@ -147,6 +147,7 @@ router.post("/users/login", parseForm, csrfProtection, function (req, res) { ret
                     }
                 }
                 catch (error) {
+                    console.log(2);
                     console.error(error);
                 }
                 return [2 /*return*/];

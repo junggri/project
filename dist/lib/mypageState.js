@@ -40,8 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeSumbitbox = exports.makeListSympton = void 0;
-var submitController_1 = __importDefault(require("../model/controller/submitController"));
-var providerGotController_1 = __importDefault(require("../model/controller/providerGotController"));
+var submitModel_1 = __importDefault(require("../db/model/submitModel"));
+var providerGotModel_1 = __importDefault(require("../db/model/providerGotModel"));
 exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, void 0, function () {
     var list, item, list_1, i, response, result, length_1, getProvider;
     return __generator(this, function (_a) {
@@ -57,7 +57,7 @@ exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, voi
             case 1:
                 if (!(i < data.length)) return [3 /*break*/, 7];
                 if (!(data[i].state === "accept")) return [3 /*break*/, 3];
-                return [4 /*yield*/, submitController_1.default.showProvider(data[i]._id)];
+                return [4 /*yield*/, submitModel_1.default.showProvider(data[i]._id)];
             case 2:
                 response = _a.sent();
                 result = response.provider[0];
@@ -66,7 +66,7 @@ exports.makeListSympton = function (data) { return __awaiter(void 0, void 0, voi
                 return [3 /*break*/, 5];
             case 3:
                 length_1 = void 0;
-                return [4 /*yield*/, providerGotController_1.default.find(data[i]._id)];
+                return [4 /*yield*/, providerGotModel_1.default.find(data[i]._id)];
             case 4:
                 getProvider = _a.sent();
                 getProvider === null ? (length_1 = 0) : (length_1 = getProvider.length);

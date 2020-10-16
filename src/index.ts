@@ -32,10 +32,6 @@ dotenv.config();
 const RedisStore = connectRedis(session);
 const _client = redis.createClient();
 
-_client.on("error", (err) => {
-  console.error(err);
-});
-
 const app = express();
 
 mongoServer();
@@ -61,8 +57,6 @@ let sess = {
     secure: false,
   },
 };
-// 쿠키관련괸건 req.cookie 옵션에 따로
-// 위는 sessionid 쿠키에 관련된것
 
 if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1); // trust first proxy
@@ -76,9 +70,7 @@ app.use(cors());
 
 // app.use(logger("prod", { stream })); //prod combined
 app.use(logger("dev"));
-app.get("env") === "development" ? app.use(express.static(path.join(__dirname + "../../dist/javascript", "bundle"))) : app.use(express.static(path.join(__dirname + "/javascript", "bundle")));
-
-//bundel.js위치
+app.use(express.static(path.join(__dirname + "/../webpack")));
 app.use(flash());
 
 app.use(express.static(path.join(__dirname, "../static/css")));
@@ -95,16 +87,16 @@ app.use(helmet.noSniff());
 app.use(compression());
 app.disable("x-powered-by");
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
-import CommonRouter from "./controller/v1";
-import webRouter from "./controller/web";
-import provierRouter from "./controller/provide";
+import CommonRouter from "./router/v1";
+import webRouter from "./router/web";
+import provierRouter from "./router/provide";
 
 app.use("/v1", CommonRouter);
 app.use("/web", webRouter);

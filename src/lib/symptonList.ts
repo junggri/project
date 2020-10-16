@@ -1,4 +1,4 @@
-import symptonModel from "../model/schema/symptonModel";
+import symptonModel from "../db/schema/symptonModel";
 
 export let symptonList = async () => {
   let symptons: any = await symptonModel.find().sort({ price: 1 }).limit(10);
