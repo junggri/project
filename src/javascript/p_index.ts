@@ -4,6 +4,7 @@ declare global {
     // login_verify: any;
   }
 }
+
 export default function p_index() {
   let checkBox = document.querySelector("#checkbox_id") as HTMLInputElement;
   let loginBtn = document.querySelector(".pi-loginBtn") as HTMLDivElement;
@@ -11,18 +12,12 @@ export default function p_index() {
   let providePwd = document.querySelector("#pi-pwd") as HTMLInputElement;
   let provideState = document.querySelector(".pi-state") as HTMLDivElement;
   let userInputEmail: string = getCookie("upe");
-
+  console.log(loginBtn);
   loginBtn.addEventListener("click", async (e) => {
+    console.log(2);
     try {
-      let fetchObj: any = await FetchFunction(
-        "post",
-        "same-origin",
-        JSON.stringify({
-          email: provideEmail.value,
-          pwd: providePwd.value,
-        })
-      );
-      let result = await fetch("http://localhost:3000/provide/login/process", fetchObj);
+      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: provideEmail.value, pwd: providePwd.value }));
+      let result = await fetch("http://localhost:3000/provide/users/login", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         response.state === true ? (window.location.href = response.url) : (provideState.textContent = response.msg);
@@ -40,8 +35,8 @@ export default function p_index() {
   async function getEmailFromCookie(email: string, state: string) {
     if (email === "") return;
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: email, state: state }));
-      let response = await fetch("http://localhost:3000/v1/setUserEmailCookie", fetchObj);
+      // let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: email, state: state }));
+      let response = await fetch(`http://localhost:3000/common/users/${email}/cookie/${state}`);
       if (response.status === 200 || 201) {
         let result = await response.json();
         return result;

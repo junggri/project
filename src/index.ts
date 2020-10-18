@@ -12,13 +12,14 @@ import mongoServer from "./lib/server";
 import compression from "compression";
 import { stream } from "./lib/winston";
 import createError from "http-errors";
-// import noCache from "nocache";
 import dotenv from "dotenv";
-import passport from "passport";
 import flash from "connect-flash";
 import cors from "cors";
 import socketIO from "socket.io";
 import debug from "debug";
+
+// import noCache from "nocache";
+// import passport from "passport";
 
 const Appserver = debug("app:Appserver");
 const error = debug("error:server");
@@ -38,7 +39,7 @@ mongoServer();
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 // app.set("env", "production");
-console.log(app.get("env")); //개발 단계확인
+console.log(app.get("env")); //개발 단계확인\
 
 let sess = {
   secret: configSession.secret,
@@ -94,11 +95,11 @@ app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
 
-import CommonRouter from "./router/v1";
+import CommonRouter from "./router/common";
 import webRouter from "./router/web";
 import provierRouter from "./router/provide";
 
-app.use("/v1", CommonRouter);
+app.use("/common", CommonRouter);
 app.use("/web", webRouter);
 app.use("/provide", provierRouter);
 

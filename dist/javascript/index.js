@@ -52,9 +52,9 @@ var provide_1 = __importDefault(require("./provide"));
 var mypageShowProvider_1 = __importDefault(require("./mypageShowProvider"));
 var mypageShowEstimate_1 = __importDefault(require("./mypageShowEstimate"));
 var p_index_1 = __importDefault(require("./p_index"));
-var p_findAllRegister_1 = __importDefault(require("./p_findAllRegister"));
-var p_showBeforeEstimate_1 = __importDefault(require("./p_showBeforeEstimate"));
-var p_showGotEstimate_1 = __importDefault(require("./p_showGotEstimate"));
+var p_show_item_1 = __importDefault(require("./p_show-item"));
+var p_brefore_estimate_1 = __importDefault(require("./p_brefore-estimate"));
+var p_user_send_1 = __importDefault(require("./p_user-send"));
 var p_mypage_1 = __importDefault(require("./p_mypage"));
 var p_showsubmit_1 = __importDefault(require("./p_showsubmit"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
@@ -63,22 +63,28 @@ var path = window.location.pathname;
 var navigationBox = document.querySelector(".nb-navigation");
 var logout = document.querySelector(".nb-profile-logout");
 var logoutForm = document.querySelector(".logout-form");
+function index() {
+    var estimateBtn = document.querySelector(".mp-btn_estimate");
+    estimateBtn.addEventListener("click", function (e) {
+        location.href = "/web/estimate";
+    });
+}
 if (window.location.href.includes("#")) {
     window.location.href = window.location.href.slice(0, -1);
 }
-if (path === "/provide/index") {
+if (path === "/provide/main") {
     p_index_1.default();
 }
-if (path === "/provide/findAllRegister") {
-    p_findAllRegister_1.default();
+if (path === "/provide/show/items") {
+    p_show_item_1.default();
 }
-if (path === "/provide/sympton_estimate") {
-    p_showBeforeEstimate_1.default();
+if (path === "/provide/sympton/estimate") {
+    p_brefore_estimate_1.default();
 }
-if (path === "/provide/showGotEstimate") {
-    p_showGotEstimate_1.default();
+if (path === "/provide/user/send") {
+    p_user_send_1.default();
 }
-if (path === "/provide/showsubmit") {
+if (path === "/provide/submit") {
     p_showsubmit_1.default();
 }
 if (path === "/provide/mypage") {
@@ -91,10 +97,10 @@ if (path === "/web/oauth_register") {
 if (path.split("/")[2] === "reset") {
     reset_1.default();
 }
-if (path === "/v1/find_user_email") {
+if (path === "/common/find/user/email") {
     findUserData_1.default();
 }
-if (path === "/v1/find_user_pwd") {
+if (path === "/common/find/user/pwd") {
     findUserData_1.default();
 }
 if (path === "/web/login") {
@@ -137,11 +143,11 @@ if (LoginmyBtn !== null) {
 }
 if (mainName !== null) {
     mainName.addEventListener("click", function () {
-        if (path.split("/")[1] === "web") {
+        if (path.split("/")[1] === "web" || path.split("/")[1] === "common") {
             location.href = "/web/index";
         }
         else if (path.split("/")[1] === "provide") {
-            location.href = "/provide/index";
+            location.href = "/provide/main";
         }
     });
 }
@@ -167,11 +173,5 @@ if (logout !== null) {
             return [2 /*return*/];
         });
     }); });
-}
-function index() {
-    var estimateBtn = document.querySelector(".mp-btn_estimate");
-    estimateBtn.addEventListener("click", function (e) {
-        location.href = "/web/estimate";
-    });
 }
 //# sourceMappingURL=index.js.map

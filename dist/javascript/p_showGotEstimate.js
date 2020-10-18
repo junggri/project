@@ -6,7 +6,7 @@ function showGotEstimate() {
         for (var i = 0; i < Item.length; i++) {
             Item[i].addEventListener("click", function (e) {
                 var target = e.target.parentNode;
-                window.location.href = "/provide/sympton_estimate?" + target.dataset.submitid;
+                window.location.href = "/provide/sympton/estimate?" + target.dataset.submitid;
             });
         }
     }

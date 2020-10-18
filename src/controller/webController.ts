@@ -25,18 +25,7 @@ import deleteImg from "../lib/deleteImg";
 import sanitizeHtml from "sanitize-html";
 import { makeSumbitbox } from "../lib/mypageState";
 import sendPhone from "../lib/sendPhone";
-
-interface Decoded {
-  email: string;
-  user_objectId: string;
-  username: string;
-}
-
-interface Err {
-  message: string;
-  stack: string;
-  status: number;
-}
+import { Decoded, Err } from "../interface/all_interface";
 
 interface WebController {
   index(req: Request, res: Response): void;

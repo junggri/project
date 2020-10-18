@@ -4,11 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeJuso = void 0;
-var mysql_1 = __importDefault(require("../lib/mysql"));
+var mysql_jusoLIst_1 = __importDefault(require("./mysql-jusoLIst"));
 var querystring_1 = __importDefault(require("querystring"));
 exports.makeJuso = function (req, res, authUI, _AllSympton, pagination) {
     if (querystring_1.default.parse(req.url).sigunguCode === "sejong") {
-        mysql_1.default.query("select * from " + querystring_1.default.parse(req.url).sigunguCode, function (err, data) {
+        mysql_jusoLIst_1.default.query("select * from " + querystring_1.default.parse(req.url).sigunguCode, function (err, data) {
             var data1 = [];
             var list2 = "";
             var item2;
@@ -31,7 +31,7 @@ exports.makeJuso = function (req, res, authUI, _AllSympton, pagination) {
         });
         return;
     }
-    mysql_1.default.query("select \uC2DC\uAD70\uAD6C\uBA85 from " + querystring_1.default.parse(req.url).sigunguCode, function (err, data) {
+    mysql_jusoLIst_1.default.query("select \uC2DC\uAD70\uAD6C\uBA85 from " + querystring_1.default.parse(req.url).sigunguCode, function (err, data) {
         if (err)
             console.error(err);
         var data1 = [];
@@ -51,7 +51,7 @@ exports.makeJuso = function (req, res, authUI, _AllSympton, pagination) {
             list += item;
         }
         ////////////////////////////시군구찾기
-        mysql_1.default.query("select * from " + querystring_1.default.parse(req.url).sigunguCode + " where \uC2DC\uAD70\uAD6C\uBA85 = \"" + querystring_1.default.parse(req.url).sigungu + "\"", function (err, data) {
+        mysql_jusoLIst_1.default.query("select * from " + querystring_1.default.parse(req.url).sigunguCode + " where \uC2DC\uAD70\uAD6C\uBA85 = \"" + querystring_1.default.parse(req.url).sigungu + "\"", function (err, data) {
             var data1 = [];
             var list2 = "";
             var item2;

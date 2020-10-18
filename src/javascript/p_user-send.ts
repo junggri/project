@@ -5,7 +5,7 @@ export default function showGotEstimate() {
     for (let i = 0; i < Item.length; i++) {
       Item[i].addEventListener("click", (e: Event): void => {
         let target = (e.target as HTMLDivElement).parentNode as HTMLDivElement;
-        window.location.href = `/provide/sympton_estimate?${target.dataset.submitid}`;
+        window.location.href = `/provide/sympton?${target.dataset.submitid}`;
       });
     }
   }

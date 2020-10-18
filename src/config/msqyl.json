@@ -2,5 +2,6 @@
   "host": "localhost",
   "user": "test",
   "password": "wowwjd123",
-  "database": "juso_list"
+  "database": "juso_list",
+  "database2": "test"
 }

@@ -68,13 +68,12 @@ userController.resetPassword = function (req, res) { return __awaiter(void 0, vo
             return __generator(this, function (_a) {
                 salt = buf.toString("base64");
                 crypto_1.default.pbkdf2(req.body.pwd1, salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(void 0, void 0, void 0, function () {
-                    var reset;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, usermodel_1.default.updateOne({ email: req.body.email }, { $set: { password: key.toString("base64"), salt: salt } })];
                             case 1:
-                                reset = _a.sent();
-                                return [2 /*return*/, res.redirect("/api/login")];
+                                _a.sent();
+                                return [2 /*return*/];
                         }
                     });
                 }); });

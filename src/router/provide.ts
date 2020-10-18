@@ -12,35 +12,35 @@ const csrfProtection = csrf({
   },
 });
 
-router.get("/index", csrfProtection, verify, isLogined, provide.index);
+router.get("/main", csrfProtection, verify, isLogined, provide.main);
 
-router.post("/login/process", parseForm, csrfProtection, provide.loginProcess);
+router.post("/users/login", parseForm, csrfProtection, provide.loginProcess);
 
-router.get("/findAllRegister", csrfProtection, verify, isNotLogined, provide.findAllRegister);
+router.get("/show/items", csrfProtection, verify, isNotLogined, provide.showItems);
 
-router.post("/get_sigungu", csrfProtection, verify, isNotLogined, provide.getSigungu);
+router.get("/get/sigungu/:data", csrfProtection, verify, isNotLogined, provide.getSigungu);
 
-router.post("/get_bname", csrfProtection, verify, isNotLogined, provide.getBname);
+router.get("/get/bname/:sido/:sigungu", csrfProtection, verify, isNotLogined, provide.getBname);
 
-router.post("/get_sejong", csrfProtection, verify, isNotLogined, provide.getSejong);
+router.get("/get/sejong/:data", csrfProtection, verify, isNotLogined, provide.getSejong);
 
-router.post("/before_check_getRegisterData", csrfProtection, verify, isNotLogined, provide.checkBeoforeReigsterData);
+router.get("/check/state/item/:registerId", csrfProtection, verify, isNotLogined, provide.checkStateRegisterState);
 
-router.get("/sympton_estimate", csrfProtection, verify, isNotLogined, provide.symptonEstimate);
+router.get("/sympton", csrfProtection, verify, isNotLogined, provide.symptonEstimate);
 
-router.post("/get_registerData", csrfProtection, verify, isNotLogined, provide.getRegisterData);
+router.get("/get/data/item/:registerId", csrfProtection, verify, isNotLogined, provide.getRegisterData);
 
-router.post("/submit_estimate", csrfProtection, verify, isNotLogined, provide.submitEstimate);
+router.post("/submit/estimate/process", csrfProtection, verify, isNotLogined, provide.submitEstimate);
 
-router.post("/delete_submit", csrfProtection, verify, isNotLogined, provide.deleteSubmit);
+router.delete("/delete/submit", csrfProtection, verify, isNotLogined, provide.deleteSubmit);
 
 router.get("/mypage", csrfProtection, verify, isNotLogined, provide.mypage);
 
-router.get("/showsubmit", csrfProtection, verify, isNotLogined, provide.showSubmit);
+router.get("/submit", csrfProtection, verify, isNotLogined, provide.showSubmit);
 
-router.post("/showSubmitFlag", csrfProtection, verify, isNotLogined, provide.showSubmitFlag);
+router.get("/check/flags/submit/:submitId", csrfProtection, verify, isNotLogined, provide.showSubmitFlag);
 
-router.get("/showGotEstimate", csrfProtection, verify, isNotLogined, provide.showGotEstimate);
+router.get("/user/send", csrfProtection, verify, isNotLogined, provide.showGotEstimate);
 
 router.post("/logout", isNotLogined, provide.logout);
 

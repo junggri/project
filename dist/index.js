@@ -15,12 +15,13 @@ var connect_redis_1 = __importDefault(require("connect-redis"));
 var session_json_1 = __importDefault(require("./config/session.json"));
 var server_1 = __importDefault(require("./lib/server"));
 var compression_1 = __importDefault(require("compression"));
-// import noCache from "nocache";
 var dotenv_1 = __importDefault(require("dotenv"));
 var connect_flash_1 = __importDefault(require("connect-flash"));
 var cors_1 = __importDefault(require("cors"));
 var socket_io_1 = __importDefault(require("socket.io"));
 var debug_1 = __importDefault(require("debug"));
+// import noCache from "nocache";
+// import passport from "passport";
 var Appserver = debug_1.default("app:Appserver");
 var error = debug_1.default("error:server");
 var fail = debug_1.default("error:request");
@@ -34,7 +35,7 @@ var app = express_1.default();
 server_1.default();
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 // app.set("env", "production");
-console.log(app.get("env")); //개발 단계확인
+console.log(app.get("env")); //개발 단계확인\
 var sess = {
     secret: session_json_1.default.secret,
     name: session_json_1.default.name,
@@ -78,10 +79,10 @@ app.disable("x-powered-by");
 app.set("views", __dirname + "/../static/views");
 app.set("view engine", "ejs");
 app.engine("html", require("ejs").renderFile);
-var v1_1 = __importDefault(require("./router/v1"));
+var common_1 = __importDefault(require("./router/common"));
 var web_1 = __importDefault(require("./router/web"));
 var provide_1 = __importDefault(require("./router/provide"));
-app.use("/v1", v1_1.default);
+app.use("/common", common_1.default);
 app.use("/web", web_1.default);
 app.use("/provide", provide_1.default);
 app.set("port", process.env.PORT || 3000);

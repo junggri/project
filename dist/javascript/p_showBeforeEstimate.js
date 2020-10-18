@@ -62,23 +62,20 @@ function p_showBeforeEsimate() {
     var userId = document.querySelector(".user_id");
     var deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn");
     (function () { return __awaiter(_this, void 0, void 0, function () {
-        var fetchObj, result, response, err, error_1;
+        var result, response, err, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 6, , 7]);
-                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }))];
+                    _a.trys.push([0, 5, , 6]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/get/data/item/" + document.location.search.substring(1, document.location.search.length))];
                 case 1:
-                    fetchObj = _a.sent();
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/get_registerData", fetchObj)];
-                case 2:
                     result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
                     return [4 /*yield*/, result.json()];
-                case 3:
+                case 2:
                     response = _a.sent();
                     if (response.state === false) {
-                        window.location.href = "/provide/findAllRegister";
+                        window.location.href = "/provide/show/items";
                         return [2 /*return*/];
                     }
                     mainImg.style.backgroundImage = "url(\"/" + response.data.user_object_id + "/" + response.data.img[0] + "\")";
@@ -91,17 +88,17 @@ function p_showBeforeEsimate() {
                     registrantId.value = response.data.user_object_id;
                     symptonId.value = response.data._id;
                     userId.value = response.data.user_object_id;
-                    return [3 /*break*/, 5];
-                case 4:
+                    return [3 /*break*/, 4];
+                case 3:
                     err = new Error("NET_ERROR");
                     err.name = "NETWORK_ERROR";
                     throw err;
-                case 5: return [3 /*break*/, 7];
-                case 6:
+                case 4: return [3 /*break*/, 6];
+                case 5:
                     error_1 = _a.sent();
                     console.error(error_1);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     }); })();
@@ -141,7 +138,7 @@ function p_showBeforeEsimate() {
                         }))];
                 case 2:
                     fetchObj = _a.sent();
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/submit_estimate", fetchObj)];
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/submit/estimate/process", fetchObj)];
                 case 3:
                     result = _a.sent();
                     if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
@@ -151,7 +148,7 @@ function p_showBeforeEsimate() {
                     state = response.state;
                     if (state === null) {
                         alert("삭제된 증상입니다. 견적을 제시할 수 없습니다.");
-                        window.location.href = "/provide/findAllRegister";
+                        window.location.href = "/provide/show/items";
                         return [2 /*return*/];
                     }
                     else if (!state) {
@@ -189,10 +186,10 @@ function p_showBeforeEsimate() {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }))];
+                        return [4 /*yield*/, fetchFunction_1.default("delete", "same-origin", JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }))];
                     case 2:
                         fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch("http://localhost:3000/provide/delete_submit", fetchObj)];
+                        return [4 /*yield*/, fetch("http://localhost:3000/provide/delete/submit", fetchObj)];
                     case 3:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
@@ -202,13 +199,13 @@ function p_showBeforeEsimate() {
                         state = response.state;
                         if (state === "accept") {
                             alert("견적이 성사되어 취소가 불가능합니다.");
-                            return [2 /*return*/, (window.location.href = "/provide/findAllRegister")];
+                            return [2 /*return*/, (window.location.href = "/provide/show/items")];
                         }
                         else if (state == null) {
                             err = new Error("error");
                             err.name = "DELETE_DATA";
                             alert("삭제된 게시글이라 자동 취소 되었습니다.");
-                            return [2 /*return*/, (window.location.href = "/provide/findAllRegister")];
+                            return [2 /*return*/, (window.location.href = "/provide/show/items")];
                         }
                         else {
                             alert("취소가 완료되었습니다.");

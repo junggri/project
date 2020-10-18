@@ -1,4 +1,3 @@
-import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     add_List: any;
@@ -19,12 +18,11 @@ export default function () {
   let loginBoxRegisterBtn = document.querySelector(".findUserResultBox-btnBox-register") as HTMLDivElement;
   let loginBoxConfirmBtn = document.querySelector(".findUserResultBox-btnBox-confirm") as HTMLDivElement;
   let userEmail = document.querySelector(".findEmail") as HTMLDivElement;
-  window.location.pathname === "/v1/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
+  window.location.pathname === "/common/find/user/email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
 
-  async function findUserData(url: string, data: string) {
+  async function findUserData(url: string) {
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: data }));
-      let response = await fetch(url, fetchObj);
+      let response = await fetch(url);
       if (response.status === 200 || 201) {
         let result = await response.json();
         if (!result.state) {
@@ -61,10 +59,10 @@ export default function () {
   // });
   findResultBtn.addEventListener("click", () => {
     if (userInputData.value === "") return;
-    if (window.location.pathname === "/v1/find_user_email") {
-      return findUserData("http://localhost:3000/v1/check_user_email", userInputData.value);
+    if (window.location.pathname === "/common/find/user/email") {
+      return findUserData(`http://localhost:3000/common/check/users/email/${userInputData.value}`);
     } else {
-      return findUserData("http://localhost:3000/v1/check_user_and_sendEmail", userInputData.value);
+      return findUserData(`http://localhost:3000/common/send/users/email/${userInputData.value}`);
     }
   });
 }

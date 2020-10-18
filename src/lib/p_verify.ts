@@ -12,8 +12,6 @@ export function verify(req: any, res: any, next: any) {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
     email = decoded.email;
     user_id = decoded.user_objectId;
-    // console.log(decoded);
-    // console.log(user_id);
     console.log("로그인 되어있음");
     return next();
     ///로그인되었으면 next()해서 다음함수 호출
@@ -63,7 +61,7 @@ export function isLogined(req: any, res: any, next: any) {
   const token = req.cookies.pjwttoken;
   try {
     jwt.verify(token, process.env.JWT_SECRET);
-    return res.redirect("/provide/findAllRegister");
+    return res.redirect("/provide/show/items");
   } catch (error) {
     // console.error(error);
     return next();
@@ -77,6 +75,6 @@ export function isNotLogined(req: any, res: any, next: any) {
     return next();
   } catch (error) {
     // console.error(error);
-    return res.redirect("/provide/index");
+    return res.redirect("/provide/main");
   }
 }

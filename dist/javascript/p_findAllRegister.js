@@ -35,11 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function p_findAllRegister() {
     var _this = this;
     var sigunguCode = document.querySelector("#sigunguCode");
@@ -88,20 +84,17 @@ function p_findAllRegister() {
         var _this = this;
         for (var i = 0; i < symptonItems.length; i++) {
             symptonItems[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                var fetchObj, result, response, state, err, err, err, error_1;
+                var result, response, state, err, err, err, error_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            _a.trys.push([0, 6, , 7]);
-                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ _id: e.target.parentNode.dataset.registerid }))];
+                            _a.trys.push([0, 5, , 6]);
+                            return [4 /*yield*/, fetch("http://localhost:3000/provide/check/state/item/" + e.target.parentNode.dataset.registerid)];
                         case 1:
-                            fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/provide/before_check_getRegisterData", fetchObj)];
-                        case 2:
                             result = _a.sent();
-                            if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
+                            if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
                             return [4 /*yield*/, result.json()];
-                        case 3:
+                        case 2:
                             response = _a.sent();
                             state = response.state;
                             if (state === false) {
@@ -115,17 +108,17 @@ function p_findAllRegister() {
                                 throw err;
                             }
                             return [2 /*return*/, (window.location.href = "/provide/sympton_estimate?" + e.target.parentNode.dataset.registerid)];
-                        case 4:
+                        case 3:
                             err = new Error("NETWORK_ERROR");
                             err.name = "NET";
                             throw err;
-                        case 5: return [3 /*break*/, 7];
-                        case 6:
+                        case 4: return [3 /*break*/, 6];
+                        case 5:
                             error_1 = _a.sent();
                             console.error(error_1, error_1.name);
                             alert(error_1);
                             return [2 /*return*/, window.location.reload()];
-                        case 7: return [2 /*return*/];
+                        case 6: return [2 /*return*/];
                     }
                 });
             }); });
@@ -178,9 +171,9 @@ function p_findAllRegister() {
         });
     }
     //////////////////////////////////////////////////////////////////////////////////
-    function commonFunction(text, target, data, url) {
+    function commonFunction(text, target, url) {
         return __awaiter(this, void 0, void 0, function () {
-            var fetchObj, result, response, i, option, error_2;
+            var result, response, i, option, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, reset(target, text)];
@@ -188,16 +181,13 @@ function p_findAllRegister() {
                         _a.sent();
                         _a.label = 2;
                     case 2:
-                        _a.trys.push([2, 7, , 8]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: data }))];
+                        _a.trys.push([2, 6, , 7]);
+                        return [4 /*yield*/, fetch(url)];
                     case 3:
-                        fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch(url, fetchObj)];
-                    case 4:
                         result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 6];
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
                         return [4 /*yield*/, result.json()];
-                    case 5:
+                    case 4:
                         response = _a.sent();
                         for (i = 0; i < response.sido.length; i++) {
                             option = document.createElement("option");
@@ -205,13 +195,13 @@ function p_findAllRegister() {
                             option.textContent = response.sido[i];
                             target.appendChild(option);
                         }
-                        _a.label = 6;
-                    case 6: return [3 /*break*/, 8];
-                    case 7:
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
                         error_2 = _a.sent();
                         console.error(error_2);
-                        return [3 /*break*/, 8];
-                    case 8: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -228,7 +218,7 @@ function p_findAllRegister() {
                     _a.sent();
                     if (sigunguCode.options[sigunguCode.selectedIndex].value === "sejong") {
                         sigungu.disabled = true;
-                        commonFunction("-- 동 / 면 / 읍", bname, sigunguCode.options[sigunguCode.selectedIndex].value, "http://localhost:3000/provide/get_sejong");
+                        commonFunction("-- 동 / 면 / 읍", bname, "http://localhost:3000/provide/get/sejong/" + sigunguCode.options[sigunguCode.selectedIndex].value);
                         return [2 /*return*/];
                     }
                     if (!(sigunguCode.options[sigunguCode.selectedIndex].value === "0")) return [3 /*break*/, 5];
@@ -242,7 +232,7 @@ function p_findAllRegister() {
                     return [2 /*return*/];
                 case 5:
                     sigungu.disabled = false;
-                    commonFunction("-- 시 / 군 / 구", sigungu, sigunguCode.options[sigunguCode.selectedIndex].value, "http://localhost:3000/provide/get_sigungu");
+                    commonFunction("-- 시 / 군 / 구", sigungu, "http://localhost:3000/provide/get/sigungu/" + sigunguCode.options[sigunguCode.selectedIndex].value);
                     return [2 /*return*/];
             }
         });
@@ -258,7 +248,7 @@ function p_findAllRegister() {
                     _a.sent();
                     return [2 /*return*/];
                 case 2:
-                    commonFunction("-- 동 / 면 / 읍", bname, { sido: sigunguCode.options[sigunguCode.selectedIndex].value, sigungu: sigungu.options[sigungu.selectedIndex].value }, "http://localhost:3000/provide/get_bname");
+                    commonFunction("-- 동 / 면 / 읍", bname, "http://localhost:3000/provide/get/bname/" + sigunguCode.options[sigunguCode.selectedIndex].value + "/" + sigungu.options[sigungu.selectedIndex].value);
                     return [2 /*return*/];
             }
         });

@@ -35,45 +35,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function showsubmit() {
     var SubmitItems = document.querySelectorAll(".sbc-item");
     function AddEventToGotItem(Item) {
         var _this = this;
         for (var i = 0; i < Item.length; i++) {
             Item[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                var target, fetchObj, result, response, error_1;
+                var target, result, response, error_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             target = e.target.parentNode;
                             _a.label = 1;
                         case 1:
-                            _a.trys.push([1, 6, , 7]);
-                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ submitId: target.dataset.submitid }))];
+                            _a.trys.push([1, 5, , 6]);
+                            return [4 /*yield*/, fetch("http://localhost:3000/provide/check/flags/submit/" + target.dataset.submitid)];
                         case 2:
-                            fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/provide/showSubmitFlag", fetchObj)];
-                        case 3:
                             result = _a.sent();
-                            if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                            if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                             return [4 /*yield*/, result.json()];
-                        case 4:
+                        case 3:
                             response = _a.sent();
                             if (response.state === "accept" || response.state === "submit") {
-                                window.location.href = "/provide/sympton_estimate?" + response.symptonId;
+                                window.location.href = "/provide/sympton?" + response.symptonId;
                             }
-                            _a.label = 5;
-                        case 5: return [3 /*break*/, 7];
-                        case 6:
+                            _a.label = 4;
+                        case 4: return [3 /*break*/, 6];
+                        case 5:
                             error_1 = _a.sent();
                             console.log(error_1);
-                            return [3 /*break*/, 7];
-                        case 7: return [2 /*return*/];
+                            return [3 /*break*/, 6];
+                        case 6: return [2 /*return*/];
                     }
                 });
             }); });

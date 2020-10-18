@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <title>Document</title>
-    <link rel="stylesheet" href="/style.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
     <div id="app">
-      <form action="/v1/reset_process" id="reset-form" method="POST">
+      <form action="/common/reset/process" id="reset-form" method="post">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <input type="hidden" name="email" value="<%= email %>" />
         <div class="reset-slo">비밀번호 변경</div>

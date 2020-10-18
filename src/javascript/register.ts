@@ -1,8 +1,6 @@
-import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     verify: any;
-    IMP: any;
   }
 }
 const pwd_reg = /^.*(?=^.{8,20}$)(?=.*d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;

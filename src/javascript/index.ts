@@ -10,10 +10,10 @@ import oauth from "./oauth";
 import provide from "./provide";
 import mypageShowProvider from "./mypageShowProvider";
 import mypageShowEstimate from "./mypageShowEstimate";
-import P_index from "./p_index";
-import p_findAllRegister from "./p_findAllRegister";
-import p_showBeforeEstimate from "./p_showBeforeEstimate";
-import p_showGotEstimate from "./p_showGotEstimate";
+import p_index from "./p_index";
+import p_showItem from "./p_show-item";
+import p_BeforeEstimate from "./p_brefore-estimate";
+import p_userSend from "./p_user-send";
 import p_mypage from "./p_mypage";
 import p_showsubmit from "./p_showsubmit";
 let LoginmyBtn = document.querySelector(".nb-right_isLogined");
@@ -23,26 +23,33 @@ let navigationBox = document.querySelector(".nb-navigation") as HTMLDivElement;
 let logout = document.querySelector(".nb-profile-logout");
 let logoutForm = document.querySelector(".logout-form") as HTMLFormElement;
 
+function index() {
+  let estimateBtn = document.querySelector(".mp-btn_estimate");
+  estimateBtn.addEventListener("click", (e) => {
+    location.href = "/web/estimate";
+  });
+}
+
 if (window.location.href.includes("#")) {
   window.location.href = window.location.href.slice(0, -1);
 }
 
-if (path === "/provide/index") {
-  P_index();
+if (path === "/provide/main") {
+  p_index();
 }
-if (path === "/provide/findAllRegister") {
-  p_findAllRegister();
-}
-if (path === "/provide/sympton_estimate") {
-  p_showBeforeEstimate();
-}
-if (path === "/provide/showGotEstimate") {
-  p_showGotEstimate();
-}
-if (path === "/provide/showsubmit") {
-  p_showsubmit();
+if (path === "/provide/show/items") {
+  p_showItem();
 }
 
+if (path === "/provide/sympton/estimate") {
+  p_BeforeEstimate();
+}
+if (path === "/provide/user/send") {
+  p_userSend();
+}
+if (path === "/provide/submit") {
+  p_showsubmit();
+}
 if (path === "/provide/mypage") {
   p_mypage();
 }
@@ -53,10 +60,10 @@ if (path === "/web/oauth_register") {
 if (path.split("/")[2] === "reset") {
   reset();
 }
-if (path === "/v1/find_user_email") {
+if (path === "/common/find/user/email") {
   findUserData();
 }
-if (path === "/v1/find_user_pwd") {
+if (path === "/common/find/user/pwd") {
   findUserData();
 }
 if (path === "/web/login") {
@@ -101,10 +108,10 @@ if (LoginmyBtn !== null) {
 
 if (mainName !== null) {
   mainName.addEventListener("click", () => {
-    if (path.split("/")[1] === "web") {
+    if (path.split("/")[1] === "web" || path.split("/")[1] === "common") {
       location.href = "/web/index";
     } else if (path.split("/")[1] === "provide") {
-      location.href = "/provide/index";
+      location.href = "/provide/main";
     }
   });
 }
@@ -124,12 +131,5 @@ if (logout !== null) {
         return false;
       }
     }
-  });
-}
-
-function index() {
-  let estimateBtn = document.querySelector(".mp-btn_estimate");
-  estimateBtn.addEventListener("click", (e) => {
-    location.href = "/web/estimate";
   });
 }

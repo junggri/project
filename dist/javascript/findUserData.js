@@ -35,11 +35,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var fetchFunction_1 = __importDefault(require("./fetchFunction"));
 function default_1() {
     var findEmailSlo = document.querySelector(".fs-find-user-email");
     var findPwdSlo = document.querySelector(".fs-find-user-pwd");
@@ -52,23 +48,20 @@ function default_1() {
     var loginBoxRegisterBtn = document.querySelector(".findUserResultBox-btnBox-register");
     var loginBoxConfirmBtn = document.querySelector(".findUserResultBox-btnBox-confirm");
     var userEmail = document.querySelector(".findEmail");
-    window.location.pathname === "/v1/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
-    function findUserData(url, data) {
+    window.location.pathname === "/common/find/user/email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
+    function findUserData(url) {
         return __awaiter(this, void 0, void 0, function () {
-            var fetchObj, response, result, err, error_1;
+            var response, result, err, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 6, , 7]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: data }))];
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, fetch(url)];
                     case 1:
-                        fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch(url, fetchObj)];
-                    case 2:
                         response = _a.sent();
-                        if (!(response.status === 200 || 201)) return [3 /*break*/, 4];
+                        if (!(response.status === 200 || 201)) return [3 /*break*/, 3];
                         return [4 /*yield*/, response.json()];
-                    case 3:
+                    case 2:
                         result = _a.sent();
                         if (!result.state) {
                             userEmail.textContent = result.inputdata;
@@ -92,17 +85,17 @@ function default_1() {
                             loginBoxRegisterBtn.style.display = "none";
                             loginBoxLoginBtn.style.display = "block";
                         }
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 4];
+                    case 3:
                         err = new Error("NET_ERROR");
                         err.name = "NET_ERROR";
                         throw err;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
                         error_1 = _a.sent();
                         console.log(error_1);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -113,11 +106,11 @@ function default_1() {
     findResultBtn.addEventListener("click", function () {
         if (userInputData.value === "")
             return;
-        if (window.location.pathname === "/v1/find_user_email") {
-            return findUserData("http://localhost:3000/v1/check_user_email", userInputData.value);
+        if (window.location.pathname === "/common/find/user/email") {
+            return findUserData("http://localhost:3000/common/check/users/email/" + userInputData.value);
         }
         else {
-            return findUserData("http://localhost:3000/v1/check_user_and_sendEmail", userInputData.value);
+            return findUserData("http://localhost:3000/common/send/users/email/" + userInputData.value);
         }
     });
 }

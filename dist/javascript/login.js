@@ -98,7 +98,7 @@ function login() {
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 6, , 7]);
-                            return [4 /*yield*/, fetch("http://localhost:3000/v1/users/" + email + "/cookie/" + state)];
+                            return [4 /*yield*/, fetch("http://localhost:3000/common/users/" + email + "/cookie/" + state)];
                         case 2:
                             response = _a.sent();
                             if (!(response.status === 200 || 201)) return [3 /*break*/, 4];

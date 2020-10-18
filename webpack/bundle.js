@@ -420,11 +420,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/javascript/fetchFunction.js"));
 function default_1() {
     var findEmailSlo = document.querySelector(".fs-find-user-email");
     var findPwdSlo = document.querySelector(".fs-find-user-pwd");
@@ -437,23 +433,20 @@ function default_1() {
     var loginBoxRegisterBtn = document.querySelector(".findUserResultBox-btnBox-register");
     var loginBoxConfirmBtn = document.querySelector(".findUserResultBox-btnBox-confirm");
     var userEmail = document.querySelector(".findEmail");
-    window.location.pathname === "/v1/find_user_email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
-    function findUserData(url, data) {
+    window.location.pathname === "/common/find/user/email" ? findPwdSlo.classList.add("fs-user-opacity") : findEmailSlo.classList.add("fs-user-opacity");
+    function findUserData(url) {
         return __awaiter(this, void 0, void 0, function () {
-            var fetchObj, response, result, err, error_1;
+            var response, result, err, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 6, , 7]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: data }))];
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, fetch(url)];
                     case 1:
-                        fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch(url, fetchObj)];
-                    case 2:
                         response = _a.sent();
-                        if (!(response.status === 200 || 201)) return [3 /*break*/, 4];
+                        if (!(response.status === 200 || 201)) return [3 /*break*/, 3];
                         return [4 /*yield*/, response.json()];
-                    case 3:
+                    case 2:
                         result = _a.sent();
                         if (!result.state) {
                             userEmail.textContent = result.inputdata;
@@ -477,17 +470,17 @@ function default_1() {
                             loginBoxRegisterBtn.style.display = "none";
                             loginBoxLoginBtn.style.display = "block";
                         }
-                        return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 4];
+                    case 3:
                         err = new Error("NET_ERROR");
                         err.name = "NET_ERROR";
                         throw err;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
                         error_1 = _a.sent();
                         console.log(error_1);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -498,11 +491,11 @@ function default_1() {
     findResultBtn.addEventListener("click", function () {
         if (userInputData.value === "")
             return;
-        if (window.location.pathname === "/v1/find_user_email") {
-            return findUserData("http://localhost:3000/v1/check_user_email", userInputData.value);
+        if (window.location.pathname === "/common/find/user/email") {
+            return findUserData("http://localhost:3000/common/check/users/email/" + userInputData.value);
         }
         else {
-            return findUserData("http://localhost:3000/v1/check_user_and_sendEmail", userInputData.value);
+            return findUserData("http://localhost:3000/common/send/users/email/" + userInputData.value);
         }
     });
 }
@@ -934,9 +927,9 @@ var provide_1 = __importDefault(__webpack_require__(/*! ./provide */ "./dist/jav
 var mypageShowProvider_1 = __importDefault(__webpack_require__(/*! ./mypageShowProvider */ "./dist/javascript/mypageShowProvider.js"));
 var mypageShowEstimate_1 = __importDefault(__webpack_require__(/*! ./mypageShowEstimate */ "./dist/javascript/mypageShowEstimate.js"));
 var p_index_1 = __importDefault(__webpack_require__(/*! ./p_index */ "./dist/javascript/p_index.js"));
-var p_findAllRegister_1 = __importDefault(__webpack_require__(/*! ./p_findAllRegister */ "./dist/javascript/p_findAllRegister.js"));
-var p_showBeforeEstimate_1 = __importDefault(__webpack_require__(/*! ./p_showBeforeEstimate */ "./dist/javascript/p_showBeforeEstimate.js"));
-var p_showGotEstimate_1 = __importDefault(__webpack_require__(/*! ./p_showGotEstimate */ "./dist/javascript/p_showGotEstimate.js"));
+var p_show_item_1 = __importDefault(__webpack_require__(/*! ./p_show-item */ "./dist/javascript/p_show-item.js"));
+var p_brefore_estimate_1 = __importDefault(__webpack_require__(/*! ./p_brefore-estimate */ "./dist/javascript/p_brefore-estimate.js"));
+var p_user_send_1 = __importDefault(__webpack_require__(/*! ./p_user-send */ "./dist/javascript/p_user-send.js"));
 var p_mypage_1 = __importDefault(__webpack_require__(/*! ./p_mypage */ "./dist/javascript/p_mypage.js"));
 var p_showsubmit_1 = __importDefault(__webpack_require__(/*! ./p_showsubmit */ "./dist/javascript/p_showsubmit.js"));
 var LoginmyBtn = document.querySelector(".nb-right_isLogined");
@@ -945,22 +938,28 @@ var path = window.location.pathname;
 var navigationBox = document.querySelector(".nb-navigation");
 var logout = document.querySelector(".nb-profile-logout");
 var logoutForm = document.querySelector(".logout-form");
+function index() {
+    var estimateBtn = document.querySelector(".mp-btn_estimate");
+    estimateBtn.addEventListener("click", function (e) {
+        location.href = "/web/estimate";
+    });
+}
 if (window.location.href.includes("#")) {
     window.location.href = window.location.href.slice(0, -1);
 }
-if (path === "/provide/index") {
+if (path === "/provide/main") {
     p_index_1.default();
 }
-if (path === "/provide/findAllRegister") {
-    p_findAllRegister_1.default();
+if (path === "/provide/show/items") {
+    p_show_item_1.default();
 }
-if (path === "/provide/sympton_estimate") {
-    p_showBeforeEstimate_1.default();
+if (path === "/provide/sympton/estimate") {
+    p_brefore_estimate_1.default();
 }
-if (path === "/provide/showGotEstimate") {
-    p_showGotEstimate_1.default();
+if (path === "/provide/user/send") {
+    p_user_send_1.default();
 }
-if (path === "/provide/showsubmit") {
+if (path === "/provide/submit") {
     p_showsubmit_1.default();
 }
 if (path === "/provide/mypage") {
@@ -973,10 +972,10 @@ if (path === "/web/oauth_register") {
 if (path.split("/")[2] === "reset") {
     reset_1.default();
 }
-if (path === "/v1/find_user_email") {
+if (path === "/common/find/user/email") {
     findUserData_1.default();
 }
-if (path === "/v1/find_user_pwd") {
+if (path === "/common/find/user/pwd") {
     findUserData_1.default();
 }
 if (path === "/web/login") {
@@ -1019,11 +1018,11 @@ if (LoginmyBtn !== null) {
 }
 if (mainName !== null) {
     mainName.addEventListener("click", function () {
-        if (path.split("/")[1] === "web") {
+        if (path.split("/")[1] === "web" || path.split("/")[1] === "common") {
             location.href = "/web/index";
         }
         else if (path.split("/")[1] === "provide") {
-            location.href = "/provide/index";
+            location.href = "/provide/main";
         }
     });
 }
@@ -1049,12 +1048,6 @@ if (logout !== null) {
             return [2 /*return*/];
         });
     }); });
-}
-function index() {
-    var estimateBtn = document.querySelector(".mp-btn_estimate");
-    estimateBtn.addEventListener("click", function (e) {
-        location.href = "/web/estimate";
-    });
 }
 //# sourceMappingURL=index.js.map
 
@@ -1168,7 +1161,7 @@ function login() {
                             _a.label = 1;
                         case 1:
                             _a.trys.push([1, 6, , 7]);
-                            return [4 /*yield*/, fetch("http://localhost:3000/v1/users/" + email + "/cookie/" + state)];
+                            return [4 /*yield*/, fetch("http://localhost:3000/common/users/" + email + "/cookie/" + state)];
                         case 2:
                             response = _a.sent();
                             if (!(response.status === 200 || 201)) return [3 /*break*/, 4];
@@ -2103,10 +2096,10 @@ exports.default = oauth;
 
 /***/ }),
 
-/***/ "./dist/javascript/p_findAllRegister.js":
-/*!**********************************************!*\
-  !*** ./dist/javascript/p_findAllRegister.js ***!
-  \**********************************************/
+/***/ "./dist/javascript/p_brefore-estimate.js":
+/*!***********************************************!*\
+  !*** ./dist/javascript/p_brefore-estimate.js ***!
+  \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2153,232 +2146,195 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/javascript/fetchFunction.js"));
-function p_findAllRegister() {
+function p_showBeforeEsimate() {
     var _this = this;
-    var sigunguCode = document.querySelector("#sigunguCode");
-    var sigungu = document.querySelector("#sigungu");
-    var bname = document.querySelector("#bname");
-    var findBtn = document.querySelector(".find-btn");
-    var selected_sigunguCode, page_num;
-    var decodedUrl = decodeURI(document.location.search);
-    var pageValue = document.querySelector(".frr-pagination-pageNum");
-    var lastPage = document.querySelector(".frr-pagination-allPage");
-    var findForm = document.querySelector(".findForm");
-    var changeFromSelect = false;
-    var symptonItems = document.querySelectorAll(".frr-item-content");
-    if (location.search !== "") {
-        for (var i = 0; i < decodedUrl.split("&").length; i++) {
-            if (decodedUrl.split("&")[i].split("=")[0] === "sigunguCode")
-                selected_sigunguCode = decodedUrl.split("&")[i].split("=")[1];
-            if (decodedUrl.split("&")[i].split("=")[0] === "page")
-                page_num = decodedUrl.split("&")[i].split("=")[1];
-        }
-        //////////////////////////////////////////////////////////////////////////////////
-        if (decodedUrl.split("&")[1] !== undefined) {
-            for (var i = 0; i < sigunguCode.options.length; i++) {
-                if (selected_sigunguCode === sigunguCode.options[i].value) {
-                    sigunguCode.options[i].selected = true;
-                    sigunguCode.options[i].setAttribute("selected", "selected");
-                }
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////////////
-        blockGetUrl(page_num, lastPage);
-        pageValue.value = page_num;
-        if (selected_sigunguCode === "sejong")
-            sigungu.disabled = true;
-    }
-    else {
-        pageValue.value = "1";
-    }
-    function blockGetUrl(page_num, lastPage) {
-        if (Number(page_num) > Number(lastPage.textContent)) {
-            alert("잘못된 접근입니다.");
-            return history.back();
-        }
-    }
-    function makeSymptonPage(symptonItems) {
-        var _this = this;
-        for (var i = 0; i < symptonItems.length; i++) {
-            symptonItems[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                var fetchObj, result, response, state, err, err, err, error_1;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            _a.trys.push([0, 6, , 7]);
-                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ _id: e.target.parentNode.dataset.registerid }))];
-                        case 1:
-                            fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/provide/before_check_getRegisterData", fetchObj)];
-                        case 2:
-                            result = _a.sent();
-                            if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                            return [4 /*yield*/, result.json()];
-                        case 3:
-                            response = _a.sent();
-                            state = response.state;
-                            if (state === false) {
-                                err = new Error("삭제된 증상입니다.");
-                                err.name = "Delete_data";
-                                throw err;
-                            }
-                            else if (state === "accept") {
-                                err = new Error();
-                                err.name = "진행중인 견적입니다.";
-                                throw err;
-                            }
-                            return [2 /*return*/, (window.location.href = "/provide/sympton_estimate?" + e.target.parentNode.dataset.registerid)];
-                        case 4:
-                            err = new Error("NETWORK_ERROR");
-                            err.name = "NET";
-                            throw err;
-                        case 5: return [3 /*break*/, 7];
-                        case 6:
-                            error_1 = _a.sent();
-                            console.error(error_1, error_1.name);
-                            alert(error_1);
-                            return [2 /*return*/, window.location.reload()];
-                        case 7: return [2 /*return*/];
+    var username = document.querySelector(".sbe-user-name");
+    var createdAt = document.querySelector(".sbe-user-createdAt");
+    var contentName = document.querySelector(".sbe-box-content");
+    var subContentName = document.querySelector(".sbe-content-detail");
+    var userwant_time = document.querySelector(".sbe-userwant-time-resultBox");
+    var userwant_detail = document.querySelector(".sbe-userwant-content-detail");
+    var mainImg = document.querySelector(".summary-main-img");
+    var priceValue = document.querySelector(".sbe-estimate-box-price-value");
+    var hiddenPrice = document.querySelector(".sbe-save-price");
+    var estimateBtn = document.querySelector(".sbe-estimate-btn");
+    var showEstimateBox = document.querySelector(".sbe-estimate-box");
+    var cancelEstimateBtn = document.querySelector(".sbe-cancel-estimate-btn");
+    var sumbitEstimate = document.querySelector(".sbe-get-estimate-btn");
+    var submitForm = document.querySelector(".submit_form");
+    var estimate_detail_value = document.querySelector("#sympton-detail");
+    var registrantId = document.querySelector(".registrant_id");
+    var symptonId = document.querySelector(".sympton_id");
+    var userId = document.querySelector(".user_id");
+    var deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn");
+    (function () { return __awaiter(_this, void 0, void 0, function () {
+        var result, response, err, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 5, , 6]);
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/get/data/item/" + document.location.search.substring(1, document.location.search.length))];
+                case 1:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, result.json()];
+                case 2:
+                    response = _a.sent();
+                    if (response.state === false) {
+                        window.location.href = "/provide/show/items";
+                        return [2 /*return*/];
                     }
-                });
-            }); });
-        }
+                    mainImg.style.backgroundImage = "url(\"/" + response.data.user_object_id + "/" + response.data.img[0] + "\")";
+                    username.textContent = response.data.user_name;
+                    createdAt.textContent = response.data.createdAt;
+                    contentName.textContent = response.data.sympton_detail;
+                    subContentName.textContent = response.data.sympton_detail;
+                    userwant_time.textContent = response.data.userwant_time.time + "\uC2DC " + response.data.userwant_time.minute + "\uBD84";
+                    userwant_detail.textContent = response.data.userwant_content;
+                    registrantId.value = response.data.user_object_id;
+                    symptonId.value = response.data._id;
+                    userId.value = response.data.user_object_id;
+                    return [3 /*break*/, 4];
+                case 3:
+                    err = new Error("NET_ERROR");
+                    err.name = "NETWORK_ERROR";
+                    throw err;
+                case 4: return [3 /*break*/, 6];
+                case 5:
+                    error_1 = _a.sent();
+                    console.error(error_1);
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
+            }
+        });
+    }); })();
+    function numberFormat(inputNumber) {
+        return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-    makeSymptonPage(symptonItems);
-    findBtn.addEventListener("click", function (e) {
-        if (changeFromSelect) {
-            pageValue.value = "1";
-        }
+    $(".sbe-estimate-box-price-value").on("blur", function () {
+        hiddenPrice.value = priceValue.value;
+        var price = numberFormat(priceValue.value);
+        priceValue.value = price;
     });
-    window.pagination_pre = function () {
-        if (pageValue.value === "1") {
-            return;
-        }
-        else {
-            var page = Number(pageValue.value) - 1;
-            pageValue.value = String(page);
-            findForm.submit();
-        }
-    };
-    window.pagination_next = function () {
-        if (pageValue.value === lastPage.textContent) {
-            return;
-        }
-        else {
-            var page = Number(pageValue.value) + 1;
-            pageValue.value = String(page);
-            findForm.submit();
-        }
-    };
-    window.get_change = function () {
-        changeFromSelect = true;
-    };
-    function reset(target, text) {
-        return __awaiter(this, void 0, void 0, function () {
-            var option;
-            return __generator(this, function (_a) {
-                option = document.createElement("option");
-                while (target.hasChildNodes()) {
-                    target.removeChild(target.firstChild);
-                }
-                option.selected = true;
-                option.text = text;
-                option.value = "0";
-                //value 바꾸면 여기도 바꾸기
-                target.appendChild(option);
-                return [2 /*return*/];
-            });
+    if (estimateBtn !== null) {
+        estimateBtn.addEventListener("click", function (e) {
+            showEstimateBox.style.display = "block";
+            estimateBtn.style.pointerEvents = "none";
         });
     }
-    //////////////////////////////////////////////////////////////////////////////////
-    function commonFunction(text, target, data, url) {
-        return __awaiter(this, void 0, void 0, function () {
-            var fetchObj, result, response, i, option, error_2;
+    cancelEstimateBtn.addEventListener("click", function (e) {
+        showEstimateBox.style.display = "none";
+        estimateBtn.style.pointerEvents = "all";
+    });
+    sumbitEstimate.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+        var fetchObj, result, response, state, err, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (estimate_detail_value.value === "" || priceValue.value === "")
+                        return [2 /*return*/, alert("입력사항을 기제해주시길 바랍니다")];
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 7, , 8]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({
+                            sympton_id: document.location.search.substring(1, document.location.search.length),
+                            content: estimate_detail_value.value,
+                            priceValue: priceValue.value,
+                            user_id: userId.value,
+                        }))];
+                case 2:
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/submit/estimate/process", fetchObj)];
+                case 3:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, result.json()];
+                case 4:
+                    response = _a.sent();
+                    state = response.state;
+                    if (state === null) {
+                        alert("삭제된 증상입니다. 견적을 제시할 수 없습니다.");
+                        window.location.href = "/provide/show/items";
+                        return [2 /*return*/];
+                    }
+                    else if (!state) {
+                        return [2 /*return*/, alert("더이상 견적을 제시할 수 없습니다.")];
+                    }
+                    else {
+                        showEstimateBox.style.display = "none";
+                        alert("견적제출이 완료되었습니다.");
+                        submitForm.reset();
+                        window.location.href = "/provide/sympton?" + response.url;
+                        return [2 /*return*/];
+                    }
+                    return [3 /*break*/, 6];
+                case 5:
+                    err = new Error("NET_ERROR");
+                    err.name = "NETWORK_ERROR";
+                    throw err;
+                case 6: return [3 /*break*/, 8];
+                case 7:
+                    error_2 = _a.sent();
+                    console.error(error_2);
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
+            }
+        });
+    }); });
+    if (deleteEstimateBtn !== null) {
+        deleteEstimateBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+            var flag, fetchObj, result, response, state, err, err, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, reset(target, text)];
+                    case 0:
+                        flag = confirm("정말로 취소하시겠습니까?");
+                        if (!(flag === true)) return [3 /*break*/, 8];
+                        _a.label = 1;
                     case 1:
-                        _a.sent();
-                        _a.label = 2;
+                        _a.trys.push([1, 7, , 8]);
+                        return [4 /*yield*/, fetchFunction_1.default("delete", "same-origin", JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }))];
                     case 2:
-                        _a.trys.push([2, 7, , 8]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ data: data }))];
-                    case 3:
                         fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch(url, fetchObj)];
-                    case 4:
+                        return [4 /*yield*/, fetch("http://localhost:3000/provide/delete/submit", fetchObj)];
+                    case 3:
                         result = _a.sent();
-                        if (!(result.status === 200 || 201)) return [3 /*break*/, 6];
+                        if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
                         return [4 /*yield*/, result.json()];
-                    case 5:
+                    case 4:
                         response = _a.sent();
-                        for (i = 0; i < response.sido.length; i++) {
-                            option = document.createElement("option");
-                            option.value = response.sido[i];
-                            option.textContent = response.sido[i];
-                            target.appendChild(option);
+                        state = response.state;
+                        if (state === "accept") {
+                            alert("견적이 성사되어 취소가 불가능합니다.");
+                            return [2 /*return*/, (window.location.href = "/provide/show/items")];
                         }
-                        _a.label = 6;
+                        else if (state == null) {
+                            err = new Error("error");
+                            err.name = "DELETE_DATA";
+                            alert("삭제된 게시글이라 자동 취소 되었습니다.");
+                            return [2 /*return*/, (window.location.href = "/provide/show/items")];
+                        }
+                        else {
+                            alert("취소가 완료되었습니다.");
+                            window.location.href = "/provide/sympton?" + response.url;
+                        }
+                        return [3 /*break*/, 6];
+                    case 5:
+                        err = new Error("NET_ERROR");
+                        err.name = "NETWORK_ERROR";
+                        throw err;
                     case 6: return [3 /*break*/, 8];
                     case 7:
-                        error_2 = _a.sent();
-                        console.error(error_2);
+                        error_3 = _a.sent();
+                        console.error(error_3);
                         return [3 /*break*/, 8];
                     case 8: return [2 /*return*/];
                 }
             });
-        });
+        }); });
     }
-    //////////////////////////////////////////////////////////////////////////////////
-    sigunguCode.addEventListener("change", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, reset(sigungu, "-- 전체")];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, reset(bname, "-- 전체")];
-                case 2:
-                    _a.sent();
-                    if (sigunguCode.options[sigunguCode.selectedIndex].value === "sejong") {
-                        sigungu.disabled = true;
-                        commonFunction("-- 동 / 면 / 읍", bname, sigunguCode.options[sigunguCode.selectedIndex].value, "http://localhost:3000/provide/get_sejong");
-                        return [2 /*return*/];
-                    }
-                    if (!(sigunguCode.options[sigunguCode.selectedIndex].value === "0")) return [3 /*break*/, 5];
-                    return [4 /*yield*/, reset(sigungu, "-- 전체")];
-                case 3:
-                    _a.sent();
-                    return [4 /*yield*/, reset(bname, "-- 전체")];
-                case 4:
-                    _a.sent();
-                    sigungu.disabled = false;
-                    return [2 /*return*/];
-                case 5:
-                    sigungu.disabled = false;
-                    commonFunction("-- 시 / 군 / 구", sigungu, sigunguCode.options[sigunguCode.selectedIndex].value, "http://localhost:3000/provide/get_sigungu");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    //////////////////////////////////////////////////////////////////////////////////
-    sigungu.addEventListener("change", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!(sigungu.options[sigungu.selectedIndex].value === "0")) return [3 /*break*/, 2];
-                    return [4 /*yield*/, reset(bname, "-- 전체")];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-                case 2:
-                    commonFunction("-- 동 / 면 / 읍", bname, { sido: sigunguCode.options[sigunguCode.selectedIndex].value, sigungu: sigungu.options[sigungu.selectedIndex].value }, "http://localhost:3000/provide/get_bname");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
 }
-exports.default = p_findAllRegister;
-//# sourceMappingURL=p_findAllRegister.js.map
+exports.default = p_showBeforeEsimate;
+//# sourceMappingURL=p_brefore-estimate.js.map
 
 /***/ }),
 
@@ -2440,44 +2396,45 @@ function p_index() {
     var providePwd = document.querySelector("#pi-pwd");
     var provideState = document.querySelector(".pi-state");
     var userInputEmail = getCookie("upe");
+    console.log(loginBtn);
     loginBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
         var fetchObj, result, response, err, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 6, , 7]);
-                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({
-                            email: provideEmail.value,
-                            pwd: providePwd.value,
-                        }))];
+                    console.log(2);
+                    _a.label = 1;
                 case 1:
-                    fetchObj = _a.sent();
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/login/process", fetchObj)];
+                    _a.trys.push([1, 7, , 8]);
+                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: provideEmail.value, pwd: providePwd.value }))];
                 case 2:
-                    result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, result.json()];
+                    fetchObj = _a.sent();
+                    return [4 /*yield*/, fetch("http://localhost:3000/provide/users/login", fetchObj)];
                 case 3:
+                    result = _a.sent();
+                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                    return [4 /*yield*/, result.json()];
+                case 4:
                     response = _a.sent();
                     response.state === true ? (window.location.href = response.url) : (provideState.textContent = response.msg);
-                    return [3 /*break*/, 5];
-                case 4:
+                    return [3 /*break*/, 6];
+                case 5:
                     console.log(result.status);
                     err = new Error("NET_ERROR");
                     err.name = "NETWORK_ERROR";
                     throw err;
-                case 5: return [3 /*break*/, 7];
-                case 6:
+                case 6: return [3 /*break*/, 8];
+                case 7:
                     error_1 = _a.sent();
                     console.error(error_1);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     }); });
     function getEmailFromCookie(email, state) {
         return __awaiter(this, void 0, void 0, function () {
-            var fetchObj, response, result, error_2;
+            var response, result, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2485,24 +2442,21 @@ function p_index() {
                             return [2 /*return*/];
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ email: email, state: state }))];
+                        _a.trys.push([1, 5, , 6]);
+                        return [4 /*yield*/, fetch("http://localhost:3000/common/users/" + email + "/cookie/" + state)];
                     case 2:
-                        fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch("http://localhost:3000/v1/setUserEmailCookie", fetchObj)];
-                    case 3:
                         response = _a.sent();
-                        if (!(response.status === 200 || 201)) return [3 /*break*/, 5];
+                        if (!(response.status === 200 || 201)) return [3 /*break*/, 4];
                         return [4 /*yield*/, response.json()];
-                    case 4:
+                    case 3:
                         result = _a.sent();
                         return [2 /*return*/, result];
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
                         error_2 = _a.sent();
                         console.error(error_2);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -2652,10 +2606,10 @@ exports.default = p_mypage;
 
 /***/ }),
 
-/***/ "./dist/javascript/p_showBeforeEstimate.js":
-/*!*************************************************!*\
-  !*** ./dist/javascript/p_showBeforeEstimate.js ***!
-  \*************************************************/
+/***/ "./dist/javascript/p_show-item.js":
+/*!****************************************!*\
+  !*** ./dist/javascript/p_show-item.js ***!
+  \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2697,230 +2651,227 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/javascript/fetchFunction.js"));
-function p_showBeforeEsimate() {
+function p_findAllRegister() {
     var _this = this;
-    var username = document.querySelector(".sbe-user-name");
-    var createdAt = document.querySelector(".sbe-user-createdAt");
-    var contentName = document.querySelector(".sbe-box-content");
-    var subContentName = document.querySelector(".sbe-content-detail");
-    var userwant_time = document.querySelector(".sbe-userwant-time-resultBox");
-    var userwant_detail = document.querySelector(".sbe-userwant-content-detail");
-    var mainImg = document.querySelector(".summary-main-img");
-    var priceValue = document.querySelector(".sbe-estimate-box-price-value");
-    var hiddenPrice = document.querySelector(".sbe-save-price");
-    var estimateBtn = document.querySelector(".sbe-estimate-btn");
-    var showEstimateBox = document.querySelector(".sbe-estimate-box");
-    var cancelEstimateBtn = document.querySelector(".sbe-cancel-estimate-btn");
-    var sumbitEstimate = document.querySelector(".sbe-get-estimate-btn");
-    var submitForm = document.querySelector(".submit_form");
-    var estimate_detail_value = document.querySelector("#sympton-detail");
-    var registrantId = document.querySelector(".registrant_id");
-    var symptonId = document.querySelector(".sympton_id");
-    var userId = document.querySelector(".user_id");
-    var deleteEstimateBtn = document.querySelector(".sbe-delete-estimate-btn");
-    (function () { return __awaiter(_this, void 0, void 0, function () {
-        var fetchObj, result, response, err, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 6, , 7]);
-                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }))];
-                case 1:
-                    fetchObj = _a.sent();
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/get_registerData", fetchObj)];
-                case 2:
-                    result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, result.json()];
-                case 3:
-                    response = _a.sent();
-                    if (response.state === false) {
-                        window.location.href = "/provide/findAllRegister";
-                        return [2 /*return*/];
-                    }
-                    mainImg.style.backgroundImage = "url(\"/" + response.data.user_object_id + "/" + response.data.img[0] + "\")";
-                    username.textContent = response.data.user_name;
-                    createdAt.textContent = response.data.createdAt;
-                    contentName.textContent = response.data.sympton_detail;
-                    subContentName.textContent = response.data.sympton_detail;
-                    userwant_time.textContent = response.data.userwant_time.time + "\uC2DC " + response.data.userwant_time.minute + "\uBD84";
-                    userwant_detail.textContent = response.data.userwant_content;
-                    registrantId.value = response.data.user_object_id;
-                    symptonId.value = response.data._id;
-                    userId.value = response.data.user_object_id;
-                    return [3 /*break*/, 5];
-                case 4:
-                    err = new Error("NET_ERROR");
-                    err.name = "NETWORK_ERROR";
-                    throw err;
-                case 5: return [3 /*break*/, 7];
-                case 6:
-                    error_1 = _a.sent();
-                    console.error(error_1);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+    var sigunguCode = document.querySelector("#sigunguCode");
+    var sigungu = document.querySelector("#sigungu");
+    var bname = document.querySelector("#bname");
+    var findBtn = document.querySelector(".find-btn");
+    var selected_sigunguCode, page_num;
+    var decodedUrl = decodeURI(document.location.search);
+    var pageValue = document.querySelector(".frr-pagination-pageNum");
+    var lastPage = document.querySelector(".frr-pagination-allPage");
+    var findForm = document.querySelector(".findForm");
+    var changeFromSelect = false;
+    var symptonItems = document.querySelectorAll(".frr-item-content");
+    if (location.search !== "") {
+        for (var i = 0; i < decodedUrl.split("&").length; i++) {
+            if (decodedUrl.split("&")[i].split("=")[0] === "sigunguCode")
+                selected_sigunguCode = decodedUrl.split("&")[i].split("=")[1];
+            if (decodedUrl.split("&")[i].split("=")[0] === "page")
+                page_num = decodedUrl.split("&")[i].split("=")[1];
+        }
+        //////////////////////////////////////////////////////////////////////////////////
+        if (decodedUrl.split("&")[1] !== undefined) {
+            for (var i = 0; i < sigunguCode.options.length; i++) {
+                if (selected_sigunguCode === sigunguCode.options[i].value) {
+                    sigunguCode.options[i].selected = true;
+                    sigunguCode.options[i].setAttribute("selected", "selected");
+                }
             }
-        });
-    }); })();
-    function numberFormat(inputNumber) {
-        return inputNumber.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        //////////////////////////////////////////////////////////////////////////////////
+        blockGetUrl(page_num, lastPage);
+        pageValue.value = page_num;
+        if (selected_sigunguCode === "sejong")
+            sigungu.disabled = true;
     }
-    $(".sbe-estimate-box-price-value").on("blur", function () {
-        hiddenPrice.value = priceValue.value;
-        var price = numberFormat(priceValue.value);
-        priceValue.value = price;
+    else {
+        pageValue.value = "1";
+    }
+    function blockGetUrl(page_num, lastPage) {
+        if (Number(page_num) > Number(lastPage.textContent)) {
+            alert("잘못된 접근입니다.");
+            return history.back();
+        }
+    }
+    function makeSymptonPage(symptonItems) {
+        var _this = this;
+        for (var i = 0; i < symptonItems.length; i++) {
+            symptonItems[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
+                var result, response, state, err, err, err, error_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 5, , 6]);
+                            return [4 /*yield*/, fetch("http://localhost:3000/provide/check/state/item/" + e.target.parentNode.dataset.registerid)];
+                        case 1:
+                            result = _a.sent();
+                            if (!(result.status === 200 || 201)) return [3 /*break*/, 3];
+                            return [4 /*yield*/, result.json()];
+                        case 2:
+                            response = _a.sent();
+                            state = response.state;
+                            if (state === false) {
+                                err = new Error("삭제된 증상입니다.");
+                                err.name = "Delete_data";
+                                throw err;
+                            }
+                            else if (state === "accept") {
+                                err = new Error();
+                                err.name = "진행중인 견적입니다.";
+                                throw err;
+                            }
+                            return [2 /*return*/, (window.location.href = "/provide/sympton?" + e.target.parentNode.dataset.registerid)];
+                        case 3:
+                            err = new Error("NETWORK_ERROR");
+                            err.name = "NET";
+                            throw err;
+                        case 4: return [3 /*break*/, 6];
+                        case 5:
+                            error_1 = _a.sent();
+                            console.error(error_1, error_1.name);
+                            alert(error_1);
+                            return [2 /*return*/, window.location.reload()];
+                        case 6: return [2 /*return*/];
+                    }
+                });
+            }); });
+        }
+    }
+    makeSymptonPage(symptonItems);
+    findBtn.addEventListener("click", function (e) {
+        if (changeFromSelect) {
+            pageValue.value = "1";
+        }
     });
-    if (estimateBtn !== null) {
-        estimateBtn.addEventListener("click", function (e) {
-            showEstimateBox.style.display = "block";
-            estimateBtn.style.pointerEvents = "none";
+    window.pagination_pre = function () {
+        if (pageValue.value === "1") {
+            return;
+        }
+        else {
+            var page = Number(pageValue.value) - 1;
+            pageValue.value = String(page);
+            findForm.submit();
+        }
+    };
+    window.pagination_next = function () {
+        if (pageValue.value === lastPage.textContent) {
+            return;
+        }
+        else {
+            var page = Number(pageValue.value) + 1;
+            pageValue.value = String(page);
+            findForm.submit();
+        }
+    };
+    window.get_change = function () {
+        changeFromSelect = true;
+    };
+    function reset(target, text) {
+        return __awaiter(this, void 0, void 0, function () {
+            var option;
+            return __generator(this, function (_a) {
+                option = document.createElement("option");
+                while (target.hasChildNodes()) {
+                    target.removeChild(target.firstChild);
+                }
+                option.selected = true;
+                option.text = text;
+                option.value = "0";
+                //value 바꾸면 여기도 바꾸기
+                target.appendChild(option);
+                return [2 /*return*/];
+            });
         });
     }
-    cancelEstimateBtn.addEventListener("click", function (e) {
-        showEstimateBox.style.display = "none";
-        estimateBtn.style.pointerEvents = "all";
-    });
-    sumbitEstimate.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-        var fetchObj, result, response, state, err, error_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (estimate_detail_value.value === "" || priceValue.value === "")
-                        return [2 /*return*/, alert("입력사항을 기제해주시길 바랍니다")];
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 7, , 8]);
-                    return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({
-                            sympton_id: document.location.search.substring(1, document.location.search.length),
-                            content: estimate_detail_value.value,
-                            priceValue: priceValue.value,
-                            user_id: userId.value,
-                        }))];
-                case 2:
-                    fetchObj = _a.sent();
-                    return [4 /*yield*/, fetch("http://localhost:3000/provide/submit_estimate", fetchObj)];
-                case 3:
-                    result = _a.sent();
-                    if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
-                    return [4 /*yield*/, result.json()];
-                case 4:
-                    response = _a.sent();
-                    state = response.state;
-                    if (state === null) {
-                        alert("삭제된 증상입니다. 견적을 제시할 수 없습니다.");
-                        window.location.href = "/provide/findAllRegister";
-                        return [2 /*return*/];
-                    }
-                    else if (!state) {
-                        return [2 /*return*/, alert("더이상 견적을 제시할 수 없습니다.")];
-                    }
-                    else {
-                        showEstimateBox.style.display = "none";
-                        alert("견적제출이 완료되었습니다.");
-                        submitForm.reset();
-                        window.location.href = "/provide/sympton_estimate?" + response.url;
-                        return [2 /*return*/];
-                    }
-                    return [3 /*break*/, 6];
-                case 5:
-                    err = new Error("NET_ERROR");
-                    err.name = "NETWORK_ERROR";
-                    throw err;
-                case 6: return [3 /*break*/, 8];
-                case 7:
-                    error_2 = _a.sent();
-                    console.error(error_2);
-                    return [3 /*break*/, 8];
-                case 8: return [2 /*return*/];
-            }
-        });
-    }); });
-    if (deleteEstimateBtn !== null) {
-        deleteEstimateBtn.addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-            var flag, fetchObj, result, response, state, err, err, error_3;
+    //////////////////////////////////////////////////////////////////////////////////
+    function commonFunction(text, target, url) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result, response, i, option, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        flag = confirm("정말로 취소하시겠습니까?");
-                        if (!(flag === true)) return [3 /*break*/, 8];
-                        _a.label = 1;
+                    case 0: return [4 /*yield*/, reset(target, text)];
                     case 1:
-                        _a.trys.push([1, 7, , 8]);
-                        return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }))];
+                        _a.sent();
+                        _a.label = 2;
                     case 2:
-                        fetchObj = _a.sent();
-                        return [4 /*yield*/, fetch("http://localhost:3000/provide/delete_submit", fetchObj)];
+                        _a.trys.push([2, 6, , 7]);
+                        return [4 /*yield*/, fetch(url)];
                     case 3:
                         result = _a.sent();
                         if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
                         return [4 /*yield*/, result.json()];
                     case 4:
                         response = _a.sent();
-                        state = response.state;
-                        if (state === "accept") {
-                            alert("견적이 성사되어 취소가 불가능합니다.");
-                            return [2 /*return*/, (window.location.href = "/provide/findAllRegister")];
+                        for (i = 0; i < response.sido.length; i++) {
+                            option = document.createElement("option");
+                            option.value = response.sido[i];
+                            option.textContent = response.sido[i];
+                            target.appendChild(option);
                         }
-                        else if (state == null) {
-                            err = new Error("error");
-                            err.name = "DELETE_DATA";
-                            alert("삭제된 게시글이라 자동 취소 되었습니다.");
-                            return [2 /*return*/, (window.location.href = "/provide/findAllRegister")];
-                        }
-                        else {
-                            alert("취소가 완료되었습니다.");
-                            window.location.href = "/provide/sympton_estimate?" + response.url;
-                        }
-                        return [3 /*break*/, 6];
-                    case 5:
-                        err = new Error("NET_ERROR");
-                        err.name = "NETWORK_ERROR";
-                        throw err;
-                    case 6: return [3 /*break*/, 8];
-                    case 7:
-                        error_3 = _a.sent();
-                        console.error(error_3);
-                        return [3 /*break*/, 8];
-                    case 8: return [2 /*return*/];
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_2 = _a.sent();
+                        console.error(error_2);
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
-        }); });
+        });
     }
+    //////////////////////////////////////////////////////////////////////////////////
+    sigunguCode.addEventListener("change", function (e) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, reset(sigungu, "-- 전체")];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, reset(bname, "-- 전체")];
+                case 2:
+                    _a.sent();
+                    if (sigunguCode.options[sigunguCode.selectedIndex].value === "sejong") {
+                        sigungu.disabled = true;
+                        commonFunction("-- 동 / 면 / 읍", bname, "http://localhost:3000/provide/get/sejong/" + sigunguCode.options[sigunguCode.selectedIndex].value);
+                        return [2 /*return*/];
+                    }
+                    if (!(sigunguCode.options[sigunguCode.selectedIndex].value === "0")) return [3 /*break*/, 5];
+                    return [4 /*yield*/, reset(sigungu, "-- 전체")];
+                case 3:
+                    _a.sent();
+                    return [4 /*yield*/, reset(bname, "-- 전체")];
+                case 4:
+                    _a.sent();
+                    sigungu.disabled = false;
+                    return [2 /*return*/];
+                case 5:
+                    sigungu.disabled = false;
+                    commonFunction("-- 시 / 군 / 구", sigungu, "http://localhost:3000/provide/get/sigungu/" + sigunguCode.options[sigunguCode.selectedIndex].value);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    //////////////////////////////////////////////////////////////////////////////////
+    sigungu.addEventListener("change", function (e) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!(sigungu.options[sigungu.selectedIndex].value === "0")) return [3 /*break*/, 2];
+                    return [4 /*yield*/, reset(bname, "-- 전체")];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+                case 2:
+                    commonFunction("-- 동 / 면 / 읍", bname, "http://localhost:3000/provide/get/bname/" + sigunguCode.options[sigunguCode.selectedIndex].value + "/" + sigungu.options[sigungu.selectedIndex].value);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
 }
-exports.default = p_showBeforeEsimate;
-//# sourceMappingURL=p_showBeforeEstimate.js.map
-
-/***/ }),
-
-/***/ "./dist/javascript/p_showGotEstimate.js":
-/*!**********************************************!*\
-  !*** ./dist/javascript/p_showGotEstimate.js ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function showGotEstimate() {
-    var gotItems = document.querySelectorAll(".sg-item");
-    function AddEventToGotItem(Item) {
-        for (var i = 0; i < Item.length; i++) {
-            Item[i].addEventListener("click", function (e) {
-                var target = e.target.parentNode;
-                window.location.href = "/provide/sympton_estimate?" + target.dataset.submitid;
-            });
-        }
-    }
-    AddEventToGotItem(gotItems);
-}
-exports.default = showGotEstimate;
-//# sourceMappingURL=p_showGotEstimate.js.map
+exports.default = p_findAllRegister;
+//# sourceMappingURL=p_show-item.js.map
 
 /***/ }),
 
@@ -2969,45 +2920,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var fetchFunction_1 = __importDefault(__webpack_require__(/*! ./fetchFunction */ "./dist/javascript/fetchFunction.js"));
 function showsubmit() {
     var SubmitItems = document.querySelectorAll(".sbc-item");
     function AddEventToGotItem(Item) {
         var _this = this;
         for (var i = 0; i < Item.length; i++) {
             Item[i].addEventListener("click", function (e) { return __awaiter(_this, void 0, void 0, function () {
-                var target, fetchObj, result, response, error_1;
+                var target, result, response, error_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             target = e.target.parentNode;
                             _a.label = 1;
                         case 1:
-                            _a.trys.push([1, 6, , 7]);
-                            return [4 /*yield*/, fetchFunction_1.default("post", "same-origin", JSON.stringify({ submitId: target.dataset.submitid }))];
+                            _a.trys.push([1, 5, , 6]);
+                            return [4 /*yield*/, fetch("http://localhost:3000/provide/check/flags/submit/" + target.dataset.submitid)];
                         case 2:
-                            fetchObj = _a.sent();
-                            return [4 /*yield*/, fetch("http://localhost:3000/provide/showSubmitFlag", fetchObj)];
-                        case 3:
                             result = _a.sent();
-                            if (!(result.status === 200 || 201)) return [3 /*break*/, 5];
+                            if (!(result.status === 200 || 201)) return [3 /*break*/, 4];
                             return [4 /*yield*/, result.json()];
-                        case 4:
+                        case 3:
                             response = _a.sent();
                             if (response.state === "accept" || response.state === "submit") {
-                                window.location.href = "/provide/sympton_estimate?" + response.symptonId;
+                                window.location.href = "/provide/sympton?" + response.symptonId;
                             }
-                            _a.label = 5;
-                        case 5: return [3 /*break*/, 7];
-                        case 6:
+                            _a.label = 4;
+                        case 4: return [3 /*break*/, 6];
+                        case 5:
                             error_1 = _a.sent();
                             console.log(error_1);
-                            return [3 /*break*/, 7];
-                        case 7: return [2 /*return*/];
+                            return [3 /*break*/, 6];
+                        case 6: return [2 /*return*/];
                     }
                 });
             }); });
@@ -3017,6 +2961,33 @@ function showsubmit() {
 }
 exports.default = showsubmit;
 //# sourceMappingURL=p_showsubmit.js.map
+
+/***/ }),
+
+/***/ "./dist/javascript/p_user-send.js":
+/*!****************************************!*\
+  !*** ./dist/javascript/p_user-send.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function showGotEstimate() {
+    var gotItems = document.querySelectorAll(".sg-item");
+    function AddEventToGotItem(Item) {
+        for (var i = 0; i < Item.length; i++) {
+            Item[i].addEventListener("click", function (e) {
+                var target = e.target.parentNode;
+                window.location.href = "/provide/sympton?" + target.dataset.submitid;
+            });
+        }
+    }
+    AddEventToGotItem(gotItems);
+}
+exports.default = showGotEstimate;
+//# sourceMappingURL=p_user-send.js.map
 
 /***/ }),
 

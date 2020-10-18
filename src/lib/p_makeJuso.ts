@@ -1,4 +1,4 @@
-import mysql from "../lib/mysql";
+import mysql from "./mysql-jusoLIst";
 import qs from "querystring";
 
 export let makeJuso = (req: any, res: any, authUI: any, _AllSympton: any, pagination: any) => {

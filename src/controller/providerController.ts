@@ -13,29 +13,20 @@ import registerSymController from "../db/model/registerSymptonModel";
 import submitController from "../db/model/submitModel";
 import { MakeAllSymptonList, MakePagination, showSubmitList, showGottList } from "../lib/p_MakeSymptonList";
 import { makeLocation, makeImg, makeBtn } from "../lib/p_makeShowData";
-import mysql from "../lib/mysql";
+import pool from "../lib/mysql-jusoLIst";
 import qs from "querystring";
 import { makeJuso } from "../lib/p_makeJuso";
+import { Decoded, Err } from "../interface/all_interface";
+import user from "../lib/mysql-test";
 
-interface Decoded {
-  email: string;
-  user_objectId: string;
-  username: string;
-}
-
-interface Err {
-  message: string;
-  stack: string;
-  status: number;
-}
 interface ProviderController {
-  index(req: Request, res: Response): void;
+  main(req: Request, res: Response): void;
   loginProcess(req: Request, res: Response): void;
-  findAllRegister(req: Request, res: Response): void;
+  showItems(req: Request, res: Response): void;
   getSigungu(req: Request, res: Response): void;
   getBname(req: Request, res: Response): void;
   getSejong(req: Request, res: Response): void;
-  checkBeoforeReigsterData(req: Request, res: Response): void;
+  checkStateRegisterState(req: Request, res: Response): void;
   symptonEstimate(req: Request, res: Response, next: NextFunction): void;
   getRegisterData(req: Request, res: Response): void;
   submitEstimate(req: Request, res: Response): void;
@@ -48,14 +39,14 @@ interface ProviderController {
 }
 
 let providerController: ProviderController = {
-  index(req: Request, res: Response) {
+  async main(req: Request, res: Response) {
     if (req.headers.referer === undefined) {
-      req.session.referer = "http://localhost:3000/provide/index";
+      req.session.referer = "http://localhost:3000/provide/main";
     } else {
-      req.session.referer = "http://localhost:3000/provide/findAllRegister";
+      req.session.referer = "http://localhost:3000/provide/show/items";
     }
     req.session.save(() => {
-      res.render("providers/index", { csrfToken: req.csrfToken() });
+      res.render("providers/main", { csrfToken: req.csrfToken() });
     });
   },
 
@@ -76,17 +67,17 @@ let providerController: ProviderController = {
             let save_token = result.refresh_token;
             if (save_token === undefined) {
               provideController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
-              return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+              return res.status(200).json({ url: "http://localhost:3000/provide/show/items", state: true });
             } else {
               try {
                 console.log("리프래쉬 토큰이 있어요");
                 jwt.verify(save_token, process.env.JWT_SECRET);
-                return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+                return res.status(200).json({ url: "http://localhost:3000/provide/show/items", state: true });
               } catch (error) {
                 if (error.name === "TokenExpiredError") {
                   console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
                   provideController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
-                  return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+                  return res.status(200).json({ url: "http://localhost:3000/provide/show/items", state: true });
                 }
               }
             }
@@ -100,7 +91,8 @@ let providerController: ProviderController = {
     }
   },
 
-  async findAllRegister(req, res) {
+  async showItems(req, res) {
+    // let reuslt = await pool.getConnection(async (conn: any) => conn);
     // submitController.reset();
     let authUI = auth.status(req, res);
     let pageNum;
@@ -117,13 +109,13 @@ let providerController: ProviderController = {
       let allData = await registerSymController.makePagination();
       let _AllSympton = MakeAllSymptonList(data, pageNum, divided_num);
       let pagination = MakePagination(req, res, allData, divided_num);
-      res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });
+      res.render("providers/show-item", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });
     }
   },
 
-  getSigungu(req, res) {
-    if (req.body.data === "") return;
-    mysql.query(`select 시군구명 from ${req.body.data}`, (err: any, data: any) => {
+  async getSigungu(req, res) {
+    if (req.params.data === "") return;
+    pool.query(`select 시군구명 from ${req.params.data}`, (err: any, data: any) => {
       let data1 = [];
       if (err) console.error(err);
       for (let i = 0; i < data.length; i++) {
@@ -134,8 +126,8 @@ let providerController: ProviderController = {
   },
 
   getBname(req, res) {
-    if (req.body.data.sigungu === "") return;
-    mysql.query(`select * from ${req.body.data.sido} where 시군구명 = "${req.body.data.sigungu}"`, (err: any, data: any) => {
+    if (req.params.sigungu === "") return;
+    pool.query(`select * from ${req.params.sido} where 시군구명 = "${req.params.sigungu}"`, (err: any, data: any) => {
       let data1 = [];
       if (err) console.error(err);
       for (let i = 0; i < data.length; i++) {
@@ -146,8 +138,8 @@ let providerController: ProviderController = {
   },
 
   getSejong(req, res) {
-    if (req.body.data === "") return;
-    mysql.query(`select * from ${req.body.data}`, (err: any, data: any) => {
+    if (req.params.data === "") return;
+    pool.query(`select * from ${req.params.data}`, (err: any, data: any) => {
       let data1 = [];
       if (err) console.error(err);
       for (let i = 0; i < data.length; i++) {
@@ -157,8 +149,8 @@ let providerController: ProviderController = {
     });
   },
 
-  async checkBeoforeReigsterData(req, res) {
-    let result = await registerSymController.showBeforeEstimate(req.body._id);
+  async checkStateRegisterState(req, res) {
+    let result = await registerSymController.showBeforeEstimate(req.params.registerId);
     if (result === null) {
       return res.json({ state: false });
     } else if (result.state === "accept") {
@@ -187,14 +179,14 @@ let providerController: ProviderController = {
       let location = makeLocation(result);
       let imgs = makeImg(result);
       let btn = makeBtn(isEstimated, req.url.split("?")[1]);
-      res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location, imgs: imgs, btn: btn });
+      res.render("providers/before-estimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location, imgs: imgs, btn: btn });
     } catch (error) {
       console.error(error);
     }
   },
 
   async getRegisterData(req, res) {
-    let result = await registerSymController.showBeforeEstimate(req.body.sympton_id);
+    let result = await registerSymController.showBeforeEstimate(req.params.registerId);
     if (result === null) return res.json({ state: false });
     res.json({ state: true, data: result });
   },
@@ -230,7 +222,7 @@ let providerController: ProviderController = {
     const token = req.cookies.pjwttoken;
     let decoded = jwt.verify(token, process.env.JWT_SECRET);
     try {
-      res.render("providers/p_mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: (decoded as Decoded).username, useremail: (decoded as Decoded).email });
+      res.render("providers/mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: (decoded as Decoded).username, useremail: (decoded as Decoded).email });
     } catch (error) {}
   },
 
@@ -241,12 +233,13 @@ let providerController: ProviderController = {
       let decoded = jwt.verify(token, process.env.JWT_SECRET);
       let data = await submitController.getDataFromProviderId((decoded as Decoded).user_objectId);
       let list = showSubmitList(data);
-      res.render("providers/showsubmit", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
+      res.render("providers/show-submit", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
     } catch (error) {}
   },
 
   async showSubmitFlag(req, res) {
-    let result = await submitController.findSubmit(req.body.submitId);
+    let result = await submitController.findSubmit(req.params.submitId);
+    console.log(result);
     return res.json({ state: result.state, symptonId: result.symptonId });
   },
 
@@ -257,7 +250,7 @@ let providerController: ProviderController = {
       let decoded = jwt.verify(token, process.env.JWT_SECRET);
       let data = await providerGotController.findProvider((decoded as Decoded).user_objectId);
       let list = showGottList(data);
-      res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
+      res.render("providers/user-send", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
     } catch (error) {
       console.error(error);
     }

@@ -27,12 +27,11 @@ export default function p_showBeforeEsimate() {
 
   (async () => {
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ sympton_id: document.location.search.substring(1, document.location.search.length) }));
-      let result = await fetch("http://localhost:3000/provide/get_registerData", fetchObj);
+      let result = await fetch(`http://localhost:3000/provide/get/data/item/${document.location.search.substring(1, document.location.search.length)}`);
       if (result.status === 200 || 201) {
         let response = await result.json();
         if (response.state === false) {
-          window.location.href = "/provide/findAllRegister";
+          window.location.href = "/provide/show/items";
           return;
         }
         mainImg.style.backgroundImage = `url("/${response.data.user_object_id}/${response.data.img[0]}")`;
@@ -90,13 +89,13 @@ export default function p_showBeforeEsimate() {
           user_id: userId.value,
         })
       );
-      let result = await fetch("http://localhost:3000/provide/submit_estimate", fetchObj);
+      let result = await fetch("http://localhost:3000/provide/submit/estimate/process", fetchObj);
       if (result.status === 200 || 201) {
         let response = await result.json();
         let { state } = response;
         if (state === null) {
           alert("삭제된 증상입니다. 견적을 제시할 수 없습니다.");
-          window.location.href = `/provide/findAllRegister`;
+          window.location.href = `/provide/show/items`;
           return;
         } else if (!state) {
           return alert("더이상 견적을 제시할 수 없습니다.");
@@ -104,7 +103,7 @@ export default function p_showBeforeEsimate() {
           showEstimateBox.style.display = "none";
           alert("견적제출이 완료되었습니다.");
           submitForm.reset();
-          window.location.href = `/provide/sympton_estimate?${response.url}`;
+          window.location.href = `/provide/sympton?${response.url}`;
           return;
         }
       } else {
@@ -122,22 +121,22 @@ export default function p_showBeforeEsimate() {
       let flag = confirm("정말로 취소하시겠습니까?");
       if (flag === true) {
         try {
-          let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }));
-          let result = await fetch("http://localhost:3000/provide/delete_submit", fetchObj);
+          let fetchObj: any = await FetchFunction("delete", "same-origin", JSON.stringify({ symptonId: document.location.search.substring(1, document.location.search.length) }));
+          let result = await fetch("http://localhost:3000/provide/delete/submit", fetchObj);
           if (result.status === 200 || 201) {
             let response = await result.json();
             let { state } = response;
             if (state === "accept") {
               alert("견적이 성사되어 취소가 불가능합니다.");
-              return (window.location.href = "/provide/findAllRegister");
+              return (window.location.href = "/provide/show/items");
             } else if (state == null) {
               let err: any = new Error("error");
               err.name = "DELETE_DATA";
               alert("삭제된 게시글이라 자동 취소 되었습니다.");
-              return (window.location.href = "/provide/findAllRegister");
+              return (window.location.href = "/provide/show/items");
             } else {
               alert("취소가 완료되었습니다.");
-              window.location.href = `/provide/sympton_estimate?${response.url}`;
+              window.location.href = `/provide/sympton?${response.url}`;
             }
           } else {
             let err = new Error("NET_ERROR");

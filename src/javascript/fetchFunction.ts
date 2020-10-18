@@ -19,7 +19,6 @@ export default async function FetchFunction(method: string, credentials?: string
       this.body = body;
     }
   }
-
   let fetchObj = new Fetch(method, credentials, body);
   return fetchObj;
 }

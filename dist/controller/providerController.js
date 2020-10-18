@@ -53,19 +53,24 @@ var registerSymptonModel_1 = __importDefault(require("../db/model/registerSympto
 var submitModel_1 = __importDefault(require("../db/model/submitModel"));
 var p_MakeSymptonList_1 = require("../lib/p_MakeSymptonList");
 var p_makeShowData_1 = require("../lib/p_makeShowData");
-var mysql_1 = __importDefault(require("../lib/mysql"));
+var mysql_jusoLIst_1 = __importDefault(require("../lib/mysql-jusoLIst"));
 var querystring_1 = __importDefault(require("querystring"));
 var p_makeJuso_1 = require("../lib/p_makeJuso");
 var providerController = {
-    index: function (req, res) {
-        if (req.headers.referer === undefined) {
-            req.session.referer = "http://localhost:3000/provide/index";
-        }
-        else {
-            req.session.referer = "http://localhost:3000/provide/findAllRegister";
-        }
-        req.session.save(function () {
-            res.render("providers/index", { csrfToken: req.csrfToken() });
+    main: function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (req.headers.referer === undefined) {
+                    req.session.referer = "http://localhost:3000/provide/main";
+                }
+                else {
+                    req.session.referer = "http://localhost:3000/provide/show/items";
+                }
+                req.session.save(function () {
+                    res.render("providers/main", { csrfToken: req.csrfToken() });
+                });
+                return [2 /*return*/];
+            });
         });
     },
     loginProcess: function (req, res) {
@@ -93,19 +98,19 @@ var providerController = {
                                         var save_token = result.refresh_token;
                                         if (save_token === undefined) {
                                             provideModel_2.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
-                                            return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+                                            return res.status(200).json({ url: "http://localhost:3000/provide/show/items", state: true });
                                         }
                                         else {
                                             try {
                                                 console.log("리프래쉬 토큰이 있어요");
                                                 jsonwebtoken_1.default.verify(save_token, process.env.JWT_SECRET);
-                                                return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+                                                return res.status(200).json({ url: "http://localhost:3000/provide/show/items", state: true });
                                             }
                                             catch (error) {
                                                 if (error.name === "TokenExpiredError") {
                                                     console.log("토큰이 있는데 유효하지 않아서 재발급할겡");
                                                     provideModel_2.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
-                                                    return res.status(200).json({ url: "http://localhost:3000/provide/findAllRegister", state: true });
+                                                    return res.status(200).json({ url: "http://localhost:3000/provide/show/items", state: true });
                                                 }
                                             }
                                         }
@@ -124,7 +129,7 @@ var providerController = {
             });
         });
     },
-    findAllRegister: function (req, res) {
+    showItems: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var authUI, pageNum, divided_num, data, allData, _AllSympton, pagination, data, allData, _AllSympton, pagination;
             return __generator(this, function (_a) {
@@ -152,7 +157,7 @@ var providerController = {
                         allData = _a.sent();
                         _AllSympton = p_MakeSymptonList_1.MakeAllSymptonList(data, pageNum, divided_num);
                         pagination = p_MakeSymptonList_1.MakePagination(req, res, allData, divided_num);
-                        res.render("providers/findAllRegister", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });
+                        res.render("providers/show-item", { authUI: authUI, csrfToken: req.csrfToken(), list: "", list2: "", AllSympton: _AllSympton, pagination: pagination });
                         _a.label = 6;
                     case 6: return [2 /*return*/];
                 }
@@ -160,22 +165,27 @@ var providerController = {
         });
     },
     getSigungu: function (req, res) {
-        if (req.body.data === "")
-            return;
-        mysql_1.default.query("select \uC2DC\uAD70\uAD6C\uBA85 from " + req.body.data, function (err, data) {
-            var data1 = [];
-            if (err)
-                console.error(err);
-            for (var i = 0; i < data.length; i++) {
-                data1.push(data[i].시군구명);
-            }
-            res.json({ sido: Array.from(new Set(data1)).sort() });
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (req.params.data === "")
+                    return [2 /*return*/];
+                mysql_jusoLIst_1.default.query("select \uC2DC\uAD70\uAD6C\uBA85 from " + req.params.data, function (err, data) {
+                    var data1 = [];
+                    if (err)
+                        console.error(err);
+                    for (var i = 0; i < data.length; i++) {
+                        data1.push(data[i].시군구명);
+                    }
+                    res.json({ sido: Array.from(new Set(data1)).sort() });
+                });
+                return [2 /*return*/];
+            });
         });
     },
     getBname: function (req, res) {
-        if (req.body.data.sigungu === "")
+        if (req.params.sigungu === "")
             return;
-        mysql_1.default.query("select * from " + req.body.data.sido + " where \uC2DC\uAD70\uAD6C\uBA85 = \"" + req.body.data.sigungu + "\"", function (err, data) {
+        mysql_jusoLIst_1.default.query("select * from " + req.params.sido + " where \uC2DC\uAD70\uAD6C\uBA85 = \"" + req.params.sigungu + "\"", function (err, data) {
             var data1 = [];
             if (err)
                 console.error(err);
@@ -186,9 +196,9 @@ var providerController = {
         });
     },
     getSejong: function (req, res) {
-        if (req.body.data === "")
+        if (req.params.data === "")
             return;
-        mysql_1.default.query("select * from " + req.body.data, function (err, data) {
+        mysql_jusoLIst_1.default.query("select * from " + req.params.data, function (err, data) {
             var data1 = [];
             if (err)
                 console.error(err);
@@ -198,12 +208,12 @@ var providerController = {
             res.json({ sido: Array.from(new Set(data1)).sort() });
         });
     },
-    checkBeoforeReigsterData: function (req, res) {
+    checkStateRegisterState: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, registerSymptonModel_1.default.showBeforeEstimate(req.body._id)];
+                    case 0: return [4 /*yield*/, registerSymptonModel_1.default.showBeforeEstimate(req.params.registerId)];
                     case 1:
                         result = _a.sent();
                         if (result === null) {
@@ -250,7 +260,7 @@ var providerController = {
                         location_1 = p_makeShowData_1.makeLocation(result);
                         imgs = p_makeShowData_1.makeImg(result);
                         btn = p_makeShowData_1.makeBtn(isEstimated, req.url.split("?")[1]);
-                        res.render("providers/showBeforeEstimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location_1, imgs: imgs, btn: btn });
+                        res.render("providers/before-estimate", { authUI: authUI, csrfToken: req.csrfToken(), Location: location_1, imgs: imgs, btn: btn });
                         return [3 /*break*/, 5];
                     case 4:
                         error_1 = _a.sent();
@@ -266,7 +276,7 @@ var providerController = {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, registerSymptonModel_1.default.showBeforeEstimate(req.body.sympton_id)];
+                    case 0: return [4 /*yield*/, registerSymptonModel_1.default.showBeforeEstimate(req.params.registerId)];
                     case 1:
                         result = _a.sent();
                         if (result === null)
@@ -341,7 +351,7 @@ var providerController = {
         var token = req.cookies.pjwttoken;
         var decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         try {
-            res.render("providers/p_mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: decoded.username, useremail: decoded.email });
+            res.render("providers/mypage", { authUI: authUI, csrfToken: req.csrfToken(), username: decoded.username, useremail: decoded.email });
         }
         catch (error) { }
     },
@@ -361,7 +371,7 @@ var providerController = {
                     case 2:
                         data = _a.sent();
                         list = p_MakeSymptonList_1.showSubmitList(data);
-                        res.render("providers/showsubmit", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
+                        res.render("providers/show-submit", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
                         return [3 /*break*/, 4];
                     case 3:
                         error_4 = _a.sent();
@@ -376,9 +386,10 @@ var providerController = {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, submitModel_1.default.findSubmit(req.body.submitId)];
+                    case 0: return [4 /*yield*/, submitModel_1.default.findSubmit(req.params.submitId)];
                     case 1:
                         result = _a.sent();
+                        console.log(result);
                         return [2 /*return*/, res.json({ state: result.state, symptonId: result.symptonId })];
                 }
             });
@@ -400,7 +411,7 @@ var providerController = {
                     case 2:
                         data = _a.sent();
                         list = p_MakeSymptonList_1.showGottList(data);
-                        res.render("providers/showGotEstimate", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
+                        res.render("providers/user-send", { authUI: authUI, csrfToken: req.csrfToken(), list: list });
                         return [3 /*break*/, 4];
                     case 3:
                         error_5 = _a.sent();

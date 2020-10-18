@@ -44,7 +44,7 @@ export default function login() {
       if (email === "") return;
       try {
         // let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ email: email, state: state }));
-        let response = await fetch(`http://localhost:3000/v1/users/${email}/cookie/${state}`);
+        let response = await fetch(`http://localhost:3000/common/users/${email}/cookie/${state}`);
         if (response.status === 200 || 201) {
           let result = await response.json();
           return result;

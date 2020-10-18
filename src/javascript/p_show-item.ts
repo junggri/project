@@ -1,4 +1,3 @@
-import FetchFunction from "./fetchFunction";
 declare global {
   interface Window {
     pagination_pre: any;
@@ -54,8 +53,7 @@ export default function p_findAllRegister() {
     for (let i = 0; i < symptonItems.length; i++) {
       symptonItems[i].addEventListener("click", async (e: any) => {
         try {
-          let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ _id: e.target.parentNode.dataset.registerid }));
-          let result = await fetch("http://localhost:3000/provide/before_check_getRegisterData", fetchObj);
+          let result = await fetch(`http://localhost:3000/provide/check/state/item/${e.target.parentNode.dataset.registerid}`);
           if (result.status === 200 || 201) {
             let response = await result.json();
             let { state } = response;
@@ -68,7 +66,7 @@ export default function p_findAllRegister() {
               err.name = "진행중인 견적입니다.";
               throw err;
             }
-            return (window.location.href = `/provide/sympton_estimate?${e.target.parentNode.dataset.registerid}`);
+            return (window.location.href = `/provide/sympton?${e.target.parentNode.dataset.registerid}`);
           } else {
             let err = new Error("NETWORK_ERROR");
             err.name = "NET";
@@ -127,11 +125,11 @@ export default function p_findAllRegister() {
   }
   //////////////////////////////////////////////////////////////////////////////////
 
-  async function commonFunction(text: string, target: any, data: any, url: string) {
+  async function commonFunction(text: string, target: any, url: string) {
     await reset(target, text);
     try {
-      let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ data: data }));
-      let result = await fetch(url, fetchObj);
+      // let fetchObj: any = await FetchFunction("post", "same-origin", JSON.stringify({ data: data }));
+      let result = await fetch(url);
       if (result.status === 200 || 201) {
         let response = await result.json();
         for (let i = 0; i < response.sido.length; i++) {
@@ -153,7 +151,7 @@ export default function p_findAllRegister() {
     await reset(bname, "-- 전체");
     if (sigunguCode.options[sigunguCode.selectedIndex].value === "sejong") {
       sigungu.disabled = true;
-      commonFunction("-- 동 / 면 / 읍", bname, sigunguCode.options[sigunguCode.selectedIndex].value, "http://localhost:3000/provide/get_sejong");
+      commonFunction("-- 동 / 면 / 읍", bname, `http://localhost:3000/provide/get/sejong/${sigunguCode.options[sigunguCode.selectedIndex].value}`);
       return;
     }
     if (sigunguCode.options[sigunguCode.selectedIndex].value === "0") {
@@ -163,7 +161,7 @@ export default function p_findAllRegister() {
       return;
     }
     sigungu.disabled = false;
-    commonFunction("-- 시 / 군 / 구", sigungu, sigunguCode.options[sigunguCode.selectedIndex].value, "http://localhost:3000/provide/get_sigungu");
+    commonFunction("-- 시 / 군 / 구", sigungu, `http://localhost:3000/provide/get/sigungu/${sigunguCode.options[sigunguCode.selectedIndex].value}`);
   });
 
   //////////////////////////////////////////////////////////////////////////////////
@@ -173,11 +171,6 @@ export default function p_findAllRegister() {
       await reset(bname, "-- 전체");
       return;
     }
-    commonFunction(
-      "-- 동 / 면 / 읍",
-      bname,
-      { sido: sigunguCode.options[sigunguCode.selectedIndex].value, sigungu: sigungu.options[sigungu.selectedIndex].value },
-      "http://localhost:3000/provide/get_bname"
-    );
+    commonFunction("-- 동 / 면 / 읍", bname, `http://localhost:3000/provide/get/bname/${sigunguCode.options[sigunguCode.selectedIndex].value}/${sigungu.options[sigungu.selectedIndex].value}`);
   });
 }

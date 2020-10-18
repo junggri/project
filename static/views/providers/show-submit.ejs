@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <meta name="csrf-token" content="<%= csrfToken %>" />
-    <link rel="stylesheet" href="/style.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
@@ -21,25 +20,17 @@
           <%- authUI %>
         </ul>
       </nav>
-      <section class="provider-mypage-state">
-        <div class="pms-slo">마이페이지</div>
-        <div class="pms-user-data-box">
-          <div class="pms-user-img"></div>
-          <div class="pms-user-detail">
-            <div class="psd-name"><%- username %></div>
-            <div class="psd-email"><%- useremail %></div>
+      <div class="showsubmit-box">
+        <div class="showsubmit-box-slo">총 7개의 견적을 제출하였습니다.</div>
+        <div class="showsubmit-box-container">
+          <div class="sbc-item-nav">
+            <span class="sbc-nav-item-content">내용</span>
+            <span class="sbc-nav-item-price">금액</span>
+            <span class="sbc-nav-item-state">상태</span>
           </div>
+          <%- list %>
         </div>
-        <div class="show-submitEstimate">
-          <div class="show-submitEstimate-slo">견적서</div>
-          <a href="/provide/showsubmit"><div class="show-submitEstimate-detail">제출한 견적서 보러가기</div></a>
-        </div>
-        <div class="show-gotEstimate">
-          <div class="show-gotEstimate-slo">받은 견적서</div>
-          <a href="/provide/showGotEstimate"><div class="show-got-detail">받은 견적서 보러가기</div></a>
-        </div>
-        <div class="ms-otherBox">알림이나 결제내역, 공지사항등</div>
-      </section>
+      </div>
     </div>
   </body>
   <script src="/bundle.js"></script>

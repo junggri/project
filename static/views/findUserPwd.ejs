@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="<%= csrfToken %>" />
     <title>Document</title>
-    <link rel="stylesheet" href="/style.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
@@ -27,9 +26,9 @@
       </nav>
       <div class="findUserIdBox">
         <div class="findUserIdBox-sloBox">
-          <span class="fs-find-user-email"><a href="/v1/find_user_email">아이디</a></span>
+          <span class="fs-find-user-email"><a href="/common/find/user/email">아이디</a></span>
           <span class="fs-find-slash">/</span>
-          <span class="fs-find-user-pwd"><a href="/v1/find_user_pwd">비밀번호 찾기</a></span>
+          <span class="fs-find-user-pwd"><a href="/common/find/user/pwd">비밀번호 찾기</a></span>
           <div class="fs-detail">찾으시는 이메일을 입력하시면</br>회원가입여부를 확인해 드립니다.</div>
         </div>
       </div>
@@ -44,7 +43,7 @@
         <div class="findResult"></div>
       <div class="findUserResultBox-btnBox">
         <a href="/web/api/login"><div class="findUserResultBox-btnBox-login">로그인하기</div></a>
-        <a href="/web/api/register_previous"><div class="findUserResultBox-btnBox-register">회원가입하기</div></a>
+        <a href="/web/api/register/previous"><div class="findUserResultBox-btnBox-register">회원가입하기</div></a>
         <!-- <div class="findUserResultBox-btnBox-confirm">다시확인하기</div> -->
       </div>
       </div>
