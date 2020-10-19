@@ -72,8 +72,14 @@ function makeStorage(decoded) {
 }
 var webController = {
     index: function (req, res) {
-        var authUI = authStatus_1.default.status(req, res);
-        res.render("index", { authUI: authUI });
+        return __awaiter(this, void 0, void 0, function () {
+            var authUI;
+            return __generator(this, function (_a) {
+                authUI = authStatus_1.default.status(req, res);
+                res.render("index", { authUI: authUI });
+                return [2 /*return*/];
+            });
+        });
     },
     estimate: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
@@ -167,13 +173,13 @@ var webController = {
         crypto_1.default.randomBytes(crypto_json_1.default.len, function (err, buf) {
             var salt = buf.toString("base64");
             var time = moment_1.default().format("YYYY-MM-DD");
-            crypto_1.default.pbkdf2(common_pwd, salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(_this, void 0, void 0, function () {
+            crypto_1.default.pbkdf2(sanitize_html_1.default(common_pwd), salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(_this, void 0, void 0, function () {
                 var Users, error_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             inputdata = {
-                                email: common_email,
+                                email: sanitize_html_1.default(common_email),
                                 password: key.toString("base64"),
                                 name: common_name,
                                 salt: salt,

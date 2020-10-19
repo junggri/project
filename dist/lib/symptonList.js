@@ -35,25 +35,54 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.selcted_sympton = exports.symptonList = void 0;
 var symptonModel_1 = __importDefault(require("../db/schema/symptonModel"));
+var mysql_test_1 = __importDefault(require("../lib/mysql-test"));
 exports.symptonList = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var symptons, container, i, list;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, symptonModel_1.default.find().sort({ price: 1 }).limit(10)];
-            case 1:
-                symptons = _a.sent();
+    var container, conn, result, i, list, error_1;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 3, , 4]);
                 container = "";
-                for (i = 0; i < symptons.length; i++) {
-                    list = " <li class=\"problem-item\" data-price=\"" + symptons[i].avg_price + "\">\n      <input type=\"checkbox\" class=\"estimate_btn\" id=\"sypmtom-" + symptons[i].code + "\" onclick=\"add_List(this)\" name=\"code\" value=\"" + symptons[i].code + "\" />\n      <label for=\"sypmtom-" + symptons[i].code + "\">" + symptons[i].content + "</label>\n    </li>";
+                return [4 /*yield*/, mysql_test_1.default()];
+            case 1:
+                conn = _b.sent();
+                return [4 /*yield*/, conn.query("select * from common_sympton")];
+            case 2:
+                result = (_a = __read.apply(void 0, [_b.sent(), 1]), _a[0]);
+                for (i = 0; i < result.length; i++) {
+                    list = "\n        <li class=\"problem-item\" data-price=\"" + result[i].avg_price + "\">\n    \t    <input type=\"checkbox\" class=\"estimate_btn\" id=\"sypmtom-" + result[i].code + "\" onclick=\"add_List(this)\" name=\"code\" value=\"" + result[i].code + "\" />\n    \t    <label for=\"sypmtom-" + result[i].code + "\">" + result[i].content + "</label>\n    \t  </li>";
                     container += list;
                 }
+                conn.release();
                 return [2 /*return*/, container];
+            case 3:
+                error_1 = _b.sent();
+                console.error(error_1);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); };

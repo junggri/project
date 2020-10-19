@@ -26,6 +26,7 @@ import sanitizeHtml from "sanitize-html";
 import { makeSumbitbox } from "../lib/mypageState";
 import sendPhone from "../lib/sendPhone";
 import { Decoded, Err } from "../interface/all_interface";
+import mysql_t from "../lib/mysql-test";
 
 interface WebController {
   index(req: Request, res: Response): void;
@@ -70,7 +71,7 @@ function makeStorage(decoded: any) {
 }
 
 let webController: WebController = {
-  index(req: Request, res: Response) {
+  async index(req: Request, res: Response) {
     let authUI = auth.status(req, res);
     res.render("index", { authUI: authUI });
   },
@@ -143,9 +144,9 @@ let webController: WebController = {
     crypto.randomBytes(crypto_cre.len, (err, buf) => {
       let salt = buf.toString("base64");
       let time = moment().format("YYYY-MM-DD");
-      crypto.pbkdf2(common_pwd, salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
+      crypto.pbkdf2(sanitizeHtml(common_pwd), salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
         inputdata = {
-          email: common_email,
+          email: sanitizeHtml(common_email),
           password: key.toString("base64"),
           name: common_name,
           salt: salt,

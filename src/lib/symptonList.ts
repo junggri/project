@@ -1,16 +1,33 @@
 import symptonModel from "../db/schema/symptonModel";
+import mysql_t from "../lib/mysql-test";
+
+interface Result {
+  content: string;
+  code: string;
+  avg_price: string;
+}
 
 export let symptonList = async () => {
-  let symptons: any = await symptonModel.find().sort({ price: 1 }).limit(10);
-  let container = "";
-  for (let i = 0; i < symptons.length; i++) {
-    let list = ` <li class="problem-item" data-price="${symptons[i].avg_price}">
-      <input type="checkbox" class="estimate_btn" id="sypmtom-${symptons[i].code}" onclick="add_List(this)" name="code" value="${symptons[i].code}" />
-      <label for="sypmtom-${symptons[i].code}">${symptons[i].content}</label>
-    </li>`;
-    container += list;
+  try {
+    let container = "";
+    let conn = await mysql_t();
+    let [result]: Array<[Result]> = await conn.query("select * from common_sympton");
+
+    for (let i = 0; i < result.length; i++) {
+      let list = `
+        <li class="problem-item" data-price="${result[i].avg_price}">
+    	    <input type="checkbox" class="estimate_btn" id="sypmtom-${result[i].code}" onclick="add_List(this)" name="code" value="${result[i].code}" />
+    	    <label for="sypmtom-${result[i].code}">${result[i].content}</label>
+    	  </li>`;
+      container += list;
+    }
+
+    conn.release();
+
+    return container;
+  } catch (error) {
+    console.error(error);
   }
-  return container;
 };
 
 export let selcted_sympton = async (code: any) => {
