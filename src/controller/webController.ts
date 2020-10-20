@@ -28,6 +28,8 @@ import sendPhone from "../lib/sendPhone";
 import { Decoded, Err } from "../interface/all_interface";
 import mysql_t from "../lib/mysql-test";
 
+import mysql_user from "../db/model/user";
+
 interface WebController {
   index(req: Request, res: Response): void;
   estimate(req: Request, res: Response): void;
@@ -138,31 +140,23 @@ let webController: WebController = {
     req.params.way === "common" ? res.render("common", { csrfToken: req.csrfToken() }) : res.render("provide", { csrfToken: req.csrfToken() });
   },
 
-  commonUserRegister(req: Request, res: Response, next: NextFunction) {
-    let inputdata = {};
+  async commonUserRegister(req: Request, res: Response, next: NextFunction) {
     const { common_email, common_name, common_pwd } = req.body;
-    crypto.randomBytes(crypto_cre.len, (err, buf) => {
-      let salt = buf.toString("base64");
-      let time = moment().format("YYYY-MM-DD");
-      crypto.pbkdf2(sanitizeHtml(common_pwd), salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
-        inputdata = {
-          email: sanitizeHtml(common_email),
-          password: key.toString("base64"),
-          name: common_name,
-          salt: salt,
-          createdAt: time,
-        };
-        let Users: any = new users(inputdata);
-        try {
-          await Users.save();
-          res.redirect("/web/index");
-        } catch (error) {
-          // let err = new Error("등록오류 입니다.");
-          // next(err);
-          console.error(error);
-        }
-      });
+    let time = moment().format("YYYY-MM-DD");
+    let salt = crypto.randomBytes(crypto_cre.len).toString("base64");
+    let conn = await mysql_t();
+
+    crypto.pbkdf2(sanitizeHtml(common_pwd), salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
+      try {
+        conn.query("INSERT INTO user VALUES (?,?,?,?,?,?)", [common_email, key.toString("base64"), common_name, salt, time]);
+        conn.release();
+      } catch (error) {
+        console.log(error);
+      }
+      // mysql_user.save(common_email, key.toString("base64"), common_name, salt, time);
     });
+
+    res.redirect("/web/index");
   },
 
   async providerRegister(req: Request, res: Response) {
@@ -195,7 +189,7 @@ let webController: WebController = {
     try {
       let user = await users.find({ email: req.params.email });
       let provideResult = await provideController.find(req.params.email);
-      console.log(user, provideResult);
+
       if (user.length === 0 && provideResult.length === 0) {
         let randomArray = [];
         for (let i = 0; i < 6; i++) {

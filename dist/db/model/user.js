@@ -39,37 +39,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var promise_1 = __importDefault(require("mysql2/promise"));
-var msqyl_json_1 = __importDefault(require("../config/msqyl.json"));
-var option = {
-    host: msqyl_json_1.default.host,
-    user: msqyl_json_1.default.user,
-    password: msqyl_json_1.default.password,
-    database: msqyl_json_1.default.database2,
-    connectionLimit: 10,
-    waitForConnections: true,
-    multipleStatements: false,
-};
-function getConnection() {
-    return __awaiter(this, void 0, void 0, function () {
-        var pool, conn, error_1;
+var mysql_test_1 = __importDefault(require("../../lib/mysql-test"));
+var user = {
+    save: function (common_email, key, common_name, salt, time) { return __awaiter(void 0, void 0, void 0, function () {
+        var conn, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 2, , 3]);
-                    pool = promise_1.default.createPool(option);
-                    return [4 /*yield*/, pool.getConnection()];
+                case 0: return [4 /*yield*/, mysql_test_1.default()];
                 case 1:
                     conn = _a.sent();
-                    return [2 /*return*/, conn];
+                    _a.label = 2;
                 case 2:
+                    _a.trys.push([2, 4, , 5]);
+                    return [4 /*yield*/, conn.execute("INSERT INTO user value(?,?,?,?,?,?)", [common_email, key, common_name, salt, time])];
+                case 3:
+                    _a.sent();
+                    conn.release();
+                    return [3 /*break*/, 5];
+                case 4:
                     error_1 = _a.sent();
                     console.error(error_1);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    conn.release();
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
-    });
-}
-exports.default = getConnection;
-//# sourceMappingURL=mysql-test.js.map
+    }); },
+};
+exports.default = user;
+//# sourceMappingURL=user.js.map

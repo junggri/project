@@ -65,6 +65,7 @@ var deleteImg_1 = __importDefault(require("../lib/deleteImg"));
 var sanitize_html_1 = __importDefault(require("sanitize-html"));
 var mypageState_1 = require("../lib/mypageState");
 var sendPhone_1 = __importDefault(require("../lib/sendPhone"));
+var mysql_test_1 = __importDefault(require("../lib/mysql-test"));
 function makeStorage(decoded) {
     var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.user_objectId))));
     if (!fs_1.default.existsSync(_dir))
@@ -167,43 +168,34 @@ var webController = {
         req.params.way === "common" ? res.render("common", { csrfToken: req.csrfToken() }) : res.render("provide", { csrfToken: req.csrfToken() });
     },
     commonUserRegister: function (req, res, next) {
-        var _this = this;
-        var inputdata = {};
-        var _a = req.body, common_email = _a.common_email, common_name = _a.common_name, common_pwd = _a.common_pwd;
-        crypto_1.default.randomBytes(crypto_json_1.default.len, function (err, buf) {
-            var salt = buf.toString("base64");
-            var time = moment_1.default().format("YYYY-MM-DD");
-            crypto_1.default.pbkdf2(sanitize_html_1.default(common_pwd), salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(_this, void 0, void 0, function () {
-                var Users, error_1;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            inputdata = {
-                                email: sanitize_html_1.default(common_email),
-                                password: key.toString("base64"),
-                                name: common_name,
-                                salt: salt,
-                                createdAt: time,
-                            };
-                            Users = new usermodel_1.default(inputdata);
-                            _a.label = 1;
-                        case 1:
-                            _a.trys.push([1, 3, , 4]);
-                            return [4 /*yield*/, Users.save()];
-                        case 2:
-                            _a.sent();
-                            res.redirect("/web/index");
-                            return [3 /*break*/, 4];
-                        case 3:
-                            error_1 = _a.sent();
-                            // let err = new Error("등록오류 입니다.");
-                            // next(err);
-                            console.error(error_1);
-                            return [3 /*break*/, 4];
-                        case 4: return [2 /*return*/];
-                    }
-                });
-            }); });
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, common_email, common_name, common_pwd, time, salt, conn;
+            var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = req.body, common_email = _a.common_email, common_name = _a.common_name, common_pwd = _a.common_pwd;
+                        time = moment_1.default().format("YYYY-MM-DD");
+                        salt = crypto_1.default.randomBytes(crypto_json_1.default.len).toString("base64");
+                        return [4 /*yield*/, mysql_test_1.default()];
+                    case 1:
+                        conn = _b.sent();
+                        crypto_1.default.pbkdf2(sanitize_html_1.default(common_pwd), salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                try {
+                                    conn.query("INSERT INTO user VALUES (?,?,?,?,?,?)", [common_email, key.toString("base64"), common_name, salt, time]);
+                                    conn.release();
+                                }
+                                catch (error) {
+                                    console.log(error);
+                                }
+                                return [2 /*return*/];
+                            });
+                        }); });
+                        res.redirect("/web/index");
+                        return [2 /*return*/];
+                }
+            });
         });
     },
     providerRegister: function (req, res) {
@@ -243,7 +235,7 @@ var webController = {
     },
     checkDuplicateEmail: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var responseData, user, provideResult, randomArray, i, randomNum, mailOption, error_2;
+            var responseData, user, provideResult, randomArray, i, randomNum, mailOption, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -257,7 +249,6 @@ var webController = {
                         return [4 /*yield*/, provideModel_1.default.find(req.params.email)];
                     case 3:
                         provideResult = _a.sent();
-                        console.log(user, provideResult);
                         if (user.length === 0 && provideResult.length === 0) {
                             randomArray = [];
                             for (i = 0; i < 6; i++) {
@@ -283,8 +274,8 @@ var webController = {
                         res.status(200).json(responseData);
                         return [3 /*break*/, 5];
                     case 4:
-                        error_2 = _a.sent();
-                        console.error(error_2);
+                        error_1 = _a.sent();
+                        console.error(error_1);
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
                 }
@@ -438,7 +429,7 @@ var webController = {
     },
     deleteSympton: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var decoded, error_3;
+            var decoded, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -449,8 +440,8 @@ var webController = {
                         _a.sent();
                         return [3 /*break*/, 3];
                     case 2:
-                        error_3 = _a.sent();
-                        console.error(error_3, "로그인이 되지 않았습니다.");
+                        error_2 = _a.sent();
+                        console.error(error_2, "로그인이 되지 않았습니다.");
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
@@ -572,7 +563,7 @@ var webController = {
     },
     modifiyEstimatePage: function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, err, authUI, codeList, error_4;
+            var response, err, authUI, codeList, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -597,8 +588,8 @@ var webController = {
                         res.render("modified_estimate", { authUI: authUI, csrfToken: req.csrfToken(), register_symptons: codeList });
                         return [3 /*break*/, 4];
                     case 3:
-                        error_4 = _a.sent();
-                        console.log(error_4);
+                        error_3 = _a.sent();
+                        console.log(error_3);
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];
                 }

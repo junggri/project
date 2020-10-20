@@ -11,8 +11,7 @@ export let symptonList = async () => {
   try {
     let container = "";
     let conn = await mysql_t();
-    let [result]: Array<[Result]> = await conn.query("select * from common_sympton");
-
+    let [result]: any = await conn.query("select * from common_sympton");
     for (let i = 0; i < result.length; i++) {
       let list = `
         <li class="problem-item" data-price="${result[i].avg_price}">
