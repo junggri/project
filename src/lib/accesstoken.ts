@@ -1,11 +1,10 @@
 import jwt from "jsonwebtoken";
 
-export function createToken(req: any, res: any, email: string, name: string, Id: string) {
+export function createToken(res: any, email: string, name: string) {
   let token = jwt.sign(
     {
       email: email,
       username: name,
-      user_objectId: Id,
     },
     process.env.JWT_SECRET,
     {

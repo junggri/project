@@ -41,7 +41,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var authStatus_1 = __importDefault(require("../lib/authStatus"));
 var symptonList_1 = require("../lib/symptonList");
-var mongo_sanitize_1 = __importDefault(require("mongo-sanitize"));
 var usermodel_1 = __importDefault(require("../db/schema/usermodel"));
 var crypto_json_1 = __importDefault(require("../config/crypto.json"));
 var crypto_1 = __importDefault(require("crypto"));
@@ -65,7 +64,8 @@ var deleteImg_1 = __importDefault(require("../lib/deleteImg"));
 var sanitize_html_1 = __importDefault(require("sanitize-html"));
 var mypageState_1 = require("../lib/mypageState");
 var sendPhone_1 = __importDefault(require("../lib/sendPhone"));
-var mysql_test_1 = __importDefault(require("../lib/mysql-test"));
+var user_1 = __importDefault(require("../db/model/user"));
+var provider_1 = __importDefault(require("../db/model/provider"));
 function makeStorage(decoded) {
     var _dir = path_1.default.join(path_1.default.join(path_1.default.join(__dirname + ("/../../upload/" + decoded.user_objectId))));
     if (!fs_1.default.existsSync(_dir))
@@ -110,51 +110,50 @@ var webController = {
     },
     userLogin: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var _email, _pwd, result, userObjectId_1;
+            var email, pwd, login_user, User;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _email = mongo_sanitize_1.default(req.body.email);
-                        _pwd = mongo_sanitize_1.default(req.body.pwd);
-                        return [4 /*yield*/, usermodel_1.default.findOne({ email: _email })];
+                        email = sanitize_html_1.default(req.body.email);
+                        pwd = sanitize_html_1.default(req.body.pwd);
+                        return [4 /*yield*/, user_1.default.find(email)];
                     case 1:
-                        result = _a.sent();
-                        try {
-                            if (result === null) {
-                                res.status(200).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
-                            }
-                            else {
-                                userObjectId_1 = result._id;
-                                crypto_1.default.pbkdf2(_pwd, result.salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) {
-                                    if (key.toString("base64") === result.password) {
-                                        accesstoken_1.createToken(req, res, _email, result.name, result._id);
-                                        var _refresh_token = refreshtoken_1.default(req, res, _email, result.name, result._id);
-                                        var save_token = result.refresh_token;
-                                        if (save_token === undefined || save_token === "") {
-                                            userModel_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
-                                            return res.status(200).json({ url: req.session.referer, state: true });
-                                        }
-                                        else {
-                                            try {
-                                                jsonwebtoken_1.default.verify(save_token, process.env.JWT_SECRET);
-                                                return res.status(200).json({ url: req.session.referer, state: true });
-                                            }
-                                            catch (error) {
-                                                if (error.name === "TokenExpiredError") {
-                                                    userModel_1.default.tokenUpdate(req, res, _email, _refresh_token, userObjectId_1);
-                                                    return res.status(200).json({ url: req.session.referer, state: true });
-                                                }
-                                            }
-                                        }
+                        login_user = _a.sent();
+                        User = login_user[0];
+                        if (login_user.length === 0) {
+                            return [2 /*return*/, res.status(401).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false })];
+                            //user is not exist
+                        }
+                        else {
+                            crypto_1.default.pbkdf2(pwd, User.salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) {
+                                if (key.toString("base64") === User.password) {
+                                    var refresh_token = refreshtoken_1.default();
+                                    accesstoken_1.createToken(res, email, User.name);
+                                    //uesr is existed so set token in cookie
+                                    if (User.refresh_token === null) {
+                                        user_1.default.setOrUpdateRefreshToken(refresh_token, User.email);
+                                        //user is login first so set refresh token in db
                                     }
                                     else {
-                                        res.status(200).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+                                        // user's verify refresh_token
+                                        try {
+                                            jsonwebtoken_1.default.verify(User.refresh_token, process.env.JWT_SECRET);
+                                            return res.status(200).json({ url: req.session.referer, state: true });
+                                        }
+                                        catch (error) {
+                                            // user's reset refresh_token in db
+                                            if (error.name === "TokenExpiredError") {
+                                                user_1.default.setOrUpdateRefreshToken(refresh_token, User.email);
+                                                return res.status(200).json({ url: req.session.referer, state: true });
+                                            }
+                                        }
                                     }
-                                });
-                            }
-                        }
-                        catch (error) {
-                            console.error(error);
+                                }
+                                else {
+                                    //password is not match
+                                    return res.status(401).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+                                }
+                            });
                         }
                         return [2 /*return*/];
                 }
@@ -169,67 +168,50 @@ var webController = {
     },
     commonUserRegister: function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, common_email, common_name, common_pwd, time, salt, conn;
+            var _a, common_email, common_name, common_pwd, salt;
             var _this = this;
             return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = req.body, common_email = _a.common_email, common_name = _a.common_name, common_pwd = _a.common_pwd;
+                _a = req.body, common_email = _a.common_email, common_name = _a.common_name, common_pwd = _a.common_pwd;
+                salt = crypto_1.default.randomBytes(crypto_json_1.default.len).toString("base64");
+                crypto_1.default.pbkdf2(sanitize_html_1.default(common_pwd), salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(_this, void 0, void 0, function () {
+                    var time;
+                    return __generator(this, function (_a) {
                         time = moment_1.default().format("YYYY-MM-DD");
-                        salt = crypto_1.default.randomBytes(crypto_json_1.default.len).toString("base64");
-                        return [4 /*yield*/, mysql_test_1.default()];
-                    case 1:
-                        conn = _b.sent();
-                        crypto_1.default.pbkdf2(sanitize_html_1.default(common_pwd), salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                try {
-                                    conn.query("INSERT INTO user VALUES (?,?,?,?,?,?)", [common_email, key.toString("base64"), common_name, salt, time]);
-                                    conn.release();
-                                }
-                                catch (error) {
-                                    console.log(error);
-                                }
-                                return [2 /*return*/];
-                            });
-                        }); });
-                        res.redirect("/web/index");
+                        user_1.default.save(sanitize_html_1.default(common_email), key.toString("base64"), common_name, salt, time);
                         return [2 /*return*/];
-                }
+                    });
+                }); });
+                return [2 /*return*/, res.redirect("/web/index")];
             });
         });
     },
     providerRegister: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var inputdata, _a, name, gender, email, pwd, phone, lat1, lon1, address1, lat2, lon2, address2, lat3, lon3, address3;
+            var _a, name, gender, email, pwd, phone, lat1, lon1, address1, lat2, lon2, address2, lat3, lon3, address3, address, salt;
             var _this = this;
             return __generator(this, function (_b) {
-                inputdata = {};
                 _a = req.body, name = _a.name, gender = _a.gender, email = _a.email, pwd = _a.pwd, phone = _a.phone, lat1 = _a.lat1, lon1 = _a.lon1, address1 = _a.address1, lat2 = _a.lat2, lon2 = _a.lon2, address2 = _a.address2, lat3 = _a.lat3, lon3 = _a.lon3, address3 = _a.address3;
-                crypto_1.default.randomBytes(crypto_json_1.default.len, function (err, buf) {
-                    var salt = buf.toString("base64");
-                    crypto_1.default.pbkdf2(pwd, salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(_this, void 0, void 0, function () {
-                        return __generator(this, function (_a) {
-                            inputdata = {
-                                email: email,
-                                password: key.toString("base64"),
-                                name: name,
-                                gender: gender,
-                                phone_number: phone,
-                                salt: salt,
-                                address: { add1: { address: address1, lat: lat1, lon: lon1 }, add2: { address: address2, lat: lat2, lon: lon2 }, add3: { address: address3, lat: lat3, lon: lon3 } },
-                            };
-                            try {
-                                provideModel_1.default.save(inputdata);
-                                return [2 /*return*/, res.redirect("/provide/index")];
-                            }
-                            catch (error) {
-                                console.error(error);
-                            }
-                            return [2 /*return*/];
-                        });
-                    }); });
-                });
-                return [2 /*return*/];
+                address = {
+                    lat1: lat1,
+                    lon1: lon1,
+                    address1: address1,
+                    lat2: lat2,
+                    lon2: lon2,
+                    address2: address2,
+                    lat3: lat3,
+                    lon3: lon3,
+                    address3: address3,
+                };
+                salt = crypto_1.default.randomBytes(crypto_json_1.default.len).toString("base64");
+                crypto_1.default.pbkdf2(sanitize_html_1.default(pwd), salt, crypto_json_1.default.num, crypto_json_1.default.len, crypto_json_1.default.sys, function (err, key) { return __awaiter(_this, void 0, void 0, function () {
+                    var time;
+                    return __generator(this, function (_a) {
+                        time = moment_1.default().format("YYYY-MM-DD");
+                        provider_1.default.save(email, key.toString("base64"), name, gender, Number(phone), JSON.stringify(address), salt, time);
+                        return [2 /*return*/];
+                    });
+                }); });
+                return [2 /*return*/, res.redirect("/provide/main")];
             });
         });
     },

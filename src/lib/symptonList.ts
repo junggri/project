@@ -1,12 +1,6 @@
 import symptonModel from "../db/schema/symptonModel";
 import mysql_t from "../lib/mysql-test";
 
-interface Result {
-  content: string;
-  code: string;
-  avg_price: string;
-}
-
 export let symptonList = async () => {
   try {
     let container = "";

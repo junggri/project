@@ -15,7 +15,6 @@ function verify(req, res, next) {
     try {
         decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
         email = decoded.email;
-        user_id = decoded.user_objectId;
         console.log("로그인 되어있음");
         return next();
         ///로그인되었으면 next()해서 다음함수 호출
@@ -45,7 +44,7 @@ function verify(req, res, next) {
                     .then(function (result) {
                     //어 리프레쉬 토큰 있고 유효하네
                     console.log("리프레쉬 토큰이 있고 유효하니 로그인을 유지시켜줄게");
-                    accesstoken_1.createToken(req, res, email, result.username, user_id);
+                    accesstoken_1.createToken(res, email, result.username);
                     return res.redirect(req.originalUrl);
                 })
                     .catch(function (err) {

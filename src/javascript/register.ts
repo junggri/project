@@ -21,7 +21,6 @@ export default function register() {
       let fetchResult = await fetch(url);
       if (fetchResult.status === 200 || 201) {
         let result = await fetchResult.json();
-        console.log(result);
         validation_num = result.validation_num;
         $(".state-email").html(result.msg);
         if (result.state === "true") {

@@ -1,10 +1,10 @@
 import mysql_t from "../../lib/mysql-test";
 
-const user = {
-  save: async (common_email: string, key: string, common_name: string, salt: string, time: string) => {
+const provider = {
+  save: async (email: string, password: string, name: string, gender: string, phone: number, address: any, salt: string, time: string) => {
     let conn = await mysql_t();
     try {
-      conn.execute("INSERT INTO user(email,password,name,salt,createdAt) values (?,?,?,?,?)", [common_email, key, common_name, salt, time]);
+      conn.execute(`INSERT INTO provider(email, password, name, gender, phone_number, address, salt, createdAt) VALUES (?,?,?,?,?,?,?,?)`, [email, password, name, gender, phone, address, salt, time]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -36,4 +36,4 @@ const user = {
   },
 };
 
-export default user;
+export default provider;

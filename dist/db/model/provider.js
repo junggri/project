@@ -56,8 +56,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mysql_test_1 = __importDefault(require("../../lib/mysql-test"));
-var user = {
-    save: function (common_email, key, common_name, salt, time) { return __awaiter(void 0, void 0, void 0, function () {
+var provider = {
+    save: function (email, password, name, gender, phone, address, salt, time) { return __awaiter(void 0, void 0, void 0, function () {
         var conn;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -65,7 +65,7 @@ var user = {
                 case 1:
                     conn = _a.sent();
                     try {
-                        conn.execute("INSERT INTO user(email,password,name,salt,createdAt) values (?,?,?,?,?)", [common_email, key, common_name, salt, time]);
+                        conn.execute("INSERT INTO provider(email, password, name, gender, phone_number, address, salt, createdAt) VALUES (?,?,?,?,?,?,?,?)", [email, password, name, gender, phone, address, salt, time]);
                     }
                     catch (error) {
                         console.error(error);
@@ -123,5 +123,5 @@ var user = {
         });
     }); },
 };
-exports.default = user;
-//# sourceMappingURL=user.js.map
+exports.default = provider;
+//# sourceMappingURL=provider.js.map

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import auth from "../lib/authStatus";
 import { symptonList } from "../lib/symptonList";
-import mongoSanitize from "mongo-sanitize";
 import users from "../db/schema/usermodel";
 import crypto_cre from "../config/crypto.json";
 import crypto from "crypto";
@@ -26,9 +25,9 @@ import sanitizeHtml from "sanitize-html";
 import { makeSumbitbox } from "../lib/mypageState";
 import sendPhone from "../lib/sendPhone";
 import { Decoded, Err } from "../interface/all_interface";
-import mysql_t from "../lib/mysql-test";
 
 import mysql_user from "../db/model/user";
+import mysql_provider from "../db/model/provider";
 
 interface WebController {
   index(req: Request, res: Response): void;
@@ -94,41 +93,40 @@ let webController: WebController = {
   },
 
   async userLogin(req: any, res: any) {
-    let _email = mongoSanitize(req.body.email);
-    let _pwd = mongoSanitize(req.body.pwd);
-    //보안이라는데;;흠;;;
-    let result: any = await users.findOne({ email: _email });
-    try {
-      if (result === null) {
-        res.status(200).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
-      } else {
-        let userObjectId = result._id;
-        crypto.pbkdf2(_pwd, result.salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, (err, key) => {
-          if (key.toString("base64") === result.password) {
-            createToken(req, res, _email, result.name, result._id);
-            let _refresh_token = refreshToken(req, res, _email, result.name, result._id);
-            let save_token = result.refresh_token;
-            if (save_token === undefined || save_token === "") {
-              userController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
+    let email = sanitizeHtml(req.body.email);
+    let pwd = sanitizeHtml(req.body.pwd);
+    let login_user: any = await mysql_user.find(email);
+    let User = login_user[0];
+    if (login_user.length === 0) {
+      return res.status(401).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+      //user is not exist
+    } else {
+      crypto.pbkdf2(pwd, User.salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, (err, key) => {
+        if (key.toString("base64") === User.password) {
+          let refresh_token = refreshToken();
+          createToken(res, email, User.name);
+          //uesr is existed so set token in cookie
+          if (User.refresh_token === null) {
+            mysql_user.setOrUpdateRefreshToken(refresh_token, User.email);
+            //user is login first so set refresh token in db
+          } else {
+            // user's verify refresh_token
+            try {
+              jwt.verify(User.refresh_token, process.env.JWT_SECRET);
               return res.status(200).json({ url: req.session.referer, state: true });
-            } else {
-              try {
-                jwt.verify(save_token, process.env.JWT_SECRET);
+            } catch (error) {
+              // user's reset refresh_token in db
+              if (error.name === "TokenExpiredError") {
+                mysql_user.setOrUpdateRefreshToken(refresh_token, User.email);
                 return res.status(200).json({ url: req.session.referer, state: true });
-              } catch (error) {
-                if (error.name === "TokenExpiredError") {
-                  userController.tokenUpdate(req, res, _email, _refresh_token, userObjectId);
-                  return res.status(200).json({ url: req.session.referer, state: true });
-                }
               }
             }
-          } else {
-            res.status(200).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
           }
-        });
-      }
-    } catch (error) {
-      console.error(error);
+        } else {
+          //password is not match
+          return res.status(401).json({ msg: "가입되지 않은 이메일 혹은 잘못된 비밀번호입니다.", state: false });
+        }
+      });
     }
   },
 
@@ -142,46 +140,33 @@ let webController: WebController = {
 
   async commonUserRegister(req: Request, res: Response, next: NextFunction) {
     const { common_email, common_name, common_pwd } = req.body;
-    let time = moment().format("YYYY-MM-DD");
     let salt = crypto.randomBytes(crypto_cre.len).toString("base64");
-    let conn = await mysql_t();
-
     crypto.pbkdf2(sanitizeHtml(common_pwd), salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
-      try {
-        conn.query("INSERT INTO user VALUES (?,?,?,?,?,?)", [common_email, key.toString("base64"), common_name, salt, time]);
-        conn.release();
-      } catch (error) {
-        console.log(error);
-      }
-      // mysql_user.save(common_email, key.toString("base64"), common_name, salt, time);
+      let time = moment().format("YYYY-MM-DD");
+      mysql_user.save(sanitizeHtml(common_email), key.toString("base64"), common_name, salt, time);
     });
-
-    res.redirect("/web/index");
+    return res.redirect("/web/index");
   },
 
   async providerRegister(req: Request, res: Response) {
-    let inputdata = {};
     const { name, gender, email, pwd, phone, lat1, lon1, address1, lat2, lon2, address2, lat3, lon3, address3 } = req.body;
-    crypto.randomBytes(crypto_cre.len, (err, buf) => {
-      let salt = buf.toString("base64");
-      crypto.pbkdf2(pwd, salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
-        inputdata = {
-          email: email,
-          password: key.toString("base64"),
-          name: name,
-          gender: gender,
-          phone_number: phone,
-          salt: salt,
-          address: { add1: { address: address1, lat: lat1, lon: lon1 }, add2: { address: address2, lat: lat2, lon: lon2 }, add3: { address: address3, lat: lat3, lon: lon3 } },
-        };
-        try {
-          provideController.save(inputdata);
-          return res.redirect("/provide/index");
-        } catch (error) {
-          console.error(error);
-        }
-      });
+    let address = {
+      lat1: lat1,
+      lon1: lon1,
+      address1: address1,
+      lat2: lat2,
+      lon2: lon2,
+      address2: address2,
+      lat3: lat3,
+      lon3: lon3,
+      address3: address3,
+    };
+    let salt = crypto.randomBytes(crypto_cre.len).toString("base64");
+    crypto.pbkdf2(sanitizeHtml(pwd), salt, crypto_cre.num, crypto_cre.len, crypto_cre.sys, async (err, key) => {
+      let time = moment().format("YYYY-MM-DD");
+      mysql_provider.save(email, key.toString("base64"), name, gender, Number(phone), JSON.stringify(address), salt, time);
     });
+    return res.redirect("/provide/main");
   },
 
   async checkDuplicateEmail(req: Request, res: Response) {

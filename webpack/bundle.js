@@ -3281,7 +3281,6 @@ function register() {
                         return [4 /*yield*/, fetchResult.json()];
                     case 2:
                         result = _a.sent();
-                        console.log(result);
                         validation_num = result.validation_num;
                         $(".state-email").html(result.msg);
                         if (result.state === "true") {
